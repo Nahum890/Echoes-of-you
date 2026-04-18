@@ -5,10 +5,10 @@ using UnityEngine;
 /// </summary>
 public class TimedMovingPlatform : MonoBehaviour
 {
-    [SerializeField] PressurePlate plate;
-    [SerializeField] Vector3 inactiveLocal = Vector3.zero;
-    [SerializeField] Vector3 activeLocal = new Vector3(0f, 0f, 6f);
-    [SerializeField] float travelSpeed = 2.5f;
+    public PressurePlate plate;
+    public Vector3 inactiveLocal = Vector3.zero;
+    public Vector3 activeLocal = new Vector3(0f, 0f, 6f);
+    public float travelSpeed = 2.5f;
 
     Transform _t;
     Vector3 _target;
@@ -18,7 +18,7 @@ public class TimedMovingPlatform : MonoBehaviour
         _t = transform;
     }
 
-    void OnEnable()
+    void Start()
     {
         if (plate != null)
             plate.PressedChanged += OnPlate;
@@ -26,7 +26,7 @@ public class TimedMovingPlatform : MonoBehaviour
         RefreshTarget();
     }
 
-    void OnDisable()
+    void OnDestroy()
     {
         if (plate != null)
             plate.PressedChanged -= OnPlate;

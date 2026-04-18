@@ -15,12 +15,13 @@ public class PlayerController : MonoBehaviour
     [Header("Detección de suelo")]
     public Transform groundCheck;
     public float groundDistance = 0.28f;
-    public LayerMask groundMask = ~0;
+    public LayerMask groundMask = 1 << 6; // Layer 6 es "Ground"
 
     CharacterController _controller;
     Vector3 _velocity;
     bool _grounded;
     Transform _cam;
+    bool _isDead = false;
 
     void Awake()
     {
@@ -39,6 +40,14 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (_isDead) return;
+
+        if (transform.position.y < -15f)
+        {
+            Die();
+            return;
+        }
+
         _grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask, QueryTriggerInteraction.Ignore);
 
         if (_grounded && _velocity.y < 0f)
@@ -78,5 +87,38 @@ public class PlayerController : MonoBehaviour
         transform.SetPositionAndRotation(worldPosition, worldRotation);
         _velocity = Vector3.zero;
         _controller.enabled = true;
+    }
+
+    void Die()
+    {
+        _isDead = true;
+        _controller.enabled = false;
+        Invoke(nameof(RestartScene), 2f);
+    }
+
+    void RestartScene()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+    }
+
+    void OnGUI()
+    {
+        if (_isDead)
+        {
+            GUIStyle style = new GUIStyle(GUI.skin.label);
+            style.fontSize = 50;
+            style.alignment = TextAnchor.MiddleCenter;
+            style.normal.textColor = Color.red;
+            style.fontStyle = FontStyle.Bold;
+
+            // Draw shadow
+            Rect r = new Rect(0, 0, Screen.width, Screen.height);
+            var shadowStyle = new GUIStyle(style);
+            shadowStyle.normal.textColor = Color.black;
+            
+            Rect shadowRect = new Rect(2, 2, Screen.width, Screen.height);
+            GUI.Label(shadowRect, "HAS CAÍDO AL VACÍO", shadowStyle);
+            GUI.Label(r, "HAS CAÍDO AL VACÍO", style);
+        }
     }
 }

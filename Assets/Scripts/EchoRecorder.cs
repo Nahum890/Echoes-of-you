@@ -34,7 +34,7 @@ public class EchoRecorder : MonoBehaviour
     void Awake()
     {
         if (hud == null)
-            hud = FindFirstObjectByType<GameHUD>();
+            hud = UnityEngine.Object.FindAnyObjectByType<GameHUD>();
         if (echoSpawnRoot == null)
             echoSpawnRoot = transform;
     }

@@ -5,10 +5,10 @@ using UnityEngine;
 /// </summary>
 public class DoorController : MonoBehaviour
 {
-    [SerializeField] PressurePlate[] plates;
-    [SerializeField] Vector3 closedLocalPosition = Vector3.zero;
-    [SerializeField] Vector3 openLocalPosition = new Vector3(0f, 2.8f, 0f);
-    [SerializeField] float moveSpeed = 3f;
+    public PressurePlate[] plates;
+    public Vector3 closedLocalPosition = Vector3.zero;
+    public Vector3 openLocalPosition = new Vector3(0f, 8f, 0f);
+    public float moveSpeed = 3f;
 
     Transform _t;
     Vector3 _targetLocal;
@@ -18,7 +18,7 @@ public class DoorController : MonoBehaviour
         _t = transform;
     }
 
-    void OnEnable()
+    void Start()
     {
         if (plates == null)
             return;
@@ -32,7 +32,7 @@ public class DoorController : MonoBehaviour
         RefreshTargetImmediate();
     }
 
-    void OnDisable()
+    void OnDestroy()
     {
         if (plates == null)
             return;

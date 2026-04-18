@@ -7,9 +7,9 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Collider))]
 public class LevelExit : MonoBehaviour
 {
-    [SerializeField] string nextSceneName;
-    [SerializeField] bool loadNextBuildIndex = true;
-    [SerializeField] float delaySeconds = 0.35f;
+    public string nextSceneName;
+    public bool loadNextBuildIndex = true;
+    public float delaySeconds = 0.35f;
 
     bool _triggered;
 
