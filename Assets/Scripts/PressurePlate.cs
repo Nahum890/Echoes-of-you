@@ -19,15 +19,8 @@ public class PressurePlate : MonoBehaviour
 
     void Awake()
     {
-        var col = GetComponent<Collider>();
+        var col = GetComponent<BoxCollider>();
         col.isTrigger = true;
-
-        if (GetComponent<Rigidbody>() == null)
-        {
-            var rb = gameObject.AddComponent<Rigidbody>();
-            rb.isKinematic = true;
-            rb.useGravity = false;
-        }
     }
 
     void SetPressed(bool value)
@@ -39,31 +32,28 @@ public class PressurePlate : MonoBehaviour
         PressedChanged?.Invoke(_pressed);
     }
 
-    void Evaluate()
+    void FixedUpdate()
     {
-        SetPressed(_overlapCount > 0);
-    }
+        var box = GetComponent<BoxCollider>();
+        Vector3 center = transform.TransformPoint(box.center);
+        Vector3 halfExtents = Vector3.Scale(box.size, transform.lossyScale) * 0.5f;
 
-    void OnTriggerEnter(Collider other)
-    {
-        if (IsActor(other))
+        // Inflate detection slightly upward
+        halfExtents.y += 0.2f;
+        center.y += 0.1f;
+
+        Collider[] hits = Physics.OverlapBox(center, halfExtents, transform.rotation);
+        
+        bool foundActor = false;
+        foreach (var c in hits)
         {
-            _overlapCount++;
-            Evaluate();
+            if (c.CompareTag(playerTag) || c.CompareTag(echoTag))
+            {
+                foundActor = true;
+                break;
+            }
         }
-    }
 
-    void OnTriggerExit(Collider other)
-    {
-        if (IsActor(other))
-        {
-            _overlapCount = Mathf.Max(0, _overlapCount - 1);
-            Evaluate();
-        }
-    }
-
-    bool IsActor(Collider c)
-    {
-        return c.CompareTag(playerTag) || c.CompareTag(echoTag);
+        SetPressed(foundActor);
     }
 }

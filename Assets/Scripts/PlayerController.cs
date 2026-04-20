@@ -23,6 +23,10 @@ public class PlayerController : MonoBehaviour
     Transform _cam;
     bool _isDead = false;
 
+    // Animator for 3D model
+    Animator _anim;
+    Transform _visualTransform;
+
     void Awake()
     {
         _controller = GetComponent<CharacterController>();
@@ -36,6 +40,9 @@ public class PlayerController : MonoBehaviour
 
         if (Camera.main != null)
             _cam = Camera.main.transform;
+
+        _anim = GetComponentInChildren<Animator>();
+        if (_anim != null) _visualTransform = _anim.transform;
     }
 
     void Update()
@@ -75,10 +82,28 @@ public class PlayerController : MonoBehaviour
         }
 
         if (Input.GetButtonDown("Jump") && _grounded)
+        {
             _velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            if (_anim != null) _anim.SetTrigger("Jump");
+        }
 
         _velocity.y += gravity * Time.deltaTime;
         _controller.Move(_velocity.y * Time.deltaTime * Vector3.up);
+
+        // Update Animator
+        if (_anim != null)
+        {
+            Vector3 flatVel = new Vector3(_controller.velocity.x, 0, _controller.velocity.z);
+            _anim.SetFloat("Speed", flatVel.magnitude);
+            _anim.SetBool("Grounded", _grounded);
+
+            // Rotate Visual towards movement
+            if (flatVel.sqrMagnitude > 0.1f)
+            {
+                Quaternion targetRot = Quaternion.LookRotation(flatVel.normalized, Vector3.up);
+                _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, targetRot, Time.deltaTime * 15f);
+            }
+        }
     }
 
     public void Teleport(Vector3 worldPosition, Quaternion worldRotation)
@@ -119,6 +144,17 @@ public class PlayerController : MonoBehaviour
             Rect shadowRect = new Rect(2, 2, Screen.width, Screen.height);
             GUI.Label(shadowRect, "HAS CAÍDO AL VACÍO", shadowStyle);
             GUI.Label(r, "HAS CAÍDO AL VACÍO", style);
+
+            // Add Hint
+            style.fontSize = 20;
+            style.normal.textColor = Color.white;
+            shadowStyle.fontSize = 20;
+            shadowStyle.normal.textColor = Color.black;
+
+            Rect hintRect = new Rect(0, Screen.height * 0.5f + 40, Screen.width, 50);
+            Rect hintShadowRect = new Rect(2, Screen.height * 0.5f + 42, Screen.width, 50);
+            GUI.Label(hintShadowRect, "CONSEJO: MANTÉN 'R' PARA GRABAR UN ECO Y SALTÁ MÁS LEJOS", shadowStyle);
+            GUI.Label(hintRect, "CONSEJO: MANTÉN 'R' PARA GRABAR UN ECO Y SALTÁ MÁS LEJOS", style);
         }
     }
 }

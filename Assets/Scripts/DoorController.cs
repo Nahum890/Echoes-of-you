@@ -1,75 +1,70 @@
 using UnityEngine;
 
 /// <summary>
-/// Puerta que se abre si todas las placas configuradas están presionadas a la vez (AND).
+/// Múltiples placas requeridas: cuando todas están presionadas, la puerta desaparece.
 /// </summary>
 public class DoorController : MonoBehaviour
 {
     public PressurePlate[] plates;
-    public Vector3 closedLocalPosition = Vector3.zero;
-    public Vector3 openLocalPosition = new Vector3(0f, 8f, 0f);
-    public float moveSpeed = 3f;
 
-    Transform _t;
-    Vector3 _targetLocal;
-
-    void Awake()
-    {
-        _t = transform;
-    }
+    Collider _col;
+    Renderer[] _renderers;
 
     void Start()
     {
-        if (plates == null)
-            return;
+        _col = GetComponent<Collider>();
+        _renderers = GetComponentsInChildren<Renderer>();
 
-        for (int i = 0; i < plates.Length; i++)
+        if (plates != null)
         {
-            if (plates[i] != null)
-                plates[i].PressedChanged += OnAnyPlateChanged;
+            foreach (var p in plates)
+            {
+                if (p != null) p.PressedChanged += OnPlateChanged;
+            }
         }
-
-        RefreshTargetImmediate();
+        UpdateState();
     }
 
     void OnDestroy()
     {
-        if (plates == null)
-            return;
-
-        for (int i = 0; i < plates.Length; i++)
+        if (plates != null)
         {
-            if (plates[i] != null)
-                plates[i].PressedChanged -= OnAnyPlateChanged;
+            foreach (var p in plates)
+            {
+                if (p != null) p.PressedChanged -= OnPlateChanged;
+            }
         }
     }
 
-    void OnAnyPlateChanged(bool _)
+    void OnPlateChanged(bool obj)
     {
-        RefreshTargetImmediate();
+        UpdateState();
     }
 
-    void RefreshTargetImmediate()
+    void UpdateState()
     {
-        _targetLocal = AllPressed() ? openLocalPosition : closedLocalPosition;
-    }
-
-    bool AllPressed()
-    {
-        if (plates == null || plates.Length == 0)
-            return false;
-
-        for (int i = 0; i < plates.Length; i++)
+        bool allPressed = true;
+        if (plates == null || plates.Length == 0) allPressed = false;
+        else
         {
-            if (plates[i] == null || !plates[i].IsPressed)
-                return false;
+            foreach (var p in plates)
+            {
+                if (p != null && !p.IsPressed)
+                {
+                    allPressed = false;
+                    break;
+                }
+            }
         }
 
-        return true;
-    }
-
-    void Update()
-    {
-        _t.localPosition = Vector3.MoveTowards(_t.localPosition, _targetLocal, moveSpeed * Time.deltaTime);
+        // Si se abre (todas presionadas), desaparece
+        if (_col != null) _col.enabled = !allPressed;
+        if (_renderers != null)
+        {
+            foreach (var r in _renderers)
+            {
+                if (r != null) r.enabled = !allPressed;
+            }
+        }
     }
 }

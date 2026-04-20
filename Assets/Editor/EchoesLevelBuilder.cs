@@ -25,8 +25,10 @@ public static class EchoesLevelBuilder
     [MenuItem("Echoes of You/Build All (Menu + 7 Levels)", false, 0)]
     static void BuildAll()
     {
+        if (!CheckNotPlaying()) return;
         EnsureFolders();
         CreateMaterials();
+        CreateAnimatorController();
         CreatePrefabs();
         BuildMainMenu();
         BuildLevel01();
@@ -35,10 +37,8 @@ public static class EchoesLevelBuilder
         BuildLevel04();
         BuildLevel05();
         BuildLevel06();
-        BuildLevel07();
-        BuildLevel08();
         AddScenesToBuild();
-        Debug.Log("[Echoes] ✔ Main menu, prefabs, materials, and 8 levels created successfully!");
+        Debug.Log("[Echoes] ✔ Main menu, prefabs, materials, and 6 levels created successfully!");
     }
 
     // ================================================================
@@ -48,23 +48,24 @@ public static class EchoesLevelBuilder
     static void MenuMaterials() { EnsureFolders(); CreateMaterials(); }
 
     [MenuItem("Echoes of You/2. Create Prefabs", false, 21)]
-    static void MenuPrefabs() { EnsureFolders(); CreateMaterials(); CreatePrefabs(); }
+    static void MenuPrefabs() { if (!CheckNotPlaying()) return; EnsureFolders(); CreateMaterials(); CreatePrefabs(); }
 
     [MenuItem("Echoes of You/3. Build Level 01", false, 40)]
-    static void MenuL1() { EnsureFolders(); CreateMaterials(); BuildLevel01(); }
+    static void MenuL1() { if (!CheckNotPlaying()) return; EnsureFolders(); CreateMaterials(); BuildLevel01(); }
 
     [MenuItem("Echoes of You/4. Build Level 02", false, 41)]
-    static void MenuL2() { EnsureFolders(); CreateMaterials(); BuildLevel02(); }
+    static void MenuL2() { if (!CheckNotPlaying()) return; EnsureFolders(); CreateMaterials(); BuildLevel02(); }
 
     [MenuItem("Echoes of You/5. Build Level 03", false, 42)]
-    static void MenuL3() { EnsureFolders(); CreateMaterials(); BuildLevel03(); }
+    static void MenuL3() { if (!CheckNotPlaying()) return; EnsureFolders(); CreateMaterials(); BuildLevel03(); }
 
     [MenuItem("Echoes of You/6. Add Scenes to Build Settings", false, 60)]
-    static void MenuBuild() { AddScenesToBuild(); }
+    static void MenuBuild() { if (!CheckNotPlaying()) return; AddScenesToBuild(); }
 
     [MenuItem("Echoes of You/FIX — Recreate All Materials", false, 80)]
     static void MenuFixMaterials()
     {
+        if (!CheckNotPlaying()) return;
         EnsureFolders();
         DeleteAllMaterials();
         CreateMaterials();
@@ -74,11 +75,13 @@ public static class EchoesLevelBuilder
     [MenuItem("Echoes of You/FIX — Rebuild Everything From Scratch", false, 81)]
     static void MenuRebuildAll()
     {
+        if (!CheckNotPlaying()) return;
         EnsureFolders();
         DeleteAllMaterials();
-        // Delete old prefab so it gets recreated
         AssetDatabase.DeleteAsset(PREFAB_ROOT + "/EchoPrefab.prefab");
+        AssetDatabase.DeleteAsset(PREFAB_ROOT + "/PlayerAnimController.controller");
         CreateMaterials();
+        CreateAnimatorController();
         CreatePrefabs();
         BuildMainMenu();
         BuildLevel01();
@@ -87,10 +90,18 @@ public static class EchoesLevelBuilder
         BuildLevel04();
         BuildLevel05();
         BuildLevel06();
-        BuildLevel07();
-        BuildLevel08();
         AddScenesToBuild();
         Debug.Log("[Echoes] ✔ Full rebuild complete!");
+    }
+
+    static bool CheckNotPlaying()
+    {
+        if (EditorApplication.isPlaying)
+        {
+            Debug.LogError("[Echoes] Cannot build levels while in Play Mode! Stop the game first.");
+            return false;
+        }
+        return true;
     }
 
     // ================================================================
@@ -210,6 +221,63 @@ public static class EchoesLevelBuilder
     }
 
     // ================================================================
+    //  ANIMATOR CONTROLLER
+    // ================================================================
+    static void CreateAnimatorController()
+    {
+        string path = PREFAB_ROOT + "/PlayerAnimController.controller";
+        if (File.Exists(path)) return;
+
+        var controller = UnityEditor.Animations.AnimatorController.CreateAnimatorControllerAtPath(path);
+        controller.AddParameter("Speed", AnimatorControllerParameterType.Float);
+        controller.AddParameter("Grounded", AnimatorControllerParameterType.Bool);
+        controller.AddParameter("Jump", AnimatorControllerParameterType.Trigger);
+
+        var rootStateMachine = controller.layers[0].stateMachine;
+
+        // Get clips
+        AnimationClip idleClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/3D Models/Animaciones/Locomotion/idle.fbx");
+        AnimationClip walkClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/3D Models/Animaciones/Locomotion/walking.fbx");
+        AnimationClip runClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/3D Models/Animaciones/Locomotion/running.fbx");
+        AnimationClip jumpClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/3D Models/Animaciones/Locomotion/jump.fbx");
+
+        // Create States
+        var idleState = rootStateMachine.AddState("Idle");
+        idleState.motion = idleClip;
+
+        var moveState = rootStateMachine.AddState("Move");
+        // Create BlendTree for movement
+        var blendTree = new UnityEditor.Animations.BlendTree();
+        controller.AddParameter("SpeedTree", AnimatorControllerParameterType.Float);
+        blendTree.blendParameter = "Speed";
+        blendTree.AddChild(idleClip, 0f);
+        blendTree.AddChild(walkClip, 2f);
+        blendTree.AddChild(runClip, 6f);
+        moveState.motion = blendTree;
+
+        var jumpState = rootStateMachine.AddState("Jump");
+        jumpState.motion = jumpClip;
+
+        // Idle <-> Move (using Speed > 0.1)
+        var idleToMove = idleState.AddTransition(moveState);
+        idleToMove.AddCondition(UnityEditor.Animations.AnimatorConditionMode.Greater, 0.1f, "Speed");
+        var moveToIdle = moveState.AddTransition(idleState);
+        moveToIdle.AddCondition(UnityEditor.Animations.AnimatorConditionMode.Less, 0.1f, "Speed");
+
+        // AnyState -> Jump
+        var anyToJump = rootStateMachine.AddAnyStateTransition(jumpState);
+        anyToJump.AddCondition(UnityEditor.Animations.AnimatorConditionMode.If, 0, "Jump");
+        
+        // Jump -> Idle
+        var jumpToIdle = jumpState.AddTransition(idleState);
+        jumpToIdle.hasExitTime = true;
+        jumpToIdle.exitTime = 0.8f;
+        jumpToIdle.AddCondition(UnityEditor.Animations.AnimatorConditionMode.If, 0, "Grounded");
+
+        Debug.Log("[Echoes] Created AnimatorController.");
+    }
+
+    // ================================================================
     //  PREFABS
     // ================================================================
     static void CreatePrefabs()
@@ -224,6 +292,59 @@ public static class EchoesLevelBuilder
         GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
         if (prefab != null) return prefab;
         return CreateEchoPrefab();
+    }
+
+    static PressurePlate MakePlate(string name, Vector3 pos, Vector3 size, Transform parent)
+    {
+        var go = new GameObject(name);
+        go.transform.position = pos;
+        go.transform.SetParent(parent, true);
+
+        // Invisible Trigger for logic
+        var bc = go.AddComponent<BoxCollider>();
+        bc.size = size;
+        bc.isTrigger = true;
+
+        var rb = go.AddComponent<Rigidbody>();
+        rb.isKinematic = true;
+        rb.useGravity = false;
+
+        var plate = go.AddComponent<PressurePlate>();
+
+        // 3D Visuals
+        var btnPfb = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3D Models/Models/FBX format/button-square.fbx");
+        if (btnPfb != null)
+        {
+            var visual = PrefabUtility.InstantiatePrefab(btnPfb) as GameObject;
+            visual.transform.SetParent(go.transform, false);
+            visual.transform.localPosition = new Vector3(0, -size.y * 0.5f, 0);
+            float scale = Mathf.Min(size.x, size.z) * 1.5f;
+            visual.transform.localScale = new Vector3(scale, scale, scale);
+
+            // Optional: Light for plate
+            var lightGo = new GameObject("PlateLight");
+            lightGo.transform.SetParent(visual.transform, false);
+            lightGo.transform.localPosition = new Vector3(0, 1f, 0);
+            var light = lightGo.AddComponent<Light>();
+            light.type = LightType.Point;
+            light.color = Color.red;
+            light.range = 3f;
+            light.intensity = 2f;
+        }
+        else
+        {
+            // Fallback cube
+            var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube.name = "PlateVisual";
+            cube.transform.SetParent(go.transform, false);
+            cube.transform.localPosition = Vector3.zero;
+            cube.transform.localScale = size;
+            Object.DestroyImmediate(cube.GetComponent<Collider>());
+            if (_matPlate != null)
+                cube.GetComponent<MeshRenderer>().sharedMaterial = _matPlate;
+        }
+
+        return plate;
     }
 
     static GameObject CreateEchoPrefab()
@@ -248,15 +369,46 @@ public static class EchoesLevelBuilder
 
         root.AddComponent<EchoPlayback>();
 
-        // Visual child cube
-        GameObject visual = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        visual.name = "EchoVisual";
+        // Visual child
+        var visual = new GameObject("Visual");
         visual.transform.SetParent(root.transform, false);
-        visual.transform.localPosition = new Vector3(0f, 0.9f, 0f);
-        visual.transform.localScale = new Vector3(0.6f, 1.8f, 0.6f);
-        Object.DestroyImmediate(visual.GetComponent<BoxCollider>()); // Remove collider on visual
-        if (_matEcho != null)
-            visual.GetComponent<MeshRenderer>().sharedMaterial = _matEcho;
+        visual.transform.localPosition = Vector3.zero;
+        var baseModel = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3D Models/Character Base/characterBase.fbx");
+        if (baseModel != null)
+        {
+            var inst = PrefabUtility.InstantiatePrefab(baseModel) as GameObject;
+            inst.transform.SetParent(visual.transform, false);
+            // Kenney's character pivot is often at the center, raising it to match CharacterController bottom
+            inst.transform.localPosition = new Vector3(0, 0.9f, 0);
+            
+            // Fix rotations if necessary (some models face backward)
+            inst.transform.localRotation = Quaternion.Euler(0, 180, 0);
+
+            foreach (var r in inst.GetComponentsInChildren<Renderer>())
+            {
+                r.sharedMaterial = _matEcho;
+            }
+
+            // Assign Animator and Avatar
+            var anim = inst.GetComponent<Animator>();
+            if (anim != null)
+            {
+                var controller = AssetDatabase.LoadAssetAtPath<UnityEditor.Animations.AnimatorController>(PREFAB_ROOT + "/PlayerAnimController.controller");
+                anim.runtimeAnimatorController = controller;
+                
+                var avatar = AssetDatabase.LoadAssetAtPath<Avatar>("Assets/3D Models/Character Base/characterBase.fbx");
+                if (avatar != null) anim.avatar = avatar;
+            }
+        }
+        else
+        {
+            var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube.transform.SetParent(visual.transform, false);
+            cube.transform.localPosition = new Vector3(0, 0.9f, 0);
+            cube.transform.localScale = new Vector3(0.6f, 1.8f, 0.6f);
+            Object.DestroyImmediate(cube.GetComponent<Collider>());
+            cube.GetComponent<MeshRenderer>().sharedMaterial = _matEcho;
+        }
 
         GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, path);
         Object.DestroyImmediate(root);
@@ -264,177 +416,152 @@ public static class EchoesLevelBuilder
     }
 
     // ================================================================
-    //  LEVEL 01 — "El Primer Eco"
+    //  LEVEL 01 — Conceptos Básicos
     // ================================================================
     static void BuildLevel01()
     {
         var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
         scene.name = "Level_01";
 
-        // --- Environment ---
         var envParent = CreateEmpty("--- ENVIRONMENT ---", Vector3.zero);
         MakeFloor("Floor_Start",   new Vector3(0,0,0),     new Vector3(6,0.5f,6),   envParent.transform);
         MakeFloor("Bridge_1",      new Vector3(0,0,5),     new Vector3(2,0.5f,4),   envParent.transform);
         MakeFloor("Floor_Button",  new Vector3(0,0,9),     new Vector3(4,0.5f,4),   envParent.transform);
-        MakeFloor("Bridge_2",      new Vector3(0,0,12.5f), new Vector3(2,0.5f,3),   envParent.transform);
-        MakeFloor("Floor_Gate",    new Vector3(0,0,16),    new Vector3(4,0.5f,3),   envParent.transform);
-        MakeFloor("Bridge_3",      new Vector3(0,0,19),    new Vector3(2,0.5f,3),   envParent.transform);
-        MakeFloor("Floor_End",     new Vector3(0,0,23),    new Vector3(6,0.5f,6),   envParent.transform);
+        MakeFloor("Bridge_2",      new Vector3(0,0,13),    new Vector3(2,0.5f,4),   envParent.transform);
+        MakeFloor("Floor_Gate",    new Vector3(0,0,17),    new Vector3(6,0.5f,4),   envParent.transform);
+        MakeFloor("Floor_End",     new Vector3(0,0,21),    new Vector3(6,0.5f,4),   envParent.transform);
 
-        // --- Mechanics ---
         var mechParent = CreateEmpty("--- MECHANICS ---", Vector3.zero);
+        var plate = MakePlate("PressurePlate", new Vector3(0, 0.35f, 9), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
 
-        // Pressure plate
-        var plate = MakePlate("PressurePlate_1", new Vector3(0, 0.35f, 9), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
-
-        // Door
-        var doorFrame = CreateEmpty("DoorFrame", new Vector3(0, 0.25f, 13.5f));
+        var doorFrame = CreateEmpty("DoorFrame", new Vector3(0, 0.25f, 15));
         doorFrame.transform.SetParent(mechParent.transform, true);
-        var door = MakeCube("Door", Vector3.zero, new Vector3(3, 2.8f, 0.3f), doorFrame.transform, _matDoor);
+        var door = MakeCube("Door", Vector3.zero, new Vector3(3, 8f, 0.3f), doorFrame.transform, _matDoor);
         var dc = door.AddComponent<DoorController>();
         dc.plates = new PressurePlate[] { plate };
-        dc.closedLocalPosition = Vector3.zero;
-        dc.openLocalPosition = new Vector3(0, 2.8f, 0);
-        dc.moveSpeed = 3f;
 
-        // Level exit
-        var exit = MakeCube("LevelExit", new Vector3(0, 0.5f, 25), new Vector3(2, 2, 0.3f), mechParent.transform, _matExit);
+        var exit = MakeCube("LevelExit", new Vector3(0, 0.5f, 21), new Vector3(2, 2, 0.3f), mechParent.transform, _matExit);
         exit.GetComponent<BoxCollider>().isTrigger = true;
         var exitComp = exit.AddComponent<LevelExit>();
         exitComp.loadNextBuildIndex = true;
 
-        // --- Player, Camera, HUD, Light, Pause, Tutorial ---
         SpawnPlayer(new Vector3(0, 1.5f, 0));
         SpawnCamera();
         SpawnHUD();
         SpawnPauseAndTutorial();
         SpawnLight();
 
-        // --- Tutorial Triggers (only Level 01) ---
         var tutParent = CreateEmpty("--- TUTORIAL ---", Vector3.zero);
         SpawnTutorialTrigger("Tut_Movement", new Vector3(0, 1, 0), new Vector3(4, 3, 4),
             "Usa WASD para moverte", "Espacio para saltar", 5f, tutParent.transform);
         SpawnTutorialTrigger("Tut_Button", new Vector3(0, 1, 7), new Vector3(3, 3, 2),
-            "Pisa la placa verde", "Observa qué pasa con la puerta", 5f, tutParent.transform);
+            "Pisa el boton", "Observa que la puerta desaparece al presionarlo", 5f, tutParent.transform);
         SpawnTutorialTrigger("Tut_Record", new Vector3(0, 1, 9), new Vector3(3, 3, 3),
-            "Mantén R para grabar tu eco", "Quédate sobre la placa mientras grabas", 6f, tutParent.transform);
-        SpawnTutorialTrigger("Tut_Cross", new Vector3(0, 1, 16), new Vector3(3, 3, 2),
-            "¡Tu eco mantiene la puerta abierta!", "Ahora cruza hacia la salida", 5f, tutParent.transform);
+            "Mantén R para grabar tus movimientos", "Quédate sobre la placa y suelta para dejar un eco", 6f, tutParent.transform);
         
         SpawnParticles();
-
+        SpawnDecorations(envParent.transform, 5, 0f, 20f);
         SaveScene(scene, "Level_01");
-        Debug.Log("[Echoes] Level 01 built.");
     }
 
     // ================================================================
-    //  LEVEL 02 — "El Puente Fantasma"
+    //  LEVEL 02 — Experimentación Segura
     // ================================================================
     static void BuildLevel02()
     {
         var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
         scene.name = "Level_02";
 
-        // --- Environment ---
+        // Everything is solid ground so player doesn't fall while learning
         var envParent = CreateEmpty("--- ENVIRONMENT ---", Vector3.zero);
-        MakeFloor("Floor_Start",        new Vector3(0,0,0),       new Vector3(8,0.5f,8),  envParent.transform);
-        MakeFloor("Bridge_ToIsland",    new Vector3(-2.5f,0,6),   new Vector3(2,0.5f,4),  envParent.transform);
-        MakeFloor("Floor_ButtonIsland", new Vector3(-5,0,12),     new Vector3(4,0.5f,4),  envParent.transform);
-        MakeFloor("Floor_End",          new Vector3(0,0,20),      new Vector3(8,0.5f,8),  envParent.transform);
+        MakeFloor("Floor_Main", new Vector3(0,0,10), new Vector3(14,0.5f,24), envParent.transform);
 
-        // --- Mechanics ---
         var mechParent = CreateEmpty("--- MECHANICS ---", Vector3.zero);
 
-        // Pressure plate
-        var plate = MakePlate("PressurePlate_Bridge", new Vector3(-5, 0.35f, 12), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
-
-        // Moving bridge
-        var anchor = CreateEmpty("BridgeAnchor", new Vector3(0, 0, 8));
+        // Path A: Bridge (Shortcut)
+        var plateA = MakePlate("Plate_A", new Vector3(-4, 0.35f, 6), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
+        var anchor = CreateEmpty("BridgeAnchor", new Vector3(-4, 0, 12));
         anchor.transform.SetParent(mechParent.transform, true);
-        var bridge = MakeCube("MovingBridge", new Vector3(0, -5, 0), new Vector3(3, 0.5f, 8), anchor.transform, _matBridge);
+        var bridge = MakeCube("MovingBridge", new Vector3(0, -5, 0), new Vector3(2, 0.5f, 6), anchor.transform, _matBridge);
         bridge.layer = GROUND_LAYER;
-        bridge.isStatic = false;
         var tmp = bridge.AddComponent<TimedMovingPlatform>();
-        tmp.plate = plate;
+        tmp.plate = plateA;
         tmp.inactiveLocal = new Vector3(0, -5, 0);
         tmp.activeLocal = Vector3.zero;
-        tmp.travelSpeed = 4f;
+        tmp.travelSpeed = 6f;
 
-        // Level exit
-        var exit = MakeCube("LevelExit", new Vector3(0, 0.5f, 23), new Vector3(2, 2, 0.3f), mechParent.transform, _matExit);
-        var exitComp = exit.AddComponent<LevelExit>();
-        exitComp.loadNextBuildIndex = true;
-        exit.GetComponent<BoxCollider>().isTrigger = true;
+        // Path B: Door
+        var plateB = MakePlate("Plate_B", new Vector3(4, 0.35f, 6), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
+        var df = CreateEmpty("DoorFrame", new Vector3(4, 0.25f, 12));
+        df.transform.SetParent(mechParent.transform, true);
+        var d1 = MakeCube("Door", Vector3.zero, new Vector3(3, 8f, 0.3f), df.transform, _matDoor);
+        var dc = d1.AddComponent<DoorController>();
+        dc.plates = new PressurePlate[] { plateB };
 
-        // --- Player, Camera, HUD, Light, Pause, Tutorial ---
+        var exit1 = MakeCube("LevelExit", new Vector3(-4, 0.5f, 18), new Vector3(2, 2, 0.3f), mechParent.transform, _matExit);
+        exit1.GetComponent<BoxCollider>().isTrigger = true;
+        exit1.AddComponent<LevelExit>().loadNextBuildIndex = true;
+
+        var exit2 = MakeCube("LevelExit", new Vector3(4, 0.5f, 18), new Vector3(2, 2, 0.3f), mechParent.transform, _matExit);
+        exit2.GetComponent<BoxCollider>().isTrigger = true;
+        exit2.AddComponent<LevelExit>().loadNextBuildIndex = true;
+
         SpawnPlayer(new Vector3(0, 1.5f, 0));
         SpawnCamera();
         SpawnHUD();
         SpawnPauseAndTutorial();
         SpawnLight();
         SpawnParticles();
-
+        SpawnDecorations(envParent.transform, 6, 0f, 20f);
         SaveScene(scene, "Level_02");
-        Debug.Log("[Echoes] Level 02 built.");
     }
 
     // ================================================================
-    //  LEVEL 03 — "Sincronía"
+    //  LEVEL 03 — Refuerzo
     // ================================================================
     static void BuildLevel03()
     {
         var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
         scene.name = "Level_03";
 
-        // --- Environment ---
+        // Slight complexity: AND gate with a gap to jump
         var envParent = CreateEmpty("--- ENVIRONMENT ---", Vector3.zero);
-        MakeFloor("Floor_Central",  new Vector3(0,0,0),     new Vector3(6,0.5f,6),  envParent.transform);
-        MakeFloor("Bridge_Left",    new Vector3(-4,0,4),    new Vector3(2,0.5f,5),  envParent.transform);
-        MakeFloor("Bridge_Right",   new Vector3(4,0,4),     new Vector3(2,0.5f,5),  envParent.transform);
-        MakeFloor("Floor_Left",     new Vector3(-8,0,6),    new Vector3(4,0.5f,4),  envParent.transform);
-        MakeFloor("Floor_Right",    new Vector3(8,0,6),     new Vector3(4,0.5f,4),  envParent.transform);
-        MakeFloor("Bridge_Gate",    new Vector3(0,0,10),    new Vector3(2,0.5f,4),  envParent.transform);
-        MakeFloor("Floor_Gate",     new Vector3(0,0,14),    new Vector3(4,0.5f,4),  envParent.transform);
-        MakeFloor("Bridge_End",     new Vector3(0,0,18),    new Vector3(2,0.5f,4),  envParent.transform);
-        MakeFloor("Floor_End",      new Vector3(0,0,22),    new Vector3(6,0.5f,6),  envParent.transform);
+        MakeFloor("Floor_Start",  new Vector3(0,0,0),     new Vector3(10,0.5f,6),  envParent.transform);
+        MakeFloor("Bridge_L",     new Vector3(-3,0,5),    new Vector3(2,0.5f,4),   envParent.transform);
+        MakeFloor("Bridge_R",     new Vector3(3,0,5),     new Vector3(2,0.5f,4),   envParent.transform);
+        MakeFloor("Floor_Plates", new Vector3(0,0,9),     new Vector3(10,0.5f,4),  envParent.transform);
+        
+        // Gap here!
+        
+        MakeFloor("Floor_Gate",   new Vector3(0,0,16),    new Vector3(6,0.5f,4),   envParent.transform);
+        MakeFloor("Floor_End",    new Vector3(0,0,20),    new Vector3(6,0.5f,4),   envParent.transform);
 
-        // --- Mechanics ---
         var mechParent = CreateEmpty("--- MECHANICS ---", Vector3.zero);
+        var pL = MakePlate("Plate_L",  new Vector3(-3, 0.35f, 9), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
+        var pR = MakePlate("Plate_R",  new Vector3( 3, 0.35f, 9), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
 
-        // Pressure plates
-        var plateL = MakePlate("PressurePlate_Left",  new Vector3(-8, 0.35f, 6), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
-        var plateR = MakePlate("PressurePlate_Right", new Vector3( 8, 0.35f, 6), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
-
-        // Door (AND: both plates)
-        var doorFrame = CreateEmpty("DoorFrame", new Vector3(0, 0.25f, 12));
-        doorFrame.transform.SetParent(mechParent.transform, true);
-        var door = MakeCube("Door", Vector3.zero, new Vector3(3, 2.8f, 0.3f), doorFrame.transform, _matDoor);
+        var df = CreateEmpty("DoorFrame", new Vector3(0, 0.25f, 14.5f));
+        df.transform.SetParent(mechParent.transform, true);
+        var door = MakeCube("Door", Vector3.zero, new Vector3(6, 8f, 0.3f), df.transform, _matDoor);
         var dc = door.AddComponent<DoorController>();
-        dc.plates = new PressurePlate[] { plateL, plateR };
-        dc.closedLocalPosition = Vector3.zero;
-        dc.openLocalPosition = new Vector3(0, 2.8f, 0);
-        dc.moveSpeed = 3f;
+        dc.plates = new PressurePlate[] { pL, pR };
 
-        // Level exit
-        var exit = MakeCube("LevelExit", new Vector3(0, 0.5f, 24), new Vector3(2, 2, 0.3f), mechParent.transform, _matExit);
-        var exitComp = exit.AddComponent<LevelExit>();
-        exitComp.loadNextBuildIndex = true;
+        var exit = MakeCube("LevelExit", new Vector3(0, 0.5f, 20), new Vector3(2, 2, 0.3f), mechParent.transform, _matExit);
         exit.GetComponent<BoxCollider>().isTrigger = true;
+        exit.AddComponent<LevelExit>().loadNextBuildIndex = true;
 
-        // --- Player, Camera, HUD, Light, Pause, Tutorial ---
         SpawnPlayer(new Vector3(0, 1.5f, 0));
         SpawnCamera();
         SpawnHUD();
         SpawnPauseAndTutorial();
         SpawnLight();
         SpawnParticles();
-
+        SpawnDecorations(envParent.transform, 6, 0f, 20f);
         SaveScene(scene, "Level_03");
-        Debug.Log("[Echoes] Level 03 built.");
     }
 
     // ================================================================
-    //  LEVEL 04 — "Salto de Fe"
+    //  LEVEL 04 — Twist (El orden importa)
     // ================================================================
     static void BuildLevel04()
     {
@@ -445,41 +572,42 @@ public static class EchoesLevelBuilder
         MakeFloor("Floor_Start", new Vector3(0, 0, 0), new Vector3(6, 0.5f, 6), envParent.transform);
         MakeFloor("Floor_End", new Vector3(0, 0, 18), new Vector3(6, 0.5f, 6), envParent.transform);
 
+        // The bridge gap is huge, they must use the moving platform
         var mechParent = CreateEmpty("--- MECHANICS ---", Vector3.zero);
 
-        // Plate
         var plate = MakePlate("PressurePlate_1", new Vector3(0, 0.35f, 2), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
 
-        // Moving Platform (inactive=Z:15, active=Z:6)
         var platFrame = CreateEmpty("PlatformFrame", Vector3.zero);
         platFrame.transform.SetParent(mechParent.transform, true);
-        var plat = MakeCube("MovingPlatform", Vector3.zero, new Vector3(3, 0.5f, 3), platFrame.transform, _matBridge);
-        plat.layer = GROUND_LAYER; // So player can jump on it
+        var plat = MakeCube("MovingPlatform", Vector3.zero, new Vector3(4, 0.5f, 4), platFrame.transform, _matBridge);
+        plat.layer = GROUND_LAYER;
         var mp = plat.AddComponent<TimedMovingPlatform>();
         mp.plate = plate;
         mp.inactiveLocal = new Vector3(0, 0, 15);
         mp.activeLocal = new Vector3(0, 0, 6);
-        mp.travelSpeed = 4f;
+        mp.travelSpeed = 6f; // Faster to force the twist
 
-        // Level exit
         var exit = MakeCube("LevelExit", new Vector3(0, 0.5f, 20), new Vector3(2, 2, 0.3f), mechParent.transform, _matExit);
-        var exitComp = exit.AddComponent<LevelExit>();
-        exitComp.loadNextBuildIndex = true;
+        exit.AddComponent<LevelExit>().loadNextBuildIndex = true;
         exit.GetComponent<BoxCollider>().isTrigger = true;
 
-        SpawnPlayer(new Vector3(0, 1.5f, 0));
+        SpawnPlayer(new Vector3(0, 1.5f, -2));
         SpawnCamera();
         SpawnHUD();
         SpawnPauseAndTutorial();
         SpawnLight();
-        SpawnParticles();
+        
+        var tutParent = CreateEmpty("--- TUTORIAL ---", Vector3.zero);
+        SpawnTutorialTrigger("Tut_Twist", new Vector3(0, 1, -2), new Vector3(5, 3, 5),
+            "CONSEJO AVANZADO", "Graba tu viaje a la meta y haz que el eco active el botón", 5f, tutParent.transform);
 
+        SpawnParticles();
+        SpawnDecorations(envParent.transform, 6, 0f, 20f);
         SaveScene(scene, "Level_04");
-        Debug.Log("[Echoes] Level 04 built.");
     }
 
     // ================================================================
-    //  LEVEL 05 — "Doble Sacrificio"
+    //  LEVEL 05 — Ejecución Precisa
     // ================================================================
     static void BuildLevel05()
     {
@@ -488,53 +616,51 @@ public static class EchoesLevelBuilder
 
         var envParent = CreateEmpty("--- ENVIRONMENT ---", Vector3.zero);
         MakeFloor("Floor_Start", new Vector3(0, 0, 0), new Vector3(6, 0.5f, 6), envParent.transform);
-        MakeFloor("Bridge_1", new Vector3(0, 0, 4.5f), new Vector3(2, 0.5f, 3), envParent.transform);
-        MakeFloor("Floor_Mid", new Vector3(0, 0, 9), new Vector3(6, 0.5f, 6), envParent.transform);
-        MakeFloor("Bridge_2", new Vector3(0, 0, 13.5f), new Vector3(2, 0.5f, 3), envParent.transform);
-        MakeFloor("Floor_End", new Vector3(0, 0, 18), new Vector3(6, 0.5f, 6), envParent.transform);
+        MakeFloor("Floor_Mid", new Vector3(0, 0, 12), new Vector3(6, 0.5f, 6), envParent.transform);
+        MakeFloor("Floor_End", new Vector3(0, 0, 24), new Vector3(6, 0.5f, 6), envParent.transform);
 
         var mechParent = CreateEmpty("--- MECHANICS ---", Vector3.zero);
 
-        // Plate 1 -> Door 1
-        var plate1 = MakePlate("PressurePlate_1", new Vector3(2, 0.35f, 0), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
-        var doorFrame1 = CreateEmpty("DoorFrame_1", new Vector3(0, 0.25f, 6));
-        doorFrame1.transform.SetParent(mechParent.transform, true);
-        var door1 = MakeCube("Door_1", Vector3.zero, new Vector3(3, 2.8f, 0.3f), doorFrame1.transform, _matDoor);
-        var dc1 = door1.AddComponent<DoorController>();
-        dc1.plates = new PressurePlate[] { plate1 };
-        dc1.closedLocalPosition = Vector3.zero;
-        dc1.openLocalPosition = new Vector3(0, 8f, 0);
-        dc1.moveSpeed = 4f;
+        // Setup:
+        // Plate 1 (Start) brings Bridge 1 from Mid to Start
+        // Plate 2 (Mid) brings Bridge 2 from End to Mid
+        var plate1 = MakePlate("PressurePlate_1", new Vector3(-2, 0.35f, 0), new Vector3(1f, 0.1f, 1f), mechParent.transform);
+        var pf1 = CreateEmpty("PlatFrame_1", Vector3.zero);
+        pf1.transform.SetParent(mechParent.transform, true);
+        var plat1 = MakeCube("MovingPlatform_1", Vector3.zero, new Vector3(3, 0.5f, 3), pf1.transform, _matBridge);
+        plat1.layer = GROUND_LAYER;
+        var mp1 = plat1.AddComponent<TimedMovingPlatform>();
+        mp1.plate = plate1;
+        mp1.inactiveLocal = new Vector3(0, 0, 9);
+        mp1.activeLocal = new Vector3(0, 0, 4);
+        mp1.travelSpeed = 8f;
 
-        // Plate 2 -> Door 2
-        var plate2 = MakePlate("PressurePlate_2", new Vector3(-2, 0.35f, 9), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
-        var doorFrame2 = CreateEmpty("DoorFrame_2", new Vector3(0, 0.25f, 15));
-        doorFrame2.transform.SetParent(mechParent.transform, true);
-        var door2 = MakeCube("Door_2", Vector3.zero, new Vector3(3, 8f, 0.3f), doorFrame2.transform, _matDoor);
-        var dc2 = door2.AddComponent<DoorController>();
-        dc2.plates = new PressurePlate[] { plate2 };
-        dc2.closedLocalPosition = Vector3.zero;
-        dc2.openLocalPosition = new Vector3(0, 8f, 0);
-        dc2.moveSpeed = 4f;
+        var plate2 = MakePlate("PressurePlate_2", new Vector3(2, 0.35f, 12), new Vector3(1f, 0.1f, 1f), mechParent.transform);
+        var pf2 = CreateEmpty("PlatFrame_2", Vector3.zero);
+        pf2.transform.SetParent(mechParent.transform, true);
+        var plat2 = MakeCube("MovingPlatform_2", Vector3.zero, new Vector3(3, 0.5f, 3), pf2.transform, _matBridge);
+        plat2.layer = GROUND_LAYER;
+        var mp2 = plat2.AddComponent<TimedMovingPlatform>();
+        mp2.plate = plate2;
+        mp2.inactiveLocal = new Vector3(0, 0, 21);
+        mp2.activeLocal = new Vector3(0, 0, 16);
+        mp2.travelSpeed = 8f;
 
-        var exit = MakeCube("LevelExit", new Vector3(0, 0.5f, 20), new Vector3(2, 2, 0.3f), mechParent.transform, _matExit);
-        var exitComp = exit.AddComponent<LevelExit>();
-        exitComp.loadNextBuildIndex = true;
-        exit.GetComponent<BoxCollider>().isTrigger = true;
+        var exit = MakeCube("LevelExit", new Vector3(0, 0.5f, 26), new Vector3(2, 2, 0.3f), mechParent.transform, _matExit);
+        exit.AddComponent<LevelExit>().loadNextBuildIndex = true;
 
-        SpawnPlayer(new Vector3(0, 1.5f, 0), 2); // Limit to 2 echoes
+        SpawnPlayer(new Vector3(0, 1.5f, -2), 3);
         SpawnCamera();
         SpawnHUD();
         SpawnPauseAndTutorial();
         SpawnLight();
         SpawnParticles();
-
+        SpawnDecorations(envParent.transform, 6, 0f, 25f);
         SaveScene(scene, "Level_05");
-        Debug.Log("[Echoes] Level 05 built.");
     }
 
     // ================================================================
-    //  LEVEL 06 — "El Laberinto Lógico"
+    //  LEVEL 06 — El Examen Final
     // ================================================================
     static void BuildLevel06()
     {
@@ -542,170 +668,44 @@ public static class EchoesLevelBuilder
         scene.name = "Level_06";
 
         var envParent = CreateEmpty("--- ENVIRONMENT ---", Vector3.zero);
-        MakeFloor("Floor_Start", new Vector3(0, 0, 0), new Vector3(8, 0.5f, 6), envParent.transform);
-        MakeFloor("Floor_Mid1", new Vector3(-8, 0, 8), new Vector3(6, 0.5f, 6), envParent.transform);
-        MakeFloor("Floor_Mid2", new Vector3(8, 0, 8), new Vector3(6, 0.5f, 6), envParent.transform);
-        MakeFloor("Floor_End", new Vector3(0, 0, 16), new Vector3(8, 0.5f, 6), envParent.transform);
+        MakeFloor("Floor_Start", new Vector3(0, 0, 0), new Vector3(10, 0.5f, 6), envParent.transform);
+        MakeFloor("Floor_Split_L", new Vector3(-8, 0, 8), new Vector3(6, 0.5f, 6), envParent.transform);
+        MakeFloor("Floor_Split_R", new Vector3(8, 0, 8), new Vector3(6, 0.5f, 6), envParent.transform);
+        MakeFloor("Floor_Gate", new Vector3(0, 0, 16), new Vector3(10, 0.5f, 6), envParent.transform);
+        MakeFloor("Floor_End", new Vector3(0, 0, 22), new Vector3(6, 0.5f, 6), envParent.transform);
+
         MakeFloor("Bridge_L", new Vector3(-4, 0, 4), new Vector3(2, 0.5f, 2), envParent.transform);
         MakeFloor("Bridge_R", new Vector3(4, 0, 4), new Vector3(2, 0.5f, 2), envParent.transform);
         MakeFloor("Bridge_L2", new Vector3(-4, 0, 12), new Vector3(2, 0.5f, 2), envParent.transform);
         MakeFloor("Bridge_R2", new Vector3(4, 0, 12), new Vector3(2, 0.5f, 2), envParent.transform);
+        MakeFloor("Bridge_Final", new Vector3(0, 0, 19), new Vector3(2, 0.5f, 2), envParent.transform);
 
         var mechParent = CreateEmpty("--- MECHANICS ---", Vector3.zero);
 
+        // 3 Plates needed to open the final door
         var p1 = MakePlate("Plate_L", new Vector3(-8, 0.35f, 8), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
         var p2 = MakePlate("Plate_R", new Vector3(8, 0.35f, 8), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
-        var p3 = MakePlate("Plate_M", new Vector3(0, 0.35f, 0), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
+        var p3 = MakePlate("Plate_Center", new Vector3(0, 0.35f, 15), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
 
-        // Door 1 (Needs both sides pressed)
-        var df1 = CreateEmpty("DoorFrame_1", new Vector3(0, 0.25f, 13));
-        df1.transform.SetParent(mechParent.transform, true);
-        var d1 = MakeCube("Door_1", Vector3.zero, new Vector3(3, 2.8f, 0.3f), df1.transform, _matDoor);
+        var df = CreateEmpty("DoorFrame_Final", new Vector3(0, 0.25f, 18));
+        df.transform.SetParent(mechParent.transform, true);
+        var d1 = MakeCube("Door_Final", Vector3.zero, new Vector3(4, 8f, 0.3f), df.transform, _matDoor);
         var dc1 = d1.AddComponent<DoorController>();
-        dc1.plates = new PressurePlate[] { p1, p2 };
-        dc1.closedLocalPosition = Vector3.zero;
-        dc1.openLocalPosition = new Vector3(0, 8f, 0);
-        dc1.moveSpeed = 4f;
+        dc1.plates = new PressurePlate[] { p1, p2, p3 };
 
-        // Door 2 (Needs start plate pressed)
-        var df2 = CreateEmpty("DoorFrame_2", new Vector3(0, 0.25f, 14.5f));
-        df2.transform.SetParent(mechParent.transform, true);
-        var d2 = MakeCube("Door_2", Vector3.zero, new Vector3(3, 8f, 0.3f), df2.transform, _matDoor);
-        var dc2 = d2.AddComponent<DoorController>();
-        dc2.plates = new PressurePlate[] { p3 };
-        dc2.closedLocalPosition = Vector3.zero;
-        dc2.openLocalPosition = new Vector3(0, 8f, 0);
-        dc2.moveSpeed = 4f;
-
-        var exit = MakeCube("LevelExit", new Vector3(0, 0.5f, 18), new Vector3(2, 2, 0.3f), mechParent.transform, _matExit);
-        var exitComp = exit.AddComponent<LevelExit>();
-        exitComp.loadNextBuildIndex = true;
+        var exit = MakeCube("LevelExit", new Vector3(0, 0.5f, 24), new Vector3(2, 2, 0.3f), mechParent.transform, _matExit);
+        exit.AddComponent<LevelExit>().loadNextBuildIndex = false;
+        exit.GetComponent<LevelExit>().nextSceneName = "MainMenu";
         exit.GetComponent<BoxCollider>().isTrigger = true;
 
-        SpawnPlayer(new Vector3(0, 1.5f, -2), 3);
+        SpawnPlayer(new Vector3(0, 1.5f, -2), 3, 20f);
         SpawnCamera();
         SpawnHUD();
         SpawnPauseAndTutorial();
         SpawnLight();
         SpawnParticles();
-
+        SpawnDecorations(envParent.transform, 10, 0f, 25f);
         SaveScene(scene, "Level_06");
-        Debug.Log("[Echoes] Level 06 built.");
-    }
-
-    // ================================================================
-    //  LEVEL 07 — "Elevador Sincronizado"
-    // ================================================================
-    static void BuildLevel07()
-    {
-        var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-        scene.name = "Level_07";
-
-        var envParent = CreateEmpty("--- ENVIRONMENT ---", Vector3.zero);
-        MakeFloor("Floor_Start", new Vector3(0, 0, 0), new Vector3(6, 0.5f, 6), envParent.transform);
-        MakeFloor("Floor_End", new Vector3(0, 0, 24), new Vector3(6, 0.5f, 6), envParent.transform);
-
-        var mechParent = CreateEmpty("--- MECHANICS ---", Vector3.zero);
-
-        var p1 = MakePlate("Plate_1", new Vector3(-2, 0.35f, 0), new Vector3(1f, 0.1f, 1f), mechParent.transform);
-        var p2 = MakePlate("Plate_2", new Vector3(2, 0.35f, 0), new Vector3(1f, 0.1f, 1f), mechParent.transform);
-
-        // Platform 1 (Moves far)
-        var pf1 = CreateEmpty("PlatFrame_1", Vector3.zero);
-        pf1.transform.SetParent(mechParent.transform, true);
-        var plat1 = MakeCube("MovingPlatform_1", Vector3.zero, new Vector3(3, 0.5f, 3), pf1.transform, _matBridge);
-        plat1.layer = GROUND_LAYER;
-        var mp1 = plat1.AddComponent<TimedMovingPlatform>();
-        mp1.plate = p1;
-        mp1.inactiveLocal = new Vector3(0, 0, 5);
-        mp1.activeLocal = new Vector3(0, 0, 12);
-        mp1.travelSpeed = 5f;
-
-        // Platform 2 (Moves from far to end)
-        var pf2 = CreateEmpty("PlatFrame_2", Vector3.zero);
-        pf2.transform.SetParent(mechParent.transform, true);
-        var plat2 = MakeCube("MovingPlatform_2", Vector3.zero, new Vector3(3, 0.5f, 3), pf2.transform, _matBridge);
-        plat2.layer = GROUND_LAYER;
-        var mp2 = plat2.AddComponent<TimedMovingPlatform>();
-        mp2.plate = p2;
-        mp2.inactiveLocal = new Vector3(0, 0, 19);
-        mp2.activeLocal = new Vector3(0, 0, 12);
-        mp2.travelSpeed = 5f;
-
-        var exit = MakeCube("LevelExit", new Vector3(0, 0.5f, 26), new Vector3(2, 2, 0.3f), mechParent.transform, _matExit);
-        var exitComp = exit.AddComponent<LevelExit>();
-        exitComp.loadNextBuildIndex = true;
-
-        SpawnPlayer(new Vector3(0, 1.5f, -2), 3);
-        SpawnCamera();
-        SpawnHUD();
-        SpawnPauseAndTutorial();
-        SpawnLight();
-        SpawnParticles();
-
-        SaveScene(scene, "Level_07");
-        Debug.Log("[Echoes] Level 07 built.");
-    }
-
-    // ================================================================
-    //  LEVEL 08 — "La Carrera del Eco"
-    // ================================================================
-    static void BuildLevel08()
-    {
-        var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-        scene.name = "Level_08";
-
-        var envParent = CreateEmpty("--- ENVIRONMENT ---", Vector3.zero);
-        MakeFloor("Floor_Path", new Vector3(0, 0, 10), new Vector3(4, 0.5f, 22), envParent.transform);
-        
-        var mechParent = CreateEmpty("--- MECHANICS ---", Vector3.zero);
-
-        // Sequence of 3 doors and 3 plates
-        var p1 = MakePlate("Plate_1", new Vector3(0, 0.35f, 4), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
-        var d1GO = CreateEmpty("DoorFrame_1", new Vector3(0, 0.25f, 8));
-        d1GO.transform.SetParent(mechParent.transform, true);
-        var d1C = MakeCube("Door_1", Vector3.zero, new Vector3(3, 8f, 0.3f), d1GO.transform, _matDoor);
-        var dc1 = d1C.AddComponent<DoorController>();
-        dc1.plates = new PressurePlate[] { p1 };
-        dc1.closedLocalPosition = Vector3.zero;
-        dc1.openLocalPosition = new Vector3(0, 8f, 0);
-        dc1.moveSpeed = 6f;
-
-        var p2 = MakePlate("Plate_2", new Vector3(0, 0.35f, 12), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
-        var d2GO = CreateEmpty("DoorFrame_2", new Vector3(0, 0.25f, 16));
-        d2GO.transform.SetParent(mechParent.transform, true);
-        var d2C = MakeCube("Door_2", Vector3.zero, new Vector3(3, 8f, 0.3f), d2GO.transform, _matDoor);
-        var dc2 = d2C.AddComponent<DoorController>();
-        dc2.plates = new PressurePlate[] { p2 };
-        dc2.closedLocalPosition = Vector3.zero;
-        dc2.openLocalPosition = new Vector3(0, 8f, 0);
-        dc2.moveSpeed = 6f;
-
-        var p3 = MakePlate("Plate_3", new Vector3(0, 0.35f, 19), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
-        var d3GO = CreateEmpty("DoorFrame_3", new Vector3(0, 0.25f, 22));
-        d3GO.transform.SetParent(mechParent.transform, true);
-        var d3C = MakeCube("Door_3", Vector3.zero, new Vector3(3, 8f, 0.3f), d3GO.transform, _matDoor);
-        var dc3 = d3C.AddComponent<DoorController>();
-        dc3.plates = new PressurePlate[] { p3 };
-        dc3.closedLocalPosition = Vector3.zero;
-        dc3.openLocalPosition = new Vector3(0, 8f, 0);
-        dc3.moveSpeed = 6f;
-
-        var exit = MakeCube("LevelExit", new Vector3(0, 0.5f, 26), new Vector3(3, 2, 0.3f), mechParent.transform, _matExit);
-        var exitComp = exit.AddComponent<LevelExit>();
-        exitComp.loadNextBuildIndex = false;
-        exitComp.nextSceneName = "MainMenu";
-        exit.GetComponent<BoxCollider>().isTrigger = true;
-
-        SpawnPlayer(new Vector3(0, 1.5f, 0), 1, 15f); // 1 echo max, 15 seconds to run the whole track
-        SpawnCamera();
-        SpawnHUD();
-        SpawnPauseAndTutorial();
-        SpawnLight();
-        SpawnParticles();
-
-        SaveScene(scene, "Level_08");
-        Debug.Log("[Echoes] Level 08 built.");
     }
 
     // ================================================================
@@ -721,9 +721,7 @@ public static class EchoesLevelBuilder
             SCENE_ROOT + "/Level_03.unity",
             SCENE_ROOT + "/Level_04.unity",
             SCENE_ROOT + "/Level_05.unity",
-            SCENE_ROOT + "/Level_06.unity",
-            SCENE_ROOT + "/Level_07.unity",
-            SCENE_ROOT + "/Level_08.unity"
+            SCENE_ROOT + "/Level_06.unity"
         };
 
         var list = new System.Collections.Generic.List<EditorBuildSettingsScene>();
@@ -777,15 +775,46 @@ public static class EchoesLevelBuilder
         SetPrivateField(recorder, "maxEchoes", maxEchoes);
         SetPrivateField(recorder, "maxRecordSeconds", maxRecordSeconds);
 
-        // Visual child
-        var visual = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        visual.name = "PlayerVisual";
+        // Visual child (3D Model base)
+        var visual = new GameObject("PlayerVisual");
         visual.transform.SetParent(player.transform, false);
-        visual.transform.localPosition = new Vector3(0, 0.9f, 0);
-        visual.transform.localScale = new Vector3(0.6f, 1.8f, 0.6f);
-        Object.DestroyImmediate(visual.GetComponent<BoxCollider>());
-        if (_matPlayer != null)
-            visual.GetComponent<MeshRenderer>().sharedMaterial = _matPlayer;
+        visual.transform.localPosition = new Vector3(0, 0, 0); 
+        var baseModel = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3D Models/Character Base/characterBase.fbx");
+        if (baseModel != null)
+        {
+            var inst = PrefabUtility.InstantiatePrefab(baseModel) as GameObject;
+            inst.transform.SetParent(visual.transform, false);
+            // Raise to match CharacterController
+            inst.transform.localPosition = new Vector3(0, 0.9f, 0);
+            inst.transform.localRotation = Quaternion.Euler(0, 180, 0);
+
+            foreach (var r in inst.GetComponentsInChildren<Renderer>())
+            {
+                r.sharedMaterial = _matPlayer;
+            }
+
+            // Assign Animator and Avatar
+            var anim = inst.GetComponent<Animator>();
+            if (anim != null)
+            {
+                var controller = AssetDatabase.LoadAssetAtPath<UnityEditor.Animations.AnimatorController>(PREFAB_ROOT + "/PlayerAnimController.controller");
+                anim.runtimeAnimatorController = controller;
+
+                var avatar = AssetDatabase.LoadAssetAtPath<Avatar>("Assets/3D Models/Character Base/characterBase.fbx");
+                if (avatar != null) anim.avatar = avatar;
+            }
+        }
+        else
+        {
+            // Fallback cube
+            var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube.transform.SetParent(visual.transform, false);
+            cube.transform.localPosition = new Vector3(0, 0.9f, 0);
+            cube.transform.localScale = new Vector3(0.6f, 1.8f, 0.6f);
+            Object.DestroyImmediate(cube.GetComponent<BoxCollider>());
+            if (_matPlayer != null)
+                cube.GetComponent<MeshRenderer>().sharedMaterial = _matPlayer;
+        }
 
         // GroundCheck child
         var gc = new GameObject("GroundCheck");
@@ -798,7 +827,7 @@ public static class EchoesLevelBuilder
         var parent = CreateEmpty("--- CAMERA ---", Vector3.zero);
 
         // Find or create camera
-        Camera cam = Object.FindFirstObjectByType<Camera>();
+        Camera cam = Object.FindAnyObjectByType<Camera>();
         GameObject camGO;
         if (cam != null)
         {
@@ -998,19 +1027,35 @@ public static class EchoesLevelBuilder
         cube.layer = GROUND_LAYER;
     }
 
-    static PressurePlate MakePlate(string name, Vector3 pos, Vector3 scale, Transform parent)
-    {
-        var cube = MakeCube(name, pos, scale, parent, _matPlate, "Assets/3D Models/Models/FBX format/button-square.fbx");
-        cube.layer = GROUND_LAYER;
-        var pp = cube.AddComponent<PressurePlate>();
-        return pp;
-    }
+
 
     static GameObject CreateEmpty(string name, Vector3 pos)
     {
         var go = new GameObject(name);
         go.transform.position = pos;
         return go;
+    }
+
+    static void SpawnDecorations(Transform parent, int amount, float minZ, float maxZ)
+    {
+        var treePfb = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3D Models/Models/FBX format/tree-pine.fbx");
+        if (treePfb == null) return;
+
+        var decorParent = CreateEmpty("Decorations", Vector3.zero);
+        decorParent.transform.SetParent(parent, false);
+
+        for (int i = 0; i < amount; i++)
+        {
+            float sideX = Random.value > 0.5f ? Random.Range(3f, 8f) : Random.Range(-8f, -3f);
+            float z = Random.Range(minZ, maxZ);
+            
+            var tree = PrefabUtility.InstantiatePrefab(treePfb) as GameObject;
+            tree.transform.SetParent(decorParent.transform, false);
+            tree.transform.position = new Vector3(sideX, -0.5f, z);
+            float scale = Random.Range(0.8f, 1.5f);
+            tree.transform.localScale = new Vector3(scale, scale, scale);
+            tree.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
+        }
     }
 
     // ================================================================
