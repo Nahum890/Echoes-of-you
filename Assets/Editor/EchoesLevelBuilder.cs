@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 using System.IO;
 
 /// <summary>
@@ -19,11 +20,47 @@ public static class EchoesLevelBuilder
     // ─── material cache ─────────────────────────────────────
     static Material _matFloor, _matPlate, _matDoor, _matExit, _matBridge, _matPlayer, _matEcho;
 
+    class ModularRoomSpec
+    {
+        public string name;
+        public Vector3 center;
+        public Vector2 size;
+        public float ceilingHeight;
+        public float wallThickness;
+        public bool addCeiling;
+        public bool addSideWalls;
+
+        public ModularRoomSpec(string name, Vector3 center, Vector2 size, float ceilingHeight = 6f)
+        {
+            this.name = name;
+            this.center = center;
+            this.size = size;
+            this.ceilingHeight = ceilingHeight;
+            wallThickness = 0.5f;
+            addCeiling = false;
+            addSideWalls = false;
+        }
+    }
+
+    struct ModularCorridorSpec
+    {
+        public int fromRoomIndex;
+        public int toRoomIndex;
+        public float width;
+
+        public ModularCorridorSpec(int fromRoomIndex, int toRoomIndex, float width)
+        {
+            this.fromRoomIndex = fromRoomIndex;
+            this.toRoomIndex = toRoomIndex;
+            this.width = width;
+        }
+    }
+
     // ================================================================
     //  MENU: 0 — Create everything at once
     // ================================================================
-    [MenuItem("Echoes of You/Build All (Menu + 7 Levels)", false, 0)]
-    static void BuildAll()
+    [MenuItem("Echoes of You/3. Build All (Menu + 7 Levels)", false, 32)]
+    public static void BuildAllLevels()
     {
         if (!CheckNotPlaying()) return;
         EnsureFolders();
@@ -37,8 +74,9 @@ public static class EchoesLevelBuilder
         BuildLevel04();
         BuildLevel05();
         BuildLevel06();
+        BuildLevel07();
         AddScenesToBuild();
-        Debug.Log("[Echoes] ✔ Main menu, prefabs, materials, and 6 levels created successfully!");
+        Debug.Log("[Echoes] ✔ Main menu, prefabs, materials, and 7 levels created successfully!");
     }
 
     // ================================================================
@@ -59,7 +97,10 @@ public static class EchoesLevelBuilder
     [MenuItem("Echoes of You/5. Build Level 03", false, 42)]
     static void MenuL3() { if (!CheckNotPlaying()) return; EnsureFolders(); CreateMaterials(); BuildLevel03(); }
 
-    [MenuItem("Echoes of You/6. Add Scenes to Build Settings", false, 60)]
+    [MenuItem("Echoes of You/6. Build Level 07 Modular", false, 43)]
+    static void MenuL7() { if (!CheckNotPlaying()) return; EnsureFolders(); CreateMaterials(); BuildLevel07(); }
+
+    [MenuItem("Echoes of You/7. Add Scenes to Build Settings", false, 60)]
     static void MenuBuild() { if (!CheckNotPlaying()) return; AddScenesToBuild(); }
 
     [MenuItem("Echoes of You/FIX — Recreate All Materials", false, 80)]
@@ -90,6 +131,7 @@ public static class EchoesLevelBuilder
         BuildLevel04();
         BuildLevel05();
         BuildLevel06();
+        BuildLevel07();
         AddScenesToBuild();
         Debug.Log("[Echoes] ✔ Full rebuild complete!");
     }
@@ -226,10 +268,16 @@ public static class EchoesLevelBuilder
     static void CreateAnimatorController()
     {
         string path = PREFAB_ROOT + "/PlayerAnimController.controller";
-        if (File.Exists(path)) return;
+        if (File.Exists(path))
+        {
+            // Do not delete! The user will manually configure the Blend Trees in this controller.
+            return;
+        }
 
         var controller = UnityEditor.Animations.AnimatorController.CreateAnimatorControllerAtPath(path);
         controller.AddParameter("Speed", AnimatorControllerParameterType.Float);
+        controller.AddParameter("VelocityX", AnimatorControllerParameterType.Float);
+        controller.AddParameter("VelocityZ", AnimatorControllerParameterType.Float);
         controller.AddParameter("Grounded", AnimatorControllerParameterType.Bool);
         controller.AddParameter("Jump", AnimatorControllerParameterType.Trigger);
 
@@ -240,39 +288,46 @@ public static class EchoesLevelBuilder
         AnimationClip walkClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/3D Models/Animaciones/Locomotion/walking.fbx");
         AnimationClip runClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/3D Models/Animaciones/Locomotion/running.fbx");
         AnimationClip jumpClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/3D Models/Animaciones/Locomotion/jump.fbx");
+        AnimationClip leftStrafeWalkClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/3D Models/Animaciones/Locomotion/left strafe walking.fbx");
+        AnimationClip rightStrafeWalkClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/3D Models/Animaciones/Locomotion/right strafe walking.fbx");
+        AnimationClip leftStrafeClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/3D Models/Animaciones/Locomotion/left strafe.fbx");
+        AnimationClip rightStrafeClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/3D Models/Animaciones/Locomotion/right strafe.fbx");
 
         // Create States
-        var idleState = rootStateMachine.AddState("Idle");
-        idleState.motion = idleClip;
-
         var moveState = rootStateMachine.AddState("Move");
+        
         // Create BlendTree for movement
         var blendTree = new UnityEditor.Animations.BlendTree();
-        controller.AddParameter("SpeedTree", AnimatorControllerParameterType.Float);
-        blendTree.blendParameter = "Speed";
-        blendTree.AddChild(idleClip, 0f);
-        blendTree.AddChild(walkClip, 2f);
-        blendTree.AddChild(runClip, 6f);
+        blendTree.name = "Locomotion";
+        blendTree.blendType = UnityEditor.Animations.BlendTreeType.SimpleDirectional2D;
+        blendTree.blendParameter = "VelocityX";
+        blendTree.blendParameterY = "VelocityZ";
+        
+        blendTree.AddChild(idleClip, new Vector2(0f, 0f));
+        blendTree.AddChild(walkClip, new Vector2(0f, 2f));
+        blendTree.AddChild(runClip, new Vector2(0f, 6f));
+        blendTree.AddChild(leftStrafeWalkClip, new Vector2(-2f, 0f));
+        blendTree.AddChild(rightStrafeWalkClip, new Vector2(2f, 0f));
+        blendTree.AddChild(leftStrafeClip, new Vector2(-6f, 0f));
+        blendTree.AddChild(rightStrafeClip, new Vector2(6f, 0f));
+
         moveState.motion = blendTree;
+        rootStateMachine.defaultState = moveState;
 
         var jumpState = rootStateMachine.AddState("Jump");
         jumpState.motion = jumpClip;
-
-        // Idle <-> Move (using Speed > 0.1)
-        var idleToMove = idleState.AddTransition(moveState);
-        idleToMove.AddCondition(UnityEditor.Animations.AnimatorConditionMode.Greater, 0.1f, "Speed");
-        var moveToIdle = moveState.AddTransition(idleState);
-        moveToIdle.AddCondition(UnityEditor.Animations.AnimatorConditionMode.Less, 0.1f, "Speed");
 
         // AnyState -> Jump
         var anyToJump = rootStateMachine.AddAnyStateTransition(jumpState);
         anyToJump.AddCondition(UnityEditor.Animations.AnimatorConditionMode.If, 0, "Jump");
         
-        // Jump -> Idle
-        var jumpToIdle = jumpState.AddTransition(idleState);
-        jumpToIdle.hasExitTime = true;
-        jumpToIdle.exitTime = 0.8f;
-        jumpToIdle.AddCondition(UnityEditor.Animations.AnimatorConditionMode.If, 0, "Grounded");
+        // Jump -> Move
+        var jumpToMove = jumpState.AddTransition(moveState);
+        jumpToMove.hasExitTime = true;
+        jumpToMove.exitTime = 0.8f;
+        jumpToMove.AddCondition(UnityEditor.Animations.AnimatorConditionMode.If, 0, "Grounded");
+
+        AssetDatabase.AddObjectToAsset(blendTree, controller);
 
         Debug.Log("[Echoes] Created AnimatorController.");
     }
@@ -370,45 +425,17 @@ public static class EchoesLevelBuilder
         root.AddComponent<EchoPlayback>();
 
         // Visual child
-        var visual = new GameObject("Visual");
+        var visual = new GameObject("PlayerVisual");
         visual.transform.SetParent(root.transform, false);
         visual.transform.localPosition = Vector3.zero;
-        var baseModel = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3D Models/Character Base/characterBase.fbx");
-        if (baseModel != null)
-        {
-            var inst = PrefabUtility.InstantiatePrefab(baseModel) as GameObject;
-            inst.transform.SetParent(visual.transform, false);
-            // Kenney's character pivot is often at the center, raising it to match CharacterController bottom
-            inst.transform.localPosition = new Vector3(0, 0.9f, 0);
-            
-            // Fix rotations if necessary (some models face backward)
-            inst.transform.localRotation = Quaternion.Euler(0, 180, 0);
 
-            foreach (var r in inst.GetComponentsInChildren<Renderer>())
-            {
-                r.sharedMaterial = _matEcho;
-            }
-
-            // Assign Animator and Avatar
-            var anim = inst.GetComponent<Animator>();
-            if (anim != null)
-            {
-                var controller = AssetDatabase.LoadAssetAtPath<UnityEditor.Animations.AnimatorController>(PREFAB_ROOT + "/PlayerAnimController.controller");
-                anim.runtimeAnimatorController = controller;
-                
-                var avatar = AssetDatabase.LoadAssetAtPath<Avatar>("Assets/3D Models/Character Base/characterBase.fbx");
-                if (avatar != null) anim.avatar = avatar;
-            }
-        }
-        else
-        {
-            var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube.transform.SetParent(visual.transform, false);
-            cube.transform.localPosition = new Vector3(0, 0.9f, 0);
-            cube.transform.localScale = new Vector3(0.6f, 1.8f, 0.6f);
-            Object.DestroyImmediate(cube.GetComponent<Collider>());
-            cube.GetComponent<MeshRenderer>().sharedMaterial = _matEcho;
-        }
+        var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.name = "EchoVisual";
+        cube.transform.SetParent(visual.transform, false);
+        cube.transform.localPosition = new Vector3(0, 0.9f, 0);
+        cube.transform.localScale = new Vector3(0.6f, 1.8f, 0.6f);
+        Object.DestroyImmediate(cube.GetComponent<Collider>());
+        cube.GetComponent<MeshRenderer>().sharedMaterial = _matEcho;
 
         GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, path);
         Object.DestroyImmediate(root);
@@ -709,6 +736,85 @@ public static class EchoesLevelBuilder
     }
 
     // ================================================================
+    //  LEVEL 07 - Modular Gravity Trials
+    // ================================================================
+    static void BuildLevel07()
+    {
+        var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+        scene.name = "Level_07";
+
+        var envParent = CreateEmpty("--- ENVIRONMENT ---", Vector3.zero);
+        var mechParent = CreateEmpty("--- MECHANICS ---", Vector3.zero);
+
+        var rooms = new List<ModularRoomSpec>
+        {
+            new ModularRoomSpec("Room_StartHub", new Vector3(0f, 0f, 0f), new Vector2(12f, 12f), 6f) { addCeiling = true },
+            new ModularRoomSpec("Room_EchoGallery", new Vector3(0f, 0f, 18f), new Vector2(12f, 10f), 6f),
+            new ModularRoomSpec("Room_GravityAtrium", new Vector3(18f, 0f, 18f), new Vector2(14f, 14f), 8f) { addCeiling = true },
+            new ModularRoomSpec("Room_ArchiveWing", new Vector3(-16f, 0f, 18f), new Vector2(10f, 10f), 6f),
+            new ModularRoomSpec("Room_ExitSanctum", new Vector3(18f, 0f, 38f), new Vector2(12f, 10f), 6f)
+        };
+
+        foreach (ModularRoomSpec room in rooms)
+            BuildModularRoom(room, envParent.transform);
+
+        var corridors = new List<ModularCorridorSpec>
+        {
+            new ModularCorridorSpec(0, 1, 4f),
+            new ModularCorridorSpec(1, 2, 4f),
+            new ModularCorridorSpec(1, 3, 4f),
+            new ModularCorridorSpec(2, 4, 4f)
+        };
+
+        foreach (ModularCorridorSpec corridor in corridors)
+            ConnectRooms(rooms[corridor.fromRoomIndex], rooms[corridor.toRoomIndex], corridor.width, envParent.transform);
+
+        var wallWalk = MakeCube("GravityWall_Walkable", new Vector3(24f, 3f, 18f), new Vector3(0.5f, 6f, 10f), envParent.transform, _matBridge);
+        wallWalk.layer = GROUND_LAYER;
+        wallWalk.isStatic = true;
+
+        var ceilingWalk = MakeCube("GravityCeiling_Walkable", new Vector3(18f, 6f, 26f), new Vector3(10f, 0.5f, 8f), envParent.transform, _matBridge);
+        ceilingWalk.layer = GROUND_LAYER;
+        ceilingWalk.isStatic = true;
+
+        MakeGravityZone("GravityZone_Wall", new Vector3(19f, 3f, 18f), new Vector3(14f, 8f, 14f), Vector3.right, mechParent.transform, 24f, 10);
+        MakeGravityZone("GravityZone_Ceiling", new Vector3(18f, 4.5f, 27f), new Vector3(12f, 5f, 12f), Vector3.up, mechParent.transform, 24f, 11);
+
+        var p1 = MakePlate("Plate_EchoGallery", new Vector3(0f, 0.35f, 18f), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
+        var p2 = MakePlate("Plate_ArchiveWing", new Vector3(-16f, 0.35f, 18f), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
+        var p3 = MakePlate("Plate_GravityAtrium", new Vector3(18f, 0.35f, 23f), new Vector3(1.5f, 0.1f, 1.5f), mechParent.transform);
+
+        var doorFrame = CreateEmpty("DoorFrame_ModularFinal", new Vector3(18f, 0.25f, 33f));
+        doorFrame.transform.SetParent(mechParent.transform, true);
+        var finalDoor = MakeCube("Door_ModularFinal", Vector3.zero, new Vector3(4f, 8f, 0.3f), doorFrame.transform, _matDoor);
+        var doorController = finalDoor.AddComponent<DoorController>();
+        doorController.plates = new[] { p1, p2, p3 };
+
+        var exit = MakeCube("LevelExit", new Vector3(18f, 0.5f, 42f), new Vector3(2f, 2f, 0.3f), mechParent.transform, _matExit);
+        exit.GetComponent<BoxCollider>().isTrigger = true;
+        exit.AddComponent<LevelExit>().loadNextBuildIndex = false;
+        exit.GetComponent<LevelExit>().nextSceneName = "MainMenu";
+
+        SpawnTutorialTrigger(
+            "Tutorial_Gravity",
+            new Vector3(18f, 1.5f, 14f),
+            new Vector3(6f, 3f, 6f),
+            "Las zonas azules cambian tu gravedad.",
+            "Usa la pared y el techo para avanzar con el mismo control suave.",
+            5f,
+            mechParent.transform);
+
+        SpawnPlayer(new Vector3(0f, 1.5f, -4f), 4, 20f);
+        SpawnCamera();
+        SpawnHUD();
+        SpawnPauseAndTutorial();
+        SpawnLight();
+        SpawnParticles();
+        SpawnDecorations(envParent.transform, 14, -2f, 46f);
+        SaveScene(scene, "Level_07");
+    }
+
+    // ================================================================
     //  BUILD SETTINGS
     // ================================================================
     static void AddScenesToBuild()
@@ -721,10 +827,11 @@ public static class EchoesLevelBuilder
             SCENE_ROOT + "/Level_03.unity",
             SCENE_ROOT + "/Level_04.unity",
             SCENE_ROOT + "/Level_05.unity",
-            SCENE_ROOT + "/Level_06.unity"
+            SCENE_ROOT + "/Level_06.unity",
+            SCENE_ROOT + "/Level_07.unity"
         };
 
-        var list = new System.Collections.Generic.List<EditorBuildSettingsScene>();
+        var list = new List<EditorBuildSettingsScene>();
 
         foreach (string sp in scenePaths)
         {
@@ -767,7 +874,13 @@ public static class EchoesLevelBuilder
         cc.center = new Vector3(0, 0.9f, 0);
         cc.skinWidth = 0.08f;
 
-        player.AddComponent<PlayerController>();
+        var playerController = player.AddComponent<PlayerController>();
+        playerController.gravityStrength = 24f;
+        playerController.alignToGroundNormal = true;
+        playerController.rotationSharpness = 12f;
+        playerController.acceleration = 14f;
+        playerController.deceleration = 18f;
+        playerController.groundMask = -1; // Detect all layers to fix jump issue
 
         var recorder = player.AddComponent<EchoRecorder>();
         GameObject echoPrefab = GetEchoPrefab();
@@ -775,51 +888,28 @@ public static class EchoesLevelBuilder
         SetPrivateField(recorder, "maxEchoes", maxEchoes);
         SetPrivateField(recorder, "maxRecordSeconds", maxRecordSeconds);
 
-        // Visual child (3D Model base)
+        // Visual child
         var visual = new GameObject("PlayerVisual");
         visual.transform.SetParent(player.transform, false);
-        visual.transform.localPosition = new Vector3(0, 0, 0); 
-        var baseModel = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3D Models/Character Base/characterBase.fbx");
-        if (baseModel != null)
-        {
-            var inst = PrefabUtility.InstantiatePrefab(baseModel) as GameObject;
-            inst.transform.SetParent(visual.transform, false);
-            // Raise to match CharacterController
-            inst.transform.localPosition = new Vector3(0, 0.9f, 0);
-            inst.transform.localRotation = Quaternion.Euler(0, 180, 0);
+        visual.transform.localPosition = Vector3.zero;
 
-            foreach (var r in inst.GetComponentsInChildren<Renderer>())
-            {
-                r.sharedMaterial = _matPlayer;
-            }
-
-            // Assign Animator and Avatar
-            var anim = inst.GetComponent<Animator>();
-            if (anim != null)
-            {
-                var controller = AssetDatabase.LoadAssetAtPath<UnityEditor.Animations.AnimatorController>(PREFAB_ROOT + "/PlayerAnimController.controller");
-                anim.runtimeAnimatorController = controller;
-
-                var avatar = AssetDatabase.LoadAssetAtPath<Avatar>("Assets/3D Models/Character Base/characterBase.fbx");
-                if (avatar != null) anim.avatar = avatar;
-            }
-        }
-        else
-        {
-            // Fallback cube
-            var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube.transform.SetParent(visual.transform, false);
-            cube.transform.localPosition = new Vector3(0, 0.9f, 0);
-            cube.transform.localScale = new Vector3(0.6f, 1.8f, 0.6f);
-            Object.DestroyImmediate(cube.GetComponent<BoxCollider>());
-            if (_matPlayer != null)
-                cube.GetComponent<MeshRenderer>().sharedMaterial = _matPlayer;
-        }
+        var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.name = "PlayerVisualCube";
+        cube.transform.SetParent(visual.transform, false);
+        cube.transform.localPosition = new Vector3(0, 0.9f, 0);
+        cube.transform.localScale = new Vector3(0.6f, 1.8f, 0.6f);
+        Object.DestroyImmediate(cube.GetComponent<BoxCollider>());
+        if (_matPlayer != null)
+            cube.GetComponent<MeshRenderer>().sharedMaterial = _matPlayer;
 
         // GroundCheck child
         var gc = new GameObject("GroundCheck");
         gc.transform.SetParent(player.transform, false);
-        gc.transform.localPosition = new Vector3(0, 0.1f, 0);
+        gc.transform.localPosition = new Vector3(0, -0.78f, 0);
+
+        var focus = new GameObject("CameraFocus");
+        focus.transform.SetParent(player.transform, false);
+        focus.transform.localPosition = new Vector3(0f, 1.45f, 0.15f);
     }
 
     static void SpawnCamera()
@@ -852,11 +942,28 @@ public static class EchoesLevelBuilder
         // ThirdPersonCamera
         var tpc = camGO.GetComponent<ThirdPersonCamera>();
         if (tpc == null) tpc = camGO.AddComponent<ThirdPersonCamera>();
+        tpc.distance = 5f;
+        tpc.focusOffset = Vector3.zero;
+
+        if (camGO.GetComponent<CameraShake>() == null)
+            camGO.AddComponent<CameraShake>();
+
+        if (camGO.GetComponent<GameFeelController>() == null)
+            camGO.AddComponent<GameFeelController>();
 
         // Find the Player object to assign as target
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
-            tpc.target = player.transform;
+        {
+            Transform focus = player.transform.Find("CameraFocus");
+            Transform target = focus != null ? focus : player.transform;
+            tpc.target = target;
+
+            var worldUp = new GameObject("CameraWorldUp");
+            worldUp.transform.SetParent(parent.transform, false);
+            var upOverride = worldUp.AddComponent<CameraWorldUpOverride>();
+            upOverride.Target = target;
+        }
     }
 
     static void SpawnHUD()
@@ -1025,6 +1132,88 @@ public static class EchoesLevelBuilder
         var cube = MakeCube(name, pos, scale, parent, _matFloor, "Assets/3D Models/Models/FBX format/block-grass.fbx");
         cube.isStatic = true;
         cube.layer = GROUND_LAYER;
+    }
+
+    static void BuildModularRoom(ModularRoomSpec room, Transform parent)
+    {
+        var roomRoot = CreateEmpty(room.name, room.center);
+        roomRoot.transform.SetParent(parent, true);
+
+        MakeFloor(room.name + "_Floor", room.center, new Vector3(room.size.x, 0.5f, room.size.y), roomRoot.transform.parent);
+
+        if (room.addSideWalls)
+        {
+            float halfX = room.size.x * 0.5f;
+            float halfZ = room.size.y * 0.5f;
+            float wallHeight = room.ceilingHeight;
+            float thickness = room.wallThickness;
+
+            var north = MakeCube(room.name + "_NorthWall", new Vector3(room.center.x, wallHeight * 0.5f, room.center.z + halfZ), new Vector3(room.size.x, wallHeight, thickness), parent, _matBridge);
+            var south = MakeCube(room.name + "_SouthWall", new Vector3(room.center.x, wallHeight * 0.5f, room.center.z - halfZ), new Vector3(room.size.x, wallHeight, thickness), parent, _matBridge);
+            var east = MakeCube(room.name + "_EastWall", new Vector3(room.center.x + halfX, wallHeight * 0.5f, room.center.z), new Vector3(thickness, wallHeight, room.size.y), parent, _matBridge);
+            var west = MakeCube(room.name + "_WestWall", new Vector3(room.center.x - halfX, wallHeight * 0.5f, room.center.z), new Vector3(thickness, wallHeight, room.size.y), parent, _matBridge);
+
+            north.isStatic = south.isStatic = east.isStatic = west.isStatic = true;
+            north.layer = south.layer = east.layer = west.layer = GROUND_LAYER;
+        }
+
+        if (room.addCeiling)
+        {
+            var ceiling = MakeCube(room.name + "_Ceiling", new Vector3(room.center.x, room.ceilingHeight, room.center.z), new Vector3(room.size.x, 0.5f, room.size.y), parent, _matBridge);
+            ceiling.isStatic = true;
+            ceiling.layer = GROUND_LAYER;
+        }
+    }
+
+    static void ConnectRooms(ModularRoomSpec from, ModularRoomSpec to, float width, Transform parent)
+    {
+        Vector3 delta = to.center - from.center;
+        float floorThickness = 0.5f;
+
+        if (Mathf.Abs(delta.x) > 0.01f && Mathf.Abs(delta.z) > 0.01f)
+        {
+            Debug.LogWarning($"[Echoes] Corridor '{from.name}' -> '{to.name}' is diagonal. Keep room centers aligned on X or Z.");
+            return;
+        }
+
+        if (Mathf.Abs(delta.x) > 0.01f)
+        {
+            float direction = Mathf.Sign(delta.x);
+            float start = from.center.x + direction * (from.size.x * 0.5f);
+            float end = to.center.x - direction * (to.size.x * 0.5f);
+            float length = Mathf.Abs(end - start);
+            if (length <= 0.1f) return;
+
+            float centerX = (start + end) * 0.5f;
+            MakeFloor($"{from.name}_To_{to.name}_Corridor", new Vector3(centerX, 0f, from.center.z), new Vector3(length, floorThickness, width), parent);
+            return;
+        }
+
+        float directionZ = Mathf.Sign(delta.z);
+        float startZ = from.center.z + directionZ * (from.size.y * 0.5f);
+        float endZ = to.center.z - directionZ * (to.size.y * 0.5f);
+        float corridorLength = Mathf.Abs(endZ - startZ);
+        if (corridorLength <= 0.1f) return;
+
+        float centerZ = (startZ + endZ) * 0.5f;
+        MakeFloor($"{from.name}_To_{to.name}_Corridor", new Vector3(from.center.x, 0f, centerZ), new Vector3(width, floorThickness, corridorLength), parent);
+    }
+
+    static GravityZone MakeGravityZone(string name, Vector3 pos, Vector3 size, Vector3 gravityDirection, Transform parent, float gravityStrength, int priority)
+    {
+        var go = new GameObject(name);
+        go.transform.SetParent(parent, false);
+        go.transform.position = pos;
+
+        var col = go.AddComponent<BoxCollider>();
+        col.isTrigger = true;
+        col.size = size;
+
+        var zone = go.AddComponent<GravityZone>();
+        SetPrivateField(zone, "gravityDirection", gravityDirection);
+        SetPrivateField(zone, "gravityStrength", gravityStrength);
+        SetPrivateField(zone, "priority", priority);
+        return zone;
     }
 
 
