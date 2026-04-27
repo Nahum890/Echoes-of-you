@@ -1,14 +1,19 @@
+using System;
 using UnityEngine;
 
 /// <summary>
-/// Múltiples placas requeridas: cuando todas están presionadas, la puerta desaparece.
+/// When all linked plates are pressed, the door opens and emits a one-shot
+/// puzzle solved feedback event. If plates are released again, the door closes.
 /// </summary>
-public class DoorController : MonoBehaviour
+public class DoorController : MonoBehaviour, IResettableLevelObject
 {
     public PressurePlate[] plates;
 
     Collider _col;
     Renderer[] _renderers;
+    bool _isOpen;
+
+    public event Action<bool> DoorStateChanged;
 
     void Start()
     {
@@ -17,54 +22,83 @@ public class DoorController : MonoBehaviour
 
         if (plates != null)
         {
-            foreach (var p in plates)
+            foreach (PressurePlate plate in plates)
             {
-                if (p != null) p.PressedChanged += OnPlateChanged;
+                if (plate != null)
+                    plate.PressedChanged += OnPlateChanged;
             }
         }
+
         UpdateState();
     }
 
     void OnDestroy()
     {
-        if (plates != null)
+        if (plates == null)
+            return;
+
+        foreach (PressurePlate plate in plates)
         {
-            foreach (var p in plates)
-            {
-                if (p != null) p.PressedChanged -= OnPlateChanged;
-            }
+            if (plate != null)
+                plate.PressedChanged -= OnPlateChanged;
         }
     }
 
-    void OnPlateChanged(bool obj)
+    void OnPlateChanged(bool _)
     {
         UpdateState();
     }
 
     void UpdateState()
     {
-        bool allPressed = true;
-        if (plates == null || plates.Length == 0) allPressed = false;
+        bool shouldOpen = true;
+        if (plates == null || plates.Length == 0)
+        {
+            shouldOpen = false;
+        }
         else
         {
-            foreach (var p in plates)
+            foreach (PressurePlate plate in plates)
             {
-                if (p != null && !p.IsPressed)
+                if (plate != null && !plate.IsPressed)
                 {
-                    allPressed = false;
+                    shouldOpen = false;
                     break;
                 }
             }
         }
 
-        // Si se abre (todas presionadas), desaparece
-        if (_col != null) _col.enabled = !allPressed;
-        if (_renderers != null)
+        if (_isOpen != shouldOpen)
         {
-            foreach (var r in _renderers)
+            _isOpen = shouldOpen;
+            DoorStateChanged?.Invoke(_isOpen);
+
+            GameFeelController.Instance?.PlayDoorMove(transform.position);
+
+            if (_isOpen)
             {
-                if (r != null) r.enabled = !allPressed;
+                GameFeelController.Instance?.PlayPuzzleSolved(transform.position);
+                if (TutorialHUD.Instance != null)
+                    TutorialHUD.Instance.ShowMessage("Puerta abierta", "", 1.5f);
             }
         }
+
+        if (_col != null)
+            _col.enabled = !_isOpen;
+
+        if (_renderers == null)
+            return;
+
+        foreach (Renderer renderer in _renderers)
+        {
+            if (renderer != null)
+                renderer.enabled = !_isOpen;
+        }
+    }
+
+    public void ResetLevelState()
+    {
+        _isOpen = false;
+        UpdateState();
     }
 }

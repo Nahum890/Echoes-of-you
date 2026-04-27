@@ -1,0 +1,30 @@
+--Guide--
+If you want to use the character rig.
+      V
+      V
+--Object Mode--
+If you're in object mode, click "rig" then go in to pose mode (top left where it says Object Mode). 
+
+--Edit Mode--
+Same for edit mode. Go to Object Mode (top left again where it says Edit Mode), then click "rig" then go in to pose mode. (top left AGAIN)
+
+--Pose Mode--
+You should automatically be in Pose Mode but check the others if not.
+
+--Controlling--
+The colored handles do different things. The yellow box moves the upper-body, the red handles on the hands move the hands. To move these parts, select them then press G. If you want to rotate them, press R. Some handles do nothing but I would advise you not to mess around with them because it could cause something. Same with name-changing. I don't know if changing names does anything long-term because I'm too lazy to test out if using every single modifier after re-naming the knee to cheese does anything bad. Just try it out for yourself, and if something unexpected happens after re-naming but doesn't when you don't, please notify me so I can warn others before they all start rioting in my house because they can't add decimate.
+
+--Extra Info--
+Here's a helpful video link if you're stuck: https://www.youtube.com/watch?v=DS885Sk1gSs. Begin watching at 13:05 for the tutorial.
+
+Triangles-528
+Edges-722       <-- I don't know why you would need this but have it anyway.
+Vertices-266 
+
+--Credit--
+TyronicGames
+
+You don't have to credit but it would be appreciated ☜(ﾟヮﾟ☜)
+
+--Rules--
+Do whatever you want with it.

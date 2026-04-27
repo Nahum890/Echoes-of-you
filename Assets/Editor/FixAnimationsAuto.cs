@@ -6,10 +6,17 @@ public class FixAnimationsAuto
 {
     static FixAnimationsAuto()
     {
-        if (EditorPrefs.GetBool("AnimationsFixed", false)) return;
+        // Quitamos la condición de EditorPrefs temporalmente para forzar que se arregle el nuevo modelo
+        // if (EditorPrefs.GetBool("AnimationsFixed", false)) return;
+        RunFix();
+    }
 
+    [MenuItem("Echoes/Force Fix Character and Animations")]
+    public static void RunFix()
+    {
         string[] paths = new string[] {
             "Assets/3D Models/Character Base/characterBase.fbx",
+            "Assets/3D Models/lowpoly-character-freerigged-/source/LowPolyCharacterModel/FBX/LowPolyCharacter.fbx",
             "Assets/3D Models/Animaciones/Locomotion/idle.fbx",
             "Assets/3D Models/Animaciones/Locomotion/walking.fbx",
             "Assets/3D Models/Animaciones/Locomotion/running.fbx",

@@ -2,16 +2,17 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// Menú de pausa. ESC para abrir/cerrar. Pausa el juego con TimeScale = 0.
+/// Menú de pausa limpio para gameplay.
 /// </summary>
 public class PauseMenu : MonoBehaviour
 {
-    [Header("Diseño")]
-    [SerializeField] Color overlayColor = new Color(0.04f, 0.04f, 0.08f, 0.85f);
-    [SerializeField] Color accentColor = new Color(0.35f, 0.85f, 1f, 1f);
-    [SerializeField] Color buttonHoverColor = new Color(0.35f, 0.85f, 1f, 0.25f);
+    [Header("Palette")]
+    [SerializeField] Color overlayColor = new Color(0.02f, 0.05f, 0.08f, 0.88f);
+    [SerializeField] Color accentColor = new Color(0.16f, 0.85f, 1f, 1f);
+    [SerializeField] Color hoverColor = new Color(0.16f, 0.85f, 1f, 0.2f);
 
-    [Header("Escena del menú principal")]
+    [Header("Scenes")]
+    [SerializeField] string hubSceneName = "Level_07";
     [SerializeField] string mainMenuScene = "MainMenu";
 
     bool _paused;
@@ -20,9 +21,6 @@ public class PauseMenu : MonoBehaviour
     GUIStyle _buttonStyle;
     GUIStyle _buttonHoverStyle;
     GUIStyle _hintStyle;
-    bool _stylesReady;
-
-    public bool IsPaused => _paused;
 
     void Awake()
     {
@@ -56,23 +54,24 @@ public class PauseMenu : MonoBehaviour
         Cursor.visible = false;
     }
 
-    void InitStyles()
+    void InitStylesIfNeeded()
     {
-        if (_stylesReady) return;
-        _stylesReady = true;
+        if (_titleStyle != null)
+            return;
 
         _titleStyle = new GUIStyle(GUI.skin.label)
         {
-            fontSize = 42,
+            fontSize = 40,
             alignment = TextAnchor.MiddleCenter,
             fontStyle = FontStyle.Bold,
-            normal = { textColor = accentColor }
+            normal = { textColor = Color.white }
         };
 
         _buttonStyle = new GUIStyle(GUI.skin.label)
         {
-            fontSize = 24,
+            fontSize = 22,
             alignment = TextAnchor.MiddleCenter,
+            fontStyle = FontStyle.Bold,
             normal = { textColor = Color.white }
         };
 
@@ -85,70 +84,58 @@ public class PauseMenu : MonoBehaviour
         {
             fontSize = 14,
             alignment = TextAnchor.MiddleCenter,
-            fontStyle = FontStyle.Italic,
-            normal = { textColor = new Color(0.5f, 0.5f, 0.6f, 1f) }
+            normal = { textColor = new Color(0.72f, 0.78f, 0.84f, 1f) }
         };
     }
 
     void OnDestroy()
     {
-        if (_pixel != null) Destroy(_pixel);
-        // Restore timeScale when destroyed
+        if (_pixel != null)
+            Destroy(_pixel);
+
         Time.timeScale = 1f;
     }
 
     void OnGUI()
     {
-        if (!_paused || _pixel == null) return;
-        InitStyles();
+        if (!_paused || _pixel == null)
+            return;
 
-        // Overlay oscuro
+        InitStylesIfNeeded();
+
         DrawRect(new Rect(0, 0, Screen.width, Screen.height), overlayColor);
 
-        float cx = Screen.width * 0.5f;
-        float cy = Screen.height * 0.5f;
+        float centerX = Screen.width * 0.5f;
+        float centerY = Screen.height * 0.5f;
+        GUI.Label(new Rect(0, centerY - 160f, Screen.width, 48f), "PAUSA", _titleStyle);
+        DrawRect(new Rect(centerX - 90f, centerY - 96f, 180f, 2f), new Color(accentColor.r, accentColor.g, accentColor.b, 0.45f));
 
-        // Título
-        GUI.Label(new Rect(0, cy - 160, Screen.width, 60), "PAUSA", _titleStyle);
+        float width = 280f;
+        float height = 46f;
+        float x = centerX - width * 0.5f;
 
-        // Línea decorativa
-        float lineW = 160f;
-        DrawRect(new Rect(cx - lineW * 0.5f, cy - 90, lineW, 2),
-                 new Color(accentColor.r, accentColor.g, accentColor.b, 0.4f));
-
-        // Botones
-        float btnW = 260f;
-        float btnH = 48f;
-        float btnX = cx - btnW * 0.5f;
-
-        if (DrawButton(new Rect(btnX, cy - 50, btnW, btnH), "CONTINUAR"))
+        if (DrawButton(new Rect(x, centerY - 44f, width, height), "CONTINUAR"))
             Resume();
 
-        if (DrawButton(new Rect(btnX, cy + 10, btnW, btnH), "REINICIAR NIVEL"))
+        if (DrawButton(new Rect(x, centerY + 10f, width, height), "REINICIAR NIVEL"))
         {
             Resume();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
-        if (DrawButton(new Rect(btnX, cy + 70, btnW, btnH), "MENÚ PRINCIPAL"))
+        if (DrawButton(new Rect(x, centerY + 64f, width, height), "VOLVER AL HUB"))
+        {
+            Resume();
+            SceneManager.LoadScene(hubSceneName);
+        }
+
+        if (DrawButton(new Rect(x, centerY + 118f, width, height), "MENU PRINCIPAL"))
         {
             Resume();
             SceneManager.LoadScene(mainMenuScene);
         }
 
-        if (DrawButton(new Rect(btnX, cy + 130, btnW, btnH), "SALIR"))
-        {
-#if UNITY_EDITOR
-            Resume();
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-            Application.Quit();
-#endif
-        }
-
-        // Hint
-        GUI.Label(new Rect(0, cy + 200, Screen.width, 25),
-                  "Presiona ESC para continuar", _hintStyle);
+        GUI.Label(new Rect(0, centerY + 186f, Screen.width, 22f), "ESC para continuar", _hintStyle);
     }
 
     bool DrawButton(Rect rect, string text)
@@ -156,11 +143,13 @@ public class PauseMenu : MonoBehaviour
         Vector2 mouse = Event.current.mousePosition;
         bool hover = rect.Contains(mouse);
 
+        DrawRect(rect, new Color(0.02f, 0.05f, 0.08f, hover ? 0.88f : 0.76f));
         if (hover)
-            DrawRect(rect, buttonHoverColor);
+            DrawRect(rect, hoverColor);
 
+        DrawRect(new Rect(rect.x, rect.y, rect.width, 2f), new Color(accentColor.r, accentColor.g, accentColor.b, hover ? 0.65f : 0.18f));
         GUI.Label(rect, text, hover ? _buttonHoverStyle : _buttonStyle);
-        return hover && Event.current.type == EventType.MouseDown && Event.current.button == 0;
+        return GUI.Button(rect, GUIContent.none, GUIStyle.none);
     }
 
     void DrawRect(Rect rect, Color color)

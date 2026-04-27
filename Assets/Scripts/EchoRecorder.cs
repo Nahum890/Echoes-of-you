@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Grabación por mantener R: hasta 10 s o al soltar. Genera un eco que repite el bucle.
+/// Grabación por mantener R: hasta 6 s o al soltar. Genera un eco que repite el bucle.
+/// Q limpia todos los ecos.
 /// </summary>
 [RequireComponent(typeof(PlayerController))]
 public class EchoRecorder : MonoBehaviour
@@ -10,8 +12,8 @@ public class EchoRecorder : MonoBehaviour
     [Header("Prefab y límites")]
     [SerializeField] GameObject echoPrefab;
     [SerializeField] Transform echoSpawnRoot;
-    [SerializeField] int maxEchoes = 3;
-    [SerializeField] float maxRecordSeconds = 10f;
+    [SerializeField] int maxEchoes = 2;
+    [SerializeField] float maxRecordSeconds = 6f;
     [SerializeField] float minRecordSeconds = 0.35f;
 
     [Header("HUD (opcional)")]
@@ -20,6 +22,7 @@ public class EchoRecorder : MonoBehaviour
     readonly List<RecordFrame> _frames = new List<RecordFrame>();
     readonly List<EchoPlayback> _echoes = new List<EchoPlayback>();
 
+    Animator _anim;
     bool _recording;
     float _recordStartTime;
     float _lastRecordDuration;
@@ -30,6 +33,16 @@ public class EchoRecorder : MonoBehaviour
     public float MaxRecordSeconds => maxRecordSeconds;
     public float RecordingElapsed => _recording ? Mathf.Min(Time.time - _recordStartTime, maxRecordSeconds) : 0f;
     public float LastClipDuration => _lastRecordDuration;
+    public bool HasEchoes => _echoes.Count > 0;
+
+    /// <summary>Fired when an echo is created. Arg = current echo count.</summary>
+    public event Action<int> EchoCreated;
+    /// <summary>Fired when all echoes are cleared.</summary>
+    public event Action EchoesCleared;
+    /// <summary>Fired when recording starts.</summary>
+    public event Action RecordingStarted;
+    /// <summary>Fired when recording stops (even if too short).</summary>
+    public event Action<bool> RecordingStopped;
 
     void Awake()
     {
@@ -37,6 +50,7 @@ public class EchoRecorder : MonoBehaviour
             hud = UnityEngine.Object.FindAnyObjectByType<GameHUD>();
         if (echoSpawnRoot == null)
             echoSpawnRoot = transform;
+        _anim = GetComponentInChildren<Animator>();
     }
 
     void OnEnable()
@@ -46,7 +60,7 @@ public class EchoRecorder : MonoBehaviour
 
     void Update()
     {
-        bool hold = Input.GetKey(KeyCode.R);
+        bool hold = Input.GetKey(KeyCode.E);
 
         if (hold && !_recording)
             StartRecording();
@@ -56,6 +70,9 @@ public class EchoRecorder : MonoBehaviour
 
         if (_recording && Time.time - _recordStartTime >= maxRecordSeconds)
             StopRecordingAndSpawn();
+
+        if (_anim != null && _anim.runtimeAnimatorController != null)
+            _anim.SetBool("IsRecording", _recording);
 
         RefreshHud();
     }
@@ -80,6 +97,12 @@ public class EchoRecorder : MonoBehaviour
         _recording = true;
         _recordStartTime = Time.time;
         _frames.Clear();
+        if (_anim == null) _anim = GetComponentInChildren<Animator>();
+        if (_anim != null && _anim.runtimeAnimatorController != null) _anim.SetBool("IsRecording", true);
+        RecordingStarted?.Invoke();
+        hud?.SetPrompt("Suelta R para crear un eco", 1.6f);
+        GameFeelController.Instance?.PlayRecordStart(transform.position, transform.up);
+        RefreshHud();
     }
 
     void StopRecordingAndSpawn()
@@ -91,9 +114,15 @@ public class EchoRecorder : MonoBehaviour
         float elapsed = Time.time - _recordStartTime;
         _lastRecordDuration = elapsed;
 
+        GameFeelController.Instance?.PlayRecordStop(transform.position);
+
         if (elapsed < minRecordSeconds || _frames.Count < 2)
         {
             _frames.Clear();
+            RecordingStopped?.Invoke(false);
+            hud?.ShowToast("Grabacion muy corta", new Color(1f, 0.43f, 0.43f, 1f), 1.1f);
+            hud?.SetEchoState("Error");
+            GameFeelController.Instance?.PlaySoftError(transform.position);
             RefreshHud();
             return;
         }
@@ -102,6 +131,7 @@ public class EchoRecorder : MonoBehaviour
         {
             Debug.LogError("EchoRecorder: asigna echoPrefab.");
             _frames.Clear();
+            hud?.ShowToast("Falta el prefab del eco", new Color(1f, 0.43f, 0.43f, 1f), 1.2f);
             return;
         }
 
@@ -117,6 +147,12 @@ public class EchoRecorder : MonoBehaviour
         _echoes.Add(playback);
 
         _frames.Clear();
+
+        RecordingStopped?.Invoke(true);
+        EchoCreated?.Invoke(_echoes.Count);
+        hud?.ShowToast("Eco creado", new Color(0.48f, 0.94f, 0.78f, 1f), 1.25f);
+        GameFeelController.Instance?.PlayEchoSpawn(instance.transform.position);
+
         RefreshHud();
     }
 
@@ -131,8 +167,12 @@ public class EchoRecorder : MonoBehaviour
         }
     }
 
-    public void ClearAllEchoes()
+    public void ClearAllEchoes(bool showFeedback = true)
     {
+        _recording = false;
+        _frames.Clear();
+        _lastRecordDuration = 0f;
+
         for (int i = 0; i < _echoes.Count; i++)
         {
             if (_echoes[i] != null)
@@ -140,6 +180,9 @@ public class EchoRecorder : MonoBehaviour
         }
 
         _echoes.Clear();
+        EchoesCleared?.Invoke();
+        if (showFeedback)
+            hud?.ShowToast("Ecos limpiados", new Color(0.48f, 0.94f, 0.78f, 1f), 1f);
         RefreshHud();
     }
 
@@ -150,5 +193,6 @@ public class EchoRecorder : MonoBehaviour
 
         hud.SetEchoCount(_echoes.Count, maxEchoes);
         hud.SetRecording(_recording, _recording ? RecordingElapsed / Mathf.Max(0.01f, maxRecordSeconds) : 0f);
+        hud.SetEchoState(_recording ? "Grabando" : (_echoes.Count > 0 ? "Reproduciendo" : "Listo"));
     }
 }
