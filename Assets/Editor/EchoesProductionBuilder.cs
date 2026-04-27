@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Cinemachine;
 
 public static class EchoesProductionBuilder
 {
@@ -46,7 +47,8 @@ public static class EchoesProductionBuilder
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
-        Debug.Log("[Echoes Production] Scenes rebuilt.");
+        Debug.Log("[Echoes Production] Scenes rebuilt. Running validation...");
+        LevelValidator.ValidateAllLevels();
     }
 
     static void BuildMainMenu()
@@ -145,30 +147,38 @@ public static class EchoesProductionBuilder
         Transform ui = CreateRoot("--- UI ---");
         Transform tutorial = CreateRoot("--- TUTORIAL ---");
 
-        SetupAtmosphere(new Color(0.11f, 0.17f, 0.22f, 1f), 0.022f, new Color(0.12f, 0.16f, 0.2f, 1f));
+        SetupAtmosphere(new Color(0.05f, 0.05f, 0.08f, 1f), 0.05f, new Color(0.05f, 0.05f, 0.08f, 1f));
         SpawnDirectionalLight();
-        MakeBackdrop("Backdrop", new Vector3(0f, 0f, 16f), 18f, 42f, 10f, env);
+        MakeBackdrop("Backdrop", new Vector3(0f, 0f, 10f), 24f, 36f, 12f, env);
 
-        MakePlatform("Platform_Start", new Vector3(0f, 0f, 0f), new Vector3(8f, 0.5f, 8f), env, _floorMat);
-        MakePlatform("Walk_A", new Vector3(0f, 0f, 6f), new Vector3(3f, 0.5f, 4f), env, _floorMat);
-        MakePlatform("Platform_Plate", new Vector3(0f, 0f, 11f), new Vector3(6f, 0.5f, 6f), env, _floorMat);
-        MakePlatform("Walk_B", new Vector3(0f, 0f, 16f), new Vector3(3f, 0.5f, 4f), env, _floorMat);
-        MakePlatform("Platform_Gate", new Vector3(0f, 0f, 22f), new Vector3(6f, 0.5f, 4f), env, _floorMat);
-        MakePlatform("Platform_Exit", new Vector3(0f, 0f, 31f), new Vector3(8f, 0.5f, 8f), env, _floorMat);
+        // Layout asimétrico: plataforma principal + escalón lateral
+        MakePlatform("Floor_Main", new Vector3(0f, 0f, 14f), new Vector3(14f, 0.5f, 34f), env, _floorMat);
+        MakePlatform("Step_Right", new Vector3(5f, 0.5f, 10f), new Vector3(4f, 0.5f, 4f), env, _floorMat);
 
-        PressurePlate plate = CreatePlate("PressurePlate_A", new Vector3(0f, 0.36f, 11f), mech);
-        CreateDoor("MemoryGate_A", new Vector3(0f, 1.75f, 19f), new Vector3(4f, 3.5f, 0.5f), mech, new[] { plate });
-        CreateLevelExit(new Vector3(0f, 1.25f, 34f), mech, "Level_07");
-        SpawnPointLight("GoalLight", new Vector3(0f, 3.2f, 31f), new Color(1f, 0.83f, 0.42f, 1f), 4f, 10f, env);
+        // 2 botones a alturas distintas — el eco debe moverse entre ambos
+        PressurePlate btn1 = CreatePlate("Button_1", new Vector3(-4f, 0.36f, 8f), mech);
+        PressurePlate btn2 = CreatePlate("Button_2", new Vector3(5f, 0.86f, 10f), mech);
 
-        GameObject player = SpawnPlayer(new Vector3(0f, 1.1f, 0f), true, 2, 6f);
+        CreateDoor("Door", new Vector3(0f, 1.75f, 21.5f), new Vector3(4f, 3.5f, 1f), mech, new[] { btn1, btn2 });
+        CreateLevelExit(new Vector3(0f, 1.25f, 28f), mech, "Level_02");
+
+        GameObject player = SpawnPlayer(new Vector3(0f, 1.1f, 0f), true, 1, 8f);
         SpawnGameplayCamera(player.transform);
+
+        // Ruta del eco: botón1 → botón2
+        SpawnEchoPathHint(mech, new Vector3[] {
+            new Vector3(-4f, 0.5f, 8f),
+            new Vector3(0f, 0.5f, 9f),
+            new Vector3(5f, 1f, 10f)
+        });
+
+        SpawnPuzzleIntent(mech, 2, 3, true, false, false, 6f, "Tutorial: eco recorre dos botones");
+
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnLevelRuntime(mech, "Deja un eco sosteniendo la placa.", "Cada decision deja una forma de ti.", "Primero recuerdas.");
+        SpawnLevelRuntime(mech, "Graba tu eco caminando entre los dos botones.", "La puerta requiere ambos botones activos.", "Primero recuerdas.");
 
-        CreateTutorialTrigger("Hint_Move", new Vector3(0f, 1.2f, 1f), new Vector3(4f, 3f, 4f), "WASD para moverte", "La salida ya esta delante.", 3.2f, tutorial);
-        CreateTutorialTrigger("Hint_Record", new Vector3(0f, 1.2f, 10.5f), new Vector3(4f, 3f, 4f), "Mantén R sobre la placa", "Suelta para dejar un eco.", 3.5f, tutorial);
+        CreateTutorialTrigger("Hint_1", new Vector3(0f, 1.2f, 4f), new Vector3(6f, 3f, 4f), "Presiona E para grabar", "Camina pisando ambos botones y suelta E.", 4f, tutorial);
 
         SaveScene(scene, "Level_01");
     }
@@ -183,29 +193,39 @@ public static class EchoesProductionBuilder
         Transform ui = CreateRoot("--- UI ---");
         Transform tutorial = CreateRoot("--- TUTORIAL ---");
 
-        SetupAtmosphere(new Color(0.11f, 0.17f, 0.22f, 1f), 0.024f, new Color(0.12f, 0.16f, 0.2f, 1f));
+        SetupAtmosphere(new Color(0.12f, 0.08f, 0.16f, 1f), 0.04f, new Color(0.12f, 0.08f, 0.16f, 1f));
         SpawnDirectionalLight();
-        MakeBackdrop("Backdrop", new Vector3(0f, 0f, 12f), 24f, 34f, 10f, env);
+        MakeBackdrop("Backdrop", new Vector3(0f, 0f, 4f), 28f, 28f, 12f, env);
 
-        MakePlatform("Platform_Start", new Vector3(0f, 0f, 0f), new Vector3(10f, 0.5f, 8f), env, _floorMat);
-        MakePlatform("Walk_Left", new Vector3(-3.5f, 0f, 5.5f), new Vector3(2f, 0.5f, 5f), env, _floorMat);
-        MakePlatform("Platform_Plate", new Vector3(-6f, 0f, 11f), new Vector3(5f, 0.5f, 5f), env, _floorMat);
-        MakePlatform("Platform_Mid", new Vector3(0f, 0f, 13.5f), new Vector3(6f, 0.5f, 4f), env, _floorMat);
-        MakePlatform("Platform_End", new Vector3(0f, 0f, 21f), new Vector3(10f, 0.5f, 8f), env, _floorMat);
+        // Asimetría: destino elevado, plataforma lateral
+        MakePlatform("Start_Plat", new Vector3(0f, 0f, -4f), new Vector3(10f, 0.5f, 8f), env, _floorMat);
+        MakePlatform("End_Plat", new Vector3(2f, 0.5f, 12f), new Vector3(10f, 0.5f, 8f), env, _floorMat);
+        MakePlatform("Side_Ledge", new Vector3(-5f, 0.3f, 2f), new Vector3(3f, 0.3f, 3f), env, _floorMat);
 
-        PressurePlate plate = CreatePlate("PressurePlate_B", new Vector3(-6f, 0.36f, 11f), mech);
-        CreateBridge("Bridge_B", new Vector3(0f, 0f, 9.5f), new Vector3(0f, -4f, 0f), Vector3.zero, new Vector3(3f, 0.5f, 11f), plate, mech);
-        CreateDoor("MemoryGate_B", new Vector3(0f, 1.75f, 16.5f), new Vector3(3f, 3.5f, 0.5f), mech, new[] { plate });
-        CreateLevelExit(new Vector3(0f, 1.25f, 24f), mech, "Level_07");
-        SpawnPointLight("GoalLight", new Vector3(0f, 3.2f, 21f), new Color(1f, 0.83f, 0.42f, 1f), 4f, 10f, env);
+        // 2 botones: uno extiende el puente, otro lo estabiliza
+        PressurePlate btn1 = CreatePlate("Button_Extend", new Vector3(-3f, 0.36f, -4f), mech);
+        PressurePlate btn2 = CreatePlate("Button_Stabilize", new Vector3(-5f, 0.46f, 2f), mech);
 
-        GameObject player = SpawnPlayer(new Vector3(0f, 1.1f, 0f), true, 2, 6f);
+        CreateBridge("Bridge", new Vector3(0f, 0f, 4f), new Vector3(0f, -4f, 0f), Vector3.zero, new Vector3(4f, 0.5f, 8f), btn1, mech);
+        CreateDoor("Bridge_Gate", new Vector3(2f, 1.75f, 9f), new Vector3(3f, 3.5f, 0.5f), mech, new[] { btn2 });
+
+        CreateLevelExit(new Vector3(2f, 1.75f, 14f), mech, "Level_03");
+
+        GameObject player = SpawnPlayer(new Vector3(0f, 1.1f, -6f), true, 1, 6f);
         SpawnGameplayCamera(player.transform);
+
+        SpawnEchoPathHint(mech, new Vector3[] {
+            new Vector3(-3f, 0.5f, -4f),
+            new Vector3(-5f, 0.5f, 2f)
+        });
+
+        SpawnPuzzleIntent(mech, 2, 3, true, true, false, 8f, "Eco mantiene puente + gate");
+
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnLevelRuntime(mech, "Usa un eco para sostener el puente.", "Aprender de tus acciones te permite avanzar.", "Luego pruebas.");
+        SpawnLevelRuntime(mech, "Graba tu eco en los dos botones.", "Graba tu accion para crear el puente.", "Luego pruebas.");
 
-        CreateTutorialTrigger("Hint_Bridge", new Vector3(-5.8f, 1.2f, 10.8f), new Vector3(4f, 3f, 4f), "La placa eleva el puente", "Deja tu eco aqui y vuelve al centro.", 3.5f, tutorial);
+        CreateTutorialTrigger("Hint_Bridge", new Vector3(0f, 1.2f, -2f), new Vector3(6f, 3f, 4f), "El puente y la puerta necesitan botones", "Graba tu eco caminando por ambos.", 5f, tutorial);
 
         SaveScene(scene, "Level_02");
     }
@@ -220,32 +240,47 @@ public static class EchoesProductionBuilder
         Transform ui = CreateRoot("--- UI ---");
         Transform tutorial = CreateRoot("--- TUTORIAL ---");
 
-        SetupAtmosphere(new Color(0.11f, 0.17f, 0.22f, 1f), 0.026f, new Color(0.12f, 0.16f, 0.2f, 1f));
+        SetupAtmosphere(new Color(0.05f, 0.05f, 0.08f, 1f), 0.05f, new Color(0.05f, 0.05f, 0.08f, 1f));
         SpawnDirectionalLight();
-        MakeBackdrop("Backdrop", new Vector3(0f, 0f, 10f), 30f, 30f, 10f, env);
+        MakeBackdrop("Backdrop", new Vector3(0f, 0f, 10f), 24f, 36f, 12f, env);
 
-        MakePlatform("Platform_Start", new Vector3(0f, 0f, 0f), new Vector3(8f, 0.5f, 8f), env, _floorMat);
-        MakePlatform("Walk_Left", new Vector3(-4f, 0f, 4.5f), new Vector3(2f, 0.5f, 5f), env, _floorMat);
-        MakePlatform("Platform_Left", new Vector3(-8f, 0f, 9f), new Vector3(5f, 0.5f, 5f), env, _floorMat);
-        MakePlatform("Walk_Right", new Vector3(4f, 0f, 4.5f), new Vector3(2f, 0.5f, 5f), env, _floorMat);
-        MakePlatform("Platform_Right", new Vector3(8f, 0f, 9f), new Vector3(5f, 0.5f, 5f), env, _floorMat);
-        MakePlatform("Walk_Forward", new Vector3(0f, 0f, 9f), new Vector3(3f, 0.5f, 6f), env, _floorMat);
-        MakePlatform("Platform_Exit", new Vector3(0f, 0f, 18f), new Vector3(10f, 0.5f, 8f), env, _floorMat);
-        MakePlatform("Platform_Final", new Vector3(0f, 0f, 25f), new Vector3(8f, 0.5f, 6f), env, _floorMat);
+        MakePlatform("Floor_Main", new Vector3(0f, 0f, 10f), new Vector3(20f, 0.5f, 30f), env, _floorMat);
 
-        PressurePlate leftPlate = CreatePlate("PressurePlate_Left", new Vector3(-8f, 0.36f, 9f), mech);
-        PressurePlate rightPlate = CreatePlate("PressurePlate_Right", new Vector3(8f, 0.36f, 9f), mech);
-        CreateDoor("MemoryGate_C", new Vector3(0f, 1.75f, 13f), new Vector3(4f, 3.5f, 0.5f), mech, new[] { leftPlate, rightPlate });
-        CreateBridge("Bridge_C", new Vector3(0f, 0f, 21f), new Vector3(0f, -3.5f, 0f), Vector3.zero, new Vector3(3f, 0.5f, 6f), leftPlate, mech);
-        CreateLevelExit(new Vector3(0f, 1.25f, 27.5f), mech, "Level_07");
+        // Divisor rotado para romper simetría
+        MakePlatform("Wall_Divider", new Vector3(0.5f, 1f, 10f), new Vector3(1f, 2f, 28f), env, _bridgeMat);
+        GameObject divider = GameObject.Find("Wall_Divider");
+        if (divider != null) divider.transform.rotation = Quaternion.Euler(0f, 8f, 0f);
 
-        GameObject player = SpawnPlayer(new Vector3(0f, 1.1f, 0f), true, 2, 6f);
+        // Escalón elevado para segundo botón
+        MakePlatform("Elevated_Ledge", new Vector3(-6f, 0.6f, 14f), new Vector3(3f, 0.6f, 3f), env, _floorMat);
+        MakePlatform("Start_Pad", new Vector3(-5f, 0.51f, -2f), new Vector3(2f, 0.1f, 2f), env, _goalMat);
+        MakePlatform("End_Pad", new Vector3(6f, 0.51f, 22f), new Vector3(3f, 0.1f, 3f), env, _goalMat);
+
+        // Botón 1 al nivel del suelo, botón 2 elevado — eco debe subir
+        PressurePlate btn1 = CreatePlate("Button_1", new Vector3(-5f, 0.36f, 5f), mech);
+        PressurePlate btn2 = CreatePlate("Button_2", new Vector3(-6f, 0.96f, 14f), mech);
+
+        CreateDoor("Door_1", new Vector3(5f, 1.75f, 8f), new Vector3(4f, 3.5f, 1f), mech, new[] { btn1 });
+        CreateDoor("Door_2", new Vector3(6f, 1.75f, 18f), new Vector3(4f, 3.5f, 1f), mech, new[] { btn2 });
+
+        CreateLevelExit(new Vector3(6f, 1.25f, 24f), mech, "Level_04");
+
+        GameObject player = SpawnPlayer(new Vector3(-5f, 1.1f, -2f), true, 2, 8f);
         SpawnGameplayCamera(player.transform);
+
+        SpawnEchoPathHint(mech, new Vector3[] {
+            new Vector3(-5f, 0.5f, -2f),
+            new Vector3(-5f, 0.5f, 5f),
+            new Vector3(-6f, 1f, 14f)
+        });
+
+        SpawnPuzzleIntent(mech, 2, 4, true, true, true, 12f, "Multi-step: eco recorre dos botones secuenciales");
+
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnLevelRuntime(mech, "Sostén ambas placas con tus ecos.", "Tus decisiones pueden sostenerse entre si.", "Dos decisiones se sostienen.");
+        SpawnLevelRuntime(mech, "Sincroniza tus pasos con tu eco.", "El tiempo y el espacio se dividen.", "Avanza.");
 
-        CreateTutorialTrigger("Hint_FirstEcho", new Vector3(-6f, 1.2f, 6f), new Vector3(4f, 3f, 4f), "Primero deja un eco en una placa", "Luego repite en la opuesta.", 3.2f, tutorial);
+        CreateTutorialTrigger("Hint_Sync1", new Vector3(-5f, 1.2f, 0f), new Vector3(4f, 3f, 4f), "Graba pulsando ambos botones en secuencia", "Luego corre por el lado derecho", 4f, tutorial);
 
         SaveScene(scene, "Level_03");
     }
@@ -260,33 +295,48 @@ public static class EchoesProductionBuilder
         Transform ui = CreateRoot("--- UI ---");
         Transform tutorial = CreateRoot("--- TUTORIAL ---");
 
-        SetupAtmosphere(new Color(0.11f, 0.17f, 0.22f, 1f), 0.028f, new Color(0.12f, 0.16f, 0.2f, 1f));
+        SetupAtmosphere(new Color(0.12f, 0.08f, 0.16f, 1f), 0.04f, new Color(0.12f, 0.08f, 0.16f, 1f));
         SpawnDirectionalLight();
-        MakeBackdrop("Backdrop", new Vector3(0f, 0f, 12f), 30f, 38f, 10f, env);
+        MakeBackdrop("Backdrop", new Vector3(0f, 0f, 4f), 28f, 28f, 12f, env);
 
-        MakePlatform("Platform_Start", new Vector3(0f, 0f, 0f), new Vector3(10f, 0.5f, 8f), env, _floorMat);
-        MakePlatform("Walk_Left", new Vector3(-4f, 0f, 5f), new Vector3(2f, 0.5f, 4f), env, _floorMat);
-        MakePlatform("Platform_A", new Vector3(-8f, 0f, 10f), new Vector3(6f, 0.5f, 6f), env, _floorMat);
-        MakePlatform("Walk_A_Forward", new Vector3(-6f, 0f, 15f), new Vector3(2f, 0.5f, 4f), env, _floorMat);
-        MakePlatform("Platform_B", new Vector3(0f, 0f, 22f), new Vector3(10f, 0.5f, 8f), env, _floorMat);
-        MakePlatform("Walk_Right", new Vector3(4f, 0f, 5.5f), new Vector3(2f, 0.5f, 5f), env, _floorMat);
-        MakePlatform("Platform_Exit", new Vector3(8f, 0f, 12f), new Vector3(6f, 0.5f, 8f), env, _floorMat);
-        MakePlatform("Link_Final", new Vector3(4f, 0f, 16f), new Vector3(2f, 0.5f, 4f), env, _floorMat);
+        MakePlatform("Floor_Base", new Vector3(0f, 0f, 0f), new Vector3(20f, 0.5f, 20f), env, _floorMat);
+        MakePlatform("Ramp", new Vector3(8f, 2.5f, 0f), new Vector3(4f, 0.5f, 9.5f), env, _bridgeMat);
+        GameObject ramp = GameObject.Find("Ramp");
+        if (ramp != null) ramp.transform.rotation = Quaternion.Euler(-25f, 0f, 0f);
 
-        PressurePlate plateA = CreatePlate("PressurePlate_A", new Vector3(-8f, 0.36f, 10f), mech);
-        PressurePlate plateB = CreatePlate("PressurePlate_B", new Vector3(0f, 0.36f, 22f), mech);
-        CreateDoor("MemoryGate_A", new Vector3(-4f, 1.75f, 17f), new Vector3(4f, 3.5f, 0.5f), mech, new[] { plateA });
-        CreateDoor("MemoryGate_B", new Vector3(5.5f, 1.75f, 8f), new Vector3(0.5f, 3.5f, 4f), mech, new[] { plateB });
-        CreateBridge("Bridge_D", new Vector3(4f, 0f, 16f), new Vector3(0f, -3.5f, 0f), Vector3.zero, new Vector3(2f, 0.5f, 4f), plateA, mech);
-        CreateLevelExit(new Vector3(8f, 1.25f, 15f), mech, "Level_07");
+        MakePlatform("Upper_Platform", new Vector3(8f, 4.5f, 6f), new Vector3(4f, 1f, 4f), env, _floorMat);
+        MakePlatform("High_Goal_Platform", new Vector3(-4f, 4.5f, 6f), new Vector3(4f, 1f, 4f), env, _floorMat);
+        // Plataforma lateral a altura intermedia para tercer botón
+        MakePlatform("Side_Platform", new Vector3(-8f, 2f, -2f), new Vector3(4f, 0.5f, 4f), env, _floorMat);
 
-        GameObject player = SpawnPlayer(new Vector3(0f, 1.1f, 0f), true, 2, 6f);
+        // 3 botones: suelo, pared alta, plataforma lateral
+        PressurePlate floorBtn = CreatePlate("Floor_Button", new Vector3(0f, 0.36f, -4f), mech);
+        PressurePlate wallBtn = CreatePlate("Wall_Button", new Vector3(9.8f, 5.5f, 6f), mech);
+        wallBtn.transform.rotation = Quaternion.Euler(0f, 0f, 90f);
+        PressurePlate sideBtn = CreatePlate("Side_Button", new Vector3(-8f, 2.36f, -2f), mech);
+
+        CreateBridge("Elevator", new Vector3(0f, 4.5f, 6f), Vector3.zero, new Vector3(0f, -4f, 0f), new Vector3(4f, 1f, 4f), floorBtn, mech);
+        CreateDoor("Laser_Barrier", new Vector3(-4f, 5.5f, 4.1f), new Vector3(4f, 2f, 0.2f), mech, new[] { wallBtn, sideBtn });
+
+        CreateLevelExit(new Vector3(-4f, 5.25f, 6f), mech, "Level_05");
+
+        GameObject player = SpawnPlayer(new Vector3(0f, 1.1f, -8f), true, 2, 8f);
         SpawnGameplayCamera(player.transform);
+
+        SpawnEchoPathHint(mech, new Vector3[] {
+            new Vector3(0f, 0.5f, -4f),
+            new Vector3(-8f, 2.2f, -2f),
+            new Vector3(8f, 4.5f, 6f),
+            new Vector3(9.8f, 5.5f, 6f)
+        });
+
+        SpawnPuzzleIntent(mech, 3, 5, true, true, true, 15f, "Eco sube rampa + activa pared + lateral");
+
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnLevelRuntime(mech, "Graba la ruta larga y usa la corta.", "Tus decisiones no valen solo por lo que hacen, sino por cuando llegan.", "El orden cambia el camino.");
+        SpawnLevelRuntime(mech, "Usa el eco para controlar elevador, barrera y plataforma lateral.", "Los estados persisten.", "Sube.");
 
-        CreateTutorialTrigger("Hint_Order", new Vector3(1f, 1.2f, 2f), new Vector3(5f, 3f, 4f), "La salida corta depende de otra accion lejana", "No sigas al eco: aprovechalo.", 3.6f, tutorial);
+        CreateTutorialTrigger("Hint_Elevator", new Vector3(0f, 1.2f, -6f), new Vector3(4f, 3f, 4f), "El elevador baja al pisar", "Graba tu eco recorriendo los tres botones", 5f, tutorial);
 
         SaveScene(scene, "Level_04");
     }
@@ -301,32 +351,40 @@ public static class EchoesProductionBuilder
         Transform ui = CreateRoot("--- UI ---");
         Transform tutorial = CreateRoot("--- TUTORIAL ---");
 
-        SetupAtmosphere(new Color(0.11f, 0.17f, 0.22f, 1f), 0.03f, new Color(0.12f, 0.16f, 0.2f, 1f));
+        SetupAtmosphere(new Color(0f, 0f, 0f, 1f), 0.08f, new Color(0f, 0f, 0f, 1f));
         SpawnDirectionalLight();
-        MakeBackdrop("Backdrop", new Vector3(0f, 0f, 14f), 30f, 42f, 10f, env);
+        MakeBackdrop("Backdrop", new Vector3(4f, -4f, 0f), 40f, 40f, 20f, env);
 
-        MakePlatform("Platform_Start", new Vector3(0f, 0f, 0f), new Vector3(10f, 0.5f, 8f), env, _floorMat);
-        MakePlatform("Walk_Left", new Vector3(-4f, 0f, 5f), new Vector3(2f, 0.5f, 4f), env, _floorMat);
-        MakePlatform("Platform_A", new Vector3(-8f, 0f, 10f), new Vector3(6f, 0.5f, 6f), env, _floorMat);
-        MakePlatform("Platform_B", new Vector3(0f, 0f, 18f), new Vector3(8f, 0.5f, 8f), env, _floorMat);
-        MakePlatform("Walk_Exit", new Vector3(4f, 0f, 22f), new Vector3(2f, 0.5f, 4f), env, _floorMat);
-        MakePlatform("Platform_Exit", new Vector3(8f, 0f, 26f), new Vector3(8f, 0.5f, 8f), env, _floorMat);
-        MakePlatform("Platform_Top", new Vector3(0f, 0f, 27f), new Vector3(4f, 0.5f, 4f), env, _floorMat);
+        // Layout angular: islas no alineadas en Z, alturas variadas
+        MakePlatform("Start_Zone", new Vector3(-2f, 0f, -12f), new Vector3(10f, 1f, 6f), env, _floorMat);
+        MakePlatform("Goal_Zone", new Vector3(3f, 0.8f, 12f), new Vector3(8f, 1f, 6f), env, _floorMat);
+        MakePlatform("Control_Zone", new Vector3(10f, 0.4f, -2f), new Vector3(6f, 1f, 6f), env, _floorMat);
+        MakePlatform("Relay_Ledge", new Vector3(-6f, 0.2f, 4f), new Vector3(3f, 0.5f, 3f), env, _floorMat);
 
-        PressurePlate plateA = CreatePlate("PressurePlate_A", new Vector3(-8f, 0.36f, 10f), mech);
-        PressurePlate plateB = CreatePlate("PressurePlate_B", new Vector3(0f, 0.36f, 18f), mech);
-        CreateBridge("Bridge_C", new Vector3(0f, 0f, 9f), new Vector3(0f, -4f, 0f), Vector3.zero, new Vector3(3f, 0.5f, 12f), plateA, mech);
-        CreateDoor("MemoryGate_D", new Vector3(5.5f, 1.75f, 22f), new Vector3(0.5f, 3.5f, 4f), mech, new[] { plateB });
-        CreateBridge("Bridge_E", new Vector3(4f, 0f, 26f), new Vector3(0f, -3.5f, 0f), new Vector3(0f, 0f, 0f), new Vector3(4f, 0.5f, 2f), plateB, mech);
-        CreateLevelExit(new Vector3(0f, 1.25f, 29f), mech, "Level_07");
+        PressurePlate btnOrange = CreatePlate("Button_Orange", new Vector3(-2f, 0.56f, -13f), mech);
+        PressurePlate btnMagenta = CreatePlate("Button_Magenta", new Vector3(10f, 0.96f, -2f), mech);
 
-        GameObject player = SpawnPlayer(new Vector3(0f, 1.1f, 0f), true, 2, 6f);
+        CreateBridge("Plat_A", new Vector3(0f, -0.5f, -6f), Vector3.zero, new Vector3(0f, 0f, 4f), new Vector3(4f, 1f, 4f), btnOrange, mech);
+        CreateBridge("Plat_B", new Vector3(2f, -0.5f, 6f), Vector3.zero, new Vector3(0f, 0f, -4f), new Vector3(4f, 1f, 4f), btnMagenta, mech);
+
+        CreateLevelExit(new Vector3(3f, 2.05f, 13f), mech, "Level_06");
+
+        GameObject player = SpawnPlayer(new Vector3(-2f, 1.1f, -14f), true, 2, 8f);
         SpawnGameplayCamera(player.transform);
+
+        SpawnEchoPathHint(mech, new Vector3[] {
+            new Vector3(-2f, 0.6f, -13f),
+            new Vector3(-6f, 0.5f, 4f),
+            new Vector3(10f, 1f, -2f)
+        });
+
+        SpawnPuzzleIntent(mech, 2, 4, true, true, true, 10f, "Eco salta al vacío y controla dos puentes");
+
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnLevelRuntime(mech, "Usa un eco para grabar el siguiente.", "Aprender de tus acciones tambien es encadenarlas.", "La precision revela el patron.");
+        SpawnLevelRuntime(mech, "Confia en el vacio.", "Salto de Fe.", "El gran salto.");
 
-        CreateTutorialTrigger("Hint_Chain", new Vector3(-4f, 1.2f, 7f), new Vector3(5f, 3f, 4f), "Primero sostiene el puente", "Despues deja el segundo eco en la placa central.", 3.8f, tutorial);
+        CreateTutorialTrigger("Hint_Leap", new Vector3(-2f, 1.2f, -10f), new Vector3(8f, 3f, 4f), "Llega a la isla de control con el eco", "Luego salta al vacio mientras el puente se forma", 5f, tutorial);
 
         SaveScene(scene, "Level_05");
     }
@@ -345,18 +403,19 @@ public static class EchoesProductionBuilder
         SpawnDirectionalLight();
         MakeBackdrop("Backdrop", Vector3.zero, 34f, 40f, 12f, env);
 
+        // Alturas variadas para romper monotonía
         MakePlatform("Platform_Start", new Vector3(0f, 0f, -14f), new Vector3(10f, 0.5f, 8f), env, _floorMat);
-        MakePlatform("Walk_Left", new Vector3(-4f, 0f, -10f), new Vector3(2f, 0.5f, 4f), env, _floorMat);
-        MakePlatform("Platform_A", new Vector3(-8f, 0f, -6f), new Vector3(6f, 0.5f, 6f), env, _floorMat);
-        MakePlatform("Walk_Upper", new Vector3(-4f, 0f, 2f), new Vector3(2f, 0.5f, 4f), env, _floorMat);
-        MakePlatform("Platform_B", new Vector3(-4f, 0f, 12f), new Vector3(6f, 0.5f, 6f), env, _floorMat);
-        MakePlatform("Platform_Right", new Vector3(8f, 0f, -2f), new Vector3(6f, 0.5f, 6f), env, _floorMat);
+        MakePlatform("Walk_Left", new Vector3(-4f, 0.3f, -10f), new Vector3(2f, 0.5f, 4f), env, _floorMat);
+        MakePlatform("Platform_A", new Vector3(-8f, 0.8f, -6f), new Vector3(6f, 0.5f, 6f), env, _floorMat);
+        MakePlatform("Walk_Upper", new Vector3(-4f, 0.5f, 2f), new Vector3(2f, 0.5f, 4f), env, _floorMat);
+        MakePlatform("Platform_B", new Vector3(-5f, 1.2f, 12f), new Vector3(6f, 0.5f, 6f), env, _floorMat);
+        MakePlatform("Platform_Right", new Vector3(9f, 0.6f, -3f), new Vector3(6f, 0.5f, 6f), env, _floorMat);
         MakePlatform("Platform_Core", new Vector3(0f, 0f, 0f), new Vector3(8f, 0.5f, 8f), env, _goalMat);
-        MakePlatform("Core_Approach", new Vector3(4f, 0f, 0f), new Vector3(2f, 0.5f, 4f), env, _floorMat);
+        MakePlatform("Core_Approach", new Vector3(4f, 0.2f, 0f), new Vector3(2f, 0.5f, 4f), env, _floorMat);
 
-        PressurePlate plateA = CreatePlate("PressurePlate_A", new Vector3(-8f, 0.36f, -6f), mech);
-        PressurePlate plateB = CreatePlate("PressurePlate_B", new Vector3(-4f, 0.36f, 12f), mech);
-        PressurePlate plateC = CreatePlate("PressurePlate_C", new Vector3(8f, 0.36f, -2f), mech);
+        PressurePlate plateA = CreatePlate("PressurePlate_A", new Vector3(-8f, 1.16f, -6f), mech);
+        PressurePlate plateB = CreatePlate("PressurePlate_B", new Vector3(-5f, 1.56f, 12f), mech);
+        PressurePlate plateC = CreatePlate("PressurePlate_C", new Vector3(9f, 0.96f, -3f), mech);
         CreateBridge("Bridge_Upper", new Vector3(-4f, 0f, 4f), new Vector3(0f, -4f, 0f), Vector3.zero, new Vector3(3f, 0.5f, 12f), plateA, mech);
         CreateBridge("Bridge_Core", new Vector3(0f, 0f, -7f), new Vector3(0f, -4f, 0f), Vector3.zero, new Vector3(3f, 0.5f, 10f), plateB, mech);
         CreateDoor("MemoryGate_Final", new Vector3(4f, 1.75f, 0f), new Vector3(0.5f, 3.5f, 4f), mech, new[] { plateC });
@@ -365,6 +424,16 @@ public static class EchoesProductionBuilder
 
         GameObject player = SpawnPlayer(new Vector3(0f, 1.1f, -14f), true, 2, 6f);
         SpawnGameplayCamera(player.transform);
+
+        SpawnEchoPathHint(mech, new Vector3[] {
+            new Vector3(0f, 0.5f, -14f),
+            new Vector3(-8f, 1.2f, -6f),
+            new Vector3(-5f, 1.5f, 12f),
+            new Vector3(9f, 1f, -3f)
+        });
+
+        SpawnPuzzleIntent(mech, 3, 6, true, true, true, 18f, "Final: eco recorre tres zonas separadas con alturas");
+
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
         SpawnLevelRuntime(mech, "Abre el camino final al nucleo.", "Tus decisiones construyen quien eres.", "Eres la suma de lo que elegiste conservar.");
@@ -387,6 +456,11 @@ public static class EchoesProductionBuilder
         controller.radius = 0.36f;
         controller.center = new Vector3(0f, 1.1f, 0f);
         controller.skinWidth = 0.08f;
+
+        // FIXED: Unity requiere que al menos un objeto tenga Rigidbody para que OnTriggerEnter se dispare
+        Rigidbody rb = player.AddComponent<Rigidbody>();
+        rb.isKinematic = true;
+        rb.useGravity = false;
 
         PlayerController playerController = player.AddComponent<PlayerController>();
         playerController.moveSpeed = 6f;
@@ -426,34 +500,82 @@ public static class EchoesProductionBuilder
     {
         GameObject visualRoot = new GameObject("PlayerVisual");
         visualRoot.transform.SetParent(player, false);
-        CreateCapsuleVisual(visualRoot.transform, false);
+        
+        GameObject fbxPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3D Models/lowpoly-character-freerigged-/source/LowPolyCharacterModel/FBX/LowPolyCharacter.fbx");
+        if (fbxPrefab != null)
+        {
+            // Wrapper de escala para evitar el bug de "mesh collapse" de Unity con Humanoid Rig
+            GameObject scaler = new GameObject("ModelScaler");
+            scaler.transform.SetParent(visualRoot.transform, false);
+            // El modelo estaba demasiado grande en escala 1.0, lo escalamos a un valor pequeño para que quepa en la cápsula.
+            scaler.transform.localScale = new Vector3(0.016f, 0.016f, 0.016f);
+
+            GameObject visual = PrefabUtility.InstantiatePrefab(fbxPrefab) as GameObject;
+            visual.name = "Model";
+            visual.transform.SetParent(scaler.transform, false);
+            // Centramos el pivote (si el pivote es 0,0,0, lo dejamos ahí ya que el CharacterController base ajustará la altura)
+            visual.transform.localPosition = new Vector3(0f, -68f, 0f); 
+            visual.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+            visual.transform.localScale = Vector3.one;
+
+            Animator anim = visual.GetComponent<Animator>();
+            if (anim == null) anim = visual.AddComponent<Animator>();
+            
+            UnityEditor.Animations.AnimatorController animController = AssetDatabase.LoadAssetAtPath<UnityEditor.Animations.AnimatorController>("Assets/Prefabs/PlayerAnimController.controller");
+            anim.runtimeAnimatorController = animController;
+            anim.applyRootMotion = false;
+            anim.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+        }
+        else
+        {
+            CreateCapsuleVisual(visualRoot.transform, false);
+        }
     }
 
     static void SpawnGameplayCamera(Transform player)
     {
         Transform cameraRoot = CreateRoot("--- CAMERA ---");
 
+        // Main Camera with Cinemachine Brain
         GameObject cameraObject = new GameObject("Main Camera");
         cameraObject.tag = "MainCamera";
         cameraObject.transform.SetParent(cameraRoot, false);
-        cameraObject.transform.position = player.position + new Vector3(0f, 4.5f, -7f);
+        cameraObject.transform.position = player.position + new Vector3(0f, 7f, -10f);
         cameraObject.AddComponent<Camera>();
         cameraObject.AddComponent<AudioListener>();
         cameraObject.AddComponent<CameraShake>();
         cameraObject.AddComponent<AudioSource>();
         cameraObject.AddComponent<GameFeelController>();
 
-        ThirdPersonCamera cameraRig = cameraObject.AddComponent<ThirdPersonCamera>();
-        cameraRig.target = player.Find("CameraFocus");
-        cameraRig.distance = 6.4f;
-        cameraRig.focusOffset = new Vector3(0f, 0f, 0f);
-        cameraRig.baseFov = 56f;
-        cameraRig.mouseSensitivity = 1.15f;
-        cameraRig.minPitch = 12f;
-        cameraRig.maxPitch = 26f;
-        cameraRig.clampYaw = true;
-        cameraRig.maxYawOffset = 24f;
-        cameraRig.movementLead = 0.7f;
+        CinemachineBrain brain = cameraObject.AddComponent<CinemachineBrain>();
+        brain.m_DefaultBlend.m_Style = CinemachineBlendDefinition.Style.EaseInOut;
+        brain.m_DefaultBlend.m_Time = 0.6f;
+
+        // VirtualCamera con offset fijo — suavizado activo, sin input de mouse
+        GameObject vcamObj = new GameObject("PlayerVCam");
+        vcamObj.transform.SetParent(cameraRoot, false);
+        CinemachineVirtualCamera vcam = vcamObj.AddComponent<CinemachineVirtualCamera>();
+        vcam.Follow = player;
+        vcam.LookAt = player.Find("CameraFocus");
+        vcam.m_Lens.FieldOfView = 50f;
+
+        // Transposer — offset y damping
+        var transposer = vcam.AddCinemachineComponent<CinemachineTransposer>();
+        transposer.m_FollowOffset = new Vector3(0f, 7f, -10f);
+        transposer.m_XDamping = 0.5f;
+        transposer.m_YDamping = 0.8f;
+        transposer.m_ZDamping = 0.5f;
+        transposer.m_BindingMode = CinemachineTransposer.BindingMode.WorldSpace;
+
+        // Composer — suavizado de mirada
+        var composer = vcam.AddCinemachineComponent<CinemachineComposer>();
+        composer.m_TrackedObjectOffset = new Vector3(0f, 1f, 0f);
+        composer.m_HorizontalDamping = 0.6f;
+        composer.m_VerticalDamping = 0.8f;
+        composer.m_DeadZoneWidth = 0.1f;
+        composer.m_DeadZoneHeight = 0.1f;
+        composer.m_SoftZoneWidth = 0.6f;
+        composer.m_SoftZoneHeight = 0.5f;
     }
 
     static void SpawnGameplayHud(Transform parent)
@@ -468,6 +590,30 @@ public static class EchoesProductionBuilder
         GameObject pause = new GameObject("PauseMenu");
         pause.transform.SetParent(parent, false);
         pause.AddComponent<PauseMenu>();
+    }
+
+    // Declara la intención de diseño del puzzle para validación
+    static void SpawnPuzzleIntent(Transform parent, int buttons, int actions, bool movement, bool timing, bool multiStep, float echoDistance, string note)
+    {
+        GameObject intentObj = new GameObject("PuzzleIntent");
+        intentObj.transform.SetParent(parent, false);
+        PuzzleIntent intent = intentObj.AddComponent<PuzzleIntent>();
+        intent.buttonCount = buttons;
+        intent.requiredActions = actions;
+        intent.requiresMovement = movement;
+        intent.requiresTiming = timing;
+        intent.isMultiStep = multiStep;
+        intent.minimumEchoDistance = echoDistance;
+        SetSerializedValue(intent, "designNote", note);
+    }
+
+    // Genera waypoints visuales para guiar la ruta del eco
+    static void SpawnEchoPathHint(Transform parent, Vector3[] waypoints)
+    {
+        GameObject pathObj = new GameObject("EchoPathHint");
+        pathObj.transform.SetParent(parent, false);
+        EchoPathHint hint = pathObj.AddComponent<EchoPathHint>();
+        hint.SetWaypoints(waypoints);
     }
 
     static void SpawnLevelRuntime(Transform parent, string objective, string intro, string completion)
@@ -490,13 +636,33 @@ public static class EchoesProductionBuilder
         colliderRef.size = new Vector3(2f, 0.12f, 2f);
         colliderRef.isTrigger = true;
 
-        GameObject visual = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        visual.name = "Visual";
-        visual.transform.SetParent(root.transform, false);
-        visual.transform.localPosition = Vector3.zero;
-        visual.transform.localScale = new Vector3(2f, 0.12f, 2f);
-        Object.DestroyImmediate(visual.GetComponent<Collider>());
-        visual.GetComponent<MeshRenderer>().sharedMaterial = _plateMat;
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3D Models/kenney_prototype-kit/Models/FBX format/button-floor-square.fbx");
+        GameObject visual;
+        if (prefab != null)
+        {
+            visual = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+            visual.name = "Visual";
+            visual.transform.SetParent(root.transform, false);
+            visual.transform.localPosition = new Vector3(0f, -0.06f, 0f);
+            visual.transform.localScale = new Vector3(2f, 1f, 2f);
+            Collider[] cols = visual.GetComponentsInChildren<Collider>();
+            foreach (var c in cols) Object.DestroyImmediate(c);
+        }
+        else
+        {
+            visual = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            visual.name = "Visual";
+            visual.transform.SetParent(root.transform, false);
+            visual.transform.localPosition = Vector3.zero;
+            visual.transform.localScale = new Vector3(2f, 0.12f, 2f);
+            Object.DestroyImmediate(visual.GetComponent<Collider>());
+            visual.GetComponent<MeshRenderer>().sharedMaterial = _plateMat;
+            visual.AddComponent<KenneyTiling>();
+        }
+
+        // Punto de luz azul-violeta sobre cada botón
+        SpawnPointLight(name + "_Glow", position + new Vector3(0f, 2f, 0f),
+            new Color(0.3f, 0.2f, 0.92f, 1f), 2.5f, 6f, root.transform);
 
         return root.AddComponent<PressurePlate>();
     }
@@ -509,6 +675,7 @@ public static class EchoesProductionBuilder
         door.transform.position = position;
         door.transform.localScale = scale;
         door.GetComponent<MeshRenderer>().sharedMaterial = _doorMat;
+        door.AddComponent<KenneyTiling>();
         DoorController controller = door.AddComponent<DoorController>();
         controller.plates = plates;
         return controller;
@@ -527,6 +694,7 @@ public static class EchoesProductionBuilder
         bridge.transform.localScale = scale;
         bridge.layer = GroundLayer;
         bridge.GetComponent<MeshRenderer>().sharedMaterial = _bridgeMat;
+        bridge.AddComponent<KenneyTiling>();
 
         TimedMovingPlatform platform = bridge.AddComponent<TimedMovingPlatform>();
         platform.plate = plate;
@@ -538,18 +706,71 @@ public static class EchoesProductionBuilder
 
     static LevelExit CreateLevelExit(Vector3 position, Transform parent, string nextSceneName, string completionToast = "")
     {
-        GameObject exit = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        exit.name = "LevelExit";
-        exit.transform.SetParent(parent, false);
-        exit.transform.position = position;
-        exit.transform.localScale = new Vector3(2.5f, 2.5f, 0.8f);
-        exit.GetComponent<MeshRenderer>().sharedMaterial = _goalMat;
+        GameObject exitRoot = new GameObject("LevelExit_Area");
+        exitRoot.transform.SetParent(parent, false);
+        exitRoot.transform.position = position;
 
-        LevelExit exitComponent = exit.AddComponent<LevelExit>();
+        // La zona trigger (el cubo original invisible)
+        GameObject exitTrigger = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        exitTrigger.name = "ExitTrigger";
+        exitTrigger.transform.SetParent(exitRoot.transform, false);
+        exitTrigger.transform.localPosition = Vector3.zero;
+        exitTrigger.transform.localScale = new Vector3(2.5f, 2.5f, 0.8f);
+        exitTrigger.GetComponent<MeshRenderer>().sharedMaterial = _goalMat;
+        exitTrigger.GetComponent<MeshRenderer>().enabled = false; // Invisible, solo trigger
+
+        LevelExit exitComponent = exitTrigger.AddComponent<LevelExit>();
         exitComponent.loadNextBuildIndex = false;
         exitComponent.nextSceneName = nextSceneName;
         if (!string.IsNullOrEmpty(completionToast))
             SetSerializedValue(exitComponent, "completionToast", completionToast);
+
+        // Estructura visual: Portal / Arco
+        GameObject leftPillar = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        leftPillar.transform.SetParent(exitRoot.transform, false);
+        leftPillar.transform.localPosition = new Vector3(-1.4f, 0f, 0f);
+        leftPillar.transform.localScale = new Vector3(0.5f, 3f, 0.5f);
+        leftPillar.GetComponent<MeshRenderer>().sharedMaterial = _bridgeMat;
+
+        GameObject rightPillar = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        rightPillar.transform.SetParent(exitRoot.transform, false);
+        rightPillar.transform.localPosition = new Vector3(1.4f, 0f, 0f);
+        rightPillar.transform.localScale = new Vector3(0.5f, 3f, 0.5f);
+        rightPillar.GetComponent<MeshRenderer>().sharedMaterial = _bridgeMat;
+
+        GameObject topBeam = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        topBeam.transform.SetParent(exitRoot.transform, false);
+        topBeam.transform.localPosition = new Vector3(0f, 1.7f, 0f);
+        topBeam.transform.localScale = new Vector3(3.3f, 0.5f, 0.5f);
+        topBeam.GetComponent<MeshRenderer>().sharedMaterial = _goalMat;
+
+        // Pilar de luz central masivo (Sky Beam)
+        GameObject skyBeam = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        skyBeam.transform.SetParent(exitRoot.transform, false);
+        skyBeam.transform.localPosition = new Vector3(0f, 25f, 0f);
+        skyBeam.transform.localScale = new Vector3(0.8f, 25f, 0.8f);
+        Object.DestroyImmediate(skyBeam.GetComponent<Collider>());
+        
+        // Crear material emissive brillante para el haz de luz
+        Material beamMat = new Material(Shader.Find("Standard"));
+        beamMat.color = new Color(1f, 0.85f, 0.4f, 0.4f);
+        beamMat.SetFloat("_Mode", 3); // Transparent
+        beamMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+        beamMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        beamMat.SetInt("_ZWrite", 0);
+        beamMat.DisableKeyword("_ALPHATEST_ON");
+        beamMat.EnableKeyword("_ALPHABLEND_ON");
+        beamMat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+        beamMat.renderQueue = 3000;
+        beamMat.EnableKeyword("_EMISSION");
+        beamMat.SetColor("_EmissionColor", new Color(1f, 0.85f, 0.4f) * 2.5f);
+        skyBeam.GetComponent<MeshRenderer>().sharedMaterial = beamMat;
+
+        // Beacon dorado brillante sobre la meta
+        SpawnPointLight("ExitBeacon", position + new Vector3(0f, 4f, 0f),
+            new Color(1f, 0.85f, 0.4f, 1f), 8f, 24f, exitRoot.transform);
+        SpawnPointLight("ExitGlow", position + new Vector3(0f, 1.5f, 0f),
+            new Color(1f, 0.92f, 0.6f, 1f), 4f, 10f, exitRoot.transform);
 
         return exitComponent;
     }
@@ -634,27 +855,32 @@ public static class EchoesProductionBuilder
         platform.layer = GroundLayer;
         platform.isStatic = true;
         platform.GetComponent<MeshRenderer>().sharedMaterial = material;
+        platform.AddComponent<KenneyTiling>();
     }
 
-    static void MakeBackdrop(string prefix, Vector3 center, float width, float depth, float height, Transform parent)
+    static void MakeBackdrop(string prefix, Vector3 center, float width, float height, float depth, Transform parent)
     {
-        MakePlatform(prefix + "_Back", center + new Vector3(0f, height * 0.5f, depth * 0.5f), new Vector3(width, height, 0.5f), parent, _bridgeMat);
+        MakePlatform(prefix + "_Back", center + new Vector3(0f, height * 0.5f, depth * 0.5f), new Vector3(width, height, 1f), parent, _bridgeMat);
         MakePlatform(prefix + "_Left", center + new Vector3(-width * 0.5f, height * 0.5f, 0f), new Vector3(0.5f, height, depth), parent, _bridgeMat);
         MakePlatform(prefix + "_Right", center + new Vector3(width * 0.5f, height * 0.5f, 0f), new Vector3(0.5f, height, depth), parent, _bridgeMat);
         MakePlatform(prefix + "_Ceiling", center + new Vector3(0f, height, depth * 0.1f), new Vector3(width, 0.5f, depth * 0.8f), parent, _bridgeMat);
-        SpawnSmokeVolume(prefix + "_SmokeLow", center + new Vector3(0f, 0.8f, depth * 0.1f), new Vector3(width - 2f, 4f, depth - 4f), parent, 115f);
-        SpawnLiminalDressing(prefix, center, width, depth, parent);
     }
 
-    static void SetupAtmosphere(Color fogColor, float fogDensity, Color ambientColor)
+    static void SetupAtmosphere(Color originalFogColor, float originalFogDensity, Color originalAmbientColor)
     {
-        RenderSettings.fog = true;
-        RenderSettings.fogMode = FogMode.ExponentialSquared;
-        RenderSettings.fogColor = fogColor;
-        RenderSettings.fogDensity = fogDensity;
-        RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-        RenderSettings.ambientLight = ambientColor;
+        // Restaurado a la estética "onírica" original solicitada por el usuario (sin niebla asfixiante global).
+        RenderSettings.fog = false;
+        RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
+        RenderSettings.ambientSkyColor = originalAmbientColor;
+        RenderSettings.ambientEquatorColor = Color.Lerp(originalAmbientColor, Color.black, 0.3f);
+        RenderSettings.ambientGroundColor = new Color(0.04f, 0.04f, 0.06f, 1f);
         RenderSettings.skybox = null;
+
+        // Instanciar Ground Fog (solo niebla en el suelo, como quería el usuario)
+        GameObject atmosphere = new GameObject("AtmosphereController");
+        AtmosphereController atmoController = atmosphere.AddComponent<AtmosphereController>();
+        SetSerializedValue(atmoController, "enableGroundFog", true);
+        SetSerializedValue(atmoController, "maxFogParticles", 100);
     }
 
     static void SpawnDirectionalLight()
@@ -662,10 +888,10 @@ public static class EchoesProductionBuilder
         GameObject lightObject = new GameObject("Directional Light");
         Light lightRef = lightObject.AddComponent<Light>();
         lightRef.type = LightType.Directional;
-        lightRef.color = new Color(0.74f, 0.78f, 0.72f, 1f);
-        lightRef.intensity = 0.72f;
+        lightRef.color = new Color(0.76f, 0.80f, 0.88f, 1f);
+        lightRef.intensity = 0.85f;
         lightRef.shadows = LightShadows.Soft;
-        lightObject.transform.rotation = Quaternion.Euler(22f, -32f, 0f);
+        lightObject.transform.rotation = Quaternion.Euler(32f, -28f, 0f);
     }
 
     static Light SpawnPointLight(string name, Vector3 position, Color color, float intensity, float range, Transform parent)
@@ -845,24 +1071,32 @@ public static class EchoesProductionBuilder
 
     static void EnsureMaterials()
     {
-        _floorMat = GetOrCreateMaterial("Mat_Floor", new Color(0.18f, 0.22f, 0.28f, 1f));
-        _plateMat = GetOrCreateMaterial("Mat_Plate", new Color(0.18f, 0.72f, 0.58f, 1f), true);
-        _bridgeMat = GetOrCreateMaterial("Mat_Bridge", new Color(0.10f, 0.14f, 0.18f, 1f));
-        _doorMat = GetOrCreateMaterial("Mat_Door", new Color(0.42f, 0.22f, 0.3f, 1f), true);
-        _goalMat = GetOrCreateMaterial("Mat_Exit", new Color(1f, 0.83f, 0.42f, 1f), true);
+        Texture2D gridDark = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/3D Models/kenney_prototype-kit/Models/Textures/variation-a.png");
+        Texture2D gridLight = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/3D Models/kenney_prototype-kit/Models/Textures/variation-b.png");
+        Texture2D gridNeutral = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/3D Models/kenney_prototype-kit/Models/Textures/variation-c.png");
+
+        _floorMat = GetOrCreateMaterial("Mat_Floor", new Color(0.16f, 0.20f, 0.26f, 1f), false, gridDark);
+        _plateMat = GetOrCreateEmissiveMaterial("Mat_Plate", new Color(0.28f, 0.22f, 0.88f, 1f), new Color(0.3f, 0.2f, 0.9f) * 1.5f, gridLight);
+        _bridgeMat = GetOrCreateMaterial("Mat_Bridge", new Color(0.10f, 0.14f, 0.18f, 1f), false, gridNeutral);
+        _doorMat = GetOrCreateMaterial("Mat_Door", new Color(0.42f, 0.22f, 0.3f, 1f), true, gridLight);
+        _goalMat = GetOrCreateEmissiveMaterial("Mat_Exit", new Color(1f, 0.85f, 0.4f, 1f), new Color(1f, 0.85f, 0.4f) * 2f, gridLight);
         _playerMat = GetOrCreateMaterial("Mat_Player", new Color(0.95f, 0.98f, 1f, 1f), true);
         _echoMat = GetOrCreateTransparentMaterial("Mat_Echo", new Color(0.38f, 0.96f, 1f, 0.28f), true);
     }
 
-    static Material GetOrCreateMaterial(string name, Color color, bool emissive = false)
+    static Material GetOrCreateMaterial(string name, Color color, bool emissive = false, Texture2D tex = null)
     {
         string path = Path.Combine(MaterialRoot, name + ".mat").Replace("\\", "/");
         Material material = AssetDatabase.LoadAssetAtPath<Material>(path);
         if (material != null)
+        {
+            if (tex != null) material.mainTexture = tex;
             return material;
+        }
 
         material = new Material(Shader.Find("Standard"));
         material.color = color;
+        if (tex != null) material.mainTexture = tex;
         if (emissive)
         {
             material.EnableKeyword("_EMISSION");
@@ -901,6 +1135,29 @@ public static class EchoesProductionBuilder
         return material;
     }
 
+    static Material GetOrCreateEmissiveMaterial(string name, Color color, Color emissionColor, Texture2D tex = null)
+    {
+        string path = Path.Combine(MaterialRoot, name + ".mat").Replace("\\", "/");
+        Material material = AssetDatabase.LoadAssetAtPath<Material>(path);
+        if (material != null)
+        {
+            material.color = color;
+            material.EnableKeyword("_EMISSION");
+            material.SetColor("_EmissionColor", emissionColor);
+            if (tex != null) material.mainTexture = tex;
+            return material;
+        }
+
+        material = new Material(Shader.Find("Standard"));
+        material.color = color;
+        if (tex != null) material.mainTexture = tex;
+        material.EnableKeyword("_EMISSION");
+        material.SetColor("_EmissionColor", emissionColor);
+
+        AssetDatabase.CreateAsset(material, path);
+        return material;
+    }
+
     static void EnsureAnimatorController()
     {
         if (AssetDatabase.LoadAssetAtPath<UnityEditor.Animations.AnimatorController>(AnimatorControllerPath) != null)
@@ -915,12 +1172,12 @@ public static class EchoesProductionBuilder
         controller.AddParameter("Jump", AnimatorControllerParameterType.Trigger);
 
         UnityEditor.Animations.AnimatorStateMachine stateMachine = controller.layers[0].stateMachine;
-        AnimationClip idleClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/3D Models/Animaciones/Locomotion/idle.fbx");
-        AnimationClip walkClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/3D Models/Animaciones/Locomotion/walking.fbx");
-        AnimationClip runClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/3D Models/Animaciones/Locomotion/running.fbx");
-        AnimationClip jumpClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/3D Models/Animaciones/Locomotion/jump.fbx");
-        AnimationClip leftStrafeClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/3D Models/Animaciones/Locomotion/left strafe walking.fbx");
-        AnimationClip rightStrafeClip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/3D Models/Animaciones/Locomotion/right strafe walking.fbx");
+        AnimationClip idleClip = LoadClipFromFBX("Assets/3D Models/Animaciones/Locomotion/idle.fbx");
+        AnimationClip walkClip = LoadClipFromFBX("Assets/3D Models/Animaciones/Locomotion/walking.fbx");
+        AnimationClip runClip = LoadClipFromFBX("Assets/3D Models/Animaciones/Locomotion/running.fbx");
+        AnimationClip jumpClip = LoadClipFromFBX("Assets/3D Models/Animaciones/Locomotion/jump.fbx");
+        AnimationClip leftStrafeClip = LoadClipFromFBX("Assets/3D Models/Animaciones/Locomotion/left strafe walking.fbx");
+        AnimationClip rightStrafeClip = LoadClipFromFBX("Assets/3D Models/Animaciones/Locomotion/right strafe walking.fbx");
 
         var moveState = stateMachine.AddState("Move");
         var blendTree = new UnityEditor.Animations.BlendTree
@@ -982,15 +1239,48 @@ public static class EchoesProductionBuilder
 
     static GameObject CreateCapsuleVisual(Transform parent, bool useEchoMaterial)
     {
-        GameObject capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-        capsule.name = useEchoMaterial ? "EchoCapsule" : "PlayerCapsule";
-        capsule.transform.SetParent(parent, false);
-        capsule.transform.localPosition = new Vector3(0f, 1.05f, 0f);
-        capsule.transform.localRotation = Quaternion.identity;
-        capsule.transform.localScale = new Vector3(0.8f, 1.05f, 0.8f);
-        Object.DestroyImmediate(capsule.GetComponent<Collider>());
-        capsule.GetComponent<MeshRenderer>().sharedMaterial = useEchoMaterial ? _echoMat : _playerMat;
-        return capsule;
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3D Models/lowpoly-character-freerigged-/source/LowPolyCharacterModel/FBX/LowPolyCharacter.fbx");
+        GameObject visual;
+        
+        if (prefab != null)
+        {
+            visual = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+            visual.name = useEchoMaterial ? "EchoModel" : "PlayerModel";
+            visual.transform.SetParent(parent, false);
+            visual.transform.localPosition = new Vector3(0f, 0f, 0f);
+            visual.transform.localRotation = Quaternion.identity;
+            visual.transform.localScale = Vector3.one * 0.25f;
+            
+            Collider[] colliders = visual.GetComponentsInChildren<Collider>();
+            foreach (var col in colliders) Object.DestroyImmediate(col);
+
+            SkinnedMeshRenderer[] renderers = visual.GetComponentsInChildren<SkinnedMeshRenderer>();
+            foreach (var r in renderers)
+            {
+                Material[] mats = new Material[r.sharedMaterials.Length];
+                for (int i = 0; i < mats.Length; i++)
+                    mats[i] = useEchoMaterial ? _echoMat : _playerMat;
+                r.sharedMaterials = mats;
+            }
+
+            Animator anim = visual.GetComponent<Animator>();
+            if (anim == null) anim = visual.AddComponent<Animator>();
+            anim.runtimeAnimatorController = AssetDatabase.LoadAssetAtPath<UnityEditor.Animations.AnimatorController>("Assets/3D Models/lowpoly-character-freerigged-/source/LowPolyCharacterModel/FBX/PlayerAnim.controller");
+            anim.avatar = AssetDatabase.LoadAssetAtPath<Avatar>("Assets/3D Models/lowpoly-character-freerigged-/source/LowPolyCharacterModel/FBX/LowPolyCharacter.fbx");
+        }
+        else
+        {
+            visual = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            visual.name = useEchoMaterial ? "EchoCapsule" : "PlayerCapsule";
+            visual.transform.SetParent(parent, false);
+            visual.transform.localPosition = new Vector3(0f, 1.05f, 0f);
+            visual.transform.localRotation = Quaternion.identity;
+            visual.transform.localScale = new Vector3(0.8f, 1.05f, 0.8f);
+            Object.DestroyImmediate(visual.GetComponent<Collider>());
+            visual.GetComponent<MeshRenderer>().sharedMaterial = useEchoMaterial ? _echoMat : _playerMat;
+        }
+
+        return visual;
     }
 
     static void SetSerializedValue(Component component, string propertyName, object value)
@@ -1049,5 +1339,19 @@ public static class EchoesProductionBuilder
             scenes.Add(new EditorBuildSettingsScene(scenePaths[i], true));
 
         EditorBuildSettings.scenes = scenes.ToArray();
+    }
+
+    static AnimationClip LoadClipFromFBX(string path)
+    {
+        Object[] assets = AssetDatabase.LoadAllAssetsAtPath(path);
+        if (assets != null)
+        {
+            foreach (Object asset in assets)
+            {
+                if (asset is AnimationClip clip && !clip.name.Contains("__preview__"))
+                    return clip;
+            }
+        }
+        return null;
     }
 }

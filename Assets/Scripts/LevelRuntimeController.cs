@@ -33,6 +33,10 @@ public class LevelRuntimeController : MonoBehaviour
 
     void Start()
     {
+        // Ocultar y bloquear el cursor para una mejor experiencia de gameplay
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         _hud = FindAnyObjectByType<GameHUD>();
         _recorder = FindAnyObjectByType<EchoRecorder>();
 
@@ -76,7 +80,7 @@ public class LevelRuntimeController : MonoBehaviour
 
         _recorder?.ClearAllEchoes(false);
 
-        MonoBehaviour[] behaviours = FindObjectsByType<MonoBehaviour>();
+        MonoBehaviour[] behaviours = FindObjectsOfType<MonoBehaviour>();
         for (int i = 0; i < behaviours.Length; i++)
         {
             if (behaviours[i] is IResettableLevelObject resettable)

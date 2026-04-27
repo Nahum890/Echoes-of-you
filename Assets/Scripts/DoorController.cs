@@ -73,6 +73,8 @@ public class DoorController : MonoBehaviour, IResettableLevelObject
             _isOpen = shouldOpen;
             DoorStateChanged?.Invoke(_isOpen);
 
+            GameFeelController.Instance?.PlayDoorMove(transform.position);
+
             if (_isOpen)
             {
                 GameFeelController.Instance?.PlayPuzzleSolved(transform.position);

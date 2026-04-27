@@ -14,7 +14,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] Color buttonHoverColor = new Color(0.16f, 0.85f, 1f, 0.2f);
 
     [Header("Scenes")]
-    [SerializeField] string hubSceneName = "Level_07";
+    [SerializeField] string hubSceneName = "Level_01";
 
     Texture2D _pixel;
     GUIStyle _titleStyle;

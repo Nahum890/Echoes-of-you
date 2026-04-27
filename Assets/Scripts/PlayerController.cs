@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     public float deceleration = 28f;
     public float rotationSharpness = 14f;
     [Range(0.1f, 1f)]
-    public float airControlFactor = 0.65f;
+    public float airControlFactor = 0.75f;
 
     [Header("Salto / Gravedad")]
     public float jumpHeight = 1.55f;
@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     public Vector3 defaultGravityDirection = Vector3.down;
     public float groundedStickForce = 5f;
     public float gravityBlendSpeed = 9f;
-    public float fallGravityMultiplier = 1.4f;
+    public float fallGravityMultiplier = 1.6f;
     public bool alignToGroundNormal = true;
 
     [Header("Jump Assist")]
@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheck;
     public float groundProbeRadius = 0.24f;
     public float groundProbeDistance = 0.38f;
-    public LayerMask groundMask = (1 << 0) | (1 << 6);
+    public LayerMask groundMask = (1 << 6); // Solo layer Ground — incluir Default causa que el SphereCast detecte al propio jugador
 
     [Header("Failsafe")]
     public float voidHeight = -15f;
@@ -147,10 +147,13 @@ public class PlayerController : MonoBehaviour
         _controller.Move(motion);
 
         GroundProbe postMoveProbe = ProbeGround(movementUp);
-        _grounded = postMoveProbe.isGrounded || _controller.isGrounded;
-
-        if (_grounded && !_jumpedThisFrame)
-            _verticalVelocity = GravityDirection * groundedStickForce;
+        // No re-groundear en el frame del salto — evita cancelar el impulso vertical
+        if (!_jumpedThisFrame)
+        {
+            _grounded = postMoveProbe.isGrounded || _controller.isGrounded;
+            if (_grounded)
+                _verticalVelocity = GravityDirection * groundedStickForce;
+        }
 
         if (!_wasGrounded && _grounded)
         {
@@ -259,7 +262,7 @@ public class PlayerController : MonoBehaviour
         _grounded = false;
         _jumpedThisFrame = true;
 
-        if (_anim != null)
+        if (_anim != null && _anim.runtimeAnimatorController != null)
             _anim.SetTrigger("Jump");
 
         GameFeelController.Instance?.PlayJump(transform.position, movementUp);
@@ -289,7 +292,7 @@ public class PlayerController : MonoBehaviour
 
     void UpdateAnimator()
     {
-        if (_anim == null)
+        if (_anim == null || _anim.runtimeAnimatorController == null)
             return;
 
         Vector3 flatVelocity = Vector3.ProjectOnPlane(_controller.velocity, _currentUp);
@@ -372,6 +375,10 @@ public class PlayerController : MonoBehaviour
         if (grounded)
             grounded = hit.distance <= groundProbeDistance + 0.02f;
 
+        // Excluir colisiones con el propio jugador (failsafe si groundMask incluye Default)
+        if (grounded && hit.collider != null && hit.collider.transform.IsChildOf(transform))
+            grounded = false;
+
         return new GroundProbe
         {
             isGrounded = grounded,
@@ -429,23 +436,7 @@ public class PlayerController : MonoBehaviour
 
     void CreateFallbackVisual(Transform visualRoot)
     {
-        // Try loading the Poly Style character model
-        #if UNITY_EDITOR
-        GameObject polyChar = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3D Models/Models/FBX format/character-oobi.fbx");
-        if (polyChar != null)
-        {
-            GameObject instance = Instantiate(polyChar, visualRoot);
-            instance.name = "PlayerModel";
-            instance.transform.localPosition = Vector3.zero;
-            instance.transform.localRotation = Quaternion.identity;
-            instance.transform.localScale = Vector3.one * 1.2f;
-
-            Collider[] cols = instance.GetComponentsInChildren<Collider>();
-            for (int i = 0; i < cols.Length; i++)
-                Destroy(cols[i]);
-            return;
-        }
-        #endif
+        _anim = GetComponentInChildren<Animator>();
 
         // Fallback capsule if no model found
         GameObject capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule);
@@ -472,11 +463,20 @@ public class PlayerController : MonoBehaviour
     {
         _isDead = true;
         _controller.enabled = false;
+        GameFeelController.Instance?.PlayPlayerDeath(transform.position);
         Invoke(nameof(RestartScene), 1.2f);
     }
 
     void RestartScene()
     {
+        if (Camera.main != null)
+        {
+#if UNITY_POST_PROCESSING_STACK_V2
+            var ppLayer = Camera.main.GetComponent<UnityEngine.Rendering.PostProcessing.PostProcessLayer>();
+            if (ppLayer != null)
+                ppLayer.enabled = false; // Workaround for Unity PostProcessing NRE on scene reload
+#endif
+        }
         UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
     }
 

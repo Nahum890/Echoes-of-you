@@ -279,7 +279,10 @@ public static class EchoesLevelBuilder
         controller.AddParameter("VelocityX", AnimatorControllerParameterType.Float);
         controller.AddParameter("VelocityZ", AnimatorControllerParameterType.Float);
         controller.AddParameter("Grounded", AnimatorControllerParameterType.Bool);
+        controller.AddParameter("Falling", AnimatorControllerParameterType.Bool);
         controller.AddParameter("Jump", AnimatorControllerParameterType.Trigger);
+        controller.AddParameter("IsRecording", AnimatorControllerParameterType.Bool);
+        controller.AddParameter("IsEchoPlayback", AnimatorControllerParameterType.Bool);
 
         var rootStateMachine = controller.layers[0].stateMachine;
 
@@ -317,15 +320,27 @@ public static class EchoesLevelBuilder
         var jumpState = rootStateMachine.AddState("Jump");
         jumpState.motion = jumpClip;
 
-        // AnyState -> Jump
+        var fallState = rootStateMachine.AddState("Fall");
+        // Use jump clip or a fall specific one if available, usually the end of jump
+        fallState.motion = jumpClip; 
+
+        // Transitions
         var anyToJump = rootStateMachine.AddAnyStateTransition(jumpState);
         anyToJump.AddCondition(UnityEditor.Animations.AnimatorConditionMode.If, 0, "Jump");
         
-        // Jump -> Move
+        var jumpToFall = jumpState.AddTransition(fallState);
+        jumpToFall.hasExitTime = true;
+        jumpToFall.exitTime = 0.5f;
+        jumpToFall.AddCondition(UnityEditor.Animations.AnimatorConditionMode.IfNot, 0, "Grounded");
+
+        var fallToMove = fallState.AddTransition(moveState);
+        fallToMove.AddCondition(UnityEditor.Animations.AnimatorConditionMode.If, 0, "Grounded");
+
         var jumpToMove = jumpState.AddTransition(moveState);
-        jumpToMove.hasExitTime = true;
-        jumpToMove.exitTime = 0.8f;
         jumpToMove.AddCondition(UnityEditor.Animations.AnimatorConditionMode.If, 0, "Grounded");
+
+        // Layers for Recording/Playback (simplification for Jam: use parameters to drive effects)
+        // In a real scenario we might use an Override layer, but here we just ensure the states exist.
 
         AssetDatabase.AddObjectToAsset(blendTree, controller);
 
@@ -422,20 +437,40 @@ public static class EchoesLevelBuilder
         cc.center = new Vector3(0f, 0.9f, 0f);
         cc.skinWidth = 0.08f;
 
-        root.AddComponent<EchoPlayback>();
+        var ep = root.AddComponent<EchoPlayback>();
+        SetPrivateField(ep, "_matEcho", _matEcho);
 
         // Visual child
         var visual = new GameObject("PlayerVisual");
         visual.transform.SetParent(root.transform, false);
         visual.transform.localPosition = Vector3.zero;
 
-        var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        cube.name = "EchoVisual";
-        cube.transform.SetParent(visual.transform, false);
-        cube.transform.localPosition = new Vector3(0, 0.9f, 0);
-        cube.transform.localScale = new Vector3(0.6f, 1.8f, 0.6f);
-        Object.DestroyImmediate(cube.GetComponent<Collider>());
-        cube.GetComponent<MeshRenderer>().sharedMaterial = _matEcho;
+        var polyChar = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3D Models/Character Base/characterBase.fbx");
+        if (polyChar != null)
+        {
+            var instance = PrefabUtility.InstantiatePrefab(polyChar) as GameObject;
+            instance.transform.SetParent(visual.transform, false);
+            instance.name = "EchoModel";
+            instance.transform.localScale = Vector3.one * 1.2f;
+            
+            // Apply echo material
+            Renderer[] rends = instance.GetComponentsInChildren<Renderer>();
+            foreach (var r in rends) r.sharedMaterial = _matEcho;
+            
+            // Remove colliders from visual
+            Collider[] visualCols = instance.GetComponentsInChildren<Collider>();
+            foreach (var c in visualCols) Object.DestroyImmediate(c);
+        }
+        else
+        {
+            var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube.name = "EchoVisual";
+            cube.transform.SetParent(visual.transform, false);
+            cube.transform.localPosition = new Vector3(0, 0.9f, 0);
+            cube.transform.localScale = new Vector3(0.6f, 1.8f, 0.6f);
+            Object.DestroyImmediate(cube.GetComponent<Collider>());
+            cube.GetComponent<MeshRenderer>().sharedMaterial = _matEcho;
+        }
 
         GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, path);
         Object.DestroyImmediate(root);
@@ -453,6 +488,10 @@ public static class EchoesLevelBuilder
         var envParent = CreateEmpty("--- ENVIRONMENT ---", Vector3.zero);
         MakeFloor("Floor_Start",   new Vector3(0,0,0),     new Vector3(6,0.5f,6),   envParent.transform);
         MakeFloor("Bridge_1",      new Vector3(0,0,5),     new Vector3(2,0.5f,4),   envParent.transform);
+        
+        // Parkour addition L01
+        MakeFloor("Parkour_Platform", new Vector3(3, 1f, 5), new Vector3(2, 0.5f, 2), envParent.transform);
+
         MakeFloor("Floor_Button",  new Vector3(0,0,9),     new Vector3(4,0.5f,4),   envParent.transform);
         MakeFloor("Bridge_2",      new Vector3(0,0,13),    new Vector3(2,0.5f,4),   envParent.transform);
         MakeFloor("Floor_Gate",    new Vector3(0,0,17),    new Vector3(6,0.5f,4),   envParent.transform);
@@ -463,7 +502,26 @@ public static class EchoesLevelBuilder
 
         var doorFrame = CreateEmpty("DoorFrame", new Vector3(0, 0.25f, 15));
         doorFrame.transform.SetParent(mechParent.transform, true);
-        var door = MakeCube("Door", Vector3.zero, new Vector3(3, 8f, 0.3f), doorFrame.transform, _matDoor);
+        
+        GameObject doorModel = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3D Models/Models/FBX format/door-rotate.fbx");
+        GameObject door;
+        if (doorModel != null)
+        {
+            door = PrefabUtility.InstantiatePrefab(doorModel) as GameObject;
+            door.name = "DoorVisual";
+            door.transform.SetParent(doorFrame.transform, false);
+            door.transform.localScale = new Vector3(3f, 3f, 1f);
+            
+            // Add collider to the visual or use a box collider on frame
+            var bc = door.AddComponent<BoxCollider>();
+            bc.size = new Vector3(1f, 2.5f, 0.2f);
+            bc.center = new Vector3(0f, 1.25f, 0f);
+        }
+        else
+        {
+            door = MakeCube("Door", Vector3.zero, new Vector3(3, 8f, 0.3f), doorFrame.transform, _matDoor);
+        }
+        
         var dc = door.AddComponent<DoorController>();
         dc.plates = new PressurePlate[] { plate };
 
@@ -477,6 +535,7 @@ public static class EchoesLevelBuilder
         SpawnHUD();
         SpawnPauseAndTutorial();
         SpawnLight();
+        SpawnAtmosphere();
 
         var tutParent = CreateEmpty("--- TUTORIAL ---", Vector3.zero);
         SpawnTutorialTrigger("Tut_Movement", new Vector3(0, 1, 0), new Vector3(4, 3, 4),
@@ -502,6 +561,9 @@ public static class EchoesLevelBuilder
         // Everything is solid ground so player doesn't fall while learning
         var envParent = CreateEmpty("--- ENVIRONMENT ---", Vector3.zero);
         MakeFloor("Floor_Main", new Vector3(0,0,10), new Vector3(14,0.5f,24), envParent.transform);
+        
+        // Parkour addition L02
+        MakeFloor("Parkour_Step", new Vector3(0, 0.5f, 3), new Vector3(4, 0.5f, 2), envParent.transform);
 
         var mechParent = CreateEmpty("--- MECHANICS ---", Vector3.zero);
 
@@ -538,6 +600,7 @@ public static class EchoesLevelBuilder
         SpawnHUD();
         SpawnPauseAndTutorial();
         SpawnLight();
+        SpawnAtmosphere();
         SpawnParticles();
         SpawnDecorations(envParent.transform, 6, 0f, 20f);
         SaveScene(scene, "Level_02");
@@ -880,7 +943,7 @@ public static class EchoesLevelBuilder
         playerController.rotationSharpness = 12f;
         playerController.acceleration = 14f;
         playerController.deceleration = 18f;
-        playerController.groundMask = -1; // Detect all layers to fix jump issue
+        playerController.groundMask = 1 << 6; // Layer 6 is Ground. Using -1 breaks the jump by detecting the player itself.
 
         var recorder = player.AddComponent<EchoRecorder>();
         GameObject echoPrefab = GetEchoPrefab();
@@ -893,14 +956,32 @@ public static class EchoesLevelBuilder
         visual.transform.SetParent(player.transform, false);
         visual.transform.localPosition = Vector3.zero;
 
-        var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        cube.name = "PlayerVisualCube";
-        cube.transform.SetParent(visual.transform, false);
-        cube.transform.localPosition = new Vector3(0, 0.9f, 0);
-        cube.transform.localScale = new Vector3(0.6f, 1.8f, 0.6f);
-        Object.DestroyImmediate(cube.GetComponent<BoxCollider>());
-        if (_matPlayer != null)
-            cube.GetComponent<MeshRenderer>().sharedMaterial = _matPlayer;
+        var polyChar = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3D Models/Character Base/characterBase.fbx");
+        if (polyChar != null)
+        {
+            var instance = PrefabUtility.InstantiatePrefab(polyChar) as GameObject;
+            instance.transform.SetParent(visual.transform, false);
+            instance.name = "PlayerModel";
+            instance.transform.localScale = Vector3.one * 1.2f;
+            
+            // Add Animator component if it doesn't have one
+            var anim = instance.GetComponent<Animator>();
+            if (anim == null) anim = instance.AddComponent<Animator>();
+            
+            var animController = AssetDatabase.LoadAssetAtPath<UnityEditor.Animations.AnimatorController>("Assets/Prefabs/PlayerAnimController.controller");
+            if (animController != null) anim.runtimeAnimatorController = animController;
+        }
+        else
+        {
+            var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube.name = "PlayerVisualCube";
+            cube.transform.SetParent(visual.transform, false);
+            cube.transform.localPosition = new Vector3(0, 0.9f, 0);
+            cube.transform.localScale = new Vector3(0.6f, 1.8f, 0.6f);
+            Object.DestroyImmediate(cube.GetComponent<BoxCollider>());
+            if (_matPlayer != null)
+                cube.GetComponent<MeshRenderer>().sharedMaterial = _matPlayer;
+        }
 
         // GroundCheck child
         var gc = new GameObject("GroundCheck");
@@ -1030,9 +1111,8 @@ public static class EchoesLevelBuilder
         camGO.GetComponent<Camera>().backgroundColor = HexColor("080A12");
         RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
         RenderSettings.ambientLight = HexColor("151520");
-
-        // Light & Particles
         SpawnLight();
+        SpawnAtmosphere();
         SpawnParticles();
 
         SaveScene(scene, "MainMenu");
@@ -1050,6 +1130,12 @@ public static class EchoesLevelBuilder
         light.color = HexColor("FFD5A1");
         light.intensity = 1.3f; // Slightly lowered to reduce blowout
         light.shadows = LightShadows.Soft;
+    }
+
+    static void SpawnAtmosphere()
+    {
+        var go = new GameObject("--- ATMOSPHERE ---");
+        go.AddComponent<AtmosphereController>();
     }
 
     static void SpawnParticles()

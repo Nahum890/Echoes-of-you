@@ -5,6 +5,7 @@ using UnityEngine;
 public class EchoPlayback : MonoBehaviour
 {
     [SerializeField] float skinWidth = 0.08f;
+    [SerializeField] Material _matEcho;
 
     CharacterController _cc;
     readonly List<RecordFrame> _frames = new List<RecordFrame>();
@@ -13,6 +14,7 @@ public class EchoPlayback : MonoBehaviour
     bool _playing;
 
     Animator _anim;
+    AudioSource _audioSource;
 
     public bool IsPlaying => _playing;
     public float LoopDuration => _duration;
@@ -23,6 +25,18 @@ public class EchoPlayback : MonoBehaviour
         _cc.skinWidth = skinWidth;
         EnsureVisualAnimator();
         _anim = GetComponentInChildren<Animator>();
+        
+        _audioSource = GetComponent<AudioSource>();
+        if (_audioSource == null)
+        {
+            _audioSource = gameObject.AddComponent<AudioSource>();
+            _audioSource.spatialBlend = 1f; // 3D sound
+            _audioSource.loop = true;
+            _audioSource.volume = 0.2f;
+            _audioSource.minDistance = 2f;
+            _audioSource.maxDistance = 15f;
+            _audioSource.rolloffMode = AudioRolloffMode.Linear;
+        }
     }
 
     public void BeginPlayback(IReadOnlyList<RecordFrame> frames, float duration)
@@ -45,11 +59,18 @@ public class EchoPlayback : MonoBehaviour
         _cc.enabled = false;
         transform.SetPositionAndRotation(position, rotation);
         _cc.enabled = true;
+
+        if (_audioSource != null && _audioSource.clip != null)
+        {
+            _audioSource.Play();
+        }
     }
 
     public void StopPlayback()
     {
         _playing = false;
+        if (_audioSource != null)
+            _audioSource.Stop();
     }
 
     void FixedUpdate()
@@ -71,7 +92,7 @@ public class EchoPlayback : MonoBehaviour
 
     void Update()
     {
-        if (!_playing || _frames.Count == 0 || _anim == null)
+        if (!_playing || _frames.Count == 0 || _anim == null || _anim.runtimeAnimatorController == null)
             return;
 
         RecordFrame.Evaluate(_frames, _time, out Vector3 currentPosition, out _);
@@ -84,6 +105,8 @@ public class EchoPlayback : MonoBehaviour
         _anim.SetFloat("VelocityX", localVelocity.x);
         _anim.SetFloat("VelocityZ", localVelocity.z);
         _anim.SetBool("Grounded", true);
+        _anim.SetBool("Falling", false);
+        _anim.SetBool("IsRecording", false);
         _anim.SetBool("IsEchoPlayback", _playing);
     }
 
@@ -119,30 +142,6 @@ public class EchoPlayback : MonoBehaviour
 
     void CreateFallbackVisual(Transform visualRoot)
     {
-        // Try loading the Poly Style character model
-        #if UNITY_EDITOR
-        GameObject polyChar = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3D Models/Models/FBX format/character-oobi.fbx");
-        if (polyChar != null)
-        {
-            GameObject instance = Instantiate(polyChar, visualRoot);
-            instance.name = "EchoModel";
-            instance.transform.localPosition = Vector3.zero;
-            instance.transform.localRotation = Quaternion.identity;
-            instance.transform.localScale = Vector3.one * 1.2f;
-
-            Collider[] cols = instance.GetComponentsInChildren<Collider>();
-            for (int i = 0; i < cols.Length; i++)
-                Destroy(cols[i]);
-
-            // Apply echo material to all renderers
-            Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
-            foreach (Renderer r in renderers)
-                r.sharedMaterial = _matEcho;
-
-            return;
-        }
-        #endif
-
         GameObject capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule);
         capsule.name = "EchoCapsule";
         capsule.transform.SetParent(visualRoot, false);

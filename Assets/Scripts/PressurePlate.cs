@@ -75,6 +75,11 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
         _pressed = value;
         PressedChanged?.Invoke(_pressed);
         UpdateVisuals(_pressed);
+
+        if (_pressed)
+        {
+            GameFeelController.Instance?.PlayPlatePress(transform.position);
+        }
     }
 
     void Update()

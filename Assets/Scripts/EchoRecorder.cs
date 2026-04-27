@@ -22,6 +22,7 @@ public class EchoRecorder : MonoBehaviour
     readonly List<RecordFrame> _frames = new List<RecordFrame>();
     readonly List<EchoPlayback> _echoes = new List<EchoPlayback>();
 
+    Animator _anim;
     bool _recording;
     float _recordStartTime;
     float _lastRecordDuration;
@@ -49,6 +50,7 @@ public class EchoRecorder : MonoBehaviour
             hud = UnityEngine.Object.FindAnyObjectByType<GameHUD>();
         if (echoSpawnRoot == null)
             echoSpawnRoot = transform;
+        _anim = GetComponentInChildren<Animator>();
     }
 
     void OnEnable()
@@ -58,7 +60,7 @@ public class EchoRecorder : MonoBehaviour
 
     void Update()
     {
-        bool hold = Input.GetKey(KeyCode.R);
+        bool hold = Input.GetKey(KeyCode.E);
 
         if (hold && !_recording)
             StartRecording();
@@ -68,6 +70,9 @@ public class EchoRecorder : MonoBehaviour
 
         if (_recording && Time.time - _recordStartTime >= maxRecordSeconds)
             StopRecordingAndSpawn();
+
+        if (_anim != null && _anim.runtimeAnimatorController != null)
+            _anim.SetBool("IsRecording", _recording);
 
         RefreshHud();
     }
@@ -92,6 +97,8 @@ public class EchoRecorder : MonoBehaviour
         _recording = true;
         _recordStartTime = Time.time;
         _frames.Clear();
+        if (_anim == null) _anim = GetComponentInChildren<Animator>();
+        if (_anim != null && _anim.runtimeAnimatorController != null) _anim.SetBool("IsRecording", true);
         RecordingStarted?.Invoke();
         hud?.SetPrompt("Suelta R para crear un eco", 1.6f);
         GameFeelController.Instance?.PlayRecordStart(transform.position, transform.up);
@@ -106,6 +113,8 @@ public class EchoRecorder : MonoBehaviour
         _recording = false;
         float elapsed = Time.time - _recordStartTime;
         _lastRecordDuration = elapsed;
+
+        GameFeelController.Instance?.PlayRecordStop(transform.position);
 
         if (elapsed < minRecordSeconds || _frames.Count < 2)
         {
