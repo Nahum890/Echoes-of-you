@@ -39,7 +39,14 @@ public class TutorialTrigger : MonoBehaviour
 
         _triggered = true;
 
-        if (TutorialHUD.Instance != null)
-            TutorialHUD.Instance.ShowMessage(message, hint, displayDuration);
+        GameHUD hud = FindAnyObjectByType<GameHUD>();
+        if (hud == null)
+            return;
+
+        string combined = string.IsNullOrEmpty(hint)
+            ? message
+            : $"{message}\n{hint}";
+
+        hud.SetPrompt(combined, displayDuration);
     }
 }
