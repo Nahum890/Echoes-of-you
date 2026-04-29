@@ -7,15 +7,15 @@ using UnityEngine;
 /// </summary>
 public class TutorialHUD : MonoBehaviour
 {
-    [Header("Mensajes por nivel (por build index)")]
+    [Header("Mensajes por nivel")]
     [SerializeField] string[] levelObjectives = new string[]
     {
-        "Deja un eco en la placa para abrir la puerta",           // Level 1
-        "Un eco también puede sostener un puente",                 // Level 2
-        "Dos placas, dos ecos — abre la puerta central",           // Level 3
-        "El orden importa — no sigas al eco, aprovéchalo",         // Level 4
-        "Construye una cadena: un eco habilita al siguiente",      // Level 5
-        "Vuelve al núcleo — usa todo lo aprendido"                 // Level 6
+        "",                                                           // Level 1 — diseño enseña
+        "",                                                           // Level 2 — diseño enseña
+        "",                                                           // Level 3 — diseño enseña
+        "",                                                           // Level 4 — diseño enseña
+        "",                                                           // Level 5
+        ""                                                            // Level 6
     };
 
     [Header("Diseño")]
@@ -26,8 +26,8 @@ public class TutorialHUD : MonoBehaviour
     [SerializeField] float fadeSpeed = 3f;
 
     [Header("Objetivo del nivel")]
-    [SerializeField] float objectiveShowDuration = 5f;
-    [SerializeField] bool showObjectiveOnStart = true;
+    [SerializeField] float objectiveShowDuration = 3f;
+    [SerializeField] bool showObjectiveOnStart = false;
 
     string _currentMessage = "";
     string _currentHint = "";
@@ -96,7 +96,7 @@ public class TutorialHUD : MonoBehaviour
 
     void ShowControlsHint()
     {
-        ShowMessage("Mantén R para grabar un eco", "El eco repite lo que hiciste — úsalo en la placa", 5f);
+        // No mostrar texto largo — el diseño del nivel enseña
     }
 
     void OnDestroy()

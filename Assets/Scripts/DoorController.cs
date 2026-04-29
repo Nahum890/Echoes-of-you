@@ -8,10 +8,13 @@ using UnityEngine;
 public class DoorController : MonoBehaviour, IResettableLevelObject
 {
     public PressurePlate[] plates;
+    public bool latchOpen = true;
 
     Collider _col;
     Renderer[] _renderers;
     bool _isOpen;
+
+    public bool IsOpen => _isOpen;
 
     public event Action<bool> DoorStateChanged;
 
@@ -68,6 +71,9 @@ public class DoorController : MonoBehaviour, IResettableLevelObject
             }
         }
 
+        if (latchOpen && _isOpen)
+            shouldOpen = true;
+
         if (_isOpen != shouldOpen)
         {
             _isOpen = shouldOpen;
@@ -77,7 +83,6 @@ public class DoorController : MonoBehaviour, IResettableLevelObject
 
             if (_isOpen)
             {
-                GameFeelController.Instance?.PlayPuzzleSolved(transform.position);
                 if (TutorialHUD.Instance != null)
                     TutorialHUD.Instance.ShowMessage("Puerta abierta", "", 1.5f);
             }

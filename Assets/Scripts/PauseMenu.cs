@@ -120,18 +120,21 @@ public class PauseMenu : MonoBehaviour
         if (DrawButton(new Rect(x, centerY + 10f, width, height), "REINICIAR NIVEL"))
         {
             Resume();
+            PostProcessingSetup.PrepareForSceneReload();
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
         if (DrawButton(new Rect(x, centerY + 64f, width, height), "VOLVER AL HUB"))
         {
             Resume();
+            PostProcessingSetup.PrepareForSceneReload();
             SceneManager.LoadScene(hubSceneName);
         }
 
         if (DrawButton(new Rect(x, centerY + 118f, width, height), "MENU PRINCIPAL"))
         {
             Resume();
+            PostProcessingSetup.PrepareForSceneReload();
             SceneManager.LoadScene(mainMenuScene);
         }
 

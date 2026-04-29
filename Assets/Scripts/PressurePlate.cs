@@ -12,16 +12,20 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
     [SerializeField] string echoTag = "Echo";
 
     [Header("Visual Feedback")]
-    [SerializeField] Color inactiveColor = new Color(0.18f, 0.75f, 0.55f, 1f);   // Menta suave
-    [SerializeField] Color activeColor = new Color(0f, 1f, 0.75f, 1f);            // Verde brillante
-    [SerializeField] Color emissionInactive = new Color(0.05f, 0.25f, 0.15f, 1f); // Glow suave
-    [SerializeField] Color emissionActive = new Color(0f, 0.85f, 0.55f, 1f);      // Glow fuerte
+    [SerializeField] Color inactiveColor = new Color(0.06f, 0.35f, 0.85f, 1f);    // Azul eléctrico tenue
+    [SerializeField] Color activeColor = new Color(0.1f, 0.6f, 1f, 1f);            // Azul eléctrico brillante
+    [SerializeField] Color emissionInactive = new Color(0.02f, 0.15f, 0.5f, 1f);   // Glow azul suave
+    [SerializeField] Color emissionActive = new Color(0.1f, 0.5f, 1f, 1f);         // Glow azul fuerte
     [SerializeField] float pulseSpeed = 2.5f;
     [SerializeField] bool createIndicatorLight = true;
-    [SerializeField] float lightIntensity = 2.5f;
-    [SerializeField] float lightRange = 4f;
+    [SerializeField] float lightIntensity = 3f;
+    [SerializeField] float lightRange = 5f;
+
+    [Header("Behavior")]
+    public float autoReleaseTimer = 0f;
 
     bool _pressed;
+    float _timeUntilRelease;
     Renderer _renderer;
     MaterialPropertyBlock _propBlock;
     Light _indicatorLight;
@@ -79,6 +83,11 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
         if (_pressed)
         {
             GameFeelController.Instance?.PlayPlatePress(transform.position);
+            Debug.Log($"[QA PressurePlate] {gameObject.name} ACTIVADO.");
+        }
+        else
+        {
+            Debug.Log($"[QA PressurePlate] {gameObject.name} DESACTIVADO.");
         }
     }
 
@@ -143,7 +152,23 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
             }
         }
 
-        SetPressed(foundActor);
+        if (foundActor)
+        {
+            _timeUntilRelease = Time.time + autoReleaseTimer;
+            SetPressed(true);
+        }
+        else
+        {
+            if (autoReleaseTimer > 0f)
+            {
+                if (Time.time >= _timeUntilRelease)
+                    SetPressed(false);
+            }
+            else
+            {
+                SetPressed(false);
+            }
+        }
     }
 
     public void ResetLevelState()
