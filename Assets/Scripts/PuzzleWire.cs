@@ -12,7 +12,7 @@ using UnityEngine;
 /// 4. Configura si la puerta necesita TODOS los botones (AND) o solo UNO (OR)
 /// 5. Marca "latchOpen" si la puerta debe quedarse abierta permanentemente
 /// </summary>
-public class PuzzleWire : MonoBehaviour
+public class PuzzleWire : MonoBehaviour, IResettableLevelObject
 {
     [Serializable]
     public class Connection
@@ -124,15 +124,8 @@ public class PuzzleWire : MonoBehaviour
         Connection conn = connections[index];
         if (conn.door == null) return;
 
-        // Use the door's internal collider/renderer toggle
-        Collider col = conn.door.GetComponent<Collider>();
-        Renderer[] renderers = conn.door.GetComponentsInChildren<Renderer>();
-
-        if (col != null) col.enabled = !open;
-        foreach (Renderer r in renderers)
-        {
-            if (r != null) r.enabled = !open;
-        }
+        // Delegate all collider/renderer management to DoorController
+        conn.door.SetOpenState(open);
 
         if (open && conn.latchOpen)
             _doorLatched[index] = true;
@@ -147,6 +140,23 @@ public class PuzzleWire : MonoBehaviour
         {
             GameHUD hud = FindAnyObjectByType<GameHUD>();
             hud?.ShowToast(conn.closeMessage, new Color(1f, 0.6f, 0.4f, 1f), 1.5f);
+        }
+    }
+
+    public void ResetLevelState()
+    {
+        if (connections == null || _doorLatched == null) return;
+
+        for (int i = 0; i < _doorLatched.Length; i++)
+        {
+            _doorLatched[i] = false;
+        }
+
+        // Re-evaluate all connections so doors go back to their correct state
+        for (int i = 0; i < connections.Length; i++)
+        {
+            if (connections[i].door != null)
+                connections[i].door.SetOpenState(false);
         }
     }
 }

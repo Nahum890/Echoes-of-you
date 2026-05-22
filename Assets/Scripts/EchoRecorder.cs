@@ -139,6 +139,7 @@ public class EchoRecorder : MonoBehaviour
         TrimEchoesIfNeeded();
 
         GameObject instance = Instantiate(echoPrefab, echoSpawnRoot.position, echoSpawnRoot.rotation);
+        instance.tag = "Echo";
         var playback = instance.GetComponent<EchoPlayback>();
         if (playback == null)
             playback = instance.AddComponent<EchoPlayback>();

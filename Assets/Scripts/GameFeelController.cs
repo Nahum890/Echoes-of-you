@@ -1,4 +1,7 @@
 using UnityEngine;
+#if UNITY_POST_PROCESSING_STACK_V2
+using UnityEngine.Rendering.PostProcessing;
+#endif
 
 /// <summary>
 /// Sistema de Game Feel con jerarquía de intensidad.
@@ -102,6 +105,50 @@ public class GameFeelController : MonoBehaviour
         {
             _fovPulseTimer -= Time.unscaledDeltaTime;
         }
+
+        UpdatePostProcessingAndCameraEffects();
+    }
+
+    void UpdatePostProcessingAndCameraEffects()
+    {
+        EchoRecorder recorder = Object.FindAnyObjectByType<EchoRecorder>();
+        bool isRecording = recorder != null && recorder.IsRecording;
+        bool hasEchoes = recorder != null && recorder.EchoCount > 0;
+
+        float targetCA = 0.08f;
+        float targetLD = 0f;
+
+        if (isRecording)
+        {
+            // Aberración y distorsión tipo lente de seguridad / grabación
+            targetCA = 0.38f + Mathf.PingPong(Time.unscaledTime * 5f, 0.08f);
+            targetLD = -18f + Mathf.PingPong(Time.unscaledTime * 10f, 4f);
+        }
+        else if (hasEchoes)
+        {
+            // Aberración media y distorsión sutil que pulsa como un latido
+            targetCA = 0.22f + Mathf.Sin(Time.unscaledTime * 4.5f) * 0.04f;
+            targetLD = -6f + Mathf.Sin(Time.unscaledTime * 3f) * 3f;
+
+            // Pulso/respiración de cámara durante la presencia de ecos
+            float breatheFov = baseFOV + Mathf.Sin(Time.unscaledTime * 3f) * 1.5f;
+            RequestCameraPulse(breatheFov, 0.05f);
+        }
+
+#if UNITY_POST_PROCESSING_STACK_V2
+        PostProcessProfile profile = PostProcessingSetup.RuntimeProfile;
+        if (profile != null)
+        {
+            if (profile.TryGetSettings<ChromaticAberration>(out var ca))
+            {
+                ca.intensity.value = Mathf.MoveTowards(ca.intensity.value, targetCA, Time.unscaledDeltaTime * 1.5f);
+            }
+            if (profile.TryGetSettings<LensDistortion>(out var ld))
+            {
+                ld.intensity.value = Mathf.MoveTowards(ld.intensity.value, targetLD, Time.unscaledDeltaTime * 60f);
+            }
+        }
+#endif
     }
 
     void OnDestroy()

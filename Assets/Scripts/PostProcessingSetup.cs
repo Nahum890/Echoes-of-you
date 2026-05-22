@@ -19,6 +19,8 @@ public class PostProcessingSetup : MonoBehaviour
 
     Coroutine _setupRoutine;
     bool _loggedMissingResources;
+
+    public static PostProcessProfile RuntimeProfile => _runtimeProfile;
 #endif
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -196,6 +198,16 @@ public class PostProcessingSetup : MonoBehaviour
         AmbientOcclusion ambientOcclusion = _runtimeProfile.AddSettings<AmbientOcclusion>();
         ambientOcclusion.enabled.value = false;
         ambientOcclusion.enabled.overrideState = true;
+
+        ChromaticAberration ca = _runtimeProfile.AddSettings<ChromaticAberration>();
+        ca.enabled.value = true;
+        ca.intensity.value = 0.08f;
+        ca.intensity.overrideState = true;
+
+        LensDistortion ld = _runtimeProfile.AddSettings<LensDistortion>();
+        ld.enabled.value = true;
+        ld.intensity.value = 0f;
+        ld.intensity.overrideState = true;
 
         volume.profile = _runtimeProfile;
     }

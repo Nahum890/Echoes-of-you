@@ -12,26 +12,26 @@ public class PlayerController : MonoBehaviour
     const string AnimatorLegacyJump = "Jump";
 
     [Header("Movimiento")]
-    public float moveSpeed = 6f;
+    public float moveSpeed = 8f;
     public float sprintMultiplier = 1.6f;
-    public float acceleration = 24f;
-    public float deceleration = 28f;
-    public float rotationSharpness = 14f;
+    public float acceleration = 45f;
+    public float deceleration = 50f;
+    public float rotationSharpness = 20f;
     [Range(0.1f, 1f)]
-    public float airControlFactor = 0.75f;
+    public float airControlFactor = 0.85f;
 
     [Header("Salto / Gravedad")]
-    public float jumpHeight = 2.4f;
-    public float gravityStrength = 26f;
+    public float jumpHeight = 3.2f;
+    public float gravityStrength = 28f;
     public Vector3 defaultGravityDirection = Vector3.down;
     public float groundedStickForce = 5f;
     public float gravityBlendSpeed = 9f;
-    public float fallGravityMultiplier = 1.6f;
+    public float fallGravityMultiplier = 2.0f;
     public bool alignToGroundNormal = true;
 
     [Header("Jump Assist")]
-    public float jumpBufferTime = 0.15f;
-    public float coyoteTime = 0.12f;
+    public float jumpBufferTime = 0.2f;
+    public float coyoteTime = 0.2f;
 
     [Header("Deteccion de suelo")]
     public Transform groundCheck;
@@ -84,6 +84,7 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
+        gameObject.tag = "Player";
         _controller = GetComponent<CharacterController>();
         TryGetComponent(out _rb);
         if (_rb != null)
@@ -168,12 +169,20 @@ public class PlayerController : MonoBehaviour
         _controller.Move(motion);
 
         GroundProbe postMoveProbe = ProbeGround(movementUp);
-        // No re-groundear en el frame del salto — evita cancelar el impulso vertical
+        // No re-groundear en el frame del salto o mientras nos movemos hacia arriba (evita cancelar el salto instantáneamente)
         if (!_jumpedThisFrame)
         {
-            _grounded = postMoveProbe.isGrounded || _controller.isGrounded;
-            if (_grounded)
-                _verticalVelocity = GravityDirection * groundedStickForce;
+            bool movingUp = Vector3.Dot(_verticalVelocity, GravityDirection) < -0.1f;
+            if (!movingUp)
+            {
+                _grounded = postMoveProbe.isGrounded || _controller.isGrounded;
+                if (_grounded)
+                    _verticalVelocity = GravityDirection * groundedStickForce;
+            }
+            else
+            {
+                _grounded = false;
+            }
         }
 
         if (!_wasGrounded && _grounded)
@@ -264,6 +273,15 @@ public class PlayerController : MonoBehaviour
 
     void HandleJumpInput(Vector3 movementUp)
     {
+        // Variable jump height: cut upward velocity if button released
+        if (Input.GetButtonUp("Jump") || Input.GetKeyUp(KeyCode.Space))
+        {
+            if (Vector3.Dot(_verticalVelocity, movementUp) > 0f)
+            {
+                _verticalVelocity -= movementUp * (Vector3.Dot(_verticalVelocity, movementUp) * 0.5f);
+            }
+        }
+
         // Buffer the jump input
         if (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.Space))
             _jumpBufferTimer = jumpBufferTime;
@@ -519,35 +537,7 @@ public class PlayerController : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
     }
 
-    void OnGUI()
-    {
-        if (!_isDead)
-            return;
 
-        GUIStyle style = new GUIStyle(GUI.skin.label);
-        style.fontSize = 50;
-        style.alignment = TextAnchor.MiddleCenter;
-        style.normal.textColor = Color.red;
-        style.fontStyle = FontStyle.Bold;
-
-        Rect bounds = new Rect(0, 0, Screen.width, Screen.height);
-        var shadowStyle = new GUIStyle(style);
-        shadowStyle.normal.textColor = Color.black;
-
-        Rect shadowRect = new Rect(2, 2, Screen.width, Screen.height);
-        GUI.Label(shadowRect, "HAS CAIDO AL VACIO", shadowStyle);
-        GUI.Label(bounds, "HAS CAIDO AL VACIO", style);
-
-        style.fontSize = 20;
-        style.normal.textColor = Color.white;
-        shadowStyle.fontSize = 20;
-        shadowStyle.normal.textColor = Color.black;
-
-        Rect hintRect = new Rect(0, Screen.height * 0.5f + 40, Screen.width, 50);
-        Rect hintShadowRect = new Rect(2, Screen.height * 0.5f + 42, Screen.width, 50);
-        GUI.Label(hintShadowRect, "Reiniciando...", shadowStyle);
-        GUI.Label(hintRect, "Reiniciando...", style);
-    }
 
     static Vector3 SafeGravity(Vector3 direction, float strength)
     {
