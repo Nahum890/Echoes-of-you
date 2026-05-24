@@ -10,15 +10,16 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
 {
     [SerializeField] string playerTag = "Player";
     [SerializeField] string echoTag = "Echo";
+    [SerializeField] string echoProjectionTag = "EchoProjection";
 
     [Header("Visual Feedback")]
     [SerializeField] Color inactiveColor = new Color(0.45f, 0.45f, 0.45f, 1f);    // Blanco/gris ceniza apagado
     [SerializeField] Color activeColor = new Color(0.95f, 0.95f, 1.0f, 1f);       // Blanco puro brillante
-    [SerializeField] Color emissionInactive = new Color(0.08f, 0.08f, 0.08f, 1f);  // Emisión blanca muy tenue
-    [SerializeField] Color emissionActive = new Color(2.2f, 2.2f, 2.2f, 1f);       // Emisión blanca intensiva brutalista
+    [SerializeField] Color emissionInactive = new Color(0.04f, 0.04f, 0.05f, 1f);
+    [SerializeField] Color emissionActive = new Color(0.55f, 0.58f, 0.65f, 1f);
     [SerializeField] float pulseSpeed = 2.0f;
     [SerializeField] bool createIndicatorLight = true;
-    [SerializeField] float lightIntensity = 2.5f;
+    [SerializeField] float lightIntensity = 0.85f;
     [SerializeField] float lightRange = 4.5f;
 
     [Header("Behavior")]
@@ -94,6 +95,7 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
         if (_pressed)
         {
             GameFeelController.Instance?.PlayPlatePress(transform.position);
+            TriggerNearbyPlayerPush();
             Debug.Log($"[QA PressurePlate] {gameObject.name} ACTIVADO.");
         }
         else
@@ -160,7 +162,7 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
         for (int i = 0; i < hitCount; i++)
         {
             Collider c = _overlapBuffer[i];
-            if (c != null && (c.CompareTag(playerTag) || c.CompareTag(echoTag)))
+            if (c != null && (c.CompareTag(playerTag) || c.CompareTag(echoTag) || c.CompareTag(echoProjectionTag)))
             {
                 foundActor = true;
                 break;
@@ -191,5 +193,26 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
         SetPressed(false);
         _pulsePhase = 0f;
         UpdateVisuals(false);
+    }
+
+    void TriggerNearbyPlayerPush()
+    {
+        PlayerController player = FindAnyObjectByType<PlayerController>();
+        if (player == null || Vector3.Distance(player.transform.position, transform.position) > 2.4f)
+            return;
+
+        Animator animator = player.GetComponentInChildren<Animator>();
+        if (animator == null || animator.runtimeAnimatorController == null)
+            return;
+
+        AnimatorControllerParameter[] parameters = animator.parameters;
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            if (parameters[i].type == AnimatorControllerParameterType.Trigger && parameters[i].name == "PushButton")
+            {
+                animator.SetTrigger("PushButton");
+                return;
+            }
+        }
     }
 }

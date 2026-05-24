@@ -6,8 +6,10 @@ public class GoalTrigger : MonoBehaviour, IResettableLevelObject
     [SerializeField] string displayName = "Memoria";
     [SerializeField] PressurePlate pressurePlate;
     [SerializeField] DoorController doorController;
+    [SerializeField] PuzzleSignal puzzleSignal;
     [SerializeField] bool usePlatePressedState = true;
     [SerializeField] bool useDoorOpenState;
+    [SerializeField] bool usePuzzleSignalState;
     [SerializeField] bool accumulateOnce = true;
 
     bool _satisfied;
@@ -23,6 +25,8 @@ public class GoalTrigger : MonoBehaviour, IResettableLevelObject
             pressurePlate = GetComponent<PressurePlate>();
         if (doorController == null)
             doorController = GetComponent<DoorController>();
+        if (puzzleSignal == null)
+            puzzleSignal = GetComponent<PuzzleSignal>();
     }
 
     void OnEnable()
@@ -31,6 +35,8 @@ public class GoalTrigger : MonoBehaviour, IResettableLevelObject
             pressurePlate.PressedChanged += OnPlateChanged;
         if (doorController != null)
             doorController.DoorStateChanged += OnDoorChanged;
+        if (puzzleSignal != null)
+            puzzleSignal.SignalChanged += OnPuzzleSignalChanged;
     }
 
     void Start()
@@ -44,6 +50,8 @@ public class GoalTrigger : MonoBehaviour, IResettableLevelObject
             pressurePlate.PressedChanged -= OnPlateChanged;
         if (doorController != null)
             doorController.DoorStateChanged -= OnDoorChanged;
+        if (puzzleSignal != null)
+            puzzleSignal.SignalChanged -= OnPuzzleSignalChanged;
     }
 
     public void MarkSatisfied()
@@ -70,8 +78,20 @@ public class GoalTrigger : MonoBehaviour, IResettableLevelObject
             SetSatisfied(open);
     }
 
+    void OnPuzzleSignalChanged(PuzzleSignal signal, bool satisfied)
+    {
+        if (usePuzzleSignalState)
+            SetSatisfied(satisfied);
+    }
+
     void RefreshFromSources()
     {
+        if (usePuzzleSignalState && puzzleSignal != null)
+        {
+            SetSatisfied(puzzleSignal.IsSatisfied);
+            return;
+        }
+
         if (useDoorOpenState && doorController != null)
         {
             SetSatisfied(doorController.IsOpen);

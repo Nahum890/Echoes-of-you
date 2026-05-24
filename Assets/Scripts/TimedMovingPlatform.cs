@@ -21,6 +21,14 @@ public class TimedMovingPlatform : MonoBehaviour, IResettableLevelObject
     void Awake()
     {
         _t = transform;
+        if (GetComponent<MovingPlatformMomentum>() == null)
+            gameObject.AddComponent<MovingPlatformMomentum>();
+    }
+
+    public void ForceActive()
+    {
+        _target = activeLocal;
+        _wasActive = true;
     }
 
     void Start()

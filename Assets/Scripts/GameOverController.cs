@@ -11,7 +11,7 @@ using UnityEngine.UIElements;
 public class GameOverController : MonoBehaviour
 {
     [Header("Scenes")]
-    [SerializeField] string hubSceneName = "Level_07";
+    [SerializeField] string hubSceneName = "MainMenu";
     [SerializeField] string mainMenuScene = "MainMenu";
 
     [Header("Messages")]

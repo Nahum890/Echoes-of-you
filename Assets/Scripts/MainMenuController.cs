@@ -28,6 +28,8 @@ public class MainMenuController : MonoBehaviour
     VisualElement _root;
     VisualElement _menuBg;
     Label _heroTitle;
+    VisualElement _voidIntro;
+    VisualElement _mainContent;
 
     // Panels
     VisualElement _settingsPanel;
@@ -35,7 +37,6 @@ public class MainMenuController : MonoBehaviour
 
     // Main Menu Buttons
     Button _btnNewGame;
-    Button _btnContinue;
     Button _btnLevels;
     Button _btnSettings;
     Button _btnExit;
@@ -69,6 +70,23 @@ public class MainMenuController : MonoBehaviour
     Slider _sldEcho;
     Label _lblEchoVal;
 
+    Slider _sldGameFog;
+    Slider _sldGameSun;
+    Slider _sldGameLights;
+    Slider _sldGameAmbient;
+    Slider _sldMenuText;
+    Label _lblGameFogVal;
+    Label _lblGameSunVal;
+    Label _lblGameLightsVal;
+    Label _lblGameAmbientVal;
+    Label _lblMenuTextVal;
+
+    Button _btnLightLiminal;
+    Button _btnLightBruma;
+    Button _btnLightClaridad;
+    Button _btnLightPenumbra;
+    string _activeLightingPresetId = "liminal";
+
     List<Resolution> _filteredResolutions;
 
     void OnEnable()
@@ -77,12 +95,14 @@ public class MainMenuController : MonoBehaviour
         if (_doc == null || _doc.rootVisualElement == null) return;
         _root = _doc.rootVisualElement;
 
-        // Apply saved UI scale immediately
         ApplySavedUIScale();
+        ApplySavedMenuTextScale();
 
         // Background & Hero
         _menuBg = _root.Q("menu-bg");
         _heroTitle = _root.Q<Label>("hero-title");
+        _voidIntro = _root.Q("void-intro");
+        _mainContent = _root.Q("main-content");
 
         // Panels
         _settingsPanel = _root.Q("settings-panel");
@@ -90,7 +110,6 @@ public class MainMenuController : MonoBehaviour
 
         // Side nav buttons
         _btnNewGame = _root.Q<Button>("nav-newgame");
-        _btnContinue = _root.Q<Button>("nav-continue");
         _btnLevels = _root.Q<Button>("nav-levels");
         _btnSettings = _root.Q<Button>("nav-settings");
         _btnExit = _root.Q<Button>("nav-exit");
@@ -99,11 +118,13 @@ public class MainMenuController : MonoBehaviour
         SetupHoverCallbacks();
 
         // Bind panel actions
-        RegisterButtonClick("nav-newgame", PlayGame);
-        RegisterButtonClick("nav-continue", ShowLevelSelect);
-        RegisterButtonClick("nav-levels", ShowMain);
+        RegisterButtonClick("nav-newgame", StartNewGame);
+        RegisterButtonClick("nav-levels", ShowStabilityMap);
         RegisterButtonClick("nav-settings", ShowSettings);
         RegisterButtonClick("nav-exit", QuitGame);
+
+        GameProgress.EnsureInitialized();
+        GameProgress.RecordSessionStarted();
 
         // Settings panel bindings
         _sldMaster = _root.Q<Slider>("sld-master");
@@ -131,99 +152,42 @@ public class MainMenuController : MonoBehaviour
         _lblFogVal = _root.Q<Label>("lbl-fog-val");
         _sldEcho = _root.Q<Slider>("sld-echo");
         _lblEchoVal = _root.Q<Label>("lbl-echo-val");
+        _sldGameFog = _root.Q<Slider>("sld-game-fog");
+        _sldGameSun = _root.Q<Slider>("sld-game-sun");
+        _sldGameLights = _root.Q<Slider>("sld-game-lights");
+        _sldGameAmbient = _root.Q<Slider>("sld-game-ambient");
+        _sldMenuText = _root.Q<Slider>("sld-menu-text");
+        _lblGameFogVal = _root.Q<Label>("lbl-game-fog-val");
+        _lblGameSunVal = _root.Q<Label>("lbl-game-sun-val");
+        _lblGameLightsVal = _root.Q<Label>("lbl-game-lights-val");
+        _lblGameAmbientVal = _root.Q<Label>("lbl-game-ambient-val");
+        _lblMenuTextVal = _root.Q<Label>("lbl-menu-text-val");
+
+        _btnLightLiminal = _root.Q<Button>("btn-light-liminal");
+        _btnLightBruma = _root.Q<Button>("btn-light-bruma");
+        _btnLightClaridad = _root.Q<Button>("btn-light-claridad");
+        _btnLightPenumbra = _root.Q<Button>("btn-light-penumbra");
+        if (_btnLightLiminal != null) _btnLightLiminal.clicked += () => ApplyLightingPresetUi("liminal");
+        if (_btnLightBruma != null) _btnLightBruma.clicked += () => ApplyLightingPresetUi("bruma");
+        if (_btnLightClaridad != null) _btnLightClaridad.clicked += () => ApplyLightingPresetUi("claridad");
+        if (_btnLightPenumbra != null) _btnLightPenumbra.clicked += () => ApplyLightingPresetUi("penumbra");
 
         // Bind settings buttons
         RegisterButtonClick("btn-restore-defaults", RestoreFactoryDefaults);
         RegisterButtonClick("btn-settings-back", DiscardSettings);
         RegisterButtonClick("btn-settings-apply", ApplySettings);
-        RegisterButtonClick("btn-levels-back", ShowMain);
+        RegisterButtonClick("btn-levels-back", ShowStabilityMap);
+        RegisterButtonClick("btn-reset-progress", OnResetProgressClicked);
+        RegisterButtonClick("btn-reset-progress-confirm", ConfirmResetProgress);
 
-        // Dynamic dashboard computation
-        int completedLevels = GameProgress.GetCompletedCount();
-        int totalLevels = GameProgress.TotalLevels;
-        float completionRatio = totalLevels > 0 ? (float)completedLevels / totalLevels : 0f;
-
-        float stability = 0.20f + 0.80f * completionRatio;
-        float coherence = 0.10f + 0.90f * completionRatio;
-        float progress = completionRatio;
-
-        // Stability Elements
-        var lblStabilityVal = _root.Q<Label>("lbl-stat-stability-val");
-        var barStabilityFill = _root.Q("bar-stat-stability-fill");
-        var lblStabilityDesc = _root.Q<Label>("lbl-stat-stability-desc");
-        if (lblStabilityVal != null) lblStabilityVal.text = stability.ToString("F2");
-        if (barStabilityFill != null) barStabilityFill.style.width = Length.Percent(stability * 100f);
-        if (lblStabilityDesc != null)
-        {
-            if (completedLevels == 0) lblStabilityDesc.text = "Neural cohesion initializing...";
-            else if (completedLevels == totalLevels) lblStabilityDesc.text = "Neural cohesion fully synchronized.";
-            else lblStabilityDesc.text = "Neural alignment in progress...";
-        }
-
-        // Coherence Elements
-        var lblCoherenceVal = _root.Q<Label>("lbl-stat-coherence-val");
-        var barCoherenceFill = _root.Q("bar-stat-coherence-fill");
-        var lblCoherenceDesc = _root.Q<Label>("lbl-stat-coherence-desc");
-        if (lblCoherenceVal != null) lblCoherenceVal.text = coherence.ToString("F2");
-        if (barCoherenceFill != null) barCoherenceFill.style.width = Length.Percent(coherence * 100f);
-        if (lblCoherenceDesc != null)
-        {
-            if (completedLevels == 0) lblCoherenceDesc.text = "Fragment resonance is currently unstable.";
-            else if (completedLevels == totalLevels) lblCoherenceDesc.text = "Fragment resonance stable.";
-            else lblCoherenceDesc.text = "Intermittent signal synchronization.";
-        }
-
-        // Narrative Progress Elements
-        var lblProgressVal = _root.Q<Label>("lbl-stat-progress-val");
-        var barProgressFill = _root.Q("bar-stat-progress-fill");
-        var lblProgressDesc = _root.Q<Label>("lbl-stat-progress-desc");
-        if (lblProgressVal != null) lblProgressVal.text = progress.ToString("F2");
-        if (barProgressFill != null) barProgressFill.style.width = Length.Percent(progress * 100f);
-        if (lblProgressDesc != null)
-        {
-            if (completedLevels == 0) lblProgressDesc.text = "Deep memory nodes still inaccessible.";
-            else if (completedLevels == totalLevels) lblProgressDesc.text = "All memory nodes restored.";
-            else lblProgressDesc.text = "Memory fragments beginning to re-align.";
-        }
-
-        // Level select buttons and styles
-        for (int i = 1; i <= 6; i++)
-        {
-            int levelNum = i;
-            string sceneName = $"Level_{levelNum:D2}";
-            string btnName = $"btn-level-{levelNum:D2}";
-            var btn = _root.Q<Button>(btnName);
-            if (btn != null)
-            {
-                bool isUnlocked = GameProgress.IsSceneUnlocked(sceneName);
-                bool isCompleted = GameProgress.IsSceneCompleted(sceneName);
-                
-                // Clear any leftover styles
-                btn.RemoveFromClassList("level-button--locked");
-                btn.RemoveFromClassList("level-button--completed");
-
-                if (!isUnlocked)
-                {
-                    btn.AddToClassList("level-button--locked");
-                    btn.SetEnabled(false);
-                }
-                else
-                {
-                    btn.SetEnabled(true);
-                    if (isCompleted)
-                    {
-                        btn.AddToClassList("level-button--completed");
-                    }
-                    btn.clicked += () => LoadLevel(sceneName);
-                }
-            }
-        }
+        RefreshDashboard();
+        BindLevelMapButtons();
 
         // Try load textures dynamically if not assigned
         LoadFallbackTextures();
 
         InitializeSettings();
-        ShowMain();
+        ShowVoidIntro();
     }
 
     void Start()
@@ -267,11 +231,6 @@ public class MainMenuController : MonoBehaviour
         {
             _btnNewGame.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnNewGame, newGameBg, "NEURAL SYNC"));
             _btnNewGame.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnNewGame));
-        }
-        if (_btnContinue != null)
-        {
-            _btnContinue.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnContinue, continueBg, "MEMORY CORE"));
-            _btnContinue.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnContinue));
         }
         if (_btnLevels != null)
         {
@@ -328,7 +287,6 @@ public class MainMenuController : MonoBehaviour
     {
         _activeNavButton = activeBtn;
         _btnNewGame?.RemoveFromClassList("nav-item--active");
-        _btnContinue?.RemoveFromClassList("nav-item--active");
         _btnLevels?.RemoveFromClassList("nav-item--active");
         _btnSettings?.RemoveFromClassList("nav-item--active");
         _btnExit?.RemoveFromClassList("nav-item--active");
@@ -355,31 +313,61 @@ public class MainMenuController : MonoBehaviour
 
     // --- Panel Switching ---
 
-    void ShowMain()
+    void ShowVoidIntro()
     {
         _settingsPanel?.AddToClassList("hidden");
         _levelSelectPanel?.AddToClassList("hidden");
+        _mainContent?.AddToClassList("hidden");
+        _voidIntro?.RemoveFromClassList("hidden");
+
+        if (_menuBg != null)
+        {
+            Texture2D bg = newGameBg != null ? newGameBg : defaultBg;
+            if (bg != null)
+                _menuBg.style.backgroundImage = new StyleBackground(bg);
+            _menuBg.style.opacity = 0.68f;
+        }
+
+        if (_heroTitle != null)
+            _heroTitle.text = "VOID";
+
+        SetActiveNav(_btnNewGame);
+    }
+
+    void ShowStabilityMap()
+    {
+        _settingsPanel?.AddToClassList("hidden");
+        _levelSelectPanel?.AddToClassList("hidden");
+        _voidIntro?.AddToClassList("hidden");
+        _mainContent?.RemoveFromClassList("hidden");
+
+        if (_menuBg != null)
+        {
+            if (defaultBg != null)
+                _menuBg.style.backgroundImage = new StyleBackground(defaultBg);
+            _menuBg.style.opacity = 0.22f;
+        }
+
+        if (_heroTitle != null)
+            _heroTitle.text = "STABILITY";
+
         SetActiveNav(_btnLevels);
+        RefreshDashboard();
     }
 
     void ShowSettings()
     {
         _levelSelectPanel?.AddToClassList("hidden");
+        _voidIntro?.AddToClassList("hidden");
+        _mainContent?.AddToClassList("hidden");
         _settingsPanel?.RemoveFromClassList("hidden");
         SetActiveNav(_btnSettings);
         LoadCurrentSettingsIntoUI();
     }
 
-    void ShowLevelSelect()
-    {
-        _settingsPanel?.AddToClassList("hidden");
-        _levelSelectPanel?.RemoveFromClassList("hidden");
-        SetActiveNav(_btnContinue);
-    }
-
     // --- Actions ---
 
-    void PlayGame()
+    void StartNewGame()
     {
         LoadLevel(firstLevelScene);
     }
@@ -429,6 +417,11 @@ public class MainMenuController : MonoBehaviour
         if (_sensitivitySlider != null) _sensitivitySlider.RegisterValueChangedCallback(evt => UpdateSensitivityLabel(evt.newValue));
         if (_sldFog != null) _sldFog.RegisterValueChangedCallback(evt => UpdateFogLabel(evt.newValue));
         if (_sldEcho != null) _sldEcho.RegisterValueChangedCallback(evt => UpdateLabel(_lblEchoVal, evt.newValue));
+        if (_sldGameFog != null) _sldGameFog.RegisterValueChangedCallback(evt => UpdateGameFogLabel(evt.newValue));
+        if (_sldGameSun != null) _sldGameSun.RegisterValueChangedCallback(evt => UpdateGameSunLabel(evt.newValue));
+        if (_sldGameLights != null) _sldGameLights.RegisterValueChangedCallback(evt => UpdateGameLightsLabel(evt.newValue));
+        if (_sldGameAmbient != null) _sldGameAmbient.RegisterValueChangedCallback(evt => UpdateGameAmbientLabel(evt.newValue));
+        if (_sldMenuText != null) _sldMenuText.RegisterValueChangedCallback(evt => UpdateMenuTextLabel(evt.newValue));
 
         // Resolutions
         if (_resDropdown != null)
@@ -483,6 +476,17 @@ public class MainMenuController : MonoBehaviour
 
         if (_lblFogVal != null) UpdateFogLabel(_sldFog.value);
         if (_lblEchoVal != null) UpdateLabel(_lblEchoVal, _sldEcho.value);
+
+        if (_sldGameFog != null) _sldGameFog.value = EchoesPresentationSettings.GameFogDensity;
+        if (_sldGameSun != null) _sldGameSun.value = EchoesPresentationSettings.GameSunIntensity;
+        if (_sldGameLights != null) _sldGameLights.value = EchoesPresentationSettings.GamePointLightMultiplier;
+        if (_sldGameAmbient != null) _sldGameAmbient.value = EchoesPresentationSettings.GameAmbientMultiplier;
+        if (_sldMenuText != null) _sldMenuText.value = EchoesPresentationSettings.MenuTextScale;
+        UpdateGameFogLabel(_sldGameFog != null ? _sldGameFog.value : EchoesPresentationSettings.DefaultGameFogDensity);
+        UpdateGameSunLabel(_sldGameSun != null ? _sldGameSun.value : EchoesPresentationSettings.DefaultGameSunIntensity);
+        UpdateGameLightsLabel(_sldGameLights != null ? _sldGameLights.value : EchoesPresentationSettings.DefaultGamePointLightMul);
+        UpdateGameAmbientLabel(_sldGameAmbient != null ? _sldGameAmbient.value : EchoesPresentationSettings.DefaultGameAmbientMul);
+        UpdateMenuTextLabel(_sldMenuText != null ? _sldMenuText.value : EchoesPresentationSettings.DefaultMenuTextScale);
 
         // Preset button highlights based on sensitivity value
         if (Mathf.Approximately(currentSens, 0.5f)) SelectSensitivityPresetUI("Low");
@@ -598,13 +602,65 @@ public class MainMenuController : MonoBehaviour
             playback.SendMessage("ApplySavedEchoOpacity", SendMessageOptions.DontRequireReceiver);
         }
 
+        float gameFog = _sldGameFog != null ? _sldGameFog.value : EchoesPresentationSettings.DefaultGameFogDensity;
+        float gameSun = _sldGameSun != null ? _sldGameSun.value : EchoesPresentationSettings.DefaultGameSunIntensity;
+        float gameLights = _sldGameLights != null ? _sldGameLights.value : EchoesPresentationSettings.DefaultGamePointLightMul;
+        float gameAmbient = _sldGameAmbient != null ? _sldGameAmbient.value : EchoesPresentationSettings.DefaultGameAmbientMul;
+        float menuText = _sldMenuText != null ? _sldMenuText.value : EchoesPresentationSettings.DefaultMenuTextScale;
+        EchoesPresentationSettings.SaveLighting(gameFog, gameSun, gameLights, gameAmbient);
+        EchoesPresentationSettings.Save(
+            EchoesPresentationSettings.CharacterVisualScale,
+            EchoesPresentationSettings.AnimationPlaybackSpeed,
+            EchoesPresentationSettings.ProceduralMotionEnabled,
+            menuText);
+        ApplySavedMenuTextScale();
+
         PlayerPrefs.Save();
-        ShowMain();
+        ShowStabilityMap();
     }
 
     void DiscardSettings()
     {
-        ShowMain();
+        if (_mainContent != null && !_mainContent.ClassListContains("hidden"))
+            ShowStabilityMap();
+        else
+            ShowVoidIntro();
+    }
+
+    void ApplyLightingPresetUi(string presetId)
+    {
+        _activeLightingPresetId = presetId;
+        EchoesPresentationSettings.ApplyLightingPreset(presetId);
+
+        if (EchoesPresentationSettings.TryGetLightingPreset(presetId, out float fog, out float sun, out float point, out float ambient))
+        {
+            if (_sldGameFog != null) _sldGameFog.value = fog;
+            if (_sldGameSun != null) _sldGameSun.value = sun;
+            if (_sldGameLights != null) _sldGameLights.value = point;
+            if (_sldGameAmbient != null) _sldGameAmbient.value = ambient;
+            UpdateGameFogLabel(fog);
+            UpdateGameSunLabel(sun);
+            UpdateGameLightsLabel(point);
+            UpdateGameAmbientLabel(ambient);
+        }
+
+        SetLightingPresetButtonActive(presetId);
+    }
+
+    void SetLightingPresetButtonActive(string presetId)
+    {
+        _btnLightLiminal?.RemoveFromClassList("preset-button--active");
+        _btnLightBruma?.RemoveFromClassList("preset-button--active");
+        _btnLightClaridad?.RemoveFromClassList("preset-button--active");
+        _btnLightPenumbra?.RemoveFromClassList("preset-button--active");
+
+        switch (presetId)
+        {
+            case "bruma": _btnLightBruma?.AddToClassList("preset-button--active"); break;
+            case "claridad": _btnLightClaridad?.AddToClassList("preset-button--active"); break;
+            case "penumbra": _btnLightPenumbra?.AddToClassList("preset-button--active"); break;
+            default: _btnLightLiminal?.AddToClassList("preset-button--active"); break;
+        }
     }
 
     void RestoreFactoryDefaults()
@@ -622,6 +678,59 @@ public class MainMenuController : MonoBehaviour
         if (_sldEcho != null) _sldEcho.value = 0.60f;
 
         SelectSensitivityPreset("Medium", 1.0f);
+
+        if (_sldGameFog != null) _sldGameFog.value = EchoesPresentationSettings.DefaultGameFogDensity;
+        if (_sldGameSun != null) _sldGameSun.value = EchoesPresentationSettings.DefaultGameSunIntensity;
+        if (_sldGameLights != null) _sldGameLights.value = EchoesPresentationSettings.DefaultGamePointLightMul;
+        if (_sldGameAmbient != null) _sldGameAmbient.value = EchoesPresentationSettings.DefaultGameAmbientMul;
+        if (_sldMenuText != null) _sldMenuText.value = EchoesPresentationSettings.DefaultMenuTextScale;
+
+        ApplyLightingPresetUi("liminal");
+    }
+
+    void UpdateGameFogLabel(float value)
+    {
+        if (_lblGameFogVal != null)
+            _lblGameFogVal.text = value.ToString("F4");
+    }
+
+    void UpdateGameSunLabel(float value)
+    {
+        if (_lblGameSunVal != null)
+            _lblGameSunVal.text = value.ToString("F2");
+    }
+
+    void UpdateGameLightsLabel(float value)
+    {
+        if (_lblGameLightsVal != null)
+            _lblGameLightsVal.text = Mathf.RoundToInt(value * 100f) + "%";
+    }
+
+    void UpdateGameAmbientLabel(float value)
+    {
+        if (_lblGameAmbientVal != null)
+            _lblGameAmbientVal.text = Mathf.RoundToInt(value * 100f) + "%";
+    }
+
+    void UpdateMenuTextLabel(float value)
+    {
+        if (_lblMenuTextVal != null)
+            _lblMenuTextVal.text = Mathf.RoundToInt(value * 100f) + "%";
+    }
+
+    void ApplySavedMenuTextScale()
+    {
+        if (_root == null)
+            return;
+
+        float scale = EchoesPresentationSettings.MenuTextScale;
+        _root.RemoveFromClassList("scale-large");
+        _root.RemoveFromClassList("scale-xl");
+
+        if (scale >= 1.45f)
+            _root.AddToClassList("scale-xl");
+        else if (scale >= 1.12f)
+            _root.AddToClassList("scale-large");
     }
 
     // Apply scaling styles to root UXML element
@@ -640,6 +749,189 @@ public class MainMenuController : MonoBehaviour
         else if (scale == "Extra Large")
         {
             _root.AddToClassList("scale-xl");
+        }
+    }
+
+    void RefreshDashboard()
+    {
+        if (_root == null)
+            return;
+
+        int completedLevels = GameProgress.GetCompletedCount();
+        int totalLevels = GameProgress.TotalLevels;
+        float completionRatio = totalLevels > 0 ? (float)completedLevels / totalLevels : 0f;
+
+        float stability = 0.20f + 0.80f * completionRatio;
+        float coherence = 0.10f + 0.90f * completionRatio;
+        float progress = completionRatio;
+
+        SetBarStat("lbl-stat-stability-val", "bar-stat-stability-fill", "lbl-stat-stability-desc",
+            stability, completedLevels, totalLevels,
+            "Neural cohesion initializing...",
+            "Neural alignment in progress...",
+            "Neural cohesion fully synchronized.");
+
+        SetBarStat("lbl-stat-coherence-val", "bar-stat-coherence-fill", "lbl-stat-coherence-desc",
+            coherence, completedLevels, totalLevels,
+            "Fragment resonance is currently unstable.",
+            "Intermittent signal synchronization.",
+            "Fragment resonance stable.");
+
+        SetBarStat("lbl-stat-progress-val", "bar-stat-progress-fill", "lbl-stat-progress-desc",
+            progress, completedLevels, totalLevels,
+            "Deep memory nodes still inaccessible.",
+            "Memory fragments beginning to re-align.",
+            "All memory nodes restored.");
+
+        SetLabelText("lbl-telemetry-fragments", $"{completedLevels}/{totalLevels}");
+        SetLabelText("lbl-telemetry-echoes", GameProgress.GetTotalEchoesCreated().ToString());
+        SetLabelText("lbl-telemetry-deaths", GameProgress.GetTotalDeathCount().ToString());
+        SetLabelText("lbl-telemetry-time", GameProgress.FormatPlayTime(GameProgress.GetTotalPlayTimeSeconds()));
+
+        int integrity = GameProgress.GetIntegrityPercent();
+        SetLabelText("lbl-user-integrity", $"Integridad: {integrity}%");
+        SetLabelText("lbl-user-rank", GameProgress.GetArchivistRank());
+        SetLabelText("lbl-user-sessions", $"Sesiones: {GameProgress.GetSessionCount()}");
+        SetLabelText("lbl-protocol-desc", GameProgress.GetActiveProtocolMessage(completedLevels, totalLevels));
+
+        string continueScene = GameProgress.GetContinueSceneName();
+        int continueIndex = GameProgress.GetSceneIndex(continueScene);
+        string continueName = continueIndex >= 0 ? GameProgress.GetLevelDisplayName(continueScene) : "—";
+        string lastFragmentLine = continueIndex >= 0
+            ? $"{continueName} · Nivel {continueIndex + 1:D2}"
+            : continueName;
+        SetLabelText("lbl-last-fragment", lastFragmentLine);
+
+        if (completedLevels >= totalLevels && totalLevels > 0)
+            SetLabelText("lbl-continue-hint", "VOID reinicia · elige cualquier fragmento en el mapa.");
+        else if (completedLevels == 0)
+            SetLabelText("lbl-continue-hint", "VOID inicia el primer fragmento.");
+        else
+            SetLabelText("lbl-continue-hint", $"Siguiente fragmento sugerido: {continueName}.");
+
+        SetLabelText("lbl-map-progress", completedLevels == 1
+            ? "1 nodo restaurado"
+            : $"{completedLevels} nodos restaurados");
+
+        UpdateLevelMapLabels();
+    }
+
+    void SetBarStat(string valueName, string barName, string descName, float value,
+        int completed, int total, string descEmpty, string descMid, string descFull)
+    {
+        var lblVal = _root.Q<Label>(valueName);
+        var barFill = _root.Q(barName);
+        var lblDesc = _root.Q<Label>(descName);
+
+        if (lblVal != null)
+            lblVal.text = value.ToString("F2");
+        if (barFill != null)
+            barFill.style.width = Length.Percent(value * 100f);
+        if (lblDesc != null)
+        {
+            if (completed == 0)
+                lblDesc.text = descEmpty;
+            else if (completed >= total)
+                lblDesc.text = descFull;
+            else
+                lblDesc.text = descMid;
+        }
+    }
+
+    void SetLabelText(string name, string text)
+    {
+        var lbl = _root.Q<Label>(name);
+        if (lbl != null)
+            lbl.text = text;
+    }
+
+    void UpdateLevelMapLabels()
+    {
+        for (int i = 1; i <= GameProgress.TotalLevels; i++)
+        {
+            string sceneName = $"Level_{i:D2}";
+            var lbl = _root.Q<Label>($"lbl-level-{i:D2}");
+            if (lbl == null)
+                continue;
+
+            if (!GameProgress.IsSceneUnlocked(sceneName))
+            {
+                lbl.text = "BLOQUEADO";
+                continue;
+            }
+
+            if (GameProgress.IsSceneCompleted(sceneName))
+            {
+                int deaths = GameProgress.GetSceneDeathCount(sceneName);
+                lbl.text = deaths > 0 ? $"COMPLETO · {deaths} colapsos" : "COMPLETO";
+            }
+            else if (sceneName == GameProgress.GetContinueSceneName())
+            {
+                lbl.text = "EN CURSO";
+            }
+        }
+    }
+
+    readonly System.Collections.Generic.Dictionary<string, System.Action> _levelClickHandlers = new();
+
+    bool _resetArmed;
+
+    void OnResetProgressClicked()
+    {
+        if (!_resetArmed)
+        {
+            _resetArmed = true;
+            SetLabelText("lbl-reset-hint", "Pulsa REINICIAR ARCHIVO otra vez para confirmar.");
+            return;
+        }
+
+        ConfirmResetProgress();
+    }
+
+    void ConfirmResetProgress()
+    {
+        _resetArmed = false;
+        GameProgress.ResetProgress();
+        SetLabelText("lbl-reset-hint", "Archivo reiniciado. Solo el fragmento 01 está activo.");
+        if (_heroTitle != null)
+            _heroTitle.text = "ISOLATED";
+        RefreshDashboard();
+        BindLevelMapButtons();
+    }
+
+    void BindLevelMapButtons()
+    {
+        for (int i = 1; i <= GameProgress.TotalLevels; i++)
+        {
+            string sceneName = $"Level_{i:D2}";
+            string btnName = $"btn-level-{i:D2}";
+            var btn = _root.Q<Button>(btnName);
+            if (btn == null)
+                continue;
+
+            if (_levelClickHandlers.TryGetValue(btnName, out System.Action existing))
+                btn.clicked -= existing;
+
+            bool isUnlocked = GameProgress.IsSceneUnlocked(sceneName);
+            bool isCompleted = GameProgress.IsSceneCompleted(sceneName);
+
+            btn.RemoveFromClassList("level-button--locked");
+            btn.RemoveFromClassList("level-button--completed");
+
+            if (!isUnlocked)
+            {
+                btn.AddToClassList("level-button--locked");
+                btn.SetEnabled(false);
+                continue;
+            }
+
+            btn.SetEnabled(true);
+            if (isCompleted)
+                btn.AddToClassList("level-button--completed");
+
+            System.Action handler = () => LoadLevel(sceneName);
+            _levelClickHandlers[btnName] = handler;
+            btn.clicked += handler;
         }
     }
 }

@@ -31,8 +31,18 @@
                 
             </ui:VisualElement>
             
+            <!-- Session stats -->
+            <ui:VisualElement name="pause-stats-panel" class="pause-stats-panel">
+                <ui:Label text="SESIÓN ACTUAL" class="text-label-caps" style="color: #c2c1ff; margin-bottom: 8px;" />
+                <ui:Label name="lbl-pause-fragment" text="Fragmento: —" class="pause-stat-line pause-stat-line--highlight" />
+                <ui:Label name="lbl-pause-time" text="Tiempo: 0s" class="pause-stat-line" />
+                <ui:Label name="lbl-pause-echoes" text="Ecos: 0" class="pause-stat-line" />
+                <ui:Label name="lbl-pause-deaths" text="Colapsos (nivel): 0" class="pause-stat-line" />
+                <ui:Label name="lbl-pause-total" text="Archivo: 0/6 · 0 ecos" class="pause-stat-line" style="margin-top: 8px;" />
+            </ui:VisualElement>
+
             <!-- Decorative pulse node -->
-            <ui:VisualElement style="margin-top: 96px; align-items: center; justify-content: center; width: 96px; height: 96px;">
+            <ui:VisualElement style="margin-top: 48px; align-items: center; justify-content: center; width: 96px; height: 96px;">
                 <ui:VisualElement class="pulse-ring" />
                 <ui:VisualElement class="pulse-node" />
             </ui:VisualElement>
@@ -167,19 +177,46 @@
                         </ui:VisualElement>
                     </ui:VisualElement>
                     
-                    <!-- CELL 4: CALIBRATION STATUS -->
-                    <ui:VisualElement class="bento-cell" style="width: 48%; margin-left: 2%; margin-bottom: 16px; align-items: center; justify-content: center;">
-                        <ui:VisualElement class="bento-cell-header" style="width: 100%;">
-                            <ui:Label text="CALIBRATION STATUS" class="bento-cell-title" />
-                            <ui:Label text="◆" class="bento-cell-icon" style="color: #c2c1ff;" />
+                    <!-- CELL 4: ILUMINACIÓN EN NIVELES -->
+                    <ui:VisualElement class="bento-cell" style="width: 48%; margin-left: 2%; margin-bottom: 16px;">
+                        <ui:VisualElement class="bento-cell-header">
+                            <ui:Label text="ILUMINACIÓN" class="bento-cell-title" />
+                            <ui:Label text="💡" class="bento-cell-icon" />
                         </ui:VisualElement>
-                        
-                        <ui:VisualElement style="flex-grow: 1; align-items: center; justify-content: center;">
-                            <ui:Label text="SYNC" class="calibration-status-value" />
-                            <ui:Label text="SYSTEM_NOMINAL" class="calibration-status-label" style="margin-top: 8px;" />
-                            <ui:VisualElement style="width: 64px; height: 1px; background-color: rgba(194,193,255,0.3); margin-top: 16px; margin-bottom: 16px;" />
-                            <ui:Label text="LATENCY: 0.2ms" class="text-body-sm" style="color: #918fa0; font-size: 10px;" />
-                            <ui:Label text="FRAME_SYNC: ACTIVE" class="text-body-sm" style="color: #918fa0; font-size: 10px; margin-top: 4px;" />
+                        <ui:Label text="PRESET ATMÓSFERA" class="text-label-caps" style="color: #918fa0; margin-bottom: 8px;" />
+                        <ui:VisualElement class="preset-button-row" style="margin-bottom: 12px;">
+                            <ui:Button name="p-btn-light-liminal" text="LIMINAL" class="preset-button preset-button--active" />
+                            <ui:Button name="p-btn-light-bruma" text="BRUMA" class="preset-button" />
+                            <ui:Button name="p-btn-light-claridad" text="CLARO" class="preset-button" />
+                            <ui:Button name="p-btn-light-penumbra" text="OSCURO" class="preset-button" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-row">
+                            <ui:VisualElement class="setting-row-header">
+                                <ui:Label text="Niebla" class="setting-label" />
+                                <ui:Label name="p-lbl-game-fog-val" text="0.005" class="setting-value" />
+                            </ui:VisualElement>
+                            <ui:Slider name="p-sld-game-fog" low-value="0" high-value="0.02" value="0.005" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-row">
+                            <ui:VisualElement class="setting-row-header">
+                                <ui:Label text="Sol" class="setting-label" />
+                                <ui:Label name="p-lbl-game-sun-val" text="1.02" class="setting-value" />
+                            </ui:VisualElement>
+                            <ui:Slider name="p-sld-game-sun" low-value="0.4" high-value="3" value="1.02" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-row">
+                            <ui:VisualElement class="setting-row-header">
+                                <ui:Label text="Luces" class="setting-label" />
+                                <ui:Label name="p-lbl-game-lights-val" text="90%" class="setting-value" />
+                            </ui:VisualElement>
+                            <ui:Slider name="p-sld-game-lights" low-value="0.3" high-value="3" value="0.9" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-row">
+                            <ui:VisualElement class="setting-row-header">
+                                <ui:Label text="Ambiente" class="setting-label" />
+                                <ui:Label name="p-lbl-game-ambient-val" text="92%" class="setting-value" />
+                            </ui:VisualElement>
+                            <ui:Slider name="p-sld-game-ambient" low-value="0.4" high-value="2.5" value="0.92" />
                         </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>

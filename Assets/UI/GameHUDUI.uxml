@@ -14,7 +14,9 @@
                 <ui:VisualElement name="hud-record-bar-fill" class="hud-record-bar-fill" />
             </ui:VisualElement>
             <!-- Echo count label -->
-            <ui:Label name="hud-echo-label" text="0/0" class="hud-echo-label hidden" />
+            <ui:Label name="hud-echo-label" text="0/0" class="hud-echo-label hidden" style="display: none;" />
+            <!-- Echo slots container -->
+            <ui:VisualElement name="hud-echo-slots" class="hud-echo-slots-container" />
         </ui:VisualElement>
 
         <!-- HUD Echo Lines (top-right) -->

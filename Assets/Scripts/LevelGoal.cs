@@ -149,12 +149,15 @@ public class LevelGoal : MonoBehaviour, IResettableLevelObject
         
         Debug.Log($"[QA LevelGoal] Progreso: {SatisfiedCount} / {RequiredCount} | Listo: {_ready}");
 
+        LevelEscapeSequence escape = FindAnyObjectByType<LevelEscapeSequence>();
+        bool unlockExits = _ready && (escape == null || escape.IsEscapeComplete);
+
         if (linkedExits != null)
         {
             for (int i = 0; i < linkedExits.Length; i++)
             {
                 if (linkedExits[i] != null)
-                    linkedExits[i].SetUnlocked(_ready);
+                    linkedExits[i].SetUnlocked(unlockExits);
             }
         }
 

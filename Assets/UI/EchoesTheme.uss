@@ -208,12 +208,26 @@
    SIDE NAVIGATION
    ============================================================ */
 
+.main-menu-root .hud-stat-label,
+.main-menu-root .hud-stat-value,
+.main-menu-root .hud-stat-desc {
+    font-size: 14px;
+}
+
+.main-menu-root .telemetry-chip-label {
+    font-size: 11px;
+}
+
+.main-menu-root .telemetry-chip-value {
+    font-size: 22px;
+}
+
 .side-nav {
     position: absolute;
     left: 0;
     top: 0;
     bottom: 0;
-    width: 320px;
+    width: 360px;
     background-color: rgba(7, 13, 31, 0.2);
     border-right-width: 1px;
     border-right-color: rgba(255, 255, 255, 0.05);
@@ -672,6 +686,59 @@
     white-space: normal;
 }
 
+.telemetry-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.telemetry-chip {
+    width: 48%;
+    margin-right: 2%;
+    margin-bottom: 8px;
+    padding: 8px 10px;
+    background-color: rgba(25, 31, 49, 0.65);
+    border-width: 1px;
+    border-color: rgba(194, 193, 255, 0.12);
+    border-radius: 4px;
+}
+
+.telemetry-chip-label {
+    font-size: 8px;
+    letter-spacing: 2px;
+    -unity-text-transform: uppercase;
+    color: #918fa0;
+    margin-bottom: 2px;
+}
+
+.telemetry-chip-value {
+    font-size: 14px;
+    color: #c2c1ff;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Manrope-Variable.ttf');
+}
+
+.pause-stats-panel {
+    margin-top: 32px;
+    padding: 16px 24px;
+    min-width: 280px;
+    background-color: rgba(12, 19, 36, 0.55);
+    border-width: 1px;
+    border-color: rgba(194, 193, 255, 0.15);
+    border-radius: 4px;
+    align-items: center;
+}
+
+.pause-stat-line {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #918fa0;
+    margin-top: 4px;
+    -unity-text-align: middle-center;
+}
+
+.pause-stat-line--highlight {
+    color: #7af0c8;
+}
+
 /* ============================================================
    IN-GAME HUD
    ============================================================ */
@@ -727,6 +794,31 @@
     color: #c2c1ff;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/SpaceGrotesk-Variable.ttf');
     letter-spacing: 2px;
+}
+
+.hud-echo-slots-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.hud-echo-slot {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    border-width: 1px;
+    border-color: rgba(194, 193, 255, 0.4);
+    background-color: rgba(12, 19, 36, 0.5);
+    margin-left: 6px;
+    margin-right: 6px;
+    transition-property: background-color, border-color, scale;
+    transition-duration: 0.2s;
+}
+
+.hud-echo-slot--active {
+    border-color: #c2c1ff;
+    background-color: #c2c1ff;
+    scale: 1.1 1.1;
 }
 
 .hud-objective-area {

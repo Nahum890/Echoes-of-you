@@ -12,6 +12,10 @@ GameObject:
   - component: {fileID: 540000}
   - component: {fileID: 14300000}
   - component: {fileID: 11400000}
+  - component: {fileID: 2999911936329414513}
+  - component: {fileID: 3087442990125167745}
+  - component: {fileID: 2287304188481372373}
+  - component: {fileID: 4475642880135450122}
   m_Layer: 0
   m_Name: EchoPrefab
   m_TagString: Echo
@@ -101,6 +105,67 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EchoPlayback
   skinWidth: 0.08
   _matEcho: {fileID: 0}
+--- !u!114 &2999911936329414513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f343dc84ef54c3f828e5d51836c5a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EchoSpectralTrail
+  snapshotInterval: 0.04
+  delayTiers:
+  - 0.1
+  - 0.2
+  - 0.3
+  afterimageLifetime: 0.5
+  afterimageColor: {r: 0.72, g: 0.88, b: 0.96, a: 0.18}
+  maxAfterimagesPerTier: 4
+--- !u!114 &3087442990125167745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d057b60efe0b9e4d8810cfa40941010, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EchoTemporalVisual
+  visualRoot: {fileID: 0}
+  flickerSpeed: 14
+  glitchInterval: 0.11
+  echoTint: {r: 0.78, g: 0.86, b: 0.92, a: 0.72}
+  glitchTint: {r: 0.35, g: 0.95, b: 1, a: 0.85}
+--- !u!114 &2287304188481372373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27e780ece1fa86b47aab3d627c89685a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerLocomotionAnimator
+--- !u!114 &4475642880135450122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d818bcf08dcf1184ab62cbd46bb5c404, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationRuntimeBootstrap
 --- !u!1 &100001
 GameObject:
   m_ObjectHideFlags: 0
@@ -225,6 +290,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: eeab5e21720dedd48bb135f9df6cefa8, type: 2}
+    - target: {fileID: 5866666021909216657, guid: c6f08cca9f00aa040ab00d410697e152, type: 3}
+      propertyPath: m_CullingMode
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

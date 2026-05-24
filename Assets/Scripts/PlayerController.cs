@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -10,6 +13,13 @@ public class PlayerController : MonoBehaviour
     const string AnimatorLegacyGrounded = "Grounded";
     const string AnimatorLegacyFalling = "Falling";
     const string AnimatorLegacyJump = "Jump";
+    const string AnimatorParamVerticalSpeed = "VerticalSpeed";
+    const string AnimatorParamTurn = "Turn";
+    const string AnimatorParamHardLanding = "HardLanding";
+    const string AnimatorParamStartRun = "StartRun";
+    const string AnimatorParamStopRun = "StopRun";
+    const string AnimatorParamDeath = "Death";
+    const string AnimatorParamRespawn = "Respawn";
 
     [Header("Movimiento")]
     public float moveSpeed = 8f;
@@ -32,6 +42,13 @@ public class PlayerController : MonoBehaviour
     [Header("Jump Assist")]
     public float jumpBufferTime = 0.2f;
     public float coyoteTime = 0.2f;
+
+    [Header("Peso / Game Feel")]
+    [SerializeField] float hardLandingSpeed = 13f;
+    [SerializeField] float softLandingPause = 0.012f;
+    [SerializeField] float hardLandingPause = 0.028f;
+    [SerializeField] float footstepDistance = 1.75f;
+    [SerializeField] float movementScrapeSpeed = 4.5f;
 
     [Header("Deteccion de suelo")]
     public Transform groundCheck;
@@ -63,13 +80,27 @@ public class PlayerController : MonoBehaviour
     bool _isDead;
     bool _jumpedThisFrame;
     bool _isFalling;
+    bool _wasMoving;
+    bool _lastHardLanding;
+    bool _inputLocked;
+    float _landingLockTimer;
+    float _distanceSinceFootstep;
+    float _lastPlanarSpeed;
+    float _turnAmount;
+    float _sprintMomentumBonus;
+    float _gravityScale = 1f;
+    Vector3 _platformVelocity;
 
     public enum PlayerAnimationState
     {
         Idle = 0,
         Run = 1,
         Jump = 2,
-        Recording = 3
+        Recording = 3,
+        Falling = 4,
+        Landing = 5,
+        Death = 6,
+        Respawn = 7
     }
 
     // Jump buffer & coyote
@@ -80,7 +111,16 @@ public class PlayerController : MonoBehaviour
     public Vector3 GravityDirection => _currentGravity.sqrMagnitude > 0.0001f ? _currentGravity.normalized : Vector3.down;
     public Vector3 GravityVector => _currentGravity;
     public bool IsGrounded => _grounded;
+    public bool IsAlive => !_isDead;
+    public bool IsInputLocked => _inputLocked;
+    public LayerMask GroundMask => groundMask;
+    public float PlanarSpeed => Vector3.ProjectOnPlane(_controller != null ? _controller.velocity : _planarVelocity, _currentUp).magnitude;
+    public Vector3 PlanarVelocity => _planarVelocity;
+    public float VerticalSpeed => Vector3.Dot(_verticalVelocity, _currentUp);
+    public float TurnAmount => _turnAmount;
+    public bool LastLandingWasHard => _lastHardLanding;
     public PlayerAnimationState CurrentAnimationState { get; private set; }
+    public CharacterController Controller => _controller;
 
     void Awake()
     {
@@ -94,7 +134,11 @@ public class PlayerController : MonoBehaviour
         }
 
         EnsureGroundCheck();
+        PlayerCharacterVisualSetup.EnsureOn(transform);
         EnsureVisualAnimator();
+        EnsureOptionalComponent("PlayerLocomotionAnimator");
+        EnsureOptionalComponent("PlayerAdvancedLocomotion");
+        PlayerAnimationRuntimeBootstrap.ApplyToHierarchy(gameObject);
         EnsureCameraFocus();
         RefreshCameraReference();
 
@@ -113,6 +157,10 @@ public class PlayerController : MonoBehaviour
         _lastFacing = initialForward.normalized;
         transform.rotation = Quaternion.LookRotation(_lastFacing, _currentUp);
     }
+
+    void OnEnable() => ForceUnlockAndReset();
+
+    void Start() => ForceUnlockAndReset();
 
     void Update()
     {
@@ -151,21 +199,42 @@ public class PlayerController : MonoBehaviour
             _verticalVelocity = GravityDirection * groundedStickForce;
 
         Vector3 movementUp = ResolveMovementUp(preMoveProbe);
+
+        if (_inputLocked)
+        {
+            _planarVelocity = Vector3.zero;
+            _jumpBufferTimer = 0f;
+            _coyoteTimer = 0f;
+            if (_grounded)
+                _verticalVelocity = GravityDirection * groundedStickForce;
+
+            _controller.Move(_verticalVelocity * Time.deltaTime);
+            GroundProbe lockedProbe = ProbeGround(movementUp);
+            _grounded = lockedProbe.isGrounded || _controller.isGrounded;
+            UpdateOrientation(lockedProbe, Time.deltaTime);
+            UpdateMovementFeedback(movementUp, Time.deltaTime);
+            UpdateAnimator();
+            _jumpedThisFrame = false;
+            return;
+        }
+
         HandleMovementInput(movementUp);
         HandleJumpInput(movementUp);
 
         if (!_grounded || _jumpedThisFrame)
         {
-            float gravMul = 1f;
+            float gravMul = _gravityScale;
             float downSpeed = Vector3.Dot(_verticalVelocity, GravityDirection);
             if (downSpeed > 0f && !_jumpedThisFrame)
-                gravMul = fallGravityMultiplier;
+                gravMul *= fallGravityMultiplier;
             _verticalVelocity += _currentGravity * gravMul * Time.deltaTime;
         }
 
+        _gravityScale = 1f;
         _isFalling = !_grounded && Vector3.Dot(_verticalVelocity, GravityDirection) > 0.5f;
 
-        Vector3 motion = (_planarVelocity + _verticalVelocity) * Time.deltaTime;
+        Vector3 motion = (_planarVelocity + _verticalVelocity + _platformVelocity) * Time.deltaTime;
+        _platformVelocity = Vector3.zero;
         _controller.Move(motion);
 
         GroundProbe postMoveProbe = ProbeGround(movementUp);
@@ -187,10 +256,15 @@ public class PlayerController : MonoBehaviour
 
         if (!_wasGrounded && _grounded)
         {
+            _lastHardLanding = downwardSpeed >= hardLandingSpeed;
+            _landingLockTimer = _lastHardLanding ? hardLandingPause : softLandingPause;
             GameFeelController.Instance?.PlayLanding(transform.position, movementUp, downwardSpeed);
+            if (_lastHardLanding)
+                TriggerAnimatorIfExists(AnimatorParamHardLanding);
         }
 
         UpdateOrientation(postMoveProbe, Time.deltaTime);
+        UpdateMovementFeedback(movementUp, Time.deltaTime);
         UpdateAnimator();
 
         _jumpedThisFrame = false;
@@ -210,6 +284,40 @@ public class PlayerController : MonoBehaviour
             return;
 
         _gravityZones.Remove(zone);
+    }
+
+    public void SetInputLocked(bool locked)
+    {
+        _inputLocked = locked;
+        if (!locked)
+            return;
+
+        _planarVelocity = Vector3.zero;
+        _jumpBufferTimer = 0f;
+        _coyoteTimer = 0f;
+    }
+
+    public void SetPlanarVelocity(Vector3 velocity) => _planarVelocity = velocity;
+
+    public void AddPlanarImpulse(Vector3 impulse) => _planarVelocity += impulse;
+
+    public void AddVerticalImpulse(Vector3 upAxis, float speed) => _verticalVelocity = upAxis * speed;
+
+    public void SetVerticalStick() => _verticalVelocity = GravityDirection * groundedStickForce;
+
+    public void AddPlatformVelocity(Vector3 velocity) => _platformVelocity += velocity;
+
+    public void SetSprintMomentumBonus(float bonus) => _sprintMomentumBonus = Mathf.Max(0f, bonus);
+
+    public void ApplyGravityScale(float scale) => _gravityScale = Mathf.Clamp(scale, 0.05f, 2f);
+
+    public void ForceUnlockAndReset()
+    {
+        _inputLocked = false;
+        _isDead = false;
+        _landingLockTimer = 0f;
+        if (_controller != null)
+            _controller.enabled = true;
     }
 
     public void ForceGravity(Vector3 worldDirection, float strength = -1f, bool playFeedback = true)
@@ -261,13 +369,23 @@ public class PlayerController : MonoBehaviour
         if (desiredDirection.sqrMagnitude > 1f)
             desiredDirection.Normalize();
 
-        float speed = moveSpeed * (Input.GetKey(KeyCode.LeftShift) ? sprintMultiplier : 1f);
+        float speed = moveSpeed * (1f + _sprintMomentumBonus);
+        if (Input.GetKey(KeyCode.LeftShift))
+            speed *= sprintMultiplier;
         Vector3 desiredVelocity = desiredDirection * speed;
 
         _planarVelocity = Vector3.ProjectOnPlane(_planarVelocity, movementUp);
         float sharpness = desiredVelocity.sqrMagnitude > 0.001f ? acceleration : deceleration;
         if (!_grounded)
             sharpness *= airControlFactor;
+        if (_landingLockTimer > 0f)
+        {
+            _landingLockTimer -= Time.deltaTime;
+            float retention = EchoesLocomotionSettings.Instance != null
+                ? EchoesLocomotionSettings.Instance.landingVelocityRetention
+                : 1f;
+            desiredVelocity = Vector3.Lerp(desiredVelocity, _planarVelocity, retention);
+        }
         _planarVelocity = DampVector(_planarVelocity, desiredVelocity, sharpness, Time.deltaTime);
     }
 
@@ -303,6 +421,7 @@ public class PlayerController : MonoBehaviour
 
         if (HasAnimatorParameter(AnimatorLegacyJump, AnimatorControllerParameterType.Trigger))
             _anim.SetTrigger(AnimatorLegacyJump);
+        TriggerAnimatorIfExists("JumpStart");
 
         GameFeelController.Instance?.PlayJump(transform.position, movementUp);
     }
@@ -326,7 +445,11 @@ public class PlayerController : MonoBehaviour
             _lastFacing = Vector3.Cross(transform.right, _currentUp).normalized;
 
         Quaternion targetRotation = Quaternion.LookRotation(_lastFacing, _currentUp);
+        Vector3 oldForward = Vector3.ProjectOnPlane(transform.forward, _currentUp).normalized;
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, DampingFactor(rotationSharpness, deltaTime));
+        Vector3 newForward = Vector3.ProjectOnPlane(transform.forward, _currentUp).normalized;
+        if (oldForward.sqrMagnitude > 0.001f && newForward.sqrMagnitude > 0.001f)
+            _turnAmount = Mathf.MoveTowards(_turnAmount, Vector3.SignedAngle(oldForward, newForward, _currentUp) / Mathf.Max(deltaTime, 0.0001f), 720f * deltaTime);
     }
 
     void UpdateAnimator()
@@ -335,10 +458,15 @@ public class PlayerController : MonoBehaviour
             return;
 
         Vector3 flatVelocity = Vector3.ProjectOnPlane(_controller.velocity, _currentUp);
-        bool isRecording = _echoRecorder != null && _echoRecorder.IsRecording;
+        bool isRecording = _echoRecorder != null && _echoRecorder.IsRecording && !_echoRecorder.IsProjectionRecording;
         CurrentAnimationState = ResolveAnimationState(flatVelocity.magnitude, isRecording);
 
-        SetAnimatorFloatIfExists(AnimatorParamSpeed, flatVelocity.magnitude);
+        float speedParam = flatVelocity.magnitude * EchoesPresentationSettings.AnimationPlaybackSpeed;
+        SetAnimatorFloatIfExists(AnimatorParamSpeed, speedParam);
+        if (_anim != null)
+            _anim.speed = EchoesPresentationSettings.AnimationPlaybackSpeed;
+        SetAnimatorFloatIfExists(AnimatorParamVerticalSpeed, VerticalSpeed);
+        SetAnimatorFloatIfExists(AnimatorParamTurn, Mathf.Clamp(_turnAmount / 180f, -1f, 1f));
         
         Vector3 localVelocity = transform.InverseTransformDirection(_controller.velocity);
         SetAnimatorFloatIfExists("VelocityX", localVelocity.x);
@@ -351,6 +479,38 @@ public class PlayerController : MonoBehaviour
 
         if (HasAnimatorParameter("State", AnimatorControllerParameterType.Int))
             _anim.SetInteger("State", (int)CurrentAnimationState);
+    }
+
+    void UpdateMovementFeedback(Vector3 movementUp, float deltaTime)
+    {
+        Vector3 flatVelocity = Vector3.ProjectOnPlane(_controller.velocity, movementUp);
+        float speed = flatVelocity.magnitude;
+        bool moving = _grounded && speed > 0.35f;
+
+        if (moving)
+        {
+            _distanceSinceFootstep += speed * deltaTime;
+            if (_distanceSinceFootstep >= footstepDistance)
+            {
+                _distanceSinceFootstep = 0f;
+                GameFeelController.Instance?.PlayFootstep(transform.position, movementUp, speed);
+            }
+
+            if (speed > movementScrapeSpeed)
+                GameFeelController.Instance?.PlayMovementScrape(transform.position, movementUp, Mathf.InverseLerp(movementScrapeSpeed, moveSpeed * sprintMultiplier, speed));
+        }
+        else
+        {
+            _distanceSinceFootstep = Mathf.Min(_distanceSinceFootstep, footstepDistance * 0.65f);
+        }
+
+        if (!_wasMoving && moving)
+            TriggerAnimatorIfExists(AnimatorParamStartRun);
+        else if (_wasMoving && !moving && _lastPlanarSpeed > 1.2f)
+            TriggerAnimatorIfExists(AnimatorParamStopRun);
+
+        _wasMoving = moving;
+        _lastPlanarSpeed = speed;
     }
 
     void UpdateTargetGravity()
@@ -472,12 +632,16 @@ public class PlayerController : MonoBehaviour
             CreateFallbackVisual(visualRoot);
 
         _modelRoot = visualRoot.GetChild(0);
+        EnsureOptionalComponent("PlayerProceduralAnimator");
 
         Animator visualAnimator = _modelRoot.GetComponent<Animator>();
         if (visualAnimator == null)
             visualAnimator = _modelRoot.GetComponentInChildren<Animator>(true);
         if (visualAnimator != null)
         {
+#if UNITY_EDITOR
+            RepairAnimatorAssetLinks(visualAnimator);
+#endif
             visualAnimator.applyRootMotion = false;
             visualAnimator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
             visualAnimator.updateMode = AnimatorUpdateMode.Normal;
@@ -489,6 +653,30 @@ public class PlayerController : MonoBehaviour
 
         _anim = visualAnimator;
     }
+
+#if UNITY_EDITOR
+    void RepairAnimatorAssetLinks(Animator animator)
+    {
+        if (animator == null)
+            return;
+
+        if (animator.runtimeAnimatorController == null)
+        {
+            RuntimeAnimatorController controller = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>("Assets/Prefabs/PlayerAnimController.controller");
+            if (controller != null)
+                animator.runtimeAnimatorController = controller;
+        }
+
+        if (animator.avatar == null || !animator.avatar.isValid || !animator.avatar.isHuman)
+        {
+            Avatar avatar = AssetDatabase.LoadAssetAtPath<Avatar>("Assets/3D Models/lowpoly-character-freerigged-/source/LowPolyCharacterModel/FBX/LowPolyCharacter.fbx");
+            if (avatar != null && avatar.isValid)
+                animator.avatar = avatar;
+        }
+
+        EditorUtility.SetDirty(animator);
+    }
+#endif
 
     void CreateFallbackVisual(Transform visualRoot)
     {
@@ -519,6 +707,7 @@ public class PlayerController : MonoBehaviour
     {
         _isDead = true;
         _controller.enabled = false;
+        TriggerAnimatorIfExists(AnimatorParamDeath);
         
         if (LevelRuntimeController.Instance != null)
         {
@@ -526,6 +715,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            GameFeelController.Instance?.PlayPlayerDeath(transform.position);
             StartCoroutine(FallbackRestart());
         }
     }
@@ -613,13 +803,39 @@ public class PlayerController : MonoBehaviour
 
     PlayerAnimationState ResolveAnimationState(float speed, bool isRecording)
     {
+        if (_isDead)
+            return PlayerAnimationState.Death;
         if (isRecording)
             return PlayerAnimationState.Recording;
-        if (!_grounded || _jumpedThisFrame || _isFalling)
+        if (_landingLockTimer > 0f)
+            return PlayerAnimationState.Landing;
+        if (_isFalling)
+            return PlayerAnimationState.Falling;
+        if (!_grounded || _jumpedThisFrame)
             return PlayerAnimationState.Jump;
         if (speed > 0.15f)
             return PlayerAnimationState.Run;
         return PlayerAnimationState.Idle;
+    }
+
+    void TriggerAnimatorIfExists(string parameterName)
+    {
+        if (HasAnimatorParameter(parameterName, AnimatorControllerParameterType.Trigger))
+            _anim.SetTrigger(parameterName);
+    }
+
+    void EnsureOptionalComponent(string typeName)
+    {
+        System.Type type = System.Type.GetType(typeName);
+        if (type == null)
+        {
+            System.Reflection.Assembly[] assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
+            for (int i = 0; i < assemblies.Length && type == null; i++)
+                type = assemblies[i].GetType(typeName);
+        }
+
+        if (type != null && GetComponent(type) == null)
+            gameObject.AddComponent(type);
     }
 
     bool HasAnimatorParameter(string parameterName, AnimatorControllerParameterType parameterType)

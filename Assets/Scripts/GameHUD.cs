@@ -22,6 +22,7 @@ public class GameHUD : MonoBehaviour
     VisualElement _recordBarBg;
     VisualElement _recordBarFill;
     Label _echoLabel;
+    VisualElement _echoSlotsContainer;
 
     // HUD bars
     VisualElement _stabilityFill;
@@ -61,6 +62,8 @@ public class GameHUD : MonoBehaviour
     // State
     int _echoCurrent;
     int _echoMax;
+    int _lastEchoCurrent = -1;
+    int _lastEchoMax = -1;
     bool _recording;
     float _recordNorm;
     string _echoState = "";
@@ -89,6 +92,7 @@ public class GameHUD : MonoBehaviour
         _recordBarBg = _root.Q("hud-record-bar-bg");
         _recordBarFill = _root.Q("hud-record-bar-fill");
         _echoLabel = _root.Q<Label>("hud-echo-label");
+        _echoSlotsContainer = _root.Q("hud-echo-slots");
 
         _stabilityFill = _root.Q("hud-stability-fill");
         _recallFill = _root.Q("hud-recall-fill");
@@ -197,6 +201,7 @@ public class GameHUD : MonoBehaviour
             Show(_recordBarBg);
             Hide(_echoIcon);
             Hide(_echoLabel);
+            Hide(_echoSlotsContainer);
 
             float pulse = Mathf.Sin(Time.unscaledTime * 4f) * 0.3f + 0.7f;
             if (_recordDot != null)
@@ -210,10 +215,34 @@ public class GameHUD : MonoBehaviour
             Hide(_recordDot);
             Hide(_recordBarBg);
             Show(_echoIcon);
-            Show(_echoLabel);
+            Hide(_echoLabel);
+            Show(_echoSlotsContainer);
 
-            if (_echoLabel != null)
-                _echoLabel.text = $"{_echoCurrent}/{_echoMax}";
+            RebuildEchoSlots();
+        }
+    }
+
+    void RebuildEchoSlots()
+    {
+        if (_echoSlotsContainer == null) return;
+
+        if (_echoCurrent == _lastEchoCurrent && _echoMax == _lastEchoMax)
+            return;
+
+        _lastEchoCurrent = _echoCurrent;
+        _lastEchoMax = _echoMax;
+
+        _echoSlotsContainer.Clear();
+
+        for (int i = 0; i < _echoMax; i++)
+        {
+            VisualElement slot = new VisualElement();
+            slot.AddToClassList("hud-echo-slot");
+            if (i < _echoCurrent)
+            {
+                slot.AddToClassList("hud-echo-slot--active");
+            }
+            _echoSlotsContainer.Add(slot);
         }
     }
 

@@ -18,16 +18,28 @@ public static class LevelValidator
         bool passed = true;
         string name = scene.name;
 
-        if (name == "MainMenu" || name == "Level_07")
+        if (name == "MainMenu")
         {
             Debug.Log($"[LevelValidator] Skipping {name} (non-gameplay)");
             return true;
         }
 
         PressurePlate[] plates = Object.FindObjectsOfType<PressurePlate>();
-        if (plates.Length < 1)
+        PuzzleSignal[] signals = Object.FindObjectsOfType<PuzzleSignal>();
+        if (plates.Length < 1 && signals.Length < 1)
         {
-            Debug.LogWarning($"[LevelValidator] {name}: Missing pressure plates.");
+            Debug.LogWarning($"[LevelValidator] {name}: Missing puzzle objectives.");
+            passed = false;
+        }
+
+        int dynamicSystemCount =
+            Object.FindObjectsOfType<EchoKineticBody>().Length +
+            Object.FindObjectsOfType<EchoShieldField>().Length +
+            Object.FindObjectsOfType<EchoConflictTrap>().Length +
+            Object.FindObjectsOfType<DynamicTransformMotor>().Length;
+        if (dynamicSystemCount < 1)
+        {
+            Debug.LogWarning($"[LevelValidator] {name}: Missing dynamic echo systems.");
             passed = false;
         }
 
@@ -93,6 +105,15 @@ public static class LevelValidator
         if (pathHint == null)
             Debug.LogWarning($"[LevelValidator] {name}: No EchoPathHint.");
 
+        if (Object.FindObjectOfType<LevelExperienceBlueprint>() == null)
+        {
+            Debug.LogWarning($"[LevelValidator] {name}: Missing LevelExperienceBlueprint (run Production rebuild).");
+            passed = false;
+        }
+
+        if (Object.FindObjectOfType<LevelEscapeSequence>() == null)
+            Debug.LogWarning($"[LevelValidator] {name}: No LevelEscapeSequence.");
+
         if (passed)
             Debug.Log($"[LevelValidator] PASS: {name}");
         else
@@ -124,7 +145,10 @@ public static class LevelValidator
             "Assets/Scenes/Level_04.unity",
             "Assets/Scenes/Level_05.unity",
             "Assets/Scenes/Level_06.unity",
-            "Assets/Scenes/Level_07.unity"
+            "Assets/Scenes/Level_07.unity",
+            "Assets/Scenes/Level_08.unity",
+            "Assets/Scenes/Level_09.unity",
+            "Assets/Scenes/Level_10.unity"
         };
 
         int passed = 0;

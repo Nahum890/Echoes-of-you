@@ -209,6 +209,13 @@ public class PostProcessingSetup : MonoBehaviour
         ld.intensity.value = 0f;
         ld.intensity.overrideState = true;
 
+        Grain grain = _runtimeProfile.AddSettings<Grain>();
+        grain.enabled.value = true;
+        grain.intensity.value = 0.28f;
+        grain.intensity.overrideState = true;
+        grain.size.value = 1.1f;
+        grain.size.overrideState = true;
+
         volume.profile = _runtimeProfile;
     }
 

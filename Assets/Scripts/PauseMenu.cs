@@ -11,7 +11,7 @@ using UnityEngine.UIElements;
 public class PauseMenu : MonoBehaviour
 {
     [Header("Scenes")]
-    [SerializeField] string hubSceneName = "Level_07";
+    [SerializeField] string hubSceneName = "MainMenu";
     [SerializeField] string mainMenuScene = "MainMenu";
 
     bool _paused;
@@ -47,6 +47,19 @@ public class PauseMenu : MonoBehaviour
     Label _lblFogVal;
     Slider _sldEcho;
     Label _lblEchoVal;
+
+    Slider _sldGameFog;
+    Slider _sldGameSun;
+    Slider _sldGameLights;
+    Slider _sldGameAmbient;
+    Label _lblGameFogVal;
+    Label _lblGameSunVal;
+    Label _lblGameLightsVal;
+    Label _lblGameAmbientVal;
+    Button _btnLightLiminal;
+    Button _btnLightBruma;
+    Button _btnLightClaridad;
+    Button _btnLightPenumbra;
 
     List<Resolution> _filteredResolutions;
 
@@ -123,6 +136,22 @@ public class PauseMenu : MonoBehaviour
         _lblFogVal = _doc.rootVisualElement.Q<Label>("p-lbl-fog-val");
         _sldEcho = _doc.rootVisualElement.Q<Slider>("p-sld-echo");
         _lblEchoVal = _doc.rootVisualElement.Q<Label>("p-lbl-echo-val");
+        _sldGameFog = _doc.rootVisualElement.Q<Slider>("p-sld-game-fog");
+        _sldGameSun = _doc.rootVisualElement.Q<Slider>("p-sld-game-sun");
+        _sldGameLights = _doc.rootVisualElement.Q<Slider>("p-sld-game-lights");
+        _sldGameAmbient = _doc.rootVisualElement.Q<Slider>("p-sld-game-ambient");
+        _lblGameFogVal = _doc.rootVisualElement.Q<Label>("p-lbl-game-fog-val");
+        _lblGameSunVal = _doc.rootVisualElement.Q<Label>("p-lbl-game-sun-val");
+        _lblGameLightsVal = _doc.rootVisualElement.Q<Label>("p-lbl-game-lights-val");
+        _lblGameAmbientVal = _doc.rootVisualElement.Q<Label>("p-lbl-game-ambient-val");
+        _btnLightLiminal = _doc.rootVisualElement.Q<Button>("p-btn-light-liminal");
+        _btnLightBruma = _doc.rootVisualElement.Q<Button>("p-btn-light-bruma");
+        _btnLightClaridad = _doc.rootVisualElement.Q<Button>("p-btn-light-claridad");
+        _btnLightPenumbra = _doc.rootVisualElement.Q<Button>("p-btn-light-penumbra");
+        if (_btnLightLiminal != null) _btnLightLiminal.clicked += () => ApplyLightingPresetUi("liminal");
+        if (_btnLightBruma != null) _btnLightBruma.clicked += () => ApplyLightingPresetUi("bruma");
+        if (_btnLightClaridad != null) _btnLightClaridad.clicked += () => ApplyLightingPresetUi("claridad");
+        if (_btnLightPenumbra != null) _btnLightPenumbra.clicked += () => ApplyLightingPresetUi("penumbra");
 
         // Bind settings buttons
         var btnRestoreDefaults = _doc.rootVisualElement.Q<Button>("p-btn-restore-defaults");
@@ -173,6 +202,7 @@ public class PauseMenu : MonoBehaviour
 
         _pauseRoot?.RemoveFromClassList("hidden");
         ShowPauseNav();
+        RefreshPauseStats();
     }
 
     void Resume()
@@ -196,6 +226,45 @@ public class PauseMenu : MonoBehaviour
     {
         _settingsPanel?.AddToClassList("hidden");
         _pauseNav?.RemoveFromClassList("hidden");
+        RefreshPauseStats();
+    }
+
+    void RefreshPauseStats()
+    {
+        if (_doc == null || _doc.rootVisualElement == null)
+            return;
+
+        string sceneName = SceneManager.GetActiveScene().name;
+        int levelIndex = GameProgress.GetSceneIndex(sceneName);
+        bool isLevel = levelIndex >= 0;
+
+        string fragmentLine = isLevel
+            ? $"Fragmento: {GameProgress.GetLevelDisplayName(sceneName)}"
+            : $"Zona: {sceneName}";
+
+        SetPauseLabel("lbl-pause-fragment", fragmentLine);
+
+        LevelRuntimeController runtime = LevelRuntimeController.Instance;
+        float sessionTime = runtime != null ? runtime.SessionPlaySeconds : 0f;
+        int sessionEchoes = runtime != null ? runtime.SessionEchoes : 0;
+        int sessionDeaths = runtime != null ? runtime.SessionDeaths : 0;
+
+        SetPauseLabel("lbl-pause-time", $"Tiempo: {GameProgress.FormatPlayTime(sessionTime)}");
+        SetPauseLabel("lbl-pause-echoes", $"Ecos (sesión): {sessionEchoes}");
+        SetPauseLabel("lbl-pause-deaths", isLevel
+            ? $"Colapsos (nivel): {GameProgress.GetSceneDeathCount(sceneName)} · sesión {sessionDeaths}"
+            : $"Colapsos (sesión): {sessionDeaths}");
+
+        int completed = GameProgress.GetCompletedCount();
+        SetPauseLabel("lbl-pause-total",
+            $"Archivo: {completed}/{GameProgress.TotalLevels} · {GameProgress.GetTotalEchoesCreated()} ecos · {GameProgress.FormatPlayTime(GameProgress.GetTotalPlayTimeSeconds())}");
+    }
+
+    void SetPauseLabel(string elementName, string text)
+    {
+        var lbl = _doc.rootVisualElement.Q<Label>(elementName);
+        if (lbl != null)
+            lbl.text = text;
     }
 
     void ShowSettings()
@@ -228,6 +297,10 @@ public class PauseMenu : MonoBehaviour
         if (_sensitivitySlider != null) _sensitivitySlider.RegisterValueChangedCallback(evt => UpdateSensitivityLabel(evt.newValue));
         if (_sldFog != null) _sldFog.RegisterValueChangedCallback(evt => UpdateFogLabel(evt.newValue));
         if (_sldEcho != null) _sldEcho.RegisterValueChangedCallback(evt => UpdateLabel(_lblEchoVal, evt.newValue));
+        if (_sldGameFog != null) _sldGameFog.RegisterValueChangedCallback(evt => UpdateGameFogLabel(evt.newValue));
+        if (_sldGameSun != null) _sldGameSun.RegisterValueChangedCallback(evt => UpdateGameSunLabel(evt.newValue));
+        if (_sldGameLights != null) _sldGameLights.RegisterValueChangedCallback(evt => UpdateGameLightsLabel(evt.newValue));
+        if (_sldGameAmbient != null) _sldGameAmbient.RegisterValueChangedCallback(evt => UpdateGameAmbientLabel(evt.newValue));
 
         // Resolutions dropdown
         if (_resDropdown != null)
@@ -280,7 +353,14 @@ public class PauseMenu : MonoBehaviour
 
         if (_lblFogVal != null) UpdateFogLabel(_sldFog.value);
         if (_lblEchoVal != null) UpdateLabel(_lblEchoVal, _sldEcho.value);
-
+        if (_sldGameFog != null) _sldGameFog.value = EchoesPresentationSettings.GameFogDensity;
+        if (_sldGameSun != null) _sldGameSun.value = EchoesPresentationSettings.GameSunIntensity;
+        if (_sldGameLights != null) _sldGameLights.value = EchoesPresentationSettings.GamePointLightMultiplier;
+        if (_sldGameAmbient != null) _sldGameAmbient.value = EchoesPresentationSettings.GameAmbientMultiplier;
+        UpdateGameFogLabel(_sldGameFog != null ? _sldGameFog.value : EchoesPresentationSettings.DefaultGameFogDensity);
+        UpdateGameSunLabel(_sldGameSun != null ? _sldGameSun.value : EchoesPresentationSettings.DefaultGameSunIntensity);
+        UpdateGameLightsLabel(_sldGameLights != null ? _sldGameLights.value : EchoesPresentationSettings.DefaultGamePointLightMul);
+        UpdateGameAmbientLabel(_sldGameAmbient != null ? _sldGameAmbient.value : EchoesPresentationSettings.DefaultGameAmbientMul);
         if (Mathf.Approximately(currentSens, 0.5f)) SelectSensitivityPresetUI("Low");
         else if (Mathf.Approximately(currentSens, 2.0f)) SelectSensitivityPresetUI("High");
         else SelectSensitivityPresetUI("Medium");
@@ -391,8 +471,80 @@ public class PauseMenu : MonoBehaviour
             playback.SendMessage("ApplySavedEchoOpacity", SendMessageOptions.DontRequireReceiver);
         }
 
+        float gameFog = _sldGameFog != null ? _sldGameFog.value : EchoesPresentationSettings.DefaultGameFogDensity;
+        float gameSun = _sldGameSun != null ? _sldGameSun.value : EchoesPresentationSettings.DefaultGameSunIntensity;
+        float gameLights = _sldGameLights != null ? _sldGameLights.value : EchoesPresentationSettings.DefaultGamePointLightMul;
+        float gameAmbient = _sldGameAmbient != null ? _sldGameAmbient.value : EchoesPresentationSettings.DefaultGameAmbientMul;
+        EchoesPresentationSettings.SaveLighting(gameFog, gameSun, gameLights, gameAmbient);
+
+        LevelLightingSettings levelLighting = FindAnyObjectByType<LevelLightingSettings>();
+        if (levelLighting != null)
+        {
+            levelLighting.fogDensity = gameFog;
+            levelLighting.directionalIntensity = gameSun;
+            levelLighting.pointLightIntensityMultiplier = gameLights;
+            levelLighting.ApplyNow();
+        }
+
         PlayerPrefs.Save();
         ShowPauseNav();
+    }
+
+    void ApplyLightingPresetUi(string presetId)
+    {
+        EchoesPresentationSettings.ApplyLightingPreset(presetId);
+        if (!EchoesPresentationSettings.TryGetLightingPreset(presetId, out float fog, out float sun, out float point, out float ambient))
+            return;
+
+        if (_sldGameFog != null) _sldGameFog.value = fog;
+        if (_sldGameSun != null) _sldGameSun.value = sun;
+        if (_sldGameLights != null) _sldGameLights.value = point;
+        if (_sldGameAmbient != null) _sldGameAmbient.value = ambient;
+        UpdateGameFogLabel(fog);
+        UpdateGameSunLabel(sun);
+        UpdateGameLightsLabel(point);
+        UpdateGameAmbientLabel(ambient);
+        SetLightingPresetButtonActive(presetId);
+    }
+
+    void SetLightingPresetButtonActive(string presetId)
+    {
+        _btnLightLiminal?.RemoveFromClassList("preset-button--active");
+        _btnLightBruma?.RemoveFromClassList("preset-button--active");
+        _btnLightClaridad?.RemoveFromClassList("preset-button--active");
+        _btnLightPenumbra?.RemoveFromClassList("preset-button--active");
+
+        switch (presetId)
+        {
+            case "bruma": _btnLightBruma?.AddToClassList("preset-button--active"); break;
+            case "claridad": _btnLightClaridad?.AddToClassList("preset-button--active"); break;
+            case "penumbra": _btnLightPenumbra?.AddToClassList("preset-button--active"); break;
+            default: _btnLightLiminal?.AddToClassList("preset-button--active"); break;
+        }
+    }
+
+    void UpdateGameFogLabel(float value)
+    {
+        if (_lblGameFogVal != null)
+            _lblGameFogVal.text = value.ToString("F4");
+    }
+
+    void UpdateGameSunLabel(float value)
+    {
+        if (_lblGameSunVal != null)
+            _lblGameSunVal.text = value.ToString("F2");
+    }
+
+    void UpdateGameLightsLabel(float value)
+    {
+        if (_lblGameLightsVal != null)
+            _lblGameLightsVal.text = Mathf.RoundToInt(value * 100f) + "%";
+    }
+
+    void UpdateGameAmbientLabel(float value)
+    {
+        if (_lblGameAmbientVal != null)
+            _lblGameAmbientVal.text = Mathf.RoundToInt(value * 100f) + "%";
     }
 
     void DiscardSettings()
@@ -415,6 +567,8 @@ public class PauseMenu : MonoBehaviour
         if (_sldEcho != null) _sldEcho.value = 0.60f;
 
         SelectSensitivityPreset("Medium", 1.0f);
+
+        ApplyLightingPresetUi("liminal");
     }
 
     public void ApplySavedUIScale()

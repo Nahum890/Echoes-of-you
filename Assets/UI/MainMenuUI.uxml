@@ -1,9 +1,15 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/EchoesTheme.uss" />
     
-    <ui:VisualElement name="root" class="root-fullscreen">
+    <ui:VisualElement name="root" class="root-fullscreen main-menu-root scale-large">
         <!-- Background (swappable via C#) -->
-        <ui:VisualElement name="menu-bg" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; opacity: 0.2; background-image: url('project://database/Assets/UI/Images/void_fog_bg.png');" />
+        <ui:VisualElement name="menu-bg" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; opacity: 0.65; background-image: url('project://database/Assets/UI/Images/void_fog_bg.png');" />
+
+        <ui:VisualElement name="void-intro" style="position: absolute; left: 280px; top: 0; right: 0; bottom: 0; align-items: center; justify-content: center;">
+            <ui:Label text="VOID" class="text-headline-xl" style="color: #c2c1ff; letter-spacing: 14px;" />
+            <ui:Label text="Sincronía neural en espera" class="text-body-sm" style="color: #918fa0; margin-top: 16px;" />
+            <ui:Label text="VOID inicia el archivo · STABILITY abre el mapa de fragmentos" class="text-label-caps" style="color: #464554; margin-top: 28px; font-size: 10px;" />
+        </ui:VisualElement>
         
         <!-- Top bar -->
         <ui:VisualElement class="header-bar main-menu-header">
@@ -21,11 +27,9 @@
                 
                 <!-- Nav items -->
                 <ui:VisualElement style="flex-direction: column;">
-                    <ui:Button name="nav-newgame" text="VOID" class="nav-item">
+                    <ui:Button name="nav-newgame" text="VOID" class="nav-item nav-item--active">
                     </ui:Button>
-                    <ui:Button name="nav-continue" text="MEMORIES" class="nav-item">
-                    </ui:Button>
-                    <ui:Button name="nav-levels" text="STABILITY" class="nav-item nav-item--active">
+                    <ui:Button name="nav-levels" text="STABILITY" class="nav-item">
                     </ui:Button>
                     <ui:Button name="nav-settings" text="SYSTEM" class="nav-item">
                     </ui:Button>
@@ -38,14 +42,15 @@
             <ui:VisualElement style="flex-direction: row; align-items: center;">
                 <ui:VisualElement style="width: 40px; height: 40px; border-radius: 9999px; border-width: 1px; border-color: rgba(194,193,255,0.2); background-color: rgba(194,193,255,0.1); margin-right: 24px;" />
                 <ui:VisualElement>
-                    <ui:Label text="USER_01" class="text-label-caps" style="color: #c2c1ff;" />
-                    <ui:Label name="lbl-user-integrity" text="Integrity: 88%" style="font-size: 10px; color: #464554; letter-spacing: 4px; text-transform: uppercase;" />
+                    <ui:Label name="lbl-user-rank" text="OBSERVADOR" class="text-label-caps" style="color: #c2c1ff;" />
+                    <ui:Label name="lbl-user-integrity" text="Integridad: 42%" style="font-size: 10px; color: #464554; letter-spacing: 4px; text-transform: uppercase;" />
+                    <ui:Label name="lbl-user-sessions" text="Sesiones: 1" style="font-size: 9px; color: #918fa0; letter-spacing: 2px; margin-top: 2px;" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
         
         <!-- Main content area (right of side nav) -->
-        <ui:VisualElement name="main-content" class="main-content">
+        <ui:VisualElement name="main-content" class="main-content hidden">
             <!-- Page title -->
             <ui:Label text="ESTADO DEL SISTEMA COGNITIVO" class="text-headline-xl" style="color: #c2c1ff; letter-spacing: 9.6px; margin-bottom: 12px;" />
             <ui:VisualElement class="accent-line" style="margin-bottom: 48px;" />
@@ -54,8 +59,28 @@
             <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
                 
                 <!-- Stats column (left) -->
-                <ui:VisualElement style="width: 33%; padding-right: 48px; flex-direction: column;">
-                    <ui:Label text="STAT_ANALYSIS" class="text-label-caps" style="color: #bec6e0; margin-bottom: 24px;" />
+                <ui:ScrollView name="stats-scroll" style="width: 38%; padding-right: 48px; max-height: 100%;">
+                <ui:VisualElement style="flex-direction: column; padding-right: 8px;">
+                    <ui:Label text="STAT_ANALYSIS" class="text-label-caps" style="color: #bec6e0; margin-bottom: 16px;" />
+
+                    <ui:VisualElement name="telemetry-row" class="telemetry-row" style="margin-bottom: 24px;">
+                        <ui:VisualElement class="telemetry-chip">
+                            <ui:Label text="FRAGMENTOS" class="telemetry-chip-label" />
+                            <ui:Label name="lbl-telemetry-fragments" text="0/6" class="telemetry-chip-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="telemetry-chip">
+                            <ui:Label text="ECOS" class="telemetry-chip-label" />
+                            <ui:Label name="lbl-telemetry-echoes" text="0" class="telemetry-chip-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="telemetry-chip">
+                            <ui:Label text="COLAPSOS" class="telemetry-chip-label" />
+                            <ui:Label name="lbl-telemetry-deaths" text="0" class="telemetry-chip-value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="telemetry-chip">
+                            <ui:Label text="TIEMPO" class="telemetry-chip-label" />
+                            <ui:Label name="lbl-telemetry-time" text="0s" class="telemetry-chip-value" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
                     
                     <!-- Stability -->
                     <ui:VisualElement style="margin-bottom: 48px;">
@@ -94,18 +119,33 @@
                     </ui:VisualElement>
                     
                     <!-- Active Protocol card -->
-                    <ui:VisualElement class="glass-panel" style="padding: 24px; border-left-width: 2px; border-left-color: #c2c1ff;">
+                    <ui:VisualElement class="glass-panel" style="padding: 24px; border-left-width: 2px; border-left-color: #c2c1ff; margin-bottom: 16px;">
                         <ui:Label text="ACTIVE_PROTOCOL" class="text-label-caps" style="color: #c2c1ff; margin-bottom: 12px;" />
-                        <ui:Label name="lbl-protocol-desc" text="The system is monitoring fragment sync. Ensure all floating memories are anchored." class="text-body-sm" style="color: #c7c4d6;" />
+                        <ui:Label name="lbl-protocol-desc" text="El Archivo aguarda tu primera decisión." class="text-body-sm" style="color: #c7c4d6;" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="glass-panel" style="padding: 16px 24px; margin-bottom: 16px;">
+                        <ui:Label text="ÚLTIMO FRAGMENTO" class="text-label-caps" style="color: #918fa0; margin-bottom: 6px;" />
+                        <ui:Label name="lbl-last-fragment" text="—" class="text-body-sm" style="color: #dce1fb;" />
+                        <ui:Label name="lbl-continue-hint" text="MEMORIES continúa tu progreso." class="text-body-sm" style="color: #7af0c8; font-size: 10px; margin-top: 8px;" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="glass-panel" style="padding: 16px 24px; border-left-color: rgba(255,180,171,0.5); border-left-width: 2px;">
+                        <ui:Label text="REINICIO DE ARCHIVO" class="text-label-caps" style="color: #ffb4ab; margin-bottom: 8px;" />
+                        <ui:Label name="lbl-reset-hint" text="Borra progreso, estadísticas y desbloqueos." class="text-body-sm" style="color: #918fa0; font-size: 10px; margin-bottom: 12px;" />
+                        <ui:Button name="btn-reset-progress" text="REINICIAR ARCHIVO" class="calibration-btn-outline" style="margin-bottom: 8px;" />
+                        <ui:Button name="btn-reset-progress-confirm" text="CONFIRMAR REINICIO" class="calibration-btn-ghost" style="color: #ffb4ab; font-size: 10px;" />
                     </ui:VisualElement>
                 </ui:VisualElement>
+                </ui:ScrollView>
                 
                 <!-- Mental map (right) — Interactive level selector -->
                 <ui:VisualElement class="glass-panel" style="flex-grow: 1; padding: 24px; position: relative;">
                     <!-- Map header -->
                     <ui:VisualElement style="position: absolute; top: 24px; right: 24px; align-items: flex-end;">
                         <ui:Label text="COORD_SYSTEM: ALPHA_VOID" class="text-label-caps" style="color: #464554;" />
-                        <ui:Label text="SELECT A MEMORY FRAGMENT..." class="text-body-sm" style="color: #918fa0; font-size: 10px;" />
+                        <ui:Label name="lbl-map-progress" text="0 nodos restaurados" class="text-body-sm" style="color: #918fa0; font-size: 10px;" />
+                        <ui:Label text="Pulsa un nodo para entrar" class="text-body-sm" style="color: #464554; font-size: 9px; margin-top: 2px;" />
                     </ui:VisualElement>
                     
                     <!-- Central hub node -->
@@ -128,13 +168,13 @@
                     <!-- Level 03 Node (top-right) -->
                     <ui:VisualElement style="position: absolute; top: 20%; right: 15%; align-items: center;">
                         <ui:Button name="btn-level-03" text="03" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
-                        <ui:Label name="lbl-level-03" text="DOS DECISIONES" class="text-label-caps" style="font-size: 9px; color: #918fa0; margin-top: 8px;" />
+                        <ui:Label name="lbl-level-03" text="GALERÍA DEL ECO" class="text-label-caps" style="font-size: 11px; color: #918fa0; margin-top: 8px;" />
                     </ui:VisualElement>
                     
                     <!-- Level 04 Node (bottom-left) -->
                     <ui:VisualElement style="position: absolute; bottom: 25%; left: 18%; align-items: center;">
                         <ui:Button name="btn-level-04" text="04" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
-                        <ui:Label name="lbl-level-04" text="ORDEN DE LECTURA" class="text-label-caps" style="font-size: 9px; color: #918fa0; margin-top: 8px;" />
+                        <ui:Label name="lbl-level-04" text="CRUCE DOBLE" class="text-label-caps" style="font-size: 11px; color: #918fa0; margin-top: 8px;" />
                     </ui:VisualElement>
                     
                     <!-- Level 05 Node (bottom-center) -->
@@ -147,6 +187,25 @@
                     <ui:VisualElement style="position: absolute; bottom: 28%; right: 12%; align-items: center;">
                         <ui:Button name="btn-level-06" text="06" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
                         <ui:Label name="lbl-level-06" text="NUCLEO" class="text-label-caps" style="font-size: 9px; color: #918fa0; margin-top: 8px;" />
+                    </ui:VisualElement>
+
+                    <!-- Level 07 Node (center-right) -->
+                    <ui:VisualElement style="position: absolute; top: 48%; right: 8%; align-items: center;">
+                        <ui:Button name="btn-level-07" text="07" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
+                        <ui:Label name="lbl-level-07" text="ENLACE" class="text-label-caps" style="font-size: 11px; color: #918fa0; margin-top: 8px;" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement style="position: absolute; bottom: 12%; left: 18%; align-items: center;">
+                        <ui:Button name="btn-level-08" text="08" class="level-button" style="width: 44px; height: 44px; font-size: 14px; rotate: 45deg;" />
+                        <ui:Label name="lbl-level-08" text="VACÍO" class="text-label-caps" style="font-size: 10px; color: #918fa0; margin-top: 6px;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement style="position: absolute; bottom: 8%; left: 42%; align-items: center;">
+                        <ui:Button name="btn-level-09" text="09" class="level-button" style="width: 44px; height: 44px; font-size: 14px; rotate: 45deg;" />
+                        <ui:Label name="lbl-level-09" text="ENERGÍA" class="text-label-caps" style="font-size: 10px; color: #918fa0; margin-top: 6px;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement style="position: absolute; bottom: 14%; right: 22%; align-items: center;">
+                        <ui:Button name="btn-level-10" text="10" class="level-button" style="width: 44px; height: 44px; font-size: 14px; rotate: 45deg;" />
+                        <ui:Label name="lbl-level-10" text="ARCHIVO" class="text-label-caps" style="font-size: 10px; color: #918fa0; margin-top: 6px;" />
                     </ui:VisualElement>
                     
                     <!-- Connecting lines (decorative) -->
@@ -278,8 +337,58 @@
                         </ui:VisualElement>
                     </ui:VisualElement>
                     
-                    <!-- CELL 4: CALIBRATION STATUS -->
-                    <ui:VisualElement class="bento-cell" style="width: 48%; margin-left: 2%; margin-bottom: 16px; align-items: center; justify-content: center;">
+                    <!-- CELL 4: ILUMINACIÓN EN NIVELES -->
+                    <ui:VisualElement class="bento-cell" style="width: 48%; margin-left: 2%; margin-bottom: 16px;">
+                        <ui:VisualElement class="bento-cell-header">
+                            <ui:Label text="ILUMINACIÓN" class="bento-cell-title" />
+                            <ui:Label text="💡" class="bento-cell-icon" />
+                        </ui:VisualElement>
+                        <ui:Label text="PRESET ATMÓSFERA" class="text-label-caps" style="color: #918fa0; margin-bottom: 8px;" />
+                        <ui:VisualElement class="preset-button-row" style="margin-bottom: 12px;">
+                            <ui:Button name="btn-light-liminal" text="LIMINAL" class="preset-button preset-button--active" />
+                            <ui:Button name="btn-light-bruma" text="BRUMA" class="preset-button" />
+                            <ui:Button name="btn-light-claridad" text="CLARO" class="preset-button" />
+                            <ui:Button name="btn-light-penumbra" text="OSCURO" class="preset-button" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-row">
+                            <ui:VisualElement class="setting-row-header">
+                                <ui:Label text="Niebla en niveles" class="setting-label" />
+                                <ui:Label name="lbl-game-fog-val" text="0.0045" class="setting-value" />
+                            </ui:VisualElement>
+                            <ui:Slider name="sld-game-fog" low-value="0" high-value="0.02" value="0.0045" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-row">
+                            <ui:VisualElement class="setting-row-header">
+                                <ui:Label text="Sol (direccional)" class="setting-label" />
+                                <ui:Label name="lbl-game-sun-val" text="1.35" class="setting-value" />
+                            </ui:VisualElement>
+                            <ui:Slider name="sld-game-sun" low-value="0.4" high-value="3" value="0.82" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-row">
+                            <ui:VisualElement class="setting-row-header">
+                                <ui:Label text="Luces puntuales" class="setting-label" />
+                                <ui:Label name="lbl-game-lights-val" text="100%" class="setting-value" />
+                            </ui:VisualElement>
+                            <ui:Slider name="sld-game-lights" low-value="0.3" high-value="3" value="1" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-row">
+                            <ui:VisualElement class="setting-row-header">
+                                <ui:Label text="Ambiente global" class="setting-label" />
+                                <ui:Label name="lbl-game-ambient-val" text="100%" class="setting-value" />
+                            </ui:VisualElement>
+                            <ui:Slider name="sld-game-ambient" low-value="0.4" high-value="2.5" value="0.62" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-row" style="margin-top: 8px;">
+                            <ui:VisualElement class="setting-row-header">
+                                <ui:Label text="Tamaño texto menú" class="setting-label" />
+                                <ui:Label name="lbl-menu-text-val" text="125%" class="setting-value" />
+                            </ui:VisualElement>
+                            <ui:Slider name="sld-menu-text" low-value="1" high-value="1.6" value="1.25" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- CELL 5: CALIBRATION STATUS -->
+                    <ui:VisualElement class="bento-cell" style="width: 48%; margin-right: 2%; margin-bottom: 16px; align-items: center; justify-content: center;">
                         <ui:VisualElement class="bento-cell-header" style="width: 100%;">
                             <ui:Label text="CALIBRATION STATUS" class="bento-cell-title" />
                             <ui:Label text="◆" class="bento-cell-icon" style="color: #c2c1ff;" />

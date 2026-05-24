@@ -24,7 +24,10 @@ public class EchoPlayback : MonoBehaviour
         _cc = GetComponent<CharacterController>();
         _cc.skinWidth = skinWidth;
         EnsureVisualAnimator();
-        _anim = GetComponentInChildren<Animator>();
+        EnsureOptionalComponent("EchoSpectralTrail");
+        EnsureOptionalComponent("EchoTemporalVisual");
+        EnsureOptionalComponent("PlayerLocomotionAnimator");
+        _anim = ResolveEchoAnimator();
         
         _audioSource = GetComponent<AudioSource>();
         if (_audioSource == null)
@@ -75,6 +78,9 @@ public class EchoPlayback : MonoBehaviour
 
     public void BeginPlayback(IReadOnlyList<RecordFrame> frames, float duration)
     {
+        PlayerAnimationRuntimeBootstrap.ApplyToHierarchy(gameObject);
+        _anim = ResolveEchoAnimator();
+
         _frames.Clear();
         if (frames != null)
         {
@@ -135,13 +141,27 @@ public class EchoPlayback : MonoBehaviour
         Vector3 velocity = (nextPosition - currentPosition) / Mathf.Max(Time.deltaTime, 0.0001f);
         Vector3 localVelocity = transform.InverseTransformDirection(velocity);
         
-        _anim.SetFloat("Speed", velocity.magnitude);
-        _anim.SetFloat("VelocityX", localVelocity.x);
-        _anim.SetFloat("VelocityZ", localVelocity.z);
-        _anim.SetBool("Grounded", true);
-        _anim.SetBool("Falling", false);
-        _anim.SetBool("IsRecording", false);
-        _anim.SetBool("IsEchoPlayback", _playing);
+        float blendSpeed = Mathf.Clamp(velocity.magnitude, 0f, 6.5f);
+        _anim.speed = 1f;
+        EchoesAnimatorParams.SetLocomotion(_anim, blendSpeed, localVelocity, true);
+        EchoesAnimatorParams.SetBoolIfExists(_anim, "IsRecording", false);
+        EchoesAnimatorParams.SetBoolIfExists(_anim, "IsEchoPlayback", _playing);
+    }
+
+    Animator ResolveEchoAnimator()
+    {
+        Transform visual = transform.Find("Visual");
+        if (visual == null)
+            visual = transform.Find("PlayerVisual");
+
+        if (visual != null)
+        {
+            Animator modelAnim = visual.GetComponentInChildren<Animator>(true);
+            if (modelAnim != null)
+                return modelAnim;
+        }
+
+        return GetComponentInChildren<Animator>(true);
     }
 
     void EnsureVisualAnimator()
@@ -167,6 +187,7 @@ public class EchoPlayback : MonoBehaviour
         {
             visualAnimator.applyRootMotion = false;
             visualAnimator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+            EnsureAnimatorController(visualAnimator);
         }
 
         SkinnedMeshRenderer[] renderers = modelRoot.GetComponentsInChildren<SkinnedMeshRenderer>(true);
@@ -201,5 +222,44 @@ public class EchoPlayback : MonoBehaviour
             material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
             rendererRef.sharedMaterial = material;
         }
+    }
+
+    static void EnsureAnimatorController(Animator animator)
+    {
+        if (animator == null || animator.runtimeAnimatorController != null)
+            return;
+
+        PlayerController player = FindAnyObjectByType<PlayerController>();
+        if (player != null)
+        {
+            Animator playerAnim = player.GetComponentInChildren<Animator>(true);
+            if (playerAnim != null && playerAnim.runtimeAnimatorController != null)
+            {
+                animator.runtimeAnimatorController = playerAnim.runtimeAnimatorController;
+                if (playerAnim.avatar != null && playerAnim.avatar.isValid)
+                    animator.avatar = playerAnim.avatar;
+                return;
+            }
+        }
+
+#if UNITY_EDITOR
+        RuntimeAnimatorController controller = UnityEditor.AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>("Assets/Prefabs/PlayerAnimController.controller");
+        if (controller != null)
+            animator.runtimeAnimatorController = controller;
+#endif
+    }
+
+    void EnsureOptionalComponent(string typeName)
+    {
+        System.Type type = System.Type.GetType(typeName);
+        if (type == null)
+        {
+            System.Reflection.Assembly[] assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
+            for (int i = 0; i < assemblies.Length && type == null; i++)
+                type = assemblies[i].GetType(typeName);
+        }
+
+        if (type != null && GetComponent(type) == null)
+            gameObject.AddComponent(type);
     }
 }
