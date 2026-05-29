@@ -46,7 +46,7 @@ public class EchoesLocomotionSettings : ScriptableObject
 
     [Header("Aterrizaje")]
     [Tooltip("Si es 0, no se frena al aterrizar (momentum preservado).")]
-    public float landingVelocityRetention = 1f;
+    public float landingVelocityRetention = 0.58f;
     public float landingAnimationLock = 0.012f;
 
     public static EchoesLocomotionSettings Instance

@@ -38,6 +38,7 @@ public class EchoRecorder : MonoBehaviour
     GameObject _projectionPilot;
     Animator _projectionAnim;
     Vector3 _projectionVelocity;
+    AudioClip _micClip;
 
     public bool IsRecording => _recording;
     public bool IsProjectionRecording => _recording && _projectionRecording;
@@ -122,6 +123,10 @@ public class EchoRecorder : MonoBehaviour
         _projectionRecording = projectionMode;
         _recordStartTime = Time.time;
         _frames.Clear();
+
+        // Start capturing microphone input dynamically
+        _micClip = Microphone.Start(null, false, (int)maxRecordSeconds, 44100);
+
         if (_projectionRecording)
             CreateProjectionPilot();
         if (_anim == null) _anim = GetComponentInChildren<Animator>();
@@ -152,6 +157,22 @@ public class EchoRecorder : MonoBehaviour
 
         GameFeelController.Instance?.PlayRecordStop(transform.position);
         SetAnimatorTriggerIfExists("RecordStop");
+
+        // Stop microphone capture and trim the transient clip to the exact duration
+        AudioClip voiceClip = null;
+        if (_micClip != null)
+        {
+            int sampleCount = Microphone.GetPosition(null);
+            Microphone.End(null);
+            if (sampleCount > 0)
+            {
+                float[] samples = new float[sampleCount * _micClip.channels];
+                _micClip.GetData(samples, 0);
+                voiceClip = AudioClip.Create("EchoVoice", sampleCount, _micClip.channels, _micClip.frequency, false);
+                voiceClip.SetData(samples, 0);
+            }
+            _micClip = null;
+        }
 
         if (elapsed < minRecordSeconds || _frames.Count < 2)
         {
@@ -185,7 +206,7 @@ public class EchoRecorder : MonoBehaviour
             playback = instance.AddComponent<EchoPlayback>();
 
         float duration = Mathf.Max(elapsed, 0.05f);
-        playback.BeginPlayback(_frames, duration);
+        playback.BeginPlayback(_frames, duration, voiceClip);
         _echoes.Add(playback);
 
         _frames.Clear();
@@ -220,6 +241,11 @@ public class EchoRecorder : MonoBehaviour
         _playerController?.SetInputLocked(false);
         DestroyProjectionPilot();
         GameStateController.Instance?.SetRecording(false, transform.position, transform.up);
+
+        // Terminate microphone recording if it's currently running
+        if (Microphone.IsRecording(null))
+            Microphone.End(null);
+        _micClip = null;
 
         for (int i = 0; i < _echoes.Count; i++)
         {

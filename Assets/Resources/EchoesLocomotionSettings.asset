@@ -15,3 +15,29 @@ MonoBehaviour:
   animatorController: {fileID: 9100000, guid: eeab5e21720dedd48bb135f9df6cefa8, type: 2}
   humanoidAvatar: {fileID: 9000000, guid: c6f08cca9f00aa040ab00d410697e152, type: 3}
   characterModelPrefab: {fileID: 5314399635535156987, guid: 600f6d0477dbf784487345955e041dfb, type: 3}
+  sprintMomentumBuildRate: 0.35
+  sprintMomentumDecayRate: 0.55
+  sprintMomentumMaxBonus: 0.28
+  minSpeedForMomentum: 4.5
+  slideKey: 99
+  slideMinSpeed: 5.5
+  slideDuration: 0.85
+  slideSpeedMultiplier: 1.35
+  slideFriction: 2.2
+  ledgeProbeForward: 0.55
+  ledgeProbeUp: 1.35
+  ledgeProbeDown: 1.6
+  ledgeHangDuration: 1.4
+  ledgeClimbImpulse: 7.5
+  wallProbeDistance: 0.72
+  wallJumpImpulse: 8.5
+  wallJumpAwayForce: 6
+  wallRunDuration: 0.55
+  wallRunGravityMultiplier: 0.35
+  wallRunMaxCount: 2
+  airDashKey: 308
+  airDashImpulse: 11
+  airDashCooldown: 1.1
+  airDashUnlockAtLevelIndex: 6
+  landingVelocityRetention: 0.58
+  landingAnimationLock: 0.012

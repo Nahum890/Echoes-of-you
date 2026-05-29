@@ -195,17 +195,110 @@ public static class EchoesLevelBuilder
             return;
         }
 
-        _matFloor  = GetOrCreateMat("Mat_Floor",  standardShader, HexColor("1A1B26"), false);
-        _matPlate  = GetOrCreateMat("Mat_Plate",  standardShader, HexColor("00E07A"), false);
-        _matDoor   = GetOrCreateMat("Mat_Door",   standardShader, HexColor("E03050"), false);
-        _matExit   = GetOrCreateMat("Mat_Exit",   standardShader, HexColor("FFD700"), true);
-        _matBridge = GetOrCreateMat("Mat_Bridge", standardShader, HexColor("2A3B4C"), false);
+        _matFloor  = GetOrCreateMat("Mat_Floor",  standardShader, HexColor("30333D"), false);
+        _matPlate  = GetOrCreateMat("Mat_Plate",  standardShader, HexColor("141A29"), false);
+        _matDoor   = GetOrCreateMat("Mat_Door",   standardShader, HexColor("7E1E2F"), false);
+        _matExit   = GetOrCreateMat("Mat_Exit",   standardShader, HexColor("FFEBB5"), true);
+        _matBridge = GetOrCreateMat("Mat_Bridge", standardShader, HexColor("3B4454"), false);
         _matPlayer = GetOrCreateMat("Mat_Player", standardShader, HexColor("FFFFFF"), false);
-        _matEcho   = GetOrCreateMat("Mat_Echo",   standardShader, HexColor("00FFFF", 0.5f), false, true);
+        _matEcho   = GetOrCreateMat("Mat_Echo",   standardShader, HexColor("00FFFF", 0.45f), false, true);
+
+        // Apply Premium Physical Textures & Shading Attributes
+        SetupMaterialTextures(_matFloor, 
+            "Assets/Materials/Concrete047A_2K-JPG (1)/Concrete047A_2K-JPG_Color.jpg", 
+            "Assets/Materials/Concrete047A_2K-JPG (1)/Concrete047A_2K-JPG_NormalGL.jpg", 
+            "Assets/Materials/Concrete047A_2K-JPG (1)/Concrete047A_2K-JPG_AmbientOcclusion.jpg", 
+            0.85f, 0.02f, 0.18f, new Vector2(4.0f, 4.0f));
+
+        SetupMaterialTextures(_matBridge, 
+            "Assets/Materials/Metal054B_2K-JPG/Metal054B_2K-JPG_Color.jpg", 
+            "Assets/Materials/Metal054B_2K-JPG/Metal054B_2K-JPG_NormalGL.jpg", 
+            null, 
+            0.75f, 0.85f, 0.45f, new Vector2(3.0f, 3.0f));
+
+        SetupMaterialTextures(_matPlate, 
+            "Assets/Materials/placas.jpg", 
+            null, null, 
+            1.0f, 0.4f, 0.75f, null);
+
+        SetupMaterialTextures(_matDoor, 
+            "Assets/Materials/Puerta.jpg", 
+            null, null, 
+            1.0f, 0.6f, 0.4f, null);
+
+        // Configure Exit Portal with high-intensity warm emission
+        if (_matExit != null)
+        {
+            _matExit.EnableKeyword("_EMISSION");
+            _matExit.SetColor("_EmissionColor", new Color(1.0f, 0.7f, 0.35f) * 2.5f);
+            _matExit.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
+        }
+
+        // Configure Echo Material for premium cyan glassmorphism
+        if (_matEcho != null)
+        {
+            _matEcho.EnableKeyword("_EMISSION");
+            _matEcho.SetColor("_EmissionColor", new Color(0f, 0.5f, 0.65f) * 1.5f);
+            _matEcho.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
+        }
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
-        Debug.Log("[Echoes] Materials created with Standard shader.");
+        Debug.Log("[Echoes] Materials created and configured with premium brutalist textures.");
+    }
+
+    static void SetupMaterialTextures(
+        Material mat, 
+        string albedoPath, 
+        string normalPath, 
+        string aoPath, 
+        float bumpScale, 
+        float metallic, 
+        float smoothness, 
+        Vector2? tiling)
+    {
+        if (mat == null) return;
+
+        if (!string.IsNullOrEmpty(albedoPath))
+        {
+            Texture2D tex = AssetDatabase.LoadAssetAtPath<Texture2D>(albedoPath);
+            if (tex != null)
+            {
+                mat.SetTexture("_MainTex", tex);
+            }
+        }
+
+        if (!string.IsNullOrEmpty(normalPath))
+        {
+            Texture2D norm = AssetDatabase.LoadAssetAtPath<Texture2D>(normalPath);
+            if (norm != null)
+            {
+                mat.EnableKeyword("_NORMALMAP");
+                mat.SetTexture("_BumpMap", norm);
+                mat.SetFloat("_BumpScale", bumpScale);
+            }
+        }
+
+        if (!string.IsNullOrEmpty(aoPath))
+        {
+            Texture2D ao = AssetDatabase.LoadAssetAtPath<Texture2D>(aoPath);
+            if (ao != null)
+            {
+                mat.SetTexture("_OcclusionMap", ao);
+            }
+        }
+
+        mat.SetFloat("_Metallic", metallic);
+        mat.SetFloat("_Glossiness", smoothness);
+
+        if (tiling.HasValue)
+        {
+            mat.SetTextureScale("_MainTex", tiling.Value);
+            if (!string.IsNullOrEmpty(normalPath))
+                mat.SetTextureScale("_BumpMap", tiling.Value);
+            if (!string.IsNullOrEmpty(aoPath))
+                mat.SetTextureScale("_OcclusionMap", tiling.Value);
+        }
     }
 
     static Material GetOrCreateMat(string name, Shader shader, Color color, bool emissive, bool transparent = false)
@@ -1018,8 +1111,18 @@ public static class EchoesLevelBuilder
         if (camGO.GetComponent<CameraShake>() == null)
             camGO.AddComponent<CameraShake>();
 
-        if (camGO.GetComponent<GameFeelController>() == null)
-            camGO.AddComponent<GameFeelController>();
+        var gfc = camGO.GetComponent<GameFeelController>();
+        if (gfc == null) gfc = camGO.AddComponent<GameFeelController>();
+
+        var loop1 = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Efectos de sonido/144046__gchase__room_tone_ambience_medium_control_low_hum.wav");
+        var loop2 = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Efectos de sonido/607238__szegvari__electric-dream-synth-drone-electric-cinematic.wav");
+        var loop3 = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Efectos de sonido/Ventilation.wav");
+        var chime = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Efectos de sonido/freesound_community-clock-chime-88027.mp3");
+
+        SetPrivateField(gfc, "ambientLoopClip", loop1);
+        SetPrivateField(gfc, "industrialDroneClip", loop2);
+        SetPrivateField(gfc, "ventilationHumClip", loop3);
+        SetPrivateField(gfc, "clockChimeClip", chime);
 
         // Find the Player object to assign as target
         GameObject player = GameObject.FindGameObjectWithTag("Player");

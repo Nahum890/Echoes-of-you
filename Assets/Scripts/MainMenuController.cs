@@ -17,12 +17,7 @@ public class MainMenuController : MonoBehaviour
     [Tooltip("Si es true, carga Level_01 automáticamente sin esperar input")]
     [SerializeField] bool autoStartGame = false;
 
-    [Header("Background Textures (Optional - will load from Resources/UI if not assigned)")]
-    [SerializeField] Texture2D defaultBg;
-    [SerializeField] Texture2D newGameBg;
-    [SerializeField] Texture2D continueBg;
-    [SerializeField] Texture2D settingsBg;
-    [SerializeField] Texture2D exitBg;
+
 
     UIDocument _doc;
     VisualElement _root;
@@ -183,8 +178,7 @@ public class MainMenuController : MonoBehaviour
         RefreshDashboard();
         BindLevelMapButtons();
 
-        // Try load textures dynamically if not assigned
-        LoadFallbackTextures();
+
 
         InitializeSettings();
         ShowVoidIntro();
@@ -229,31 +223,31 @@ public class MainMenuController : MonoBehaviour
     {
         if (_btnNewGame != null)
         {
-            _btnNewGame.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnNewGame, newGameBg, "NEURAL SYNC"));
+            _btnNewGame.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnNewGame, MainMenuCinematicWorld.MenuAmbience.Void, "NEURAL SYNC"));
             _btnNewGame.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnNewGame));
         }
         if (_btnLevels != null)
         {
-            _btnLevels.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnLevels, defaultBg, "STABILITY"));
+            _btnLevels.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnLevels, MainMenuCinematicWorld.MenuAmbience.Stability, "STABILITY"));
             _btnLevels.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnLevels));
         }
         if (_btnSettings != null)
         {
-            _btnSettings.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnSettings, settingsBg, "CALIBRATION"));
+            _btnSettings.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnSettings, MainMenuCinematicWorld.MenuAmbience.System, "CALIBRATION"));
             _btnSettings.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnSettings));
         }
         if (_btnExit != null)
         {
-            _btnExit.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnExit, exitBg, "VOID MAP"));
+            _btnExit.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnExit, MainMenuCinematicWorld.MenuAmbience.Disconnect, "VOID MAP"));
             _btnExit.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnExit));
         }
     }
 
-    void OnNavHover(Button btn, Texture2D bgTex, string title)
+    void OnNavHover(Button btn, MainMenuCinematicWorld.MenuAmbience ambience, string title)
     {
-        if (bgTex != null && _menuBg != null)
+        if (MainMenuCinematicWorld.Instance != null)
         {
-            _menuBg.style.backgroundImage = new StyleBackground(bgTex);
+            MainMenuCinematicWorld.Instance.SetAmbience(ambience);
         }
 
         if (_heroTitle != null)
@@ -266,14 +260,14 @@ public class MainMenuController : MonoBehaviour
 
     void OnNavHoverLeave(Button btn)
     {
-        if (defaultBg != null && _menuBg != null)
+        if (MainMenuCinematicWorld.Instance != null)
         {
-            _menuBg.style.backgroundImage = new StyleBackground(defaultBg);
+            MainMenuCinematicWorld.Instance.SetAmbience(GetActiveNavAmbience());
         }
 
         if (_heroTitle != null)
         {
-            _heroTitle.text = "ISOLATED";
+            _heroTitle.text = GetActiveHeroTitle();
         }
 
         // Keep active selection styling only on the active nav button
@@ -291,24 +285,29 @@ public class MainMenuController : MonoBehaviour
         _btnSettings?.RemoveFromClassList("nav-item--active");
         _btnExit?.RemoveFromClassList("nav-item--active");
         activeBtn?.AddToClassList("nav-item--active");
+
+        if (MainMenuCinematicWorld.Instance != null)
+        {
+            MainMenuCinematicWorld.Instance.SetAmbience(GetActiveNavAmbience());
+        }
     }
 
-    void LoadFallbackTextures()
+    MainMenuCinematicWorld.MenuAmbience GetActiveNavAmbience()
     {
-        if (defaultBg == null) defaultBg = Resources.Load<Texture2D>("UI/Images/void_fog_bg");
-        if (newGameBg == null) newGameBg = Resources.Load<Texture2D>("UI/Images/menu_background");
-        if (continueBg == null) continueBg = Resources.Load<Texture2D>("UI/Images/fragmenting_silhouette");
-        if (settingsBg == null) settingsBg = Resources.Load<Texture2D>("UI/Images/void_fog_bg");
-        if (exitBg == null) exitBg = Resources.Load<Texture2D>("UI/Images/menu_background");
+        if (_activeNavButton == _btnNewGame) return MainMenuCinematicWorld.MenuAmbience.Void;
+        if (_activeNavButton == _btnLevels) return MainMenuCinematicWorld.MenuAmbience.Stability;
+        if (_activeNavButton == _btnSettings) return MainMenuCinematicWorld.MenuAmbience.System;
+        if (_activeNavButton == _btnExit) return MainMenuCinematicWorld.MenuAmbience.Disconnect;
+        return MainMenuCinematicWorld.MenuAmbience.Void;
+    }
 
-        // Try load from Assets path if Resources fails
-#if UNITY_EDITOR
-        if (defaultBg == null) defaultBg = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/UI/Images/void_fog_bg.png");
-        if (newGameBg == null) newGameBg = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/UI/Images/menu_background.png");
-        if (continueBg == null) continueBg = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/UI/Images/fragmenting_silhouette.png");
-        if (settingsBg == null) settingsBg = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/UI/Images/void_fog_bg.png");
-        if (exitBg == null) exitBg = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/UI/Images/menu_background.png");
-#endif
+    string GetActiveHeroTitle()
+    {
+        if (_activeNavButton == _btnNewGame) return "VOID";
+        if (_activeNavButton == _btnLevels) return "STABILITY";
+        if (_activeNavButton == _btnSettings) return "CALIBRATION";
+        if (_activeNavButton == _btnExit) return "VOID MAP";
+        return "ISOLATED";
     }
 
     // --- Panel Switching ---
@@ -322,10 +321,7 @@ public class MainMenuController : MonoBehaviour
 
         if (_menuBg != null)
         {
-            Texture2D bg = newGameBg != null ? newGameBg : defaultBg;
-            if (bg != null)
-                _menuBg.style.backgroundImage = new StyleBackground(bg);
-            _menuBg.style.opacity = 0.68f;
+            _menuBg.style.opacity = 0f;
         }
 
         if (_heroTitle != null)
@@ -343,9 +339,7 @@ public class MainMenuController : MonoBehaviour
 
         if (_menuBg != null)
         {
-            if (defaultBg != null)
-                _menuBg.style.backgroundImage = new StyleBackground(defaultBg);
-            _menuBg.style.opacity = 0.22f;
+            _menuBg.style.opacity = 0f;
         }
 
         if (_heroTitle != null)
@@ -454,9 +448,10 @@ public class MainMenuController : MonoBehaviour
 
     void LoadCurrentSettingsIntoUI()
     {
-        if (_sldMaster != null) _sldMaster.value = PlayerPrefs.GetFloat("MasterVolume", AudioListener.volume);
-        if (_sldMusic != null) _sldMusic.value = PlayerPrefs.GetFloat("MusicVolume", 0.6f);
-        if (_sldSfx != null) _sldSfx.value = PlayerPrefs.GetFloat("SfxVolume", 0.72f);
+        var audioMgr = EchoesAudioManager.EnsureExists();
+        if (_sldMaster != null) _sldMaster.value = audioMgr != null ? audioMgr.GetMasterVolume() : PlayerPrefs.GetFloat("MasterVolume", 0.84f);
+        if (_sldMusic != null) _sldMusic.value = audioMgr != null ? audioMgr.GetMusicVolume() : PlayerPrefs.GetFloat("MusicVolume", 0.6f);
+        if (_sldSfx != null) _sldSfx.value = audioMgr != null ? audioMgr.GetSFXVolume() : PlayerPrefs.GetFloat("SfxVolume", 0.72f);
 
         if (_lblMasterVal != null) UpdateLabel(_lblMasterVal, _sldMaster.value);
         if (_lblMusicVal != null) UpdateLabel(_lblMusicVal, _sldMusic.value);
@@ -536,10 +531,20 @@ public class MainMenuController : MonoBehaviour
         float music = _sldMusic != null ? _sldMusic.value : 0.6f;
         float sfx = _sldSfx != null ? _sldSfx.value : 0.72f;
 
-        AudioListener.volume = master;
-        PlayerPrefs.SetFloat("MasterVolume", master);
-        PlayerPrefs.SetFloat("MusicVolume", music);
-        PlayerPrefs.SetFloat("SfxVolume", sfx);
+        var audioMgr = EchoesAudioManager.EnsureExists();
+        if (audioMgr != null)
+        {
+            audioMgr.SetMasterVolume(master);
+            audioMgr.SetMusicVolume(music);
+            audioMgr.SetSFXVolume(sfx);
+        }
+        else
+        {
+            AudioListener.volume = master;
+            PlayerPrefs.SetFloat("MasterVolume", master);
+            PlayerPrefs.SetFloat("MusicVolume", music);
+            PlayerPrefs.SetFloat("SfxVolume", sfx);
+        }
 
         // Broadcast audio settings
         var levelCtrl = FindAnyObjectByType<LevelRuntimeController>();

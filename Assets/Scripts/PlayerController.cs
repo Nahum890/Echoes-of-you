@@ -24,18 +24,18 @@ public class PlayerController : MonoBehaviour
     [Header("Movimiento")]
     public float moveSpeed = 8f;
     public float sprintMultiplier = 1.6f;
-    public float acceleration = 45f;
-    public float deceleration = 50f;
-    public float rotationSharpness = 20f;
+    public float acceleration = 36f;
+    public float deceleration = 38f;
+    public float rotationSharpness = 16f;
     [Range(0.1f, 1f)]
-    public float airControlFactor = 0.85f;
+    public float airControlFactor = 0.72f;
 
     [Header("Salto / Gravedad")]
     public float jumpHeight = 3.2f;
     public float gravityStrength = 28f;
     public Vector3 defaultGravityDirection = Vector3.down;
     public float groundedStickForce = 5f;
-    public float gravityBlendSpeed = 9f;
+    public float gravityBlendSpeed = 12f;
     public float fallGravityMultiplier = 2.0f;
     public bool alignToGroundNormal = true;
 
@@ -261,6 +261,17 @@ public class PlayerController : MonoBehaviour
             GameFeelController.Instance?.PlayLanding(transform.position, movementUp, downwardSpeed);
             if (_lastHardLanding)
                 TriggerAnimatorIfExists(AnimatorParamHardLanding);
+
+            // Trigger visual and physical landing tilt on the active third-person camera or cinematic camera dynamics
+            ThirdPersonCamera activeCam = ThirdPersonCamera.ResolveActive();
+            if (activeCam != null)
+                activeCam.PlayLandingTilt(downwardSpeed);
+            else
+            {
+                CinematicCameraDynamics cinematicCam = FindAnyObjectByType<CinematicCameraDynamics>();
+                if (cinematicCam != null)
+                    cinematicCam.PlayLandingTilt(downwardSpeed);
+            }
         }
 
         UpdateOrientation(postMoveProbe, Time.deltaTime);
@@ -384,7 +395,10 @@ public class PlayerController : MonoBehaviour
             float retention = EchoesLocomotionSettings.Instance != null
                 ? EchoesLocomotionSettings.Instance.landingVelocityRetention
                 : 1f;
-            desiredVelocity = Vector3.Lerp(desiredVelocity, _planarVelocity, retention);
+            
+            // Rebuild landing impact: apply a physical stumble/slowdown depending on whether landing was hard
+            float penaltyFactor = _lastHardLanding ? 0.15f : 0.65f;
+            desiredVelocity = Vector3.Lerp(desiredVelocity * penaltyFactor, _planarVelocity, retention);
         }
         _planarVelocity = DampVector(_planarVelocity, desiredVelocity, sharpness, Time.deltaTime);
     }

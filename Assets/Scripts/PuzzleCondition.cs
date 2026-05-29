@@ -37,6 +37,12 @@ public class PuzzleCondition : MonoBehaviour
     public string successMessage = "Condicion cumplida!";
     public string failMessage = "";
 
+    [Header("Connections")]
+    [Tooltip("Las puertas que se abrirán cuando la condición se cumpla")]
+    public DoorController[] doorsToOpen;
+    [Tooltip("El PuzzleSignal que se marcará satisfecho cuando la condición se cumpla")]
+    public PuzzleSignal targetSignal;
+
     [Header("State")]
     [SerializeField] bool _isMet = false;
     public bool IsMet => _isMet;
@@ -167,6 +173,19 @@ public class PuzzleCondition : MonoBehaviour
 
         if (_isMet && !string.IsNullOrEmpty(successMessage))
             ShowToast(successMessage, new Color(0.48f, 0.94f, 0.78f));
+
+        if (doorsToOpen != null)
+        {
+            foreach (var door in doorsToOpen)
+            {
+                if (door != null) door.SetOpenState(_isMet);
+            }
+        }
+
+        if (targetSignal != null)
+        {
+            targetSignal.SetSatisfied(_isMet);
+        }
     }
 
     void ShowToast(string msg, Color color)

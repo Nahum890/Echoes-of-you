@@ -15,6 +15,8 @@ public class EchoPlayback : MonoBehaviour
 
     Animator _anim;
     AudioSource _audioSource;
+    float _delayedBlendSpeed;
+    Vector3 _delayedLocalVelocity;
 
     public bool IsPlaying => _playing;
     public float LoopDuration => _duration;
@@ -39,6 +41,12 @@ public class EchoPlayback : MonoBehaviour
             _audioSource.minDistance = 2f;
             _audioSource.maxDistance = 15f;
             _audioSource.rolloffMode = AudioRolloffMode.Linear;
+        }
+        
+        var audioMgr = EchoesAudioManager.EnsureExists();
+        if (audioMgr != null)
+        {
+            _audioSource.outputAudioMixerGroup = audioMgr.FindGroup("Echo");
         }
     }
 
@@ -76,7 +84,7 @@ public class EchoPlayback : MonoBehaviour
         }
     }
 
-    public void BeginPlayback(IReadOnlyList<RecordFrame> frames, float duration)
+    public void BeginPlayback(IReadOnlyList<RecordFrame> frames, float duration, AudioClip voiceClip = null)
     {
         PlayerAnimationRuntimeBootstrap.ApplyToHierarchy(gameObject);
         _anim = ResolveEchoAnimator();
@@ -100,10 +108,49 @@ public class EchoPlayback : MonoBehaviour
         transform.SetPositionAndRotation(position, rotation);
         _cc.enabled = true;
 
-        if (_audioSource != null && _audioSource.clip != null)
+        if (_audioSource != null)
         {
-            _audioSource.Play();
+            _audioSource.clip = voiceClip;
+            _audioSource.loop = true;
+            _audioSource.spatialBlend = 1f; // full 3D spatial depth
+            _audioSource.minDistance = 2f;
+            _audioSource.maxDistance = 18f;
+            _audioSource.rolloffMode = AudioRolloffMode.Linear;
+            
+            // Apply dynamic audio filters to evoke a ghostly, degraded tape look/sound
+            EnsureAudioFilters();
+
+            if (voiceClip != null)
+            {
+                _audioSource.Play();
+            }
         }
+    }
+
+    void EnsureAudioFilters()
+    {
+        // 1. AudioLowPassFilter (Muffled, distant past self)
+        var lowPass = GetComponent<AudioLowPassFilter>();
+        if (lowPass == null)
+            lowPass = gameObject.AddComponent<AudioLowPassFilter>();
+        lowPass.cutoffFrequency = 1200f; // low frequency cut to muffle high frequencies
+        lowPass.lowpassResonanceQ = 1.0f;
+
+        // 2. AudioReverbFilter (Cavernous memory, ghostly depth)
+        var reverb = GetComponent<AudioReverbFilter>();
+        if (reverb == null)
+            reverb = gameObject.AddComponent<AudioReverbFilter>();
+        reverb.reverbPreset = AudioReverbPreset.Cave;
+        reverb.decayTime = 3.5f;
+        reverb.roomHF = -1000f;
+        reverb.reflectionsLevel = -800;
+        reverb.reverbLevel = -200;
+
+        // 3. AudioDistortionFilter (Analog tape degradation saturation)
+        var distortion = GetComponent<AudioDistortionFilter>();
+        if (distortion == null)
+            distortion = gameObject.AddComponent<AudioDistortionFilter>();
+        distortion.distortionLevel = 0.26f; // analog warmth and mild crunch
     }
 
     public void StopPlayback()
@@ -142,8 +189,13 @@ public class EchoPlayback : MonoBehaviour
         Vector3 localVelocity = transform.InverseTransformDirection(velocity);
         
         float blendSpeed = Mathf.Clamp(velocity.magnitude, 0f, 6.5f);
-        _anim.speed = 1f;
-        EchoesAnimatorParams.SetLocomotion(_anim, blendSpeed, localVelocity, true);
+
+        // Eerie visual latency: Echo locomotion animations trail sluggishly behind physics frames
+        _delayedBlendSpeed = Mathf.Lerp(_delayedBlendSpeed, blendSpeed, Time.deltaTime * 5f);
+        _delayedLocalVelocity = Vector3.Lerp(_delayedLocalVelocity, localVelocity, Time.deltaTime * 5f);
+
+        _anim.speed = 0.88f; // Eerily slowed playback animation speed
+        EchoesAnimatorParams.SetLocomotion(_anim, _delayedBlendSpeed, _delayedLocalVelocity, true);
         EchoesAnimatorParams.SetBoolIfExists(_anim, "IsRecording", false);
         EchoesAnimatorParams.SetBoolIfExists(_anim, "IsEchoPlayback", _playing);
     }

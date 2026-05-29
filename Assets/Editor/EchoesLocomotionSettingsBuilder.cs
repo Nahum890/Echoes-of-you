@@ -60,10 +60,6 @@ public static class EchoesLocomotionSettingsBuilder
         if (!AssetDatabase.IsValidFolder("Assets/Resources"))
             AssetDatabase.CreateFolder("Assets", "Resources");
 
-        GameObject existing = AssetDatabase.LoadAssetAtPath<GameObject>(CharacterResourcePrefabPath);
-        if (existing != null)
-            return existing;
-
         GameObject source = AssetDatabase.LoadAssetAtPath<GameObject>(CharacterFbxPath);
         if (source == null)
         {

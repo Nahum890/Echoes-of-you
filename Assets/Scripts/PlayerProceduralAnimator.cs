@@ -31,6 +31,7 @@ public class PlayerProceduralAnimator : MonoBehaviour
     Vector3 _smoothPosition;
     Quaternion _smoothRotation;
     Vector3 _smoothScale;
+    float _fatigue;
 
     void Awake()
     {
@@ -58,6 +59,12 @@ public class PlayerProceduralAnimator : MonoBehaviour
         float speed01 = Mathf.Clamp01(_player.PlanarSpeed / Mathf.Max(0.01f, _player.moveSpeed * _player.sprintMultiplier));
         float proceduralWeight = 1f - Mathf.SmoothStep(0.15f, 1.2f, _player.PlanarSpeed);
 
+        // Procedural fatigue builds up during sprint and decays standing still
+        if (speed01 > 0.72f)
+            _fatigue = Mathf.MoveTowards(_fatigue, 1.0f, dt * 0.45f);
+        else
+            _fatigue = Mathf.MoveTowards(_fatigue, 0.0f, dt * 0.12f);
+
         if (_wasGrounded && !grounded)
             _jumpAnticipation = jumpAnticipationSeconds;
         if (!_wasGrounded && grounded)
@@ -72,7 +79,11 @@ public class PlayerProceduralAnimator : MonoBehaviour
         float bob = grounded
             ? Mathf.Sin(locomotionPhase) * runBobHeight * speed01 * proceduralWeight
             : Mathf.Clamp(_player.VerticalSpeed * 0.012f, -0.08f, 0.08f);
-        float breath = Mathf.Sin(Time.time * 1.8f) * idleBreathHeight * (1f - speed01) * proceduralWeight;
+
+        // Exhausted breathing: breath speed and amplitude scales up dramatically when fatigued
+        float breathSpeed = Mathf.Lerp(1.8f, 4.4f, _fatigue);
+        float breathHeight = Mathf.Lerp(idleBreathHeight, idleBreathHeight * 2.8f, _fatigue);
+        float breath = Mathf.Sin(Time.time * breathSpeed) * breathHeight * (1f - speed01) * proceduralWeight;
         float anticipation = _jumpAnticipation / Mathf.Max(0.001f, jumpAnticipationSeconds);
         float landing = _landingRecovery / Mathf.Max(0.001f, landingRecoverySeconds);
         float recordPulse = recording ? Mathf.Sin(Time.unscaledTime * 9f) * recordPulseScale : 0f;

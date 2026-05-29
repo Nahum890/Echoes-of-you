@@ -129,8 +129,12 @@ public static class LevelValidator
         for (int i = 0; i < allObjects.Length; i++)
         {
             GameObject go = allObjects[i];
-            if (go.isStatic && go.GetComponent<MeshRenderer>() != null && go.GetComponent<Collider>() != null)
+            if (go.isStatic && 
+                (go.GetComponent<Collider>() != null || go.GetComponentInChildren<Collider>() != null) && 
+                (go.GetComponent<MeshRenderer>() != null || go.GetComponentInChildren<MeshRenderer>() != null))
+            {
                 heights.Add(go.transform.position.y);
+            }
         }
         return heights.ToArray();
     }

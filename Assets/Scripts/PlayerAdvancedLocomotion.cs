@@ -149,6 +149,16 @@ public class PlayerAdvancedLocomotion : MonoBehaviour
         if (!Physics.Raycast(probe, -_player.UpAxis, out RaycastHit topHit, _cfg.ledgeProbeDown, _player.GroundMask, QueryTriggerInteraction.Ignore))
             return;
 
+        // Evitar falsos positivos agarrando el suelo plano: la repisa debe estar por encima de la rodilla/cintura del jugador
+        float ledgeTopHeight = Vector3.Dot(topHit.point - transform.position, _player.UpAxis);
+        if (ledgeTopHeight < 0.5f)
+            return;
+
+        // Asegurar que hay una pared real frente al jugador para colgarse (raycast justo debajo de la repisa)
+        Vector3 wallCheckOrigin = transform.position + _player.UpAxis * (ledgeTopHeight - 0.15f);
+        if (!Physics.Raycast(wallCheckOrigin, forward, _cfg.ledgeProbeForward + 0.2f, _player.GroundMask, QueryTriggerInteraction.Ignore))
+            return;
+
         if (!Physics.Raycast(origin, forward, _cfg.ledgeProbeForward + 0.2f, _player.GroundMask, QueryTriggerInteraction.Ignore))
         {
             _ledgeHanging = true;

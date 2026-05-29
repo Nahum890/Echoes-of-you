@@ -86,10 +86,14 @@ public class FixedPuzzleCameraController : MonoBehaviour
         SetMemberWeight(goalFocus, desiredGoalWeight, 1.4f);
         SetMemberWeight(eventFocus, _currentEventWeight, 1.8f);
 
-        float desiredFov = Time.unscaledTime < _pulseUntil ? _pulseTargetFov : baseFov;
-        var lens = virtualCamera.m_Lens;
-        lens.FieldOfView = Mathf.Lerp(lens.FieldOfView, desiredFov, DampingFactor(fovDamping, Time.unscaledDeltaTime));
-        virtualCamera.m_Lens = lens;
+        var cinematicDynamics = GetComponent<CinematicCameraDynamics>();
+        if (cinematicDynamics == null || !cinematicDynamics.enabled)
+        {
+            float desiredFov = Time.unscaledTime < _pulseUntil ? _pulseTargetFov : baseFov;
+            var lens = virtualCamera.m_Lens;
+            lens.FieldOfView = Mathf.Lerp(lens.FieldOfView, desiredFov, DampingFactor(fovDamping, Time.unscaledDeltaTime));
+            virtualCamera.m_Lens = lens;
+        }
     }
 
     public void RequestEventFocus(Vector3 worldPoint, float weight = 0.35f, float holdSeconds = 0.45f, float pulseFov = 50f)

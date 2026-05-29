@@ -12,7 +12,7 @@ public class AtmosphereController : MonoBehaviour
     [SerializeField] Vector3 spawnVolume = new Vector3(24f, 12f, 24f);
 
     [Header("Ground Fog (Void Cover)")]
-    [SerializeField] bool enableGroundFog = false;
+    [SerializeField] bool enableGroundFog = true;
     [SerializeField] int maxFogParticles = 150;
     [SerializeField] float fogParticleSize = 15f;
     [SerializeField] Vector3 fogVolume = new Vector3(80f, 6f, 80f);
@@ -106,7 +106,7 @@ public class AtmosphereController : MonoBehaviour
         main.startSize = new ParticleSystem.MinMaxCurve(fogParticleSize * 0.8f, fogParticleSize * 1.2f);
         main.startLifetime = 12f;
         main.simulationSpace = ParticleSystemSimulationSpace.World;
-        main.startColor = new Color(0.08f, 0.09f, 0.12f, 0.4f); // Opacidad más alta para tapar el vacío
+        main.startColor = new Color(0.04f, 0.05f, 0.08f, 0.35f); // Opacidad más suave e índigo profundo
         main.startSpeed = 0f;
 
         var emission = _fogSystem.emission;
@@ -135,9 +135,9 @@ public class AtmosphereController : MonoBehaviour
         fogGrad.SetKeys(
             new GradientColorKey[]
             {
-                new GradientColorKey(new Color(0.10f, 0.13f, 0.19f), 0f),
-                new GradientColorKey(new Color(0.12f, 0.15f, 0.22f), 0.5f),
-                new GradientColorKey(new Color(0.10f, 0.13f, 0.19f), 1f)
+                new GradientColorKey(new Color(0.04f, 0.06f, 0.10f), 0f),
+                new GradientColorKey(new Color(0.06f, 0.08f, 0.12f), 0.5f),
+                new GradientColorKey(new Color(0.04f, 0.06f, 0.10f), 1f)
             },
             new GradientAlphaKey[]
             {

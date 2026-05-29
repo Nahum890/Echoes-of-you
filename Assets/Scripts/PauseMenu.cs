@@ -63,12 +63,27 @@ public class PauseMenu : MonoBehaviour
 
     List<Resolution> _filteredResolutions;
 
+    private bool _initialized = false;
+
     void OnEnable()
     {
+        InitializeUI();
+    }
+
+    void Start()
+    {
+        InitializeUI();
+    }
+
+    void InitializeUI()
+    {
+        if (_initialized) return;
         _doc = GetComponent<UIDocument>();
         if (_doc == null || _doc.rootVisualElement == null) return;
 
         _pauseRoot = _doc.rootVisualElement.Q("pause-root");
+        if (_pauseRoot == null) return; // Wait until tree is ready
+
         _pauseNav = _doc.rootVisualElement.Q("pause-nav");
         _settingsPanel = _doc.rootVisualElement.Q("pause-settings-panel");
 
@@ -168,6 +183,8 @@ public class PauseMenu : MonoBehaviour
         // Start hidden
         if (_pauseRoot != null)
             _pauseRoot.AddToClassList("hidden");
+
+        _initialized = true;
     }
 
     void Update()
@@ -331,9 +348,10 @@ public class PauseMenu : MonoBehaviour
 
     void LoadCurrentSettingsIntoUI()
     {
-        if (_sldMaster != null) _sldMaster.value = PlayerPrefs.GetFloat("MasterVolume", AudioListener.volume);
-        if (_sldMusic != null) _sldMusic.value = PlayerPrefs.GetFloat("MusicVolume", 0.6f);
-        if (_sldSfx != null) _sldSfx.value = PlayerPrefs.GetFloat("SfxVolume", 0.72f);
+        var audioMgr = EchoesAudioManager.EnsureExists();
+        if (_sldMaster != null) _sldMaster.value = audioMgr != null ? audioMgr.GetMasterVolume() : PlayerPrefs.GetFloat("MasterVolume", 0.84f);
+        if (_sldMusic != null) _sldMusic.value = audioMgr != null ? audioMgr.GetMusicVolume() : PlayerPrefs.GetFloat("MusicVolume", 0.6f);
+        if (_sldSfx != null) _sldSfx.value = audioMgr != null ? audioMgr.GetSFXVolume() : PlayerPrefs.GetFloat("SfxVolume", 0.72f);
 
         if (_lblMasterVal != null) UpdateLabel(_lblMasterVal, _sldMaster.value);
         if (_lblMusicVal != null) UpdateLabel(_lblMusicVal, _sldMusic.value);
@@ -408,10 +426,20 @@ public class PauseMenu : MonoBehaviour
         float music = _sldMusic != null ? _sldMusic.value : 0.6f;
         float sfx = _sldSfx != null ? _sldSfx.value : 0.72f;
 
-        AudioListener.volume = master;
-        PlayerPrefs.SetFloat("MasterVolume", master);
-        PlayerPrefs.SetFloat("MusicVolume", music);
-        PlayerPrefs.SetFloat("SfxVolume", sfx);
+        var audioMgr = EchoesAudioManager.EnsureExists();
+        if (audioMgr != null)
+        {
+            audioMgr.SetMasterVolume(master);
+            audioMgr.SetMusicVolume(music);
+            audioMgr.SetSFXVolume(sfx);
+        }
+        else
+        {
+            AudioListener.volume = master;
+            PlayerPrefs.SetFloat("MasterVolume", master);
+            PlayerPrefs.SetFloat("MusicVolume", music);
+            PlayerPrefs.SetFloat("SfxVolume", sfx);
+        }
 
         var levelCtrl = FindAnyObjectByType<LevelRuntimeController>();
         if (levelCtrl != null) levelCtrl.SendMessage("ApplySavedAudioSettings", SendMessageOptions.DontRequireReceiver);
@@ -476,6 +504,9 @@ public class PauseMenu : MonoBehaviour
         float gameLights = _sldGameLights != null ? _sldGameLights.value : EchoesPresentationSettings.DefaultGamePointLightMul;
         float gameAmbient = _sldGameAmbient != null ? _sldGameAmbient.value : EchoesPresentationSettings.DefaultGameAmbientMul;
         EchoesPresentationSettings.SaveLighting(gameFog, gameSun, gameLights, gameAmbient);
+
+        // Apply visual updates instantly to the running level lighting
+        LevelEnvironmentBootstrap.ApplyLighting();
 
         LevelLightingSettings levelLighting = FindAnyObjectByType<LevelLightingSettings>();
         if (levelLighting != null)

@@ -196,8 +196,14 @@ public class PostProcessingSetup : MonoBehaviour
         vignette.color.overrideState = true;
 
         AmbientOcclusion ambientOcclusion = _runtimeProfile.AddSettings<AmbientOcclusion>();
-        ambientOcclusion.enabled.value = false;
+        ambientOcclusion.enabled.value = true;
         ambientOcclusion.enabled.overrideState = true;
+        ambientOcclusion.intensity.value = 1.35f;
+        ambientOcclusion.intensity.overrideState = true;
+        ambientOcclusion.thicknessModifier.value = 1.15f;
+        ambientOcclusion.thicknessModifier.overrideState = true;
+        ambientOcclusion.ambientOnly.value = true;
+        ambientOcclusion.ambientOnly.overrideState = true;
 
         ChromaticAberration ca = _runtimeProfile.AddSettings<ChromaticAberration>();
         ca.enabled.value = true;

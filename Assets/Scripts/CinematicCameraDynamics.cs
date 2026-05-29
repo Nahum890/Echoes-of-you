@@ -28,6 +28,21 @@ public class CinematicCameraDynamics : MonoBehaviour
     float _tiltOnJump;
     float _responsiveness = 3.5f;
 
+    float _landingOffsetDip;
+    float _pulseTargetFov = -1f;
+    float _pulseUntil;
+
+    public void PlayLandingTilt(float impactSpeed)
+    {
+        _landingOffsetDip = Mathf.Clamp(impactSpeed * 0.18f, 0f, 4f);
+    }
+
+    public void RequestFovPulse(float temporaryFov, float holdSeconds = 0.25f)
+    {
+        _pulseTargetFov = Mathf.Max(38f, temporaryFov);
+        _pulseUntil = Time.unscaledTime + Mathf.Max(0.05f, holdSeconds);
+    }
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     static void EnsureOnCamera()
     {
@@ -132,12 +147,21 @@ public class CinematicCameraDynamics : MonoBehaviour
         float time = Time.time * noiseFrequency;
         Vector3 noise = BuildNoise(time);
 
+        _landingOffsetDip = Mathf.MoveTowards(_landingOffsetDip, 0f, Time.deltaTime * 5f);
+        targetOffset.y -= _landingOffsetDip;
+
         _transposer.m_FollowOffset = Vector3.Lerp(
             _transposer.m_FollowOffset,
             targetOffset + noise,
             Time.deltaTime * followLerpSpeed);
 
-        _currentFov = Mathf.Lerp(_currentFov, fovBase + speed01 * fovSpeedBoost, Time.deltaTime * 4f);
+        float targetFovBase = fovBase;
+        if (Time.unscaledTime < _pulseUntil && _pulseTargetFov > 0f)
+        {
+            targetFovBase = _pulseTargetFov;
+        }
+
+        _currentFov = Mathf.Lerp(_currentFov, targetFovBase + speed01 * fovSpeedBoost, Time.deltaTime * 4f);
         var lens = virtualCamera.m_Lens;
         lens.FieldOfView = _currentFov;
 

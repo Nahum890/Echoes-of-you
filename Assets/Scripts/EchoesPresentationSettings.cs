@@ -11,7 +11,7 @@ public static class EchoesPresentationSettings
     const string GamePointLightsKey = "Echoes.GamePointLightMul";
     const string GameAmbientKey = "Echoes.GameAmbientMul";
 
-    public const float DefaultVisualScale = 0.35f;
+    public const float DefaultVisualScale = 1f;
     public const float DefaultAnimSpeed = 1f;
     public const float DefaultMenuTextScale = 1.25f;
     public const float DefaultGameFogDensity = 0.005f;

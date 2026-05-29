@@ -228,7 +228,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         }
     }
 
-    static void ApplyLighting()
+    public static void ApplyLighting()
     {
         float fogDensity = EchoesPresentationSettings.GameFogDensity;
         float sunIntensity = EchoesPresentationSettings.GameSunIntensity;
@@ -246,18 +246,30 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
             custom.directionalIntensity = sunIntensity;
             custom.pointLightIntensityMultiplier = pointMul;
             custom.ApplyNow();
-            if (custom.disableRuntimeFillLights || HasEchoesFillLights())
+            if (custom.disableRuntimeFillLights)
+            {
+                // Clean up any stray fill lights if fill lights are disabled
+                Light[] strayFills = Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
+                for (int i = 0; i < strayFills.Length; i++)
+                {
+                    if (strayFills[i] != null && strayFills[i].name.StartsWith("EchoesFill_"))
+                    {
+                        if (Application.isPlaying) Object.Destroy(strayFills[i].gameObject);
+                        else Object.DestroyImmediate(strayFills[i].gameObject);
+                    }
+                }
                 return;
+            }
         }
 
         RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
-        RenderSettings.ambientSkyColor = new Color(0.34f, 0.36f, 0.44f) * ambientMul;
-        RenderSettings.ambientEquatorColor = new Color(0.24f, 0.26f, 0.32f) * ambientMul;
-        RenderSettings.ambientGroundColor = new Color(0.14f, 0.15f, 0.19f) * ambientMul;
+        RenderSettings.ambientSkyColor = new Color(0.08f, 0.12f, 0.20f) * ambientMul;
+        RenderSettings.ambientEquatorColor = new Color(0.04f, 0.06f, 0.11f) * ambientMul;
+        RenderSettings.ambientGroundColor = new Color(0.02f, 0.03f, 0.06f) * ambientMul;
         RenderSettings.reflectionIntensity = 0.42f;
         RenderSettings.fog = fogDensity > 0.0001f;
-        RenderSettings.fogMode = FogMode.Exponential;
-        RenderSettings.fogColor = new Color(0.18f, 0.2f, 0.28f);
+        RenderSettings.fogMode = FogMode.ExponentialSquared;
+        RenderSettings.fogColor = new Color(0.05f, 0.07f, 0.12f);
         RenderSettings.fogDensity = fogDensity;
 
         Light[] lights = Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
@@ -270,30 +282,35 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
             if (light.type == LightType.Directional)
             {
                 light.intensity = Mathf.Max(light.intensity, sunIntensity);
-                light.color = Color.Lerp(light.color, new Color(0.9f, 0.94f, 1f), 0.4f);
+                light.color = new Color(0.82f, 0.88f, 1.0f);
                 continue;
             }
 
-            if (light.type == LightType.Point)
+            if (light.type == LightType.Point && !light.name.StartsWith("EchoesFill_"))
             {
                 light.intensity = Mathf.Max(light.intensity * pointMul, 3.2f * pointMul);
                 light.range = Mathf.Max(light.range * 1.15f, 16f);
             }
         }
 
-        if (HasEchoesFillLights())
-            return;
+        // Remove existing fill lights to ensure live updates work instantly
+        Light[] allLights = Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
+        for (int i = 0; i < allLights.Length; i++)
+        {
+            if (allLights[i] != null && allLights[i].name.StartsWith("EchoesFill_"))
+            {
+                if (Application.isPlaying) Object.Destroy(allLights[i].gameObject);
+                else Object.DestroyImmediate(allLights[i].gameObject);
+            }
+        }
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         Vector3 origin = player != null ? player.transform.position : Vector3.zero;
         float spread = 18f * EchoesWorldMetrics.LevelGeometryScale;
 
-        SpawnFillLight("EchoesFill_Key", origin + new Vector3(spread * 0.4f, 10f, -spread * 0.3f), new Color(0.78f, 0.8f, 0.9f), 4.2f * pointMul, spread * 2f);
-        SpawnFillLight("EchoesFill_Rim", origin + new Vector3(-spread * 0.45f, 7f, spread * 0.35f), new Color(0.62f, 0.7f, 0.84f), 3.4f * pointMul, spread * 1.7f);
-        SpawnFillLight("EchoesFill_Warm", origin + new Vector3(-spread * 0.2f, 5f, -spread * 0.5f), new Color(0.88f, 0.68f, 0.5f), 2.8f * pointMul, spread * 1.5f);
-        SpawnFillLight("EchoesFill_Cool", origin + new Vector3(spread * 0.3f, 6f, spread * 0.45f), new Color(0.52f, 0.74f, 0.88f), 3f * pointMul, spread * 1.6f);
-        SpawnFillLight("EchoesFill_Overhead", origin + new Vector3(0f, 14f, 0f), new Color(0.88f, 0.9f, 0.95f), 4f * pointMul, spread * 2.2f);
-        SpawnFillLight("EchoesFill_Ground", origin + new Vector3(0f, 2f, 0f), new Color(0.42f, 0.46f, 0.55f), 1.8f * pointMul, spread * 1.4f);
+        // Optimized moody fills: 1 high-intensity ice-blue rim silhouette, and 1 soft overhead ambient light
+        SpawnFillLight("EchoesFill_Rim", origin + new Vector3(-spread * 0.45f, 7f, spread * 0.35f), new Color(0.65f, 0.76f, 0.89f), 3.8f * pointMul, spread * 1.8f);
+        SpawnFillLight("EchoesFill_Overhead", origin + new Vector3(0f, 14f, 0f), new Color(0.88f, 0.9f, 0.98f), 2.2f * pointMul, spread * 2.2f);
     }
 
     static bool HasEchoesFillLights()

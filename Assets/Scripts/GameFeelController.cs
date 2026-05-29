@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 #if UNITY_POST_PROCESSING_STACK_V2
 using UnityEngine.Rendering.PostProcessing;
 #endif
@@ -47,6 +48,12 @@ public class GameFeelController : MonoBehaviour
     [SerializeField] AudioClip respawnClip;
     [SerializeField] float defaultVolume = 1f;
 
+    [Header("Deep Ambient Loops")]
+    [SerializeField] AudioClip ambientLoopClip;
+    [SerializeField] AudioClip industrialDroneClip;
+    [SerializeField] AudioClip ventilationHumClip;
+    [SerializeField] AudioClip clockChimeClip;
+
     [Header("Camera Shake")]
     [SerializeField] CameraShake cameraShake;
     [SerializeField] ThirdPersonCamera gameplayCamera;
@@ -76,6 +83,10 @@ public class GameFeelController : MonoBehaviour
     float _nextFootstepTime;
     float _nextScrapeTime;
 
+    AudioSource _ambientSource1;
+    AudioSource _ambientSource2;
+    AudioSource _ambientSource3;
+
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -92,6 +103,12 @@ public class GameFeelController : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.spatialBlend = 0.65f;
 
+        var audioMgr = EchoesAudioManager.EnsureExists();
+        if (audioMgr != null)
+        {
+            audioSource.outputAudioMixerGroup = audioMgr.FindGroup("SFX");
+        }
+
         if (cameraShake == null)
             cameraShake = GetComponent<CameraShake>();
 
@@ -105,6 +122,68 @@ public class GameFeelController : MonoBehaviour
             fixedGameplayCamera = FixedPuzzleCameraController.ResolveActive();
 
         EnsureRuntimeFallbackEffects();
+    }
+
+    void Start()
+    {
+        SetupAmbientAudio();
+    }
+
+    void SetupAmbientAudio()
+    {
+        var audioMgr = EchoesAudioManager.EnsureExists();
+        AudioMixerGroup musicGroup = audioMgr != null ? audioMgr.FindGroup("Music") : null;
+
+        // 1. Room Tone loop
+        if (ambientLoopClip != null)
+        {
+            _ambientSource1 = gameObject.AddComponent<AudioSource>();
+            _ambientSource1.clip = ambientLoopClip;
+            _ambientSource1.loop = true;
+            _ambientSource1.volume = 0.15f * defaultVolume;
+            _ambientSource1.spatialBlend = 0f; // 2D background ambience
+            if (musicGroup != null) _ambientSource1.outputAudioMixerGroup = musicGroup;
+            _ambientSource1.Play();
+        }
+
+        // 2. Industrial Drone / Synth loop
+        if (industrialDroneClip != null)
+        {
+            _ambientSource2 = gameObject.AddComponent<AudioSource>();
+            _ambientSource2.clip = industrialDroneClip;
+            _ambientSource2.loop = true;
+            _ambientSource2.volume = 0.12f * defaultVolume;
+            _ambientSource2.spatialBlend = 0f;
+            if (musicGroup != null) _ambientSource2.outputAudioMixerGroup = musicGroup;
+            _ambientSource2.Play();
+        }
+
+        // 3. Ventilation Hum loop
+        if (ventilationHumClip != null)
+        {
+            _ambientSource3 = gameObject.AddComponent<AudioSource>();
+            _ambientSource3.clip = ventilationHumClip;
+            _ambientSource3.loop = true;
+            _ambientSource3.volume = 0.08f * defaultVolume;
+            _ambientSource3.spatialBlend = 0f;
+            if (musicGroup != null) _ambientSource3.outputAudioMixerGroup = musicGroup;
+            _ambientSource3.Play();
+        }
+
+        // Periodically chime the clock for eerie atmosphere
+        if (clockChimeClip != null)
+        {
+            InvokeRepeating(nameof(PlayEerieChime), 15f, 45f);
+        }
+    }
+
+    void PlayEerieChime()
+    {
+        if (clockChimeClip == null) return;
+        
+        // Find player position or camera position
+        Vector3 chimePos = Camera.main != null ? Camera.main.transform.position + Camera.main.transform.forward * 8f : transform.position;
+        PlayClip3D(clockChimeClip, chimePos, defaultVolume * 0.45f, 0.72f); // slow pitch chime for eerie uncanniness
     }
 
     void Update()
@@ -134,6 +213,32 @@ public class GameFeelController : MonoBehaviour
         EchoRecorder recorder = Object.FindAnyObjectByType<EchoRecorder>();
         bool isRecording = recorder != null && recorder.IsRecording;
         bool hasEchoes = recorder != null && recorder.EchoCount > 0;
+
+        // Soft dynamic audio muffling when player is recording (recalls memory sensory-deprivation)
+        AudioListener listener = Object.FindAnyObjectByType<AudioListener>();
+        if (listener != null)
+        {
+            var lowPass = listener.GetComponent<AudioLowPassFilter>();
+            if (isRecording)
+            {
+                if (lowPass == null)
+                {
+                    lowPass = listener.gameObject.AddComponent<AudioLowPassFilter>();
+                    lowPass.lowpassResonanceQ = 1.0f;
+                }
+                lowPass.enabled = true;
+                lowPass.cutoffFrequency = Mathf.MoveTowards(lowPass.cutoffFrequency, 850f, Time.unscaledDeltaTime * 4000f);
+            }
+            else
+            {
+                if (lowPass != null)
+                {
+                    lowPass.cutoffFrequency = Mathf.MoveTowards(lowPass.cutoffFrequency, 22000f, Time.unscaledDeltaTime * 50000f);
+                    if (lowPass.cutoffFrequency >= 20000f)
+                        lowPass.enabled = false;
+                }
+            }
+        }
 
         _postProcessImpulse = Mathf.MoveTowards(_postProcessImpulse, 0f, Time.unscaledDeltaTime * 1.8f);
         _vignetteImpulse = Mathf.MoveTowards(_vignetteImpulse, 0f, Time.unscaledDeltaTime * 1.2f);
@@ -369,6 +474,13 @@ public class GameFeelController : MonoBehaviour
 
     void RequestCameraPulse(float targetFov, float holdSeconds)
     {
+        CinematicCameraDynamics cinematicCam = FindAnyObjectByType<CinematicCameraDynamics>();
+        if (cinematicCam != null)
+        {
+            cinematicCam.RequestFovPulse(targetFov, holdSeconds);
+            return;
+        }
+
         if (gameplayCamera == null)
             gameplayCamera = ThirdPersonCamera.ResolveActive();
         if (fixedGameplayCamera == null)
@@ -413,6 +525,13 @@ public class GameFeelController : MonoBehaviour
         source.minDistance = 2f;
         source.maxDistance = 18f;
         source.rolloffMode = AudioRolloffMode.Linear;
+        
+        var audioMgr = EchoesAudioManager.EnsureExists();
+        if (audioMgr != null)
+        {
+            source.outputAudioMixerGroup = audioMgr.FindGroup("SFX");
+        }
+
         source.Play();
         Destroy(audioObject, Mathf.Max(0.1f, clip.length / Mathf.Max(0.05f, Mathf.Abs(pitch))) + 0.1f);
     }

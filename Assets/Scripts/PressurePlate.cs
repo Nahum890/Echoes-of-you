@@ -13,10 +13,10 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
     [SerializeField] string echoProjectionTag = "EchoProjection";
 
     [Header("Visual Feedback")]
-    [SerializeField] Color inactiveColor = new Color(0.45f, 0.45f, 0.45f, 1f);    // Blanco/gris ceniza apagado
-    [SerializeField] Color activeColor = new Color(0.95f, 0.95f, 1.0f, 1f);       // Blanco puro brillante
-    [SerializeField] Color emissionInactive = new Color(0.04f, 0.04f, 0.05f, 1f);
-    [SerializeField] Color emissionActive = new Color(0.55f, 0.58f, 0.65f, 1f);
+    [SerializeField] Color inactiveColor = new Color(0.16f, 0.21f, 0.31f, 1f);    // Indigo-ceniza elegante
+    [SerializeField] Color activeColor = new Color(0f, 0.9f, 1f, 1f);            // Cyan cyber-brillante
+    [SerializeField] Color emissionInactive = new Color(0f, 0.1f, 0.17f, 1f);     // Aura cyan sutil
+    [SerializeField] Color emissionActive = new Color(0f, 1.33f, 1.6f, 1f);       // Destello cyan radiante
     [SerializeField] float pulseSpeed = 2.0f;
     [SerializeField] bool createIndicatorLight = true;
     [SerializeField] float lightIntensity = 0.85f;

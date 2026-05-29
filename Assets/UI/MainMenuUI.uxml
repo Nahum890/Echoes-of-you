@@ -2,8 +2,7 @@
     <Style src="project://database/Assets/UI/EchoesTheme.uss" />
     
     <ui:VisualElement name="root" class="root-fullscreen main-menu-root scale-large">
-        <!-- Background (swappable via C#) -->
-        <ui:VisualElement name="menu-bg" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; opacity: 0.65; background-image: url('project://database/Assets/UI/Images/void_fog_bg.png');" />
+        <ui:VisualElement name="menu-bg" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; opacity: 0;" />
 
         <ui:VisualElement name="void-intro" style="position: absolute; left: 280px; top: 0; right: 0; bottom: 0; align-items: center; justify-content: center;">
             <ui:Label text="VOID" class="text-headline-xl" style="color: #c2c1ff; letter-spacing: 14px;" />

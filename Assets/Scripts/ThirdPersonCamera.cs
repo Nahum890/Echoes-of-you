@@ -56,6 +56,7 @@ public class ThirdPersonCamera : MonoBehaviour
     float _eventFocusWeight;
     float _eventFocusUntil;
     int _framedTargetId = int.MinValue;
+    float _landingTiltAmount;
 
     public static ThirdPersonCamera ResolveActive()
     {
@@ -116,7 +117,11 @@ public class ThirdPersonCamera : MonoBehaviour
         _orbitForward = Quaternion.AngleAxis(yawDelta, targetUp) * _orbitForward;
         _orbitForward = ResolvePlanarForward(_orbitForward, transform.forward, target.right, targetUp);
 
+        // Decay the landing tilt amount smoothly over time
+        _landingTiltAmount = Mathf.Lerp(_landingTiltAmount, 0f, DampingFactor(7.5f, Time.deltaTime));
+
         _pitch = Mathf.Clamp(_pitch - pitchDelta, minPitch, maxPitch);
+        float finalPitch = Mathf.Clamp(_pitch + _landingTiltAmount, minPitch, maxPitch + 18f);
 
         // Auto-recenter: smoothly return to behind the player after delay
         if (enableRecenter && _noInputTimer >= recenterDelay)
@@ -142,7 +147,7 @@ public class ThirdPersonCamera : MonoBehaviour
         Vector3 orbitRight = Vector3.Cross(targetUp, _orbitForward).normalized;
         if (orbitRight.sqrMagnitude < 0.001f)
             orbitRight = Vector3.Cross(targetUp, target.right).normalized;
-        Vector3 lookDirection = Quaternion.AngleAxis(_pitch, orbitRight) * _orbitForward;
+        Vector3 lookDirection = Quaternion.AngleAxis(finalPitch, orbitRight) * _orbitForward;
         lookDirection.Normalize();
 
         Quaternion desiredRotation = Quaternion.LookRotation(lookDirection, targetUp);
@@ -169,7 +174,15 @@ public class ThirdPersonCamera : MonoBehaviour
 
         if (_camera != null)
         {
-            float targetFov = Time.unscaledTime < _pulseUntil ? _pulseTargetFov : baseFov;
+            float dynamicFov = baseFov;
+            PlayerController pc = target.GetComponentInParent<PlayerController>();
+            if (pc != null)
+            {
+                // Dynamic FOV pulse during sprint to convey speed and momentum
+                float sprintFactor = Mathf.InverseLerp(pc.moveSpeed, pc.moveSpeed * pc.sprintMultiplier, pc.PlanarSpeed);
+                dynamicFov += sprintFactor * 6.5f;
+            }
+            float targetFov = Time.unscaledTime < _pulseUntil ? _pulseTargetFov : dynamicFov;
             _camera.fieldOfView = Mathf.Lerp(_camera.fieldOfView, targetFov, DampingFactor(fovDamping, Time.deltaTime));
         }
     }
@@ -186,6 +199,12 @@ public class ThirdPersonCamera : MonoBehaviour
         _eventFocusWeight = Mathf.Clamp01(weight);
         _eventFocusUntil = Time.unscaledTime + Mathf.Max(0.05f, holdSeconds);
         RequestFovPulse(pulseFov, holdSeconds);
+    }
+
+    public void PlayLandingTilt(float impactSpeed)
+    {
+        // Tilts camera downwards on landing (impactSpeed drives intensity)
+        _landingTiltAmount = Mathf.Clamp(impactSpeed * 0.72f, 0f, 15f);
     }
 
     Vector3 GetFocusPoint()
