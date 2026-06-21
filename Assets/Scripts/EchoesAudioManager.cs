@@ -105,7 +105,6 @@ public class EchoesAudioManager : MonoBehaviour
         linear = Mathf.Clamp01(linear);
         SetMixerVolume(SFXParam, linear);
         PlayerPrefs.SetFloat(SFXKey, linear);
-        SetEchoVolume(linear);
     }
 
     /// <summary>

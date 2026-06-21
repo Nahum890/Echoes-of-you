@@ -9,6 +9,9 @@ public class PlayerLocomotionAnimator : MonoBehaviour
 {
     void Awake()
     {
+        if (GetComponent<EchoPlayback>() != null)
+            return;
+
         PlayerAnimationRuntimeBootstrap.ApplyToHierarchy(gameObject);
     }
 }

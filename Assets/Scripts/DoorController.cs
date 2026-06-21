@@ -105,7 +105,13 @@ public class DoorController : MonoBehaviour, IResettableLevelObject
     /// </summary>
     public void SetOpenState(bool open)
     {
+        bool changed = _isOpen != open;
         _isOpen = open;
+        if (changed)
+        {
+            DoorStateChanged?.Invoke(_isOpen);
+            GameFeelController.Instance?.PlayDoorMove(transform.position);
+        }
         ApplyVisualState();
     }
 

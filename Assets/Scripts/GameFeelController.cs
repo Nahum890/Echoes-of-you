@@ -41,6 +41,7 @@ public class GameFeelController : MonoBehaviour
     [SerializeField] AudioClip recordClip;
     [SerializeField] AudioClip recordStopClip;
     [SerializeField] AudioClip echoSpawnClip;
+    [SerializeField] AudioClip echoFadeClip;
     [SerializeField] AudioClip softErrorClip;
     [SerializeField] AudioClip platePressClip;
     [SerializeField] AudioClip doorMoveClip;
@@ -82,6 +83,7 @@ public class GameFeelController : MonoBehaviour
     float _exposureImpulse;
     float _nextFootstepTime;
     float _nextScrapeTime;
+    float _nextMechanicTickTime;
 
     AudioSource _ambientSource1;
     AudioSource _ambientSource2;
@@ -122,6 +124,7 @@ public class GameFeelController : MonoBehaviour
             fixedGameplayCamera = FixedPuzzleCameraController.ResolveActive();
 
         EnsureRuntimeFallbackEffects();
+        EnsureRuntimeFallbackAudio();
     }
 
     void Start()
@@ -443,6 +446,45 @@ public class GameFeelController : MonoBehaviour
         RequestPostImpulse(0.42f, 0.18f, 0.12f);
     }
 
+    public void PlayEchoFade(Vector3 position)
+    {
+        PlayClip3D(echoFadeClip, position, defaultVolume * 0.72f, 0.58f);
+    }
+
+    public void PlayMechanicTick(Vector3 position, float weight = 1f)
+    {
+        if (Time.time < _nextMechanicTickTime)
+            return;
+
+        _nextMechanicTickTime = Time.time + 0.08f;
+        PlayClip3D(movementScrapeClip, position, defaultVolume * Mathf.Clamp(weight, 0.25f, 1.2f), 0.92f);
+    }
+
+    public void PlayCameraShake(float intensity)
+    {
+        cameraShake?.AddShake(intensity);
+    }
+
+    void EnsureRuntimeFallbackAudio()
+    {
+        if (jumpClip == null) jumpClip = CreateToneClip("SFX_JumpAir", 0.09f, 340f, 540f, 0.26f, WaveKind.Sine);
+        if (landingClip == null) landingClip = CreateNoiseClip("SFX_LandingSoft", 0.14f, 0.38f, 0.45f);
+        if (hardLandingClip == null) hardLandingClip = CreateNoiseClip("SFX_LandingHard", 0.24f, 0.75f, 0.32f);
+        if (footstepClip == null) footstepClip = CreateNoiseClip("SFX_Footstep", 0.055f, 0.22f, 0.55f);
+        if (movementScrapeClip == null) movementScrapeClip = CreateToneClip("SFX_MechanicServo", 0.18f, 96f, 42f, 0.42f, WaveKind.Saw);
+        if (gravityShiftClip == null) gravityShiftClip = CreateToneClip("SFX_GravityShift", 0.42f, 160f, 38f, 0.5f, WaveKind.Sine);
+        if (puzzleSolvedClip == null) puzzleSolvedClip = CreateToneClip("SFX_PuzzleSolved", 0.5f, 360f, 720f, 0.46f, WaveKind.Sine);
+        if (recordClip == null) recordClip = CreateToneClip("SFX_RecordStart", 0.2f, 520f, 260f, 0.34f, WaveKind.Triangle);
+        if (recordStopClip == null) recordStopClip = CreateToneClip("SFX_RecordStop", 0.16f, 260f, 520f, 0.28f, WaveKind.Triangle);
+        if (echoSpawnClip == null) echoSpawnClip = CreateToneClip("SFX_EchoSpawn", 0.42f, 620f, 210f, 0.38f, WaveKind.Sine);
+        if (echoFadeClip == null) echoFadeClip = CreateToneClip("SFX_EchoFadeAway", 0.55f, 240f, 48f, 0.32f, WaveKind.Sine);
+        if (softErrorClip == null) softErrorClip = CreateToneClip("SFX_SoftError", 0.16f, 180f, 90f, 0.26f, WaveKind.Square);
+        if (platePressClip == null) platePressClip = CreateClickClip("SFX_PlateClick", 0.075f, 0.82f);
+        if (doorMoveClip == null) doorMoveClip = CreateToneClip("SFX_DoorServo", 0.34f, 82f, 44f, 0.48f, WaveKind.Saw);
+        if (playerDeathClip == null) playerDeathClip = CreateToneClip("SFX_PlayerDeath", 0.55f, 180f, 36f, 0.5f, WaveKind.Saw);
+        if (respawnClip == null) respawnClip = CreateToneClip("SFX_Respawn", 0.42f, 190f, 520f, 0.4f, WaveKind.Sine);
+    }
+
     // ═══════════════════════════════════════════
     // SUBSISTEMAS INTERNOS
     // ═══════════════════════════════════════════
@@ -600,5 +642,82 @@ public class GameFeelController : MonoBehaviour
         rendererRef.renderMode = ParticleSystemRenderMode.Billboard;
         rendererRef.sortMode = ParticleSystemSortMode.Distance;
         return ps;
+    }
+
+    enum WaveKind { Sine, Triangle, Square, Saw }
+
+    AudioClip CreateClickClip(string name, float lengthSeconds, float amplitude)
+    {
+        int sampleRate = 44100;
+        int sampleCount = Mathf.Max(1, Mathf.CeilToInt(sampleRate * lengthSeconds));
+        float[] samples = new float[sampleCount];
+        for (int i = 0; i < sampleCount; i++)
+        {
+            float t = i / (float)sampleRate;
+            float normalized = i / (float)sampleCount;
+            float envelope = Mathf.Exp(-normalized * 34f);
+            float snap = Mathf.Sin(2f * Mathf.PI * 1450f * t) * 0.55f + Mathf.Sin(2f * Mathf.PI * 310f * t) * 0.45f;
+            samples[i] = snap * envelope * amplitude;
+        }
+
+        AudioClip clip = AudioClip.Create(name, sampleCount, 1, sampleRate, false);
+        clip.SetData(samples, 0);
+        return clip;
+    }
+
+    AudioClip CreateToneClip(string name, float lengthSeconds, float startFrequency, float endFrequency, float amplitude, WaveKind wave)
+    {
+        int sampleRate = 44100;
+        int sampleCount = Mathf.Max(1, Mathf.CeilToInt(sampleRate * lengthSeconds));
+        float[] samples = new float[sampleCount];
+        float phase = 0f;
+        for (int i = 0; i < sampleCount; i++)
+        {
+            float normalized = i / (float)(sampleCount - 1);
+            float freq = Mathf.Lerp(startFrequency, endFrequency, normalized);
+            phase += freq / sampleRate;
+            phase -= Mathf.Floor(phase);
+            float attack = Mathf.Clamp01(normalized / 0.04f);
+            float release = Mathf.Clamp01((1f - normalized) / 0.22f);
+            samples[i] = EvaluateWave(phase, wave) * attack * release * amplitude;
+        }
+
+        AudioClip clip = AudioClip.Create(name, sampleCount, 1, sampleRate, false);
+        clip.SetData(samples, 0);
+        return clip;
+    }
+
+    AudioClip CreateNoiseClip(string name, float lengthSeconds, float amplitude, float decay)
+    {
+        int sampleRate = 44100;
+        int sampleCount = Mathf.Max(1, Mathf.CeilToInt(sampleRate * lengthSeconds));
+        float[] samples = new float[sampleCount];
+        float last = 0f;
+        for (int i = 0; i < sampleCount; i++)
+        {
+            float normalized = i / (float)(sampleCount - 1);
+            float envelope = Mathf.Pow(1f - normalized, Mathf.Max(0.1f, decay * 5f));
+            last = Mathf.Lerp(last, Random.Range(-1f, 1f), 0.32f);
+            samples[i] = last * envelope * amplitude;
+        }
+
+        AudioClip clip = AudioClip.Create(name, sampleCount, 1, sampleRate, false);
+        clip.SetData(samples, 0);
+        return clip;
+    }
+
+    static float EvaluateWave(float phase, WaveKind wave)
+    {
+        switch (wave)
+        {
+            case WaveKind.Triangle:
+                return 1f - 4f * Mathf.Abs(Mathf.Round(phase - 0.25f) - (phase - 0.25f));
+            case WaveKind.Square:
+                return phase < 0.5f ? 1f : -1f;
+            case WaveKind.Saw:
+                return phase * 2f - 1f;
+            default:
+                return Mathf.Sin(phase * Mathf.PI * 2f);
+        }
     }
 }

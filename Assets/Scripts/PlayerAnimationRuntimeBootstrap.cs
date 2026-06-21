@@ -21,6 +21,9 @@ public class PlayerAnimationRuntimeBootstrap : MonoBehaviour
 
     public static void ApplyToHierarchy(GameObject root)
     {
+        if (root == null || root.GetComponent<EchoPlayback>() != null)
+            return;
+
         if (_settings == null)
             _settings = Resources.Load<EchoesLocomotionSettings>("EchoesLocomotionSettings");
 

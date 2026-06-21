@@ -101,6 +101,14 @@
                             </ui:VisualElement>
                             <ui:Slider name="p-sld-sfx" low-value="0" high-value="1" value="0.72" />
                         </ui:VisualElement>
+
+                        <ui:VisualElement class="setting-row">
+                            <ui:VisualElement class="setting-row-header">
+                                <ui:Label text="Echo Voice" class="setting-label" />
+                                <ui:Label name="p-lbl-echo-voice-val" text="70%" class="setting-value" />
+                            </ui:VisualElement>
+                            <ui:Slider name="p-sld-echo-voice" low-value="0" high-value="1" value="0.7" />
+                        </ui:VisualElement>
                     </ui:VisualElement>
                     
                     <!-- CELL 2: VISUAL ARRAY -->

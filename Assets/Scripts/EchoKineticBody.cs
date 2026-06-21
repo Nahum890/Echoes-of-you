@@ -19,6 +19,7 @@ public class EchoKineticBody : MonoBehaviour, IResettableLevelObject
     int _playerCount;
     int _echoCount;
     bool _latched;
+    bool _wasMovingActive;
 
     public void Configure(
         Transform target,
@@ -117,8 +118,15 @@ public class EchoKineticBody : MonoBehaviour, IResettableLevelObject
         if (active && !holdToMove)
             _latched = true;
 
-        Vector3 targetPosition = active || _latched ? activeLocalPosition : inactiveLocalPosition;
-        Quaternion targetRotation = Quaternion.Euler(active || _latched ? activeLocalEuler : inactiveLocalEuler);
+        bool movingActive = active || _latched;
+        if (movingActive != _wasMovingActive)
+        {
+            _wasMovingActive = movingActive;
+            GameFeelController.Instance?.PlayMechanicTick(transform.position, movingActive ? 0.9f : 0.45f);
+        }
+
+        Vector3 targetPosition = movingActive ? activeLocalPosition : inactiveLocalPosition;
+        Quaternion targetRotation = Quaternion.Euler(movingActive ? activeLocalEuler : inactiveLocalEuler);
 
         controlledTransform.localPosition = Vector3.MoveTowards(controlledTransform.localPosition, targetPosition, travelSpeed * Time.deltaTime);
         controlledTransform.localRotation = Quaternion.RotateTowards(controlledTransform.localRotation, targetRotation, rotationSpeed * Time.deltaTime);
@@ -132,6 +140,7 @@ public class EchoKineticBody : MonoBehaviour, IResettableLevelObject
         _playerCount = 0;
         _echoCount = 0;
         _latched = false;
+        _wasMovingActive = false;
 
         if (controlledTransform == null)
             controlledTransform = transform;

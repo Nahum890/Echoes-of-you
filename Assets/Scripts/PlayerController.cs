@@ -696,25 +696,9 @@ public class PlayerController : MonoBehaviour
     {
         _anim = GetComponentInChildren<Animator>();
 
-        // Fallback capsule if no model found
-        GameObject capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-        capsule.name = "FallbackCapsule";
-        capsule.transform.SetParent(visualRoot, false);
-        capsule.transform.localPosition = new Vector3(0f, 1.05f, 0f);
-        capsule.transform.localRotation = Quaternion.identity;
-        capsule.transform.localScale = new Vector3(0.8f, 1.05f, 0.8f);
-
-        Collider capsuleCollider = capsule.GetComponent<Collider>();
-        if (capsuleCollider != null)
-            Destroy(capsuleCollider);
-
-        Renderer rendererRef = capsule.GetComponent<Renderer>();
-        if (rendererRef != null)
-        {
-            Material material = new Material(Shader.Find("Standard"));
-            material.color = new Color(0.87f, 0.91f, 0.96f, 1f);
-            rendererRef.sharedMaterial = material;
-        }
+        GameObject missingModel = new GameObject("PlayerModelMissing");
+        missingModel.transform.SetParent(visualRoot, false);
+        Debug.LogWarning("PlayerController: no se encontro modelo de personaje; no se crea una capsula visual placeholder.");
     }
 
     void Die()

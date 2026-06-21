@@ -239,13 +239,12 @@
     justify-content: space-between;
 }
 
-.main-content {
+.main-content, #right-content-container {
     position: absolute;
     left: 320px;
     top: 72px;
     right: 0;
     bottom: 0;
-    padding: 96px;
 }
 
 .main-menu-header {
@@ -1258,7 +1257,8 @@
 
 /* Scale Large Physical Layout Overrides */
 .scale-large .side-nav { width: 380px; }
-.scale-large .main-content { left: 380px; padding: 108px; }
+.scale-large .main-content, .scale-large #right-content-container { left: 380px; }
+.scale-large .preview-panel { padding: 108px; }
 .scale-large .main-menu-header { padding-left: 440px; }
 .scale-large .bento-cell { padding: 30px; }
 .scale-large .setting-row { margin-bottom: 30px; }
@@ -1290,8 +1290,134 @@
 
 /* Scale Extra Large Physical Layout Overrides */
 .scale-xl .side-nav { width: 440px; }
-.scale-xl .main-content { left: 440px; padding: 120px; }
+.scale-xl .main-content, .scale-xl #right-content-container { left: 440px; }
+.scale-xl .preview-panel { padding: 120px; }
 .scale-xl .main-menu-header { padding-left: 512px; }
 .scale-xl .bento-cell { padding: 36px; }
 .scale-xl .setting-row { margin-bottom: 36px; }
 .scale-xl .toggle-row, .scale-xl .resolution-row { padding: 36px; margin-bottom: 24px; }
+
+/* ============================================================
+   PREVIEW PANELS & HOVER TRANSITIONS (Redesign v2)
+   ============================================================ */
+
+.preview-panel {
+    opacity: 0;
+    translate: 30px 0;
+    transition-property: opacity, translate;
+    transition-duration: 0.4s;
+    transition-timing-function: ease-out-sine;
+    pointer-events: none;
+    padding: 96px;
+}
+
+.preview-panel--visible {
+    opacity: 1;
+    translate: 0 0;
+    pointer-events: auto;
+}
+
+.text-glow {
+    text-shadow: 0 0 10px rgba(194, 193, 255, 0.4);
+}
+
+/* Neural Archives Styling */
+.terminal-log-box {
+    background-color: rgba(7, 13, 31, 0.6);
+    border-width: 1px;
+    border-color: rgba(194, 193, 255, 0.1);
+    border-radius: 4px;
+    padding: 16px;
+}
+
+.terminal-log-line {
+    font-size: 11px;
+    color: #bec6e0;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/SpaceGrotesk-Variable.ttf');
+    margin-bottom: 4px;
+}
+
+.telemetry-card {
+    width: 46%;
+    margin-right: 4%;
+    margin-bottom: 16px;
+    padding: 12px;
+    background-color: rgba(25, 31, 49, 0.45);
+    border-width: 1px;
+    border-color: rgba(194, 193, 255, 0.08);
+    border-radius: 4px;
+}
+
+.telemetry-card-title {
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: #918fa0;
+    -unity-text-transform: uppercase;
+}
+
+.telemetry-card-value {
+    font-size: 16px;
+    color: #c2c1ff;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/SpaceGrotesk-Variable.ttf');
+    margin-top: 4px;
+}
+
+/* Resonance Radar (Oscilloscope) */
+.radar-container {
+    width: 200px;
+    height: 200px;
+    border-radius: 9999px;
+    border-width: 1px;
+    border-color: rgba(194, 193, 255, 0.15);
+    background-color: rgba(7, 13, 31, 0.3);
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.radar-sweep {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background-color: rgba(194, 193, 255, 0.04);
+    border-right-width: 1px;
+    border-right-color: rgba(194, 193, 255, 0.25);
+    transform-origin: bottom right;
+    rotate: 0deg;
+    animation-name: rotate-sweep;
+    animation-duration: 6s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@keyframes rotate-sweep {
+    from { rotate: 0deg; }
+    to { rotate: 360deg; }
+}
+
+.radar-ring {
+    position: absolute;
+    border-width: 1px;
+    border-color: rgba(194, 193, 255, 0.06);
+    border-radius: 9999px;
+}
+
+/* Disconnect Offline Overlay */
+.disconnect-offline-overlay {
+    background-image: url("project://database/Assets/UI/Images/disconnect_bg.png");
+    -unity-background-image-tint-color: rgba(255, 180, 171, 0.85);
+    background-size: cover;
+}
+
+.blink-animation {
+    animation-name: blink-text;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+@keyframes blink-text {
+    0% { opacity: 0.3; }
+    50% { opacity: 1.0; }
+    100% { opacity: 0.3; }
+}

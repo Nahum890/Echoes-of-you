@@ -1,0 +1,208 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be9d0c6961d9b24992d8c11589b2350, type: 3}
+  m_Name: Level_04_Blueprint
+  m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
+  levelName: Level_04
+  nextLevel: Level_05
+  actNumber: 1
+  archetype: 0
+  maxEchoes: 2
+  maxRecordSeconds: 10
+  activeParadoxes: 
+  fogColor: {r: 0.1, g: 0.12, b: 0.18, a: 1}
+  fogDensity: 0.01
+  skyColor: {r: 0.18, g: 0.2, b: 0.28, a: 1}
+  directionalLightRotation: {x: 50, y: -30, z: 0}
+  directionalLightColor: {r: 1, g: 1, b: 1, a: 1}
+  directionalLightIntensity: 1
+  narrativeIntroTitle: "Nivel 4 \u2014 La Jaula de Presi\xF3n"
+  narrativeIntroDesc: "Las placas deben ser pisadas en un orden espec\xEDfico (A
+    -> B -> C). Coordina tus grabaciones secuenciales."
+  narrativeIntroDuration: 10
+  puzzleObjectiveText: "Activa las placas en el orden exacto: Izquierda-Atr\xE1s,
+    Derecha, Izquierda-Adelante."
+  puzzleActiveText: "Las tres memorias deben sonar en armon\xEDa."
+  puzzleCompleteText: "Sinfon\xEDa secuencial completada."
+  pathHints:
+  - {x: 0, y: 1.1, z: 0}
+  - {x: -6, y: 1.1, z: 10}
+  - {x: 6, y: 1.1, z: 15}
+  - {x: -6, y: 1.1, z: 20}
+  modules:
+  - name: StartPlatform
+    type: 0
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 12, y: 0.5, z: 10}
+    customData: 
+    targetSignals: []
+  - name: ExitPlatform
+    type: 0
+    position: {x: 0, y: 0, z: 30}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 12, y: 0.5, z: 10}
+    customData: 
+    targetSignals: []
+  - name: PlatePlatA
+    type: 1
+    position: {x: -6, y: 0, z: 10}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 3, y: 0.5, z: 3}
+    customData: 
+    targetSignals: []
+  - name: PlatePlatB
+    type: 1
+    position: {x: 6, y: 0, z: 15}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 3, y: 0.5, z: 3}
+    customData: 
+    targetSignals: []
+  - name: PlatePlatC
+    type: 1
+    position: {x: -6, y: 0, z: 20}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 3, y: 0.5, z: 3}
+    customData: 
+    targetSignals: []
+  - name: PlateA
+    type: 4
+    position: {x: -6, y: 0.33, z: 10}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals: []
+  - name: PlateB
+    type: 4
+    position: {x: 6, y: 0.33, z: 15}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals: []
+  - name: PlateC
+    type: 4
+    position: {x: -6, y: 0.33, z: 20}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals: []
+  - name: Rotating_Cross
+    type: 20
+    position: {x: 0, y: 0.25, z: 15}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 10, y: 0.35, z: 1.2}
+    customData: 0,0,0|0,0,0|0,45,0|1|0
+    targetSignals: []
+  - name: ExitGate
+    type: 5
+    position: {x: 0, y: 1.5, z: 25}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 6, y: 3, z: 0.5}
+    customData: 
+    targetSignals: []
+  - name: Signal_Sequence
+    type: 15
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Secuencia Resuelta|false|false
+    targetSignals: []
+  - name: Condition_Sequential
+    type: 16
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: SequentialOrder|Enlace secuencia|Secuencia correcta! Acceso concedido.|Secuencia
+      rota! Intenta de nuevo.
+    targetSignals:
+    - PlateA
+    - PlateB
+    - PlateC
+    - Signal_Sequence
+    - ExitGate
+  - name: LevelExit_Area
+    type: 6
+    position: {x: 0, y: 1.25, z: 32}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Level_05
+    targetSignals: []
+  - name: PlayerStart
+    type: 7
+    position: {x: 0, y: 1.1, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals: []
+  - name: Tut_L04_Secuencia
+    type: 9
+    position: {x: 0, y: 1, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 10, y: 3, z: 8}
+    customData: "Nivel 4 \u2014 La Jaula de Presi\xF3n|Las placas deben ser pisadas
+      en un orden espec\xEDfico (A -> B -> C). Graba un recorrido donde pises la
+      placa A (izquierda posterior) y luego la B (derecha). Como jugador, corre y
+      pisa la placa C (izquierda anterior) justo cuando tu eco pise la B."
+    targetSignals: []
+  - name: Light_PlateA
+    type: 10
+    position: {x: -6, y: 3, z: 10}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 4CC0FF,2.5,6
+    targetSignals: []
+  - name: Light_PlateB
+    type: 10
+    position: {x: 6, y: 3, z: 15}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 4CC0FF,2.5,6
+    targetSignals: []
+  - name: Light_PlateC
+    type: 10
+    position: {x: -6, y: 3, z: 20}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 4CC0FF,2.5,6
+    targetSignals: []
+  - name: Light_Exit
+    type: 10
+    position: {x: 0, y: 5, z: 32}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 2699FF,5,10
+    targetSignals: []
+  - name: DistantArch
+    type: 12
+    position: {x: 0, y: 0, z: 20}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals: []
+  - name: LevelGoal
+    type: 13
+    position: {x: 0, y: 1.25, z: 32}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: "Activa las placas en el orden exacto: Izquierda-Atr\xE1s, Derecha,
+      Izquierda-Adelante.|Las tres memorias deben sonar en armon\xEDa.|Sinfon\xEDa
+      secuencial completada."
+    targetSignals:
+    - Signal_Sequence
+  - name: LevelRuntime
+    type: 14
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: "Pisa las tres placas en la secuencia correcta (A -> B -> C).|La
+      m\xE1quina requiere un orden exacto.|La secuencia ha sido grabada."
+    targetSignals: []

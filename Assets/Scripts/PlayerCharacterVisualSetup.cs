@@ -58,6 +58,7 @@ public class PlayerCharacterVisualSetup : MonoBehaviour
         model.localPosition = Vector3.zero;
         model.localRotation = Quaternion.identity;
         model.localScale = Vector3.one;
+        RemoveOverlappingFallbacks(visualRoot, model);
 
         Animator animator = model.GetComponent<Animator>();
         if (animator == null)
@@ -119,6 +120,30 @@ public class PlayerCharacterVisualSetup : MonoBehaviour
         }
     }
 
+    static void RemoveOverlappingFallbacks(Transform visualRoot, Transform activeModel)
+    {
+        if (visualRoot == null || activeModel == null)
+            return;
+
+        Transform activeRoot = activeModel.parent != null && activeModel.parent.name == ScalerChildName
+            ? activeModel.parent
+            : activeModel;
+
+        for (int i = visualRoot.childCount - 1; i >= 0; i--)
+        {
+            Transform child = visualRoot.GetChild(i);
+            if (child == activeRoot || child == activeModel)
+                continue;
+
+            bool looksLikeFallback = child.name.Contains("Capsule") ||
+                                     child.name.Contains("Fallback") ||
+                                     child.GetComponentInChildren<MeshRenderer>(true) != null ||
+                                     child.GetComponentInChildren<SkinnedMeshRenderer>(true) != null;
+            if (looksLikeFallback)
+                DestroySafe(child.gameObject);
+        }
+    }
+
     static Transform SpawnModel(Transform visualRoot)
     {
         EchoesLocomotionSettings settings = Resources.Load<EchoesLocomotionSettings>("EchoesLocomotionSettings");
@@ -150,7 +175,11 @@ public class PlayerCharacterVisualSetup : MonoBehaviour
             return;
 
         if (Application.isPlaying)
+        {
+            if (obj is GameObject go)
+                go.SetActive(false);
             Object.Destroy(obj);
+        }
         else
             Object.DestroyImmediate(obj);
     }

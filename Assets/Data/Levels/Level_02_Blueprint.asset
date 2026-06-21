@@ -1,0 +1,151 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be9d0c6961d9b24992d8c11589b2350, type: 3}
+  m_Name: Level_02_Blueprint
+  m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
+  levelName: Level_02
+  nextLevel: Level_03
+  actNumber: 1
+  archetype: 3
+  maxEchoes: 2
+  maxRecordSeconds: 14
+  activeParadoxes: 
+  fogColor: {r: 0.04, g: 0.05, b: 0.08, a: 1}
+  fogDensity: 0.043
+  skyColor: {r: 0.04, g: 0.05, b: 0.08, a: 1}
+  directionalLightRotation: {x: 50, y: -30, z: 0}
+  directionalLightColor: {r: 1, g: 1, b: 1, a: 1}
+  directionalLightIntensity: 1
+  narrativeIntroTitle: "Nivel 2 \u2014 Plataformas Cruzadas"
+  narrativeIntroDesc: Sincroniza tus ecos en las placas cruzadas para elevar las
+    plataformas y cruzar el puente superior.
+  narrativeIntroDuration: 10
+  puzzleObjectiveText: Sincroniza tus ecos en las placas cruzadas para elevar las
+    plataformas y cruzar el puente.
+  puzzleActiveText: "El contrapeso de la memoria est\xE1 listo."
+  puzzleCompleteText: Enlace completado.
+  pathHints:
+  - {x: 0, y: 1.1, z: 0}
+  - {x: -6, y: 7.1, z: 12}
+  modules:
+  - name: StartPlatform
+    type: 0
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 14, y: 0.5, z: 8}
+    customData: 
+    targetSignals: []
+  - name: LeftTower
+    type: 0
+    position: {x: -6, y: 6, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 4, y: 0.5, z: 4}
+    customData: 
+    targetSignals: []
+  - name: RightTower
+    type: 0
+    position: {x: 6, y: 6, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 4, y: 0.5, z: 4}
+    customData: 
+    targetSignals: []
+  - name: PlateA
+    type: 4
+    position: {x: -4, y: 0.33, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals: []
+  - name: PlateB
+    type: 4
+    position: {x: 4, y: 0.33, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals: []
+  - name: PlateC
+    type: 4
+    position: {x: 6, y: 6.33, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals: []
+  - name: ElevLeft
+    type: 8
+    position: {x: -6, y: 0, z: 6}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 3, y: 0.5, z: 3}
+    customData: 0,0,0|0,6,0|6
+    targetSignals:
+    - PlateB
+  - name: ElevRight
+    type: 8
+    position: {x: 6, y: 0, z: 6}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 3, y: 0.5, z: 3}
+    customData: 0,0,0|0,6,0|6
+    targetSignals:
+    - PlateA
+  - name: BridgeDoor
+    type: 5
+    position: {x: 0, y: 7.5, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 4, y: 3, z: 0.5}
+    customData: 
+    targetSignals:
+    - PlateC
+  - name: BridgeHigh
+    type: 1
+    position: {x: 0, y: 6, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 8, y: 0.5, z: 3}
+    customData: 
+    targetSignals: []
+  - name: LevelExit_Area
+    type: 6
+    position: {x: -6, y: 7.25, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Level_03
+    targetSignals: []
+  - name: PlayerStart
+    type: 7
+    position: {x: 0, y: 1.1, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals: []
+  - name: DistantArch
+    type: 12
+    position: {x: 0, y: 0, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals: []
+  - name: LevelGoal
+    type: 13
+    position: {x: -6, y: 7.25, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: "Sincroniza tus ecos en las placas cruzadas para elevar las plataformas
+      y cruzar el puente superior.|El contrapeso de la memoria est\xE1 listo.|Enlace
+      completado."
+    targetSignals:
+    - PlateC
+  - name: LevelRuntime
+    type: 14
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: "Sincroniza tus ecos en las placas cruzadas.|El contrapeso de la
+      memoria est\xE1 listo.|Enlace completado."
+    targetSignals: []

@@ -14,10 +14,10 @@ public static class EchoesPresentationSettings
     public const float DefaultVisualScale = 1f;
     public const float DefaultAnimSpeed = 1f;
     public const float DefaultMenuTextScale = 1.25f;
-    public const float DefaultGameFogDensity = 0.005f;
-    public const float DefaultGameSunIntensity = 1.02f;
-    public const float DefaultGamePointLightMul = 0.9f;
-    public const float DefaultGameAmbientMul = 0.92f;
+    public const float DefaultGameFogDensity = 0.011f;
+    public const float DefaultGameSunIntensity = 0.58f;
+    public const float DefaultGamePointLightMul = 0.72f;
+    public const float DefaultGameAmbientMul = 0.56f;
 
     public static float CharacterVisualScale =>
         Mathf.Clamp(PlayerPrefs.GetFloat(VisualScaleKey, DefaultVisualScale), 0.2f, 1.2f);
@@ -69,28 +69,28 @@ public static class EchoesPresentationSettings
         switch (presetId)
         {
             case "liminal":
-                fog = 0.005f;
-                sun = 1.02f;
-                point = 0.9f;
-                ambient = 0.92f;
+                fog = 0.011f;
+                sun = 0.58f;
+                point = 0.72f;
+                ambient = 0.56f;
                 return true;
             case "bruma":
-                fog = 0.009f;
-                sun = 0.88f;
-                point = 0.75f;
-                ambient = 0.82f;
+                fog = 0.014f;
+                sun = 0.5f;
+                point = 0.62f;
+                ambient = 0.48f;
                 return true;
             case "claridad":
-                fog = 0.0035f;
-                sun = 1.25f;
-                point = 1.1f;
-                ambient = 1.05f;
+                fog = 0.007f;
+                sun = 0.82f;
+                point = 0.92f;
+                ambient = 0.72f;
                 return true;
             case "penumbra":
-                fog = 0.007f;
-                sun = 0.72f;
-                point = 0.65f;
-                ambient = 0.7f;
+                fog = 0.016f;
+                sun = 0.42f;
+                point = 0.52f;
+                ambient = 0.38f;
                 return true;
             default:
                 fog = DefaultGameFogDensity;

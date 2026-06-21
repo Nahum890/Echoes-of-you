@@ -39,6 +39,11 @@ public class EchoRecorder : MonoBehaviour
     Animator _projectionAnim;
     Vector3 _projectionVelocity;
     AudioClip _micClip;
+    string _micDevice;
+    int _micFrequency = 48000;
+    int _micLastPosition;
+    bool _micReady;
+    float _micStartRealtime;
 
     public bool IsRecording => _recording;
     public bool IsProjectionRecording => _recording && _projectionRecording;
@@ -93,6 +98,9 @@ public class EchoRecorder : MonoBehaviour
         if (_projectionRecording)
             UpdateProjectionPilot();
 
+        if (_recording)
+            UpdateVoiceCaptureStatus();
+
         UpdateProjectionAnimator();
 
         if (_anim != null && _anim.runtimeAnimatorController != null)
@@ -124,8 +132,7 @@ public class EchoRecorder : MonoBehaviour
         _recordStartTime = Time.time;
         _frames.Clear();
 
-        // Start capturing microphone input dynamically
-        _micClip = Microphone.Start(null, false, (int)maxRecordSeconds, 44100);
+        StartVoiceCapture();
 
         if (_projectionRecording)
             CreateProjectionPilot();
@@ -158,21 +165,7 @@ public class EchoRecorder : MonoBehaviour
         GameFeelController.Instance?.PlayRecordStop(transform.position);
         SetAnimatorTriggerIfExists("RecordStop");
 
-        // Stop microphone capture and trim the transient clip to the exact duration
-        AudioClip voiceClip = null;
-        if (_micClip != null)
-        {
-            int sampleCount = Microphone.GetPosition(null);
-            Microphone.End(null);
-            if (sampleCount > 0)
-            {
-                float[] samples = new float[sampleCount * _micClip.channels];
-                _micClip.GetData(samples, 0);
-                voiceClip = AudioClip.Create("EchoVoice", sampleCount, _micClip.channels, _micClip.frequency, false);
-                voiceClip.SetData(samples, 0);
-            }
-            _micClip = null;
-        }
+        AudioClip voiceClip = StopVoiceCapture(elapsed);
 
         if (elapsed < minRecordSeconds || _frames.Count < 2)
         {
@@ -228,7 +221,7 @@ public class EchoRecorder : MonoBehaviour
             EchoPlayback oldest = _echoes[0];
             _echoes.RemoveAt(0);
             if (oldest != null)
-                Destroy(oldest.gameObject);
+                oldest.FadeOutAndDestroy(0.65f);
         }
     }
 
@@ -243,14 +236,13 @@ public class EchoRecorder : MonoBehaviour
         GameStateController.Instance?.SetRecording(false, transform.position, transform.up);
 
         // Terminate microphone recording if it's currently running
-        if (Microphone.IsRecording(null))
-            Microphone.End(null);
+        StopVoiceCapture(_lastRecordDuration);
         _micClip = null;
 
         for (int i = 0; i < _echoes.Count; i++)
         {
             if (_echoes[i] != null)
-                Destroy(_echoes[i].gameObject);
+                _echoes[i].FadeOutAndDestroy(0.5f);
         }
 
         _echoes.Clear();
@@ -270,6 +262,113 @@ public class EchoRecorder : MonoBehaviour
         hud.SetEchoState(_recording ? (_projectionRecording ? "Proyectando" : "Grabando") : (_echoes.Count > 0 ? "Reproduciendo" : "Listo"));
     }
 
+    void StartVoiceCapture()
+    {
+        _micClip = null;
+        _micLastPosition = 0;
+        _micReady = false;
+        _micStartRealtime = Time.realtimeSinceStartup;
+        _micDevice = Microphone.devices != null && Microphone.devices.Length > 0 ? Microphone.devices[0] : null;
+        if (string.IsNullOrEmpty(_micDevice))
+        {
+            Debug.LogWarning("EchoRecorder: no hay microfono disponible para grabar la voz del eco.");
+            return;
+        }
+
+        Microphone.GetDeviceCaps(_micDevice, out int minFrequency, out int maxFrequency);
+        if (maxFrequency > 0)
+        {
+            int lowerBound = minFrequency > 0 ? minFrequency : 8000;
+            _micFrequency = maxFrequency >= lowerBound ? Mathf.Clamp(48000, lowerBound, maxFrequency) : maxFrequency;
+        }
+        else
+            _micFrequency = 48000;
+
+        int captureSeconds = Mathf.Max(1, Mathf.CeilToInt(maxRecordSeconds) + 1);
+        _micClip = Microphone.Start(_micDevice, false, captureSeconds, _micFrequency);
+        if (_micClip == null)
+        {
+            Debug.LogWarning($"EchoRecorder: no se pudo iniciar el microfono '{_micDevice}'.");
+            return;
+        }
+
+        Debug.Log($"EchoRecorder: capturando voz exacta del eco con '{_micDevice}' a {_micFrequency} Hz.");
+    }
+
+    void UpdateVoiceCaptureStatus()
+    {
+        if (_micClip == null || string.IsNullOrEmpty(_micDevice))
+            return;
+
+        if (!Microphone.IsRecording(_micDevice))
+            return;
+
+        int position = Microphone.GetPosition(_micDevice);
+        if (position > 0)
+        {
+            _micLastPosition = position;
+            _micReady = true;
+        }
+    }
+
+    AudioClip StopVoiceCapture(float recordedSeconds)
+    {
+        if (_micClip == null || string.IsNullOrEmpty(_micDevice))
+            return null;
+
+        int microphonePosition = Microphone.IsRecording(_micDevice) ? Microphone.GetPosition(_micDevice) : _micLastPosition;
+        if (microphonePosition > 0)
+            _micLastPosition = microphonePosition;
+        Microphone.End(_micDevice);
+
+        int expectedSamples = Mathf.Clamp(
+            Mathf.CeilToInt(Mathf.Max(0.01f, recordedSeconds) * _micClip.frequency),
+            1,
+            _micClip.samples);
+        int sampleCount = _micLastPosition > 0 ? Mathf.Min(_micLastPosition, expectedSamples) : 0;
+        int channels = Mathf.Max(1, _micClip.channels);
+
+        if (!_micReady || sampleCount <= 0)
+        {
+            Debug.LogWarning($"EchoRecorder: el microfono no entrego muestras validas para el eco. Tiempo activo: {Time.realtimeSinceStartup - _micStartRealtime:0.00}s.");
+            _micClip = null;
+            _micDevice = null;
+            return null;
+        }
+
+        float[] samples = new float[sampleCount * channels];
+        _micClip.GetData(samples, 0);
+        NormalizeVoiceSamples(samples);
+
+        AudioClip voiceClip = AudioClip.Create("EchoVoice_ExactMicReplay", sampleCount, channels, _micClip.frequency, false);
+        voiceClip.SetData(samples, 0);
+        Debug.Log($"EchoRecorder: voz del eco capturada ({sampleCount / (float)_micClip.frequency:0.00}s, {channels} canales, {_micClip.frequency} Hz).");
+        _micClip = null;
+        _micDevice = null;
+        return voiceClip;
+    }
+
+    static void NormalizeVoiceSamples(float[] samples)
+    {
+        if (samples == null || samples.Length == 0)
+            return;
+
+        float peak = 0f;
+        for (int i = 0; i < samples.Length; i++)
+            peak = Mathf.Max(peak, Mathf.Abs(samples[i]));
+
+        if (peak < 0.0001f)
+            return;
+
+        float targetPeak = 0.82f;
+        float gain = Mathf.Min(4f, targetPeak / peak);
+        if (gain <= 1.02f)
+            return;
+
+        for (int i = 0; i < samples.Length; i++)
+            samples[i] = Mathf.Clamp(samples[i] * gain, -1f, 1f);
+    }
+
     void CreateProjectionPilot()
     {
         _playerController?.SetInputLocked(true);
@@ -283,6 +382,7 @@ public class EchoRecorder : MonoBehaviour
         EnsureProjectionPlateProbe();
         _projectionAnim = null;
 
+        PlayerCharacterVisualSetup.EnsureOn(transform);
         Transform playerVisual = transform.Find("PlayerVisual");
         if (playerVisual != null)
         {
@@ -309,12 +409,8 @@ public class EchoRecorder : MonoBehaviour
         }
         else
         {
-            GameObject capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            capsule.transform.SetParent(_projectionPilot.transform, false);
-            capsule.transform.localPosition = new Vector3(0f, 1.05f, 0f);
-            capsule.transform.localScale = new Vector3(0.55f, 0.9f, 0.55f);
-            Destroy(capsule.GetComponent<Collider>());
-            ApplyProjectionGhostMaterials(capsule);
+            GameObject missingVisual = new GameObject("ProjectionVisualMissingModel");
+            missingVisual.transform.SetParent(_projectionPilot.transform, false);
         }
 
         _projectionVelocity = Vector3.zero;

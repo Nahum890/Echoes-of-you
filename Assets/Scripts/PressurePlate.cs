@@ -11,6 +11,9 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
     [SerializeField] string playerTag = "Player";
     [SerializeField] string echoTag = "Echo";
     [SerializeField] string echoProjectionTag = "EchoProjection";
+    [SerializeField] bool acceptPlayer = true;
+    [SerializeField] bool acceptEcho = true;
+    [SerializeField] bool acceptEchoProjection = true;
 
     [Header("Visual Feedback")]
     [SerializeField] Color inactiveColor = new Color(0.16f, 0.21f, 0.31f, 1f);    // Indigo-ceniza elegante
@@ -162,7 +165,7 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
         for (int i = 0; i < hitCount; i++)
         {
             Collider c = _overlapBuffer[i];
-            if (c != null && (c.CompareTag(playerTag) || c.CompareTag(echoTag) || c.CompareTag(echoProjectionTag)))
+            if (IsAcceptedActor(c))
             {
                 foundActor = true;
                 break;
@@ -193,6 +196,25 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
         SetPressed(false);
         _pulsePhase = 0f;
         UpdateVisuals(false);
+    }
+
+    public void ConfigureAcceptedActors(bool player, bool echo, bool echoProjection)
+    {
+        acceptPlayer = player;
+        acceptEcho = echo;
+        acceptEchoProjection = echoProjection;
+    }
+
+    bool IsAcceptedActor(Collider c)
+    {
+        if (c == null)
+            return false;
+
+        return (acceptPlayer && c.CompareTag(playerTag)) ||
+               (acceptEcho && c.CompareTag(echoTag)) ||
+               (acceptEchoProjection && c.CompareTag(echoProjectionTag)) ||
+               c.CompareTag("KineticBlock") ||
+               c.GetComponentInParent<KineticPushableBlock>() != null;
     }
 
     void TriggerNearbyPlayerPush()

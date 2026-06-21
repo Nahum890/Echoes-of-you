@@ -5,6 +5,16 @@ using UnityEngine.SceneManagement;
 public class LevelEnvironmentBootstrap : MonoBehaviour
 {
     static readonly HashSet<string> ScaledScenes = new HashSet<string>();
+    static Material _runtimeEchoPlateMaterial;
+
+    static readonly string[] LegacyDressingPrefixes =
+    {
+        "FogSlab_",
+        "FarArch_",
+        "FarCantilever",
+        "OuterPillar_",
+        "SkyPillar_"
+    };
 
     static readonly string[] LevelRootNames =
     {
@@ -34,9 +44,12 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         UnlockPlayerControl();
         ApplyHazardScales();
         ApplyObstacleHeights();
+        CullLegacyOverlappingDressing();
         AlignPressurePlates();
+        ApplyEchoPlateVisuals();
         ApplyCameraProfile();
         ApplyLighting();
+        ApplyEchoPlateVisuals();
         EnsureExperienceSystems();
     }
 
@@ -228,13 +241,99 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         }
     }
 
+    static void ApplyEchoPlateVisuals()
+    {
+        PressurePlate[] plates = Object.FindObjectsByType<PressurePlate>(FindObjectsSortMode.None);
+        for (int i = 0; i < plates.Length; i++)
+        {
+            PressurePlate plate = plates[i];
+            if (plate == null)
+                continue;
+
+            PressurePlateAlignment alignment = plate.GetComponent<PressurePlateAlignment>();
+            bool isEchoPlate = alignment != null && alignment.echoProjectionPlate;
+            isEchoPlate |= plate.name.Contains("Eco") || plate.name.Contains("Echo");
+            if (!isEchoPlate)
+                continue;
+
+            Renderer[] renderers = plate.GetComponentsInChildren<Renderer>(true);
+            for (int r = 0; r < renderers.Length; r++)
+            {
+                if (renderers[r] != null)
+                    renderers[r].sharedMaterial = GetRuntimeEchoPlateMaterial();
+            }
+
+            Light glow = null;
+            Transform existing = plate.transform.Find("EchoPlateBlueLight");
+            if (existing != null)
+                glow = existing.GetComponent<Light>();
+
+            if (glow == null)
+            {
+                GameObject lightObject = new GameObject("EchoPlateBlueLight");
+                lightObject.transform.SetParent(plate.transform, false);
+                lightObject.transform.localPosition = new Vector3(0f, 0.65f, 0f);
+                glow = lightObject.AddComponent<Light>();
+            }
+
+            glow.type = LightType.Point;
+            glow.color = new Color(0.06f, 0.82f, 1f, 1f);
+            glow.intensity = 3.2f;
+            glow.range = 6.5f;
+            glow.shadows = LightShadows.Soft;
+        }
+    }
+
+    static Material GetRuntimeEchoPlateMaterial()
+    {
+        if (_runtimeEchoPlateMaterial != null)
+            return _runtimeEchoPlateMaterial;
+
+        Shader shader = Shader.Find("Standard");
+        _runtimeEchoPlateMaterial = new Material(shader);
+        _runtimeEchoPlateMaterial.name = "Runtime_EchoPlate_Blue";
+        _runtimeEchoPlateMaterial.color = new Color(0.03f, 0.14f, 0.24f, 1f);
+        if (_runtimeEchoPlateMaterial.HasProperty("_EmissionColor"))
+        {
+            _runtimeEchoPlateMaterial.EnableKeyword("_EMISSION");
+            _runtimeEchoPlateMaterial.SetColor("_EmissionColor", new Color(0.06f, 0.82f, 1f, 1f) * 3.5f);
+        }
+        _runtimeEchoPlateMaterial.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
+        return _runtimeEchoPlateMaterial;
+    }
+
+    static void CullLegacyOverlappingDressing()
+    {
+        Transform[] transforms = Object.FindObjectsByType<Transform>(FindObjectsSortMode.None);
+        for (int i = 0; i < transforms.Length; i++)
+        {
+            Transform item = transforms[i];
+            if (item == null)
+                continue;
+
+            string itemName = item.name;
+            bool shouldHide = false;
+            for (int p = 0; p < LegacyDressingPrefixes.Length; p++)
+            {
+                if (itemName.StartsWith(LegacyDressingPrefixes[p]))
+                {
+                    shouldHide = true;
+                    break;
+                }
+            }
+
+            if (shouldHide)
+                item.gameObject.SetActive(false);
+        }
+    }
+
     public static void ApplyLighting()
     {
         float fogDensity = EchoesPresentationSettings.GameFogDensity;
         float sunIntensity = EchoesPresentationSettings.GameSunIntensity;
         float pointMul = EchoesPresentationSettings.GamePointLightMultiplier;
         float ambientMul = EchoesPresentationSettings.GameAmbientMultiplier;
-        const float globalLightScale = 0.92f;
+        const float globalLightScale = 0.72f;
         sunIntensity *= globalLightScale;
         pointMul *= globalLightScale;
         ambientMul *= globalLightScale;
@@ -245,6 +344,12 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
             custom.fogDensity = fogDensity;
             custom.directionalIntensity = sunIntensity;
             custom.pointLightIntensityMultiplier = pointMul;
+            custom.directionalColor = new Color(0.44f, 0.54f, 0.7f, 1f);
+            custom.ambientSky = new Color(0.035f, 0.05f, 0.09f, 1f) * ambientMul;
+            custom.ambientEquator = new Color(0.018f, 0.026f, 0.048f, 1f) * ambientMul;
+            custom.ambientGround = new Color(0.006f, 0.008f, 0.014f, 1f) * ambientMul;
+            custom.fogColor = new Color(0.018f, 0.024f, 0.038f, 1f);
+            custom.reflectionIntensity = 0.18f;
             custom.ApplyNow();
             if (custom.disableRuntimeFillLights)
             {
@@ -263,13 +368,13 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         }
 
         RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
-        RenderSettings.ambientSkyColor = new Color(0.08f, 0.12f, 0.20f) * ambientMul;
-        RenderSettings.ambientEquatorColor = new Color(0.04f, 0.06f, 0.11f) * ambientMul;
-        RenderSettings.ambientGroundColor = new Color(0.02f, 0.03f, 0.06f) * ambientMul;
-        RenderSettings.reflectionIntensity = 0.42f;
+        RenderSettings.ambientSkyColor = new Color(0.035f, 0.05f, 0.09f) * ambientMul;
+        RenderSettings.ambientEquatorColor = new Color(0.018f, 0.026f, 0.048f) * ambientMul;
+        RenderSettings.ambientGroundColor = new Color(0.006f, 0.008f, 0.014f) * ambientMul;
+        RenderSettings.reflectionIntensity = 0.18f;
         RenderSettings.fog = fogDensity > 0.0001f;
         RenderSettings.fogMode = FogMode.ExponentialSquared;
-        RenderSettings.fogColor = new Color(0.05f, 0.07f, 0.12f);
+        RenderSettings.fogColor = new Color(0.018f, 0.024f, 0.038f);
         RenderSettings.fogDensity = fogDensity;
 
         Light[] lights = Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
@@ -281,15 +386,15 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
 
             if (light.type == LightType.Directional)
             {
-                light.intensity = Mathf.Max(light.intensity, sunIntensity);
-                light.color = new Color(0.82f, 0.88f, 1.0f);
+                light.intensity = sunIntensity;
+                light.color = new Color(0.44f, 0.54f, 0.7f);
                 continue;
             }
 
             if (light.type == LightType.Point && !light.name.StartsWith("EchoesFill_"))
             {
-                light.intensity = Mathf.Max(light.intensity * pointMul, 3.2f * pointMul);
-                light.range = Mathf.Max(light.range * 1.15f, 16f);
+                light.intensity = Mathf.Clamp(light.intensity * pointMul, 0.25f, 3.4f);
+                light.range = Mathf.Clamp(light.range * 1.05f, 4f, 16f);
             }
         }
 
@@ -308,9 +413,8 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         Vector3 origin = player != null ? player.transform.position : Vector3.zero;
         float spread = 18f * EchoesWorldMetrics.LevelGeometryScale;
 
-        // Optimized moody fills: 1 high-intensity ice-blue rim silhouette, and 1 soft overhead ambient light
-        SpawnFillLight("EchoesFill_Rim", origin + new Vector3(-spread * 0.45f, 7f, spread * 0.35f), new Color(0.65f, 0.76f, 0.89f), 3.8f * pointMul, spread * 1.8f);
-        SpawnFillLight("EchoesFill_Overhead", origin + new Vector3(0f, 14f, 0f), new Color(0.88f, 0.9f, 0.98f), 2.2f * pointMul, spread * 2.2f);
+        SpawnFillLight("EchoesFill_Rim", origin + new Vector3(-spread * 0.45f, 7f, spread * 0.35f), new Color(0.3f, 0.46f, 0.68f), 1.35f * pointMul, spread * 1.55f);
+        SpawnFillLight("EchoesFill_Overhead", origin + new Vector3(0f, 14f, 0f), new Color(0.28f, 0.34f, 0.48f), 0.85f * pointMul, spread * 1.8f);
     }
 
     static bool HasEchoesFillLights()

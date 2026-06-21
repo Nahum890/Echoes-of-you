@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -29,6 +30,15 @@ public class MainMenuController : MonoBehaviour
     // Panels
     VisualElement _settingsPanel;
     VisualElement _levelSelectPanel;
+
+    // Hover Preview Panels
+    VisualElement _panelNeuralArchives;
+    VisualElement _panelStabilityMap;
+    VisualElement _panelCalibrationPreview;
+    VisualElement _panelDisconnectOffline;
+    VisualElement _rightContentContainer;
+    string _activePreviewPanelName = "panel-neural-archives";
+    Coroutine _terminalLogCoroutine;
 
     // Main Menu Buttons
     Button _btnNewGame;
@@ -103,6 +113,13 @@ public class MainMenuController : MonoBehaviour
         _settingsPanel = _root.Q("settings-panel");
         _levelSelectPanel = _root.Q("level-select-panel");
 
+        // Hover Preview Panels
+        _rightContentContainer = _root.Q("right-content-container");
+        _panelNeuralArchives = _root.Q("panel-neural-archives");
+        _panelStabilityMap = _root.Q("panel-stability-map");
+        _panelCalibrationPreview = _root.Q("panel-calibration-preview");
+        _panelDisconnectOffline = _root.Q("panel-disconnect-offline");
+
         // Side nav buttons
         _btnNewGame = _root.Q<Button>("nav-newgame");
         _btnLevels = _root.Q<Button>("nav-levels");
@@ -176,12 +193,15 @@ public class MainMenuController : MonoBehaviour
         RegisterButtonClick("btn-reset-progress-confirm", ConfirmResetProgress);
 
         RefreshDashboard();
+        RefreshNeuralArchives();
         BindLevelMapButtons();
-
-
 
         InitializeSettings();
         ShowVoidIntro();
+
+        // Start animated terminal log coroutine
+        if (_terminalLogCoroutine != null) StopCoroutine(_terminalLogCoroutine);
+        _terminalLogCoroutine = StartCoroutine(AnimateTerminalLogs());
     }
 
     void Start()
@@ -256,6 +276,9 @@ public class MainMenuController : MonoBehaviour
         }
 
         btn.AddToClassList("nav-item--active");
+
+        // Show the corresponding preview panel
+        ShowPreviewPanel(GetPanelNameForButton(btn));
     }
 
     void OnNavHoverLeave(Button btn)
@@ -275,6 +298,9 @@ public class MainMenuController : MonoBehaviour
         {
             btn.RemoveFromClassList("nav-item--active");
         }
+
+        // Return to the active nav's preview panel
+        ShowPreviewPanel(GetPanelNameForButton(_activeNavButton));
     }
 
     void SetActiveNav(Button activeBtn)
@@ -310,6 +336,42 @@ public class MainMenuController : MonoBehaviour
         return "ISOLATED";
     }
 
+    string GetPanelNameForButton(Button btn)
+    {
+        if (btn == _btnNewGame) return "panel-neural-archives";
+        if (btn == _btnLevels) return "panel-stability-map";
+        if (btn == _btnSettings) return "panel-calibration-preview";
+        if (btn == _btnExit) return "panel-disconnect-offline";
+        return "panel-neural-archives";
+    }
+
+    // --- Preview Panel Switching ---
+
+    void ShowPreviewPanel(string panelName)
+    {
+        if (panelName == _activePreviewPanelName) return;
+        _activePreviewPanelName = panelName;
+
+        // Hide all preview panels
+        _panelNeuralArchives?.RemoveFromClassList("preview-panel--visible");
+        _panelStabilityMap?.RemoveFromClassList("preview-panel--visible");
+        _panelCalibrationPreview?.RemoveFromClassList("preview-panel--visible");
+        _panelDisconnectOffline?.RemoveFromClassList("preview-panel--visible");
+
+        // Show the target panel
+        var target = _root.Q(panelName);
+        target?.AddToClassList("preview-panel--visible");
+
+        if (panelName == "panel-calibration-preview")
+        {
+            RefreshCalibrationPreview();
+        }
+        else if (panelName == "panel-neural-archives")
+        {
+            RefreshNeuralArchives();
+        }
+    }
+
     // --- Panel Switching ---
 
     void ShowVoidIntro()
@@ -328,6 +390,9 @@ public class MainMenuController : MonoBehaviour
             _heroTitle.text = "VOID";
 
         SetActiveNav(_btnNewGame);
+        _activePreviewPanelName = "";
+        ShowPreviewPanel("panel-neural-archives");
+        RefreshNeuralArchives();
     }
 
     void ShowStabilityMap()
@@ -346,6 +411,8 @@ public class MainMenuController : MonoBehaviour
             _heroTitle.text = "STABILITY";
 
         SetActiveNav(_btnLevels);
+        _activePreviewPanelName = "";
+        ShowPreviewPanel("panel-stability-map");
         RefreshDashboard();
     }
 
@@ -356,6 +423,7 @@ public class MainMenuController : MonoBehaviour
         _mainContent?.AddToClassList("hidden");
         _settingsPanel?.RemoveFromClassList("hidden");
         SetActiveNav(_btnSettings);
+        _activePreviewPanelName = "panel-calibration-preview";
         LoadCurrentSettingsIntoUI();
     }
 
@@ -754,6 +822,109 @@ public class MainMenuController : MonoBehaviour
         else if (scale == "Extra Large")
         {
             _root.AddToClassList("scale-xl");
+        }
+    }
+
+    // --- Neural Archives (VOID Panel) Telemetry ---
+
+    void RefreshNeuralArchives()
+    {
+        if (_root == null) return;
+
+        int completed = GameProgress.GetCompletedCount();
+        int total = GameProgress.TotalLevels;
+        float stability = 0.20f + 0.80f * (total > 0 ? (float)completed / total : 0f);
+
+        SetLabelText("lbl-archive-fragments", $"{completed}/{total}");
+        SetLabelText("lbl-archive-echoes", GameProgress.GetTotalEchoesCreated().ToString());
+        SetLabelText("lbl-archive-deaths", GameProgress.GetTotalDeathCount().ToString());
+        SetLabelText("lbl-archive-time", GameProgress.FormatPlayTime(GameProgress.GetTotalPlayTimeSeconds()));
+        SetLabelText("lbl-archive-stability-pct", $"{Mathf.RoundToInt(stability * 100f)}%");
+
+        var stabilityBar = _root.Q("bar-archive-stability");
+        if (stabilityBar != null)
+            stabilityBar.style.width = Length.Percent(stability * 100f);
+    }
+
+    void RefreshCalibrationPreview()
+    {
+        if (_root == null) return;
+
+        var audioMgr = EchoesAudioManager.EnsureExists();
+        float master = audioMgr != null ? audioMgr.GetMasterVolume() : PlayerPrefs.GetFloat("MasterVolume", 0.84f);
+        float music = audioMgr != null ? audioMgr.GetMusicVolume() : PlayerPrefs.GetFloat("MusicVolume", 0.6f);
+        float sfx = audioMgr != null ? audioMgr.GetSFXVolume() : PlayerPrefs.GetFloat("SfxVolume", 0.72f);
+
+        SetLabelText("lbl-preview-audio-master", $"Master: {Mathf.RoundToInt(master * 100f)}%");
+        SetLabelText("lbl-preview-audio-music", $"Música: {Mathf.RoundToInt(music * 100f)}%");
+        SetLabelText("lbl-preview-audio-sfx", $"SFX: {Mathf.RoundToInt(sfx * 100f)}%");
+
+        // Get actual resolution
+        string resText = $"{Screen.width} x {Screen.height}";
+        SetLabelText("lbl-preview-video-res", $"Resolución: {resText}");
+        SetLabelText("lbl-preview-video-fs", $"Pantalla Completa: {(Screen.fullScreen ? "SI" : "NO")}");
+        SetLabelText("lbl-preview-video-scale", $"Escala UI: {PlayerPrefs.GetString("UIScale", "Normal")}");
+
+        float sens = PlayerPrefs.GetFloat("CameraSensitivity", 1f);
+        float echo = PlayerPrefs.GetFloat("EchoOpacity", 0.6f);
+        SetLabelText("lbl-preview-neural-sens", $"Sensibilidad: {sens:F1}");
+        SetLabelText("lbl-preview-neural-echo", $"Opacidad Eco: {Mathf.RoundToInt(echo * 100f)}%");
+    }
+
+    // --- Terminal Log Animation ---
+
+    readonly string[] _diagnosticLines = new[]
+    {
+        "[SYSTEM] Sync protocol loaded successfully.",
+        "[OK] Core cognitive links established.",
+        "[OK] Stability matrix synchronized.",
+        "[SCAN] Checking neural pathway integrity...",
+        "[OK] Pathway nodes responded: all clear.",
+        "[SYNC] Fragment resonance calibrating...",
+        "[OK] Echo anchor points registered.",
+        "[WARN] Memory fragment instability detected — sector 07.",
+        "[OK] Auto-repair protocol engaged.",
+        "[SYNC] Cognitive drift within tolerance: 0.003ms.",
+        "[OK] Archive integrity verified.",
+        "[SCAN] Deep memory nodes scanning...",
+        "[OK] No anomalous signals detected.",
+        "[SYSTEM] Heartbeat: 72 bpm — NOMINAL.",
+        "[OK] Session telemetry streaming.",
+        "[SYNC] Void resonance: STABLE.",
+        "Waiting for user sync command...",
+    };
+
+    IEnumerator AnimateTerminalLogs()
+    {
+        var log1 = _root?.Q<Label>("lbl-archive-log-1");
+        var log2 = _root?.Q<Label>("lbl-archive-log-2");
+        var log3 = _root?.Q<Label>("lbl-archive-log-3");
+        if (log1 == null || log2 == null || log3 == null)
+            yield break;
+
+        int lineIndex = 3; // Start after the initial 3 lines that are hardcoded in UXML
+
+        while (true)
+        {
+            yield return new WaitForSeconds(Random.Range(2.5f, 5.0f));
+
+            // Shift lines up
+            log1.text = log2.text;
+            log2.text = log3.text;
+
+            // Pick next line
+            string nextLine = _diagnosticLines[lineIndex % _diagnosticLines.Length];
+            lineIndex++;
+
+            // Color the new line based on prefix
+            if (nextLine.StartsWith("[WARN]"))
+                log3.style.color = new StyleColor(new Color(1f, 0.76f, 0.36f, 0.9f)); // amber
+            else if (nextLine.StartsWith("Waiting"))
+                log3.style.color = new StyleColor(new Color(0.48f, 0.94f, 0.78f, 1f)); // #7af0c8
+            else
+                log3.style.color = new StyleColor(new Color(0.86f, 0.88f, 0.98f, 0.6f)); // default
+
+            log3.text = nextLine;
         }
     }
 

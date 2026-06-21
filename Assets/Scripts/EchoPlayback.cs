@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,13 @@ public class EchoPlayback : MonoBehaviour
 {
     [SerializeField] float skinWidth = 0.08f;
     [SerializeField] Material _matEcho;
+
+    const float EchoHeight = 2.1f;
+    const float EchoRadius = 0.36f;
+    const string ModelChildName = "Model";
+    const string ScalerChildName = "EchoScaler";
+    const string VisualChildName = "Visual";
+    const string ResourcesPrefabPath = "EchoesCharacterVisual";
 
     CharacterController _cc;
     readonly List<RecordFrame> _frames = new List<RecordFrame>();
@@ -17,31 +25,31 @@ public class EchoPlayback : MonoBehaviour
     AudioSource _audioSource;
     float _delayedBlendSpeed;
     Vector3 _delayedLocalVelocity;
+    bool _destroying;
 
     public bool IsPlaying => _playing;
     public float LoopDuration => _duration;
 
     void Awake()
     {
+        transform.localScale = Vector3.one;
         _cc = GetComponent<CharacterController>();
         _cc.skinWidth = skinWidth;
+        _cc.height = EchoHeight;
+        _cc.radius = EchoRadius;
+        _cc.center = new Vector3(0f, EchoHeight * 0.5f, 0f);
         EnsureVisualAnimator();
         EnsureOptionalComponent("EchoSpectralTrail");
         EnsureOptionalComponent("EchoTemporalVisual");
-        EnsureOptionalComponent("PlayerLocomotionAnimator");
+        RemovePlayerOnlyAnimationBootstraps();
         _anim = ResolveEchoAnimator();
         
         _audioSource = GetComponent<AudioSource>();
         if (_audioSource == null)
-        {
             _audioSource = gameObject.AddComponent<AudioSource>();
-            _audioSource.spatialBlend = 1f; // 3D sound
-            _audioSource.loop = true;
-            _audioSource.volume = 0.2f;
-            _audioSource.minDistance = 2f;
-            _audioSource.maxDistance = 15f;
-            _audioSource.rolloffMode = AudioRolloffMode.Linear;
-        }
+
+        ConfigureSpatialVoicePlayback();
+        RemoveVoiceDegradingFilters();
         
         var audioMgr = EchoesAudioManager.EnsureExists();
         if (audioMgr != null)
@@ -86,8 +94,9 @@ public class EchoPlayback : MonoBehaviour
 
     public void BeginPlayback(IReadOnlyList<RecordFrame> frames, float duration, AudioClip voiceClip = null)
     {
-        PlayerAnimationRuntimeBootstrap.ApplyToHierarchy(gameObject);
+        EnsureVisualAnimator();
         _anim = ResolveEchoAnimator();
+        ApplySavedEchoOpacity();
 
         _frames.Clear();
         if (frames != null)
@@ -111,14 +120,8 @@ public class EchoPlayback : MonoBehaviour
         if (_audioSource != null)
         {
             _audioSource.clip = voiceClip;
-            _audioSource.loop = true;
-            _audioSource.spatialBlend = 1f; // full 3D spatial depth
-            _audioSource.minDistance = 2f;
-            _audioSource.maxDistance = 18f;
-            _audioSource.rolloffMode = AudioRolloffMode.Linear;
-            
-            // Apply dynamic audio filters to evoke a ghostly, degraded tape look/sound
-            EnsureAudioFilters();
+            ConfigureSpatialVoicePlayback();
+            RemoveVoiceDegradingFilters();
 
             if (voiceClip != null)
             {
@@ -127,30 +130,39 @@ public class EchoPlayback : MonoBehaviour
         }
     }
 
-    void EnsureAudioFilters()
+    void ConfigureSpatialVoicePlayback()
     {
-        // 1. AudioLowPassFilter (Muffled, distant past self)
-        var lowPass = GetComponent<AudioLowPassFilter>();
-        if (lowPass == null)
-            lowPass = gameObject.AddComponent<AudioLowPassFilter>();
-        lowPass.cutoffFrequency = 1200f; // low frequency cut to muffle high frequencies
-        lowPass.lowpassResonanceQ = 1.0f;
+        if (_audioSource == null)
+            return;
 
-        // 2. AudioReverbFilter (Cavernous memory, ghostly depth)
-        var reverb = GetComponent<AudioReverbFilter>();
-        if (reverb == null)
-            reverb = gameObject.AddComponent<AudioReverbFilter>();
-        reverb.reverbPreset = AudioReverbPreset.Cave;
-        reverb.decayTime = 3.5f;
-        reverb.roomHF = -1000f;
-        reverb.reflectionsLevel = -800;
-        reverb.reverbLevel = -200;
+        _audioSource.loop = true;
+        _audioSource.playOnAwake = false;
+        _audioSource.volume = 1f;
+        _audioSource.pitch = 1f;
+        _audioSource.spatialBlend = 1f;
+        _audioSource.dopplerLevel = 0.05f;
+        _audioSource.spread = 18f;
+        _audioSource.minDistance = 4f;
+        _audioSource.maxDistance = 42f;
+        _audioSource.rolloffMode = AudioRolloffMode.Logarithmic;
+        _audioSource.bypassEffects = false;
+        _audioSource.bypassListenerEffects = false;
+        _audioSource.bypassReverbZones = true;
+    }
 
-        // 3. AudioDistortionFilter (Analog tape degradation saturation)
-        var distortion = GetComponent<AudioDistortionFilter>();
-        if (distortion == null)
-            distortion = gameObject.AddComponent<AudioDistortionFilter>();
-        distortion.distortionLevel = 0.26f; // analog warmth and mild crunch
+    void RemoveVoiceDegradingFilters()
+    {
+        AudioLowPassFilter lowPass = GetComponent<AudioLowPassFilter>();
+        if (lowPass != null)
+            DestroySafe(lowPass);
+
+        AudioReverbFilter reverb = GetComponent<AudioReverbFilter>();
+        if (reverb != null)
+            DestroySafe(reverb);
+
+        AudioDistortionFilter distortion = GetComponent<AudioDistortionFilter>();
+        if (distortion != null)
+            DestroySafe(distortion);
     }
 
     public void StopPlayback()
@@ -158,6 +170,40 @@ public class EchoPlayback : MonoBehaviour
         _playing = false;
         if (_audioSource != null)
             _audioSource.Stop();
+    }
+
+    public void FadeOutAndDestroy(float fadeSeconds = 0.55f)
+    {
+        if (_destroying)
+            return;
+
+        _destroying = true;
+        GameFeelController.Instance?.PlayEchoFade(transform.position);
+        if (!gameObject.activeInHierarchy)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        StartCoroutine(FadeOutAndDestroyRoutine(Mathf.Max(0.05f, fadeSeconds)));
+    }
+
+    IEnumerator FadeOutAndDestroyRoutine(float fadeSeconds)
+    {
+        float startVolume = _audioSource != null ? _audioSource.volume : 0f;
+        float elapsed = 0f;
+
+        while (elapsed < fadeSeconds)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / fadeSeconds);
+            if (_audioSource != null)
+                _audioSource.volume = Mathf.Lerp(startVolume, 0f, t);
+            yield return null;
+        }
+
+        StopPlayback();
+        Destroy(gameObject);
     }
 
     void FixedUpdate()
@@ -218,53 +264,213 @@ public class EchoPlayback : MonoBehaviour
 
     void EnsureVisualAnimator()
     {
-        Transform visualRoot = transform.Find("PlayerVisual");
-        if (visualRoot == null)
-            visualRoot = transform.Find("Visual");
+        Transform playerVisual = transform.Find("PlayerVisual");
+        if (playerVisual != null)
+            DestroySafe(playerVisual.gameObject);
+
+        Transform visualRoot = transform.Find(VisualChildName);
         if (visualRoot == null)
         {
-            GameObject root = new GameObject("Visual");
+            GameObject root = new GameObject(VisualChildName);
             root.transform.SetParent(transform, false);
             visualRoot = root.transform;
         }
 
-        if (visualRoot.childCount == 0)
-            CreateFallbackVisual(visualRoot);
+        visualRoot.localPosition = Vector3.zero;
+        visualRoot.localRotation = Quaternion.identity;
+        visualRoot.localScale = Vector3.one;
 
-        Transform modelRoot = visualRoot.GetChild(0);
-        Animator visualAnimator = modelRoot.GetComponent<Animator>();
-        if (visualAnimator == null)
-            visualAnimator = modelRoot.GetComponentInChildren<Animator>(true);
-        if (visualAnimator != null)
+        Transform model = FindModelTransform(visualRoot);
+        if (model == null || !HasRenderableModel(model))
         {
-            visualAnimator.applyRootMotion = false;
-            visualAnimator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
-            EnsureAnimatorController(visualAnimator);
+            ClearVisualRoot(visualRoot);
+            model = SpawnEchoModel(visualRoot);
         }
 
-        SkinnedMeshRenderer[] renderers = modelRoot.GetComponentsInChildren<SkinnedMeshRenderer>(true);
-        for (int i = 0; i < renderers.Length; i++)
-            renderers[i].updateWhenOffscreen = true;
+        if (model != null && HasRenderableModel(model))
+            ConfigureEchoModel(model);
     }
 
-    void CreateFallbackVisual(Transform visualRoot)
+    static Transform FindModelTransform(Transform visualRoot)
     {
-        GameObject capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-        capsule.name = "EchoCapsule";
-        capsule.transform.SetParent(visualRoot, false);
-        capsule.transform.localPosition = new Vector3(0f, 1.05f, 0f);
-        capsule.transform.localRotation = Quaternion.identity;
-        capsule.transform.localScale = new Vector3(0.8f, 1.05f, 0.8f);
+        if (visualRoot == null)
+            return null;
 
-        Collider capsuleCollider = capsule.GetComponent<Collider>();
-        if (capsuleCollider != null)
-            Destroy(capsuleCollider);
+        Transform direct = visualRoot.Find(ModelChildName);
+        if (direct != null)
+            return direct;
 
-        Renderer rendererRef = capsule.GetComponent<Renderer>();
-        if (rendererRef != null)
+        Transform scaler = visualRoot.Find(ScalerChildName);
+        if (scaler != null)
         {
-            Material material = new Material(Shader.Find("Standard"));
-            material.color = new Color(0.32f, 0.92f, 1f, 0.45f);
+            Transform nested = scaler.Find(ModelChildName);
+            if (nested != null)
+                return nested;
+        }
+
+        Animator[] animators = visualRoot.GetComponentsInChildren<Animator>(true);
+        for (int i = 0; i < animators.Length; i++)
+        {
+            if (animators[i] != null)
+                return animators[i].transform;
+        }
+
+        return null;
+    }
+
+    static bool HasRenderableModel(Transform model)
+    {
+        if (model == null)
+            return false;
+
+        return model.GetComponentInChildren<SkinnedMeshRenderer>(true) != null;
+    }
+
+    void ClearVisualRoot(Transform visualRoot)
+    {
+        if (visualRoot == null)
+            return;
+
+        for (int i = visualRoot.childCount - 1; i >= 0; i--)
+            DestroySafe(visualRoot.GetChild(i).gameObject);
+    }
+
+    Transform SpawnEchoModel(Transform visualRoot)
+    {
+        EchoesLocomotionSettings settings = EchoesLocomotionSettings.Instance;
+        GameObject source = settings != null ? settings.characterModelPrefab : null;
+        if (source == null)
+            source = Resources.Load<GameObject>(ResourcesPrefabPath);
+        if (source == null)
+            source = FindLivePlayerModelSource();
+
+        if (source == null)
+            return null;
+
+        GameObject scalerObject = new GameObject(ScalerChildName);
+        scalerObject.transform.SetParent(visualRoot, false);
+        scalerObject.transform.localPosition = Vector3.zero;
+        scalerObject.transform.localRotation = Quaternion.identity;
+        scalerObject.transform.localScale = Vector3.one * EchoesPresentationSettings.CharacterVisualScale;
+
+        GameObject instance = Instantiate(source, scalerObject.transform);
+        instance.name = ModelChildName;
+        instance.transform.localPosition = Vector3.zero;
+        instance.transform.localRotation = Quaternion.identity;
+        instance.transform.localScale = Vector3.one;
+
+        foreach (Collider col in instance.GetComponentsInChildren<Collider>(true))
+            DestroySafe(col);
+
+        return instance.transform;
+    }
+
+    static GameObject FindLivePlayerModelSource()
+    {
+        PlayerController player = FindAnyObjectByType<PlayerController>();
+        if (player == null)
+            return null;
+
+        Transform visual = player.transform.Find("PlayerVisual");
+        if (visual == null)
+            return null;
+
+        Transform model = visual.Find("PlayerScaler/Model") ?? visual.Find("Model");
+        if (model != null && model.GetComponentInChildren<Renderer>(true) != null)
+            return model.gameObject;
+
+        Animator animator = visual.GetComponentInChildren<Animator>(true);
+        if (animator != null && animator.GetComponentInChildren<Renderer>(true) != null)
+            return animator.gameObject;
+
+        return null;
+    }
+
+    void ConfigureEchoModel(Transform model)
+    {
+        Transform scaler = model.parent;
+        if (scaler == null || scaler.name != ScalerChildName)
+        {
+            Transform visualRoot = transform.Find(VisualChildName);
+            GameObject scalerObject = new GameObject(ScalerChildName);
+            scaler = scalerObject.transform;
+            scaler.SetParent(visualRoot != null ? visualRoot : transform, false);
+            scaler.localPosition = Vector3.zero;
+            scaler.localRotation = Quaternion.identity;
+            model.SetParent(scaler, false);
+        }
+
+        scaler.localPosition = Vector3.zero;
+        scaler.localRotation = Quaternion.identity;
+        scaler.localScale = Vector3.one * EchoesPresentationSettings.CharacterVisualScale;
+        model.localPosition = Vector3.zero;
+        model.localRotation = Quaternion.identity;
+        model.localScale = Vector3.one;
+
+        foreach (Collider col in model.GetComponentsInChildren<Collider>(true))
+            DestroySafe(col);
+
+        ApplyEchoMaterials(model.gameObject);
+
+        Animator animator = model.GetComponent<Animator>();
+        if (animator == null)
+            animator = model.gameObject.AddComponent<Animator>();
+
+        EchoesLocomotionSettings settings = EchoesLocomotionSettings.Instance;
+        if (settings != null)
+        {
+            if (settings.animatorController != null)
+                animator.runtimeAnimatorController = settings.animatorController;
+            if (settings.humanoidAvatar != null && settings.humanoidAvatar.isValid)
+                animator.avatar = settings.humanoidAvatar;
+        }
+
+        EnsureAnimatorController(animator);
+        animator.applyRootMotion = false;
+        animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+        animator.enabled = true;
+    }
+
+    void ApplyEchoMaterials(GameObject root)
+    {
+        if (_matEcho == null)
+        {
+            _matEcho = Resources.Load<Material>("Mat_Echo");
+        }
+
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer rendererRef = renderers[i];
+            if (rendererRef == null)
+                continue;
+
+            Material[] materials = rendererRef.materials;
+            for (int m = 0; m < materials.Length; m++)
+            {
+                Material material = _matEcho != null ? new Material(_matEcho) : new Material(materials[m]);
+                ConfigureEchoMaterial(material);
+                materials[m] = material;
+            }
+
+            rendererRef.materials = materials;
+        }
+    }
+
+    static void ConfigureEchoMaterial(Material material)
+    {
+        if (material == null)
+            return;
+
+        if (material.HasProperty("_Color"))
+            material.color = new Color(0.18f, 0.9f, 1f, 0.46f);
+        if (material.HasProperty("_EmissionColor"))
+        {
+            material.EnableKeyword("_EMISSION");
+            material.SetColor("_EmissionColor", new Color(0.02f, 0.65f, 1f, 1f) * 1.7f);
+        }
+        if (material.HasProperty("_Mode"))
+        {
             material.SetFloat("_Mode", 3f);
             material.SetOverrideTag("RenderType", "Transparent");
             material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
@@ -272,8 +478,33 @@ public class EchoPlayback : MonoBehaviour
             material.SetInt("_ZWrite", 0);
             material.EnableKeyword("_ALPHABLEND_ON");
             material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
-            rendererRef.sharedMaterial = material;
         }
+    }
+
+    void RemovePlayerOnlyAnimationBootstraps()
+    {
+        PlayerLocomotionAnimator locomotionAnimator = GetComponent<PlayerLocomotionAnimator>();
+        if (locomotionAnimator != null)
+            DestroySafe(locomotionAnimator);
+
+        PlayerAnimationRuntimeBootstrap animationBootstrap = GetComponent<PlayerAnimationRuntimeBootstrap>();
+        if (animationBootstrap != null)
+            DestroySafe(animationBootstrap);
+    }
+
+    static void DestroySafe(Object obj)
+    {
+        if (obj == null)
+            return;
+
+        if (Application.isPlaying)
+        {
+            if (obj is GameObject go)
+                go.SetActive(false);
+            Destroy(obj);
+        }
+        else
+            DestroyImmediate(obj);
     }
 
     static void EnsureAnimatorController(Animator animator)

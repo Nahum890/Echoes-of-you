@@ -61,6 +61,26 @@ public static class LevelCameraProfiles
                 profile = Build(EchoesCameraIdentity.Memory,
                     new Vector3(-9f, 5f, -12f), 47f, 1.2f, 0.82f, 3f, 0.36f, 3f, 2.5f, 3.5f, 0.42f);
                 return true;
+            case "Level_11":
+                profile = Build(EchoesCameraIdentity.DynamicFollow,
+                    new Vector3(-6f, 4.2f, -9f), 58f, 1.65f, 0.35f, 2.8f, 0.24f, 6.2f, 8f, 9f);
+                return true;
+            case "Level_12":
+                profile = Build(EchoesCameraIdentity.WideLiminal,
+                    new Vector3(-10f, 7f, -12f), 45f, 1.1f, 0.9f, 1.4f, 0.28f, 2.8f, 2.5f, 4f);
+                return true;
+            case "Level_13":
+                profile = Build(EchoesCameraIdentity.Memory,
+                    new Vector3(-10f, 6f, -12f), 46f, 1.25f, 0.95f, 3.4f, 0.38f, 3.2f, 4f, 5f, 0.48f);
+                return true;
+            case "Level_14":
+                profile = Build(EchoesCameraIdentity.DynamicFollow,
+                    new Vector3(-5.5f, 3.4f, -8f), 59f, 1.75f, 0.3f, 3.2f, 0.28f, 7f, 9f, 10f);
+                return true;
+            case "Level_15":
+                profile = Build(EchoesCameraIdentity.WideLiminal,
+                    new Vector3(-11f, 7f, -14f), 43f, 1.08f, 1f, 2.6f, 0.36f, 2.6f, 3.5f, 5f, 0.35f);
+                return true;
             default:
                 profile = default;
                 return false;

@@ -24,9 +24,11 @@ public class PauseMenu : MonoBehaviour
     Slider _sldMaster;
     Slider _sldMusic;
     Slider _sldSfx;
+    Slider _sldEchoVoice;
     Label _lblMasterVal;
     Label _lblMusicVal;
     Label _lblSfxVal;
+    Label _lblEchoVoiceVal;
 
     // Settings Controls - Visuals
     DropdownField _resDropdown;
@@ -129,10 +131,12 @@ public class PauseMenu : MonoBehaviour
         _sldMaster = _doc.rootVisualElement.Q<Slider>("p-sld-master");
         _sldMusic = _doc.rootVisualElement.Q<Slider>("p-sld-music");
         _sldSfx = _doc.rootVisualElement.Q<Slider>("p-sld-sfx");
+        _sldEchoVoice = _doc.rootVisualElement.Q<Slider>("p-sld-echo-voice");
 
         _lblMasterVal = _doc.rootVisualElement.Q<Label>("p-lbl-master-val");
         _lblMusicVal = _doc.rootVisualElement.Q<Label>("p-lbl-music-val");
         _lblSfxVal = _doc.rootVisualElement.Q<Label>("p-lbl-sfx-val");
+        _lblEchoVoiceVal = _doc.rootVisualElement.Q<Label>("p-lbl-echo-voice-val");
 
         _resDropdown = _doc.rootVisualElement.Q<DropdownField>("p-ResolutionDropdown");
         _fullscreenToggle = _doc.rootVisualElement.Q<Toggle>("p-FullscreenToggle");
@@ -311,6 +315,7 @@ public class PauseMenu : MonoBehaviour
         if (_sldMaster != null) _sldMaster.RegisterValueChangedCallback(evt => UpdateLabel(_lblMasterVal, evt.newValue));
         if (_sldMusic != null) _sldMusic.RegisterValueChangedCallback(evt => UpdateLabel(_lblMusicVal, evt.newValue));
         if (_sldSfx != null) _sldSfx.RegisterValueChangedCallback(evt => UpdateLabel(_lblSfxVal, evt.newValue));
+        if (_sldEchoVoice != null) _sldEchoVoice.RegisterValueChangedCallback(evt => UpdateLabel(_lblEchoVoiceVal, evt.newValue));
         if (_sensitivitySlider != null) _sensitivitySlider.RegisterValueChangedCallback(evt => UpdateSensitivityLabel(evt.newValue));
         if (_sldFog != null) _sldFog.RegisterValueChangedCallback(evt => UpdateFogLabel(evt.newValue));
         if (_sldEcho != null) _sldEcho.RegisterValueChangedCallback(evt => UpdateLabel(_lblEchoVal, evt.newValue));
@@ -352,10 +357,12 @@ public class PauseMenu : MonoBehaviour
         if (_sldMaster != null) _sldMaster.value = audioMgr != null ? audioMgr.GetMasterVolume() : PlayerPrefs.GetFloat("MasterVolume", 0.84f);
         if (_sldMusic != null) _sldMusic.value = audioMgr != null ? audioMgr.GetMusicVolume() : PlayerPrefs.GetFloat("MusicVolume", 0.6f);
         if (_sldSfx != null) _sldSfx.value = audioMgr != null ? audioMgr.GetSFXVolume() : PlayerPrefs.GetFloat("SfxVolume", 0.72f);
+        if (_sldEchoVoice != null) _sldEchoVoice.value = audioMgr != null ? audioMgr.GetEchoVolume() : PlayerPrefs.GetFloat("EchoVolume", 0.70f);
 
         if (_lblMasterVal != null) UpdateLabel(_lblMasterVal, _sldMaster.value);
         if (_lblMusicVal != null) UpdateLabel(_lblMusicVal, _sldMusic.value);
         if (_lblSfxVal != null) UpdateLabel(_lblSfxVal, _sldSfx.value);
+        if (_lblEchoVoiceVal != null) UpdateLabel(_lblEchoVoiceVal, _sldEchoVoice.value);
 
         if (_fullscreenToggle != null) _fullscreenToggle.value = Screen.fullScreen;
         if (_vsyncToggle != null) _vsyncToggle.value = QualitySettings.vSyncCount > 0;
@@ -425,6 +432,7 @@ public class PauseMenu : MonoBehaviour
         float master = _sldMaster != null ? _sldMaster.value : 0.84f;
         float music = _sldMusic != null ? _sldMusic.value : 0.6f;
         float sfx = _sldSfx != null ? _sldSfx.value : 0.72f;
+        float echoVoice = _sldEchoVoice != null ? _sldEchoVoice.value : 0.70f;
 
         var audioMgr = EchoesAudioManager.EnsureExists();
         if (audioMgr != null)
@@ -432,6 +440,7 @@ public class PauseMenu : MonoBehaviour
             audioMgr.SetMasterVolume(master);
             audioMgr.SetMusicVolume(music);
             audioMgr.SetSFXVolume(sfx);
+            audioMgr.SetEchoVolume(echoVoice);
         }
         else
         {
@@ -439,6 +448,7 @@ public class PauseMenu : MonoBehaviour
             PlayerPrefs.SetFloat("MasterVolume", master);
             PlayerPrefs.SetFloat("MusicVolume", music);
             PlayerPrefs.SetFloat("SfxVolume", sfx);
+            PlayerPrefs.SetFloat("EchoVolume", echoVoice);
         }
 
         var levelCtrl = FindAnyObjectByType<LevelRuntimeController>();
@@ -588,6 +598,7 @@ public class PauseMenu : MonoBehaviour
         if (_sldMaster != null) _sldMaster.value = 0.84f;
         if (_sldMusic != null) _sldMusic.value = 0.60f;
         if (_sldSfx != null) _sldSfx.value = 0.72f;
+        if (_sldEchoVoice != null) _sldEchoVoice.value = 0.70f;
 
         if (_fullscreenToggle != null) _fullscreenToggle.value = true;
         if (_vsyncToggle != null) _vsyncToggle.value = true;

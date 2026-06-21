@@ -4,11 +4,7 @@
     <ui:VisualElement name="root" class="root-fullscreen main-menu-root scale-large">
         <ui:VisualElement name="menu-bg" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; opacity: 0;" />
 
-        <ui:VisualElement name="void-intro" style="position: absolute; left: 280px; top: 0; right: 0; bottom: 0; align-items: center; justify-content: center;">
-            <ui:Label text="VOID" class="text-headline-xl" style="color: #c2c1ff; letter-spacing: 14px;" />
-            <ui:Label text="Sincronía neural en espera" class="text-body-sm" style="color: #918fa0; margin-top: 16px;" />
-            <ui:Label text="VOID inicia el archivo · STABILITY abre el mapa de fragmentos" class="text-label-caps" style="color: #464554; margin-top: 28px; font-size: 10px;" />
-        </ui:VisualElement>
+        <!-- Void Intro removed in favor of dynamic right-content-container -->
         
         <!-- Top bar -->
         <ui:VisualElement class="header-bar main-menu-header">
@@ -48,174 +44,303 @@
             </ui:VisualElement>
         </ui:VisualElement>
         
-        <!-- Main content area (right of side nav) -->
-        <ui:VisualElement name="main-content" class="main-content hidden">
-            <!-- Page title -->
-            <ui:Label text="ESTADO DEL SISTEMA COGNITIVO" class="text-headline-xl" style="color: #c2c1ff; letter-spacing: 9.6px; margin-bottom: 12px;" />
-            <ui:VisualElement class="accent-line" style="margin-bottom: 48px;" />
+        <!-- Dynamic Right Panels Container -->
+        <ui:VisualElement name="right-content-container" style="position: absolute; left: 320px; top: 72px; right: 0; bottom: 0; overflow: hidden;">
             
-            <!-- Content grid: stats left, mental map right -->
-            <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
+            <!-- PANEL 1: NEURAL ARCHIVES (VOID HOVER) -->
+            <ui:VisualElement name="panel-neural-archives" class="preview-panel preview-panel--visible" style="padding: 96px; position: absolute; left: 0; top: 0; right: 0; bottom: 0;">
+                <ui:Label text="ARCHIVOS NEURALES" class="text-headline-xl text-glow" style="color: #c2c1ff; letter-spacing: 12px; margin-bottom: 8px;" />
+                <ui:Label text="COGNITIVE SYNC INTERFACE // STATUS: ONLINE" class="text-label-caps" style="color: #5d5cde; margin-bottom: 24px;" />
+                <ui:VisualElement class="accent-line" style="margin-bottom: 32px;" />
                 
-                <!-- Stats column (left) -->
-                <ui:ScrollView name="stats-scroll" style="width: 38%; padding-right: 48px; max-height: 100%;">
-                <ui:VisualElement style="flex-direction: column; padding-right: 8px;">
-                    <ui:Label text="STAT_ANALYSIS" class="text-label-caps" style="color: #bec6e0; margin-bottom: 16px;" />
-
-                    <ui:VisualElement name="telemetry-row" class="telemetry-row" style="margin-bottom: 24px;">
-                        <ui:VisualElement class="telemetry-chip">
-                            <ui:Label text="FRAGMENTOS" class="telemetry-chip-label" />
-                            <ui:Label name="lbl-telemetry-fragments" text="0/6" class="telemetry-chip-value" />
+                <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
+                    <!-- Left Column: Terminal & Stats -->
+                    <ui:VisualElement style="width: 55%; padding-right: 24px;">
+                        <ui:Label text="COGNITIVE_LOGS" class="text-label-caps" style="color: #bec6e0; margin-bottom: 12px;" />
+                        <ui:VisualElement class="terminal-log-box" style="height: 180px; padding: 12px; background-color: rgba(7,13,31,0.5); border-width: 1px; border-color: rgba(194,193,255,0.1); border-radius: 4px; overflow: hidden;">
+                            <ui:Label text="[SYSTEM] Sync protocol loaded successfully." class="terminal-log-line" style="font-size: 11px; color: rgba(220,225,251,0.6); -unity-font-definition: url('project://database/Assets/UI/Fonts/SpaceGrotesk-Variable.ttf');" />
+                            <ui:Label name="lbl-archive-log-1" text="[OK] Core cognitive links established." class="terminal-log-line" style="font-size: 11px; color: rgba(220,225,251,0.6); -unity-font-definition: url('project://database/Assets/UI/Fonts/SpaceGrotesk-Variable.ttf');" />
+                            <ui:Label name="lbl-archive-log-2" text="[OK] Stability matrix synchronized." class="terminal-log-line" style="font-size: 11px; color: rgba(220,225,251,0.6); -unity-font-definition: url('project://database/Assets/UI/Fonts/SpaceGrotesk-Variable.ttf');" />
+                            <ui:Label name="lbl-archive-log-3" text="Waiting for user sync command..." class="terminal-log-line" style="font-size: 11px; color: #7af0c8; -unity-font-definition: url('project://database/Assets/UI/Fonts/SpaceGrotesk-Variable.ttf');" />
                         </ui:VisualElement>
-                        <ui:VisualElement class="telemetry-chip">
-                            <ui:Label text="ECOS" class="telemetry-chip-label" />
-                            <ui:Label name="lbl-telemetry-echoes" text="0" class="telemetry-chip-value" />
+                        
+                        <ui:Label text="TELEMETRIA_DE_SESION" class="text-label-caps" style="color: #bec6e0; margin-top: 24px; margin-bottom: 12px;" />
+                        <ui:VisualElement class="telemetry-row">
+                            <ui:VisualElement class="telemetry-chip">
+                                <ui:Label text="FRAGMENTOS" class="telemetry-chip-label" />
+                                <ui:Label name="lbl-archive-fragments" text="0/10" class="telemetry-chip-value" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="telemetry-chip">
+                                <ui:Label text="ECOS" class="telemetry-chip-label" />
+                                <ui:Label name="lbl-archive-echoes" text="0" class="telemetry-chip-value" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="telemetry-chip">
+                                <ui:Label text="COLAPSOS" class="telemetry-chip-label" />
+                                <ui:Label name="lbl-archive-deaths" text="0" class="telemetry-chip-value" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="telemetry-chip">
+                                <ui:Label text="TIEMPO" class="telemetry-chip-label" />
+                                <ui:Label name="lbl-archive-time" text="00:00:00" class="telemetry-chip-value" />
+                            </ui:VisualElement>
                         </ui:VisualElement>
-                        <ui:VisualElement class="telemetry-chip">
-                            <ui:Label text="COLAPSOS" class="telemetry-chip-label" />
-                            <ui:Label name="lbl-telemetry-deaths" text="0" class="telemetry-chip-value" />
+                    </ui:VisualElement>
+                    
+                    <!-- Right Column: Vector Oscilloscope & Diagnostics -->
+                    <ui:VisualElement style="width: 40%; margin-left: 5%; align-items: center;">
+                        <ui:Label text="RESONANCE_RADAR" class="text-label-caps" style="color: #bec6e0; margin-bottom: 12px; width: 100%; -unity-text-align: middle-center;" />
+                        <ui:VisualElement class="radar-container" style="width: 200px; height: 200px; justify-content: center; align-items: center; border-width: 1px; border-color: rgba(194,193,255,0.15); border-radius: 100px; background-color: rgba(7,13,31,0.3); overflow: hidden; position: relative;">
+                            <ui:VisualElement class="radar-sweep" />
+                            <ui:VisualElement class="radar-ring" style="position: absolute; width: 180px; height: 180px; border-radius: 90px; border-width: 1px; border-color: rgba(194,193,255,0.08);" />
+                            <ui:VisualElement class="radar-ring" style="position: absolute; width: 120px; height: 120px; border-radius: 60px; border-width: 1px; border-color: rgba(194,193,255,0.08);" />
+                            <ui:VisualElement class="radar-ring" style="position: absolute; width: 60px; height: 60px; border-radius: 30px; border-width: 1px; border-color: rgba(194,193,255,0.08);" />
+                            <ui:VisualElement style="position: absolute; width: 200px; height: 1px; background-color: rgba(194,193,255,0.08);" />
+                            <ui:VisualElement style="position: absolute; width: 1px; height: 200px; background-color: rgba(194,193,255,0.08);" />
                         </ui:VisualElement>
-                        <ui:VisualElement class="telemetry-chip">
-                            <ui:Label text="TIEMPO" class="telemetry-chip-label" />
-                            <ui:Label name="lbl-telemetry-time" text="0s" class="telemetry-chip-value" />
+                        
+                        <ui:VisualElement class="glass-panel" style="margin-top: 24px; padding: 16px; width: 100%;">
+                            <ui:Label text="ESTABILIDAD DE FRAGMENTO" class="text-label-caps" style="font-size: 10px; color: #918fa0; margin-bottom: 8px;" />
+                            <ui:VisualElement style="flex-direction: row; align-items: center; justify-content: space-between;">
+                                <ui:Label name="lbl-archive-stability-pct" text="20%" style="font-size: 18px; color: #c2c1ff; -unity-font-style: bold; -unity-font-definition: url('project://database/Assets/UI/Fonts/SpaceGrotesk-Variable.ttf');" />
+                                <ui:VisualElement style="width: 120px; height: 3px; background-color: rgba(255,255,255,0.05); border-radius: 2px;">
+                                    <ui:VisualElement name="bar-archive-stability" style="width: 20%; height: 100%; background-color: #c2c1ff;" />
+                                </ui:VisualElement>
+                            </ui:VisualElement>
                         </ui:VisualElement>
                     </ui:VisualElement>
-                    
-                    <!-- Stability -->
-                    <ui:VisualElement style="margin-bottom: 48px;">
-                        <ui:VisualElement style="flex-direction: row; justify-content: space-between; margin-bottom: 4px;">
-                            <ui:Label text="STABILITY" class="hud-stat-label" />
-                            <ui:Label name="lbl-stat-stability-val" text="0.20" class="hud-stat-value" />
-                        </ui:VisualElement>
-                        <ui:VisualElement class="hud-bar">
-                            <ui:VisualElement name="bar-stat-stability-fill" class="hud-bar-fill" style="width: 20%;" />
-                        </ui:VisualElement>
-                        <ui:Label name="lbl-stat-stability-desc" text="Neural cohesion initializing..." class="hud-stat-desc" style="margin-top: 4px;" />
-                    </ui:VisualElement>
-                    
-                    <!-- Echo Coherence -->
-                    <ui:VisualElement style="margin-bottom: 48px;">
-                        <ui:VisualElement style="flex-direction: row; justify-content: space-between; margin-bottom: 4px;">
-                            <ui:Label text="ECHO COHERENCE" class="hud-stat-label" />
-                            <ui:Label name="lbl-stat-coherence-val" text="0.10" class="hud-stat-value" />
-                        </ui:VisualElement>
-                        <ui:VisualElement class="hud-bar">
-                            <ui:VisualElement name="bar-stat-coherence-fill" class="hud-bar-fill" style="width: 10%;" />
-                        </ui:VisualElement>
-                        <ui:Label name="lbl-stat-coherence-desc" text="Fragment resonance is currently unstable." class="hud-stat-desc" style="margin-top: 4px;" />
-                    </ui:VisualElement>
-                    
-                    <!-- Narrative Progress -->
-                    <ui:VisualElement style="margin-bottom: 48px;">
-                        <ui:VisualElement style="flex-direction: row; justify-content: space-between; margin-bottom: 4px;">
-                            <ui:Label text="NARRATIVE PROGRESS" class="hud-stat-label" />
-                            <ui:Label name="lbl-stat-progress-val" text="0.00" class="hud-stat-value" />
-                        </ui:VisualElement>
-                        <ui:VisualElement class="hud-bar">
-                            <ui:VisualElement name="bar-stat-progress-fill" class="hud-bar-fill" style="width: 0%;" />
-                        </ui:VisualElement>
-                        <ui:Label name="lbl-stat-progress-desc" text="Deep memory nodes still inaccessible." class="hud-stat-desc" style="margin-top: 4px;" />
-                    </ui:VisualElement>
-                    
-                    <!-- Active Protocol card -->
-                    <ui:VisualElement class="glass-panel" style="padding: 24px; border-left-width: 2px; border-left-color: #c2c1ff; margin-bottom: 16px;">
-                        <ui:Label text="ACTIVE_PROTOCOL" class="text-label-caps" style="color: #c2c1ff; margin-bottom: 12px;" />
-                        <ui:Label name="lbl-protocol-desc" text="El Archivo aguarda tu primera decisión." class="text-body-sm" style="color: #c7c4d6;" />
-                    </ui:VisualElement>
-
-                    <ui:VisualElement class="glass-panel" style="padding: 16px 24px; margin-bottom: 16px;">
-                        <ui:Label text="ÚLTIMO FRAGMENTO" class="text-label-caps" style="color: #918fa0; margin-bottom: 6px;" />
-                        <ui:Label name="lbl-last-fragment" text="—" class="text-body-sm" style="color: #dce1fb;" />
-                        <ui:Label name="lbl-continue-hint" text="MEMORIES continúa tu progreso." class="text-body-sm" style="color: #7af0c8; font-size: 10px; margin-top: 8px;" />
-                    </ui:VisualElement>
-
-                    <ui:VisualElement class="glass-panel" style="padding: 16px 24px; border-left-color: rgba(255,180,171,0.5); border-left-width: 2px;">
-                        <ui:Label text="REINICIO DE ARCHIVO" class="text-label-caps" style="color: #ffb4ab; margin-bottom: 8px;" />
-                        <ui:Label name="lbl-reset-hint" text="Borra progreso, estadísticas y desbloqueos." class="text-body-sm" style="color: #918fa0; font-size: 10px; margin-bottom: 12px;" />
-                        <ui:Button name="btn-reset-progress" text="REINICIAR ARCHIVO" class="calibration-btn-outline" style="margin-bottom: 8px;" />
-                        <ui:Button name="btn-reset-progress-confirm" text="CONFIRMAR REINICIO" class="calibration-btn-ghost" style="color: #ffb4ab; font-size: 10px;" />
-                    </ui:VisualElement>
-                </ui:VisualElement>
-                </ui:ScrollView>
-                
-                <!-- Mental map (right) — Interactive level selector -->
-                <ui:VisualElement class="glass-panel" style="flex-grow: 1; padding: 24px; position: relative;">
-                    <!-- Map header -->
-                    <ui:VisualElement style="position: absolute; top: 24px; right: 24px; align-items: flex-end;">
-                        <ui:Label text="COORD_SYSTEM: ALPHA_VOID" class="text-label-caps" style="color: #464554;" />
-                        <ui:Label name="lbl-map-progress" text="0 nodos restaurados" class="text-body-sm" style="color: #918fa0; font-size: 10px;" />
-                        <ui:Label text="Pulsa un nodo para entrar" class="text-body-sm" style="color: #464554; font-size: 9px; margin-top: 2px;" />
-                    </ui:VisualElement>
-                    
-                    <!-- Central hub node -->
-                    <ui:VisualElement style="position: absolute; left: 50%; top: 50%; margin-left: -24px; margin-top: -24px; width: 48px; height: 48px; border-radius: 9999px; border-width: 1px; border-color: #c2c1ff; align-items: center; justify-content: center; background-color: rgba(12,19,36,0.5);">
-                        <ui:Label text="◆" style="font-size: 20px; color: #c2c1ff;" />
-                    </ui:VisualElement>
-                    
-                    <!-- Level 01 Node (top-left) -->
-                    <ui:VisualElement style="position: absolute; top: 15%; left: 20%; align-items: center;">
-                        <ui:Button name="btn-level-01" text="01" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
-                        <ui:Label name="lbl-level-01" text="PRIMER RASTRO" class="text-label-caps" style="font-size: 9px; color: #918fa0; margin-top: 8px;" />
-                    </ui:VisualElement>
-                    
-                    <!-- Level 02 Node (top-center) -->
-                    <ui:VisualElement style="position: absolute; top: 10%; left: 48%; align-items: center;">
-                        <ui:Button name="btn-level-02" text="02" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
-                        <ui:Label name="lbl-level-02" text="CAMINO COMPARTIDO" class="text-label-caps" style="font-size: 9px; color: #918fa0; margin-top: 8px;" />
-                    </ui:VisualElement>
-                    
-                    <!-- Level 03 Node (top-right) -->
-                    <ui:VisualElement style="position: absolute; top: 20%; right: 15%; align-items: center;">
-                        <ui:Button name="btn-level-03" text="03" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
-                        <ui:Label name="lbl-level-03" text="GALERÍA DEL ECO" class="text-label-caps" style="font-size: 11px; color: #918fa0; margin-top: 8px;" />
-                    </ui:VisualElement>
-                    
-                    <!-- Level 04 Node (bottom-left) -->
-                    <ui:VisualElement style="position: absolute; bottom: 25%; left: 18%; align-items: center;">
-                        <ui:Button name="btn-level-04" text="04" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
-                        <ui:Label name="lbl-level-04" text="CRUCE DOBLE" class="text-label-caps" style="font-size: 11px; color: #918fa0; margin-top: 8px;" />
-                    </ui:VisualElement>
-                    
-                    <!-- Level 05 Node (bottom-center) -->
-                    <ui:VisualElement style="position: absolute; bottom: 18%; left: 45%; align-items: center;">
-                        <ui:Button name="btn-level-05" text="05" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
-                        <ui:Label name="lbl-level-05" text="CADENA ESTABLE" class="text-label-caps" style="font-size: 9px; color: #918fa0; margin-top: 8px;" />
-                    </ui:VisualElement>
-                    
-                    <!-- Level 06 Node (bottom-right) -->
-                    <ui:VisualElement style="position: absolute; bottom: 28%; right: 12%; align-items: center;">
-                        <ui:Button name="btn-level-06" text="06" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
-                        <ui:Label name="lbl-level-06" text="NUCLEO" class="text-label-caps" style="font-size: 9px; color: #918fa0; margin-top: 8px;" />
-                    </ui:VisualElement>
-
-                    <!-- Level 07 Node (center-right) -->
-                    <ui:VisualElement style="position: absolute; top: 48%; right: 8%; align-items: center;">
-                        <ui:Button name="btn-level-07" text="07" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
-                        <ui:Label name="lbl-level-07" text="ENLACE" class="text-label-caps" style="font-size: 11px; color: #918fa0; margin-top: 8px;" />
-                    </ui:VisualElement>
-
-                    <ui:VisualElement style="position: absolute; bottom: 12%; left: 18%; align-items: center;">
-                        <ui:Button name="btn-level-08" text="08" class="level-button" style="width: 44px; height: 44px; font-size: 14px; rotate: 45deg;" />
-                        <ui:Label name="lbl-level-08" text="VACÍO" class="text-label-caps" style="font-size: 10px; color: #918fa0; margin-top: 6px;" />
-                    </ui:VisualElement>
-                    <ui:VisualElement style="position: absolute; bottom: 8%; left: 42%; align-items: center;">
-                        <ui:Button name="btn-level-09" text="09" class="level-button" style="width: 44px; height: 44px; font-size: 14px; rotate: 45deg;" />
-                        <ui:Label name="lbl-level-09" text="ENERGÍA" class="text-label-caps" style="font-size: 10px; color: #918fa0; margin-top: 6px;" />
-                    </ui:VisualElement>
-                    <ui:VisualElement style="position: absolute; bottom: 14%; right: 22%; align-items: center;">
-                        <ui:Button name="btn-level-10" text="10" class="level-button" style="width: 44px; height: 44px; font-size: 14px; rotate: 45deg;" />
-                        <ui:Label name="lbl-level-10" text="ARCHIVO" class="text-label-caps" style="font-size: 10px; color: #918fa0; margin-top: 6px;" />
-                    </ui:VisualElement>
-                    
-                    <!-- Connecting lines (decorative) -->
-                    <ui:VisualElement style="position: absolute; left: 30%; top: 35%; width: 40%; height: 1px;" class="line-h" />
-                    <ui:VisualElement style="position: absolute; left: 50%; top: 25%; width: 1px; height: 50%;" class="line-v" />
-                    <ui:VisualElement style="position: absolute; left: 25%; top: 30%; width: 1px; height: 40%;" class="line-v" />
-                    <ui:VisualElement style="position: absolute; right: 20%; top: 35%; width: 1px; height: 35%;" class="line-v" />
                 </ui:VisualElement>
             </ui:VisualElement>
+            
+            <!-- PANEL 2: STABILITY MAP (STABILITY HOVER/CLICK) -->
+            <ui:VisualElement name="panel-stability-map" class="preview-panel" style="padding: 96px; position: absolute; left: 0; top: 0; right: 0; bottom: 0;">
+                <ui:Label text="ESTADO DEL SISTEMA COGNITIVO" class="text-headline-xl" style="color: #c2c1ff; letter-spacing: 9.6px; margin-bottom: 12px;" />
+                <ui:VisualElement class="accent-line" style="margin-bottom: 32px;" />
+                
+                <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
+                    <!-- Stats column (left) -->
+                    <ui:ScrollView name="stats-scroll" style="width: 38%; padding-right: 48px; max-height: 100%;">
+                        <ui:VisualElement style="flex-direction: column; padding-right: 8px;">
+                            <ui:Label text="STAT_ANALYSIS" class="text-label-caps" style="color: #bec6e0; margin-bottom: 16px;" />
+                            
+                            <ui:VisualElement name="telemetry-row" class="telemetry-row" style="margin-bottom: 24px;">
+                                <ui:VisualElement class="telemetry-chip">
+                                    <ui:Label text="FRAGMENTOS" class="telemetry-chip-label" />
+                                    <ui:Label name="lbl-telemetry-fragments" text="0/6" class="telemetry-chip-value" />
+                                </ui:VisualElement>
+                                <ui:VisualElement class="telemetry-chip">
+                                    <ui:Label text="ECOS" class="telemetry-chip-label" />
+                                    <ui:Label name="lbl-telemetry-echoes" text="0" class="telemetry-chip-value" />
+                                </ui:VisualElement>
+                                <ui:VisualElement class="telemetry-chip">
+                                    <ui:Label text="COLAPSOS" class="telemetry-chip-label" />
+                                    <ui:Label name="lbl-telemetry-deaths" text="0" class="telemetry-chip-value" />
+                                </ui:VisualElement>
+                                <ui:VisualElement class="telemetry-chip">
+                                    <ui:Label text="TIEMPO" class="telemetry-chip-label" />
+                                    <ui:Label name="lbl-telemetry-time" text="0s" class="telemetry-chip-value" />
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+                            
+                            <!-- Stability -->
+                            <ui:VisualElement style="margin-bottom: 24px;">
+                                <ui:VisualElement style="flex-direction: row; justify-content: space-between; margin-bottom: 4px;">
+                                    <ui:Label text="STABILITY" class="hud-stat-label" />
+                                    <ui:Label name="lbl-stat-stability-val" text="0.20" class="hud-stat-value" />
+                                </ui:VisualElement>
+                                <ui:VisualElement class="hud-bar">
+                                    <ui:VisualElement name="bar-stat-stability-fill" class="hud-bar-fill" style="width: 20%;" />
+                                </ui:VisualElement>
+                                <ui:Label name="lbl-stat-stability-desc" text="Neural cohesion initializing..." class="hud-stat-desc" style="margin-top: 4px;" />
+                            </ui:VisualElement>
+                            
+                            <!-- Echo Coherence -->
+                            <ui:VisualElement style="margin-bottom: 24px;">
+                                <ui:VisualElement style="flex-direction: row; justify-content: space-between; margin-bottom: 4px;">
+                                    <ui:Label text="ECHO COHERENCE" class="hud-stat-label" />
+                                    <ui:Label name="lbl-stat-coherence-val" text="0.10" class="hud-stat-value" />
+                                </ui:VisualElement>
+                                <ui:VisualElement class="hud-bar">
+                                    <ui:VisualElement name="bar-stat-coherence-fill" class="hud-bar-fill" style="width: 10%;" />
+                                </ui:VisualElement>
+                                <ui:Label name="lbl-stat-coherence-desc" text="Fragment resonance is currently unstable." class="hud-stat-desc" style="margin-top: 4px;" />
+                            </ui:VisualElement>
+                            
+                            <!-- Narrative Progress -->
+                            <ui:VisualElement style="margin-bottom: 24px;">
+                                <ui:VisualElement style="flex-direction: row; justify-content: space-between; margin-bottom: 4px;">
+                                    <ui:Label text="NARRATIVE PROGRESS" class="hud-stat-label" />
+                                    <ui:Label name="lbl-stat-progress-val" text="0.00" class="hud-stat-value" />
+                                </ui:VisualElement>
+                                <ui:VisualElement class="hud-bar">
+                                    <ui:VisualElement name="bar-stat-progress-fill" class="hud-bar-fill" style="width: 0%;" />
+                                </ui:VisualElement>
+                                <ui:Label name="lbl-stat-progress-desc" text="Deep memory nodes still inaccessible." class="hud-stat-desc" style="margin-top: 4px;" />
+                            </ui:VisualElement>
+                            
+                            <!-- Active Protocol card -->
+                            <ui:VisualElement class="glass-panel" style="padding: 16px 24px; border-left-width: 2px; border-left-color: #c2c1ff; margin-bottom: 12px;">
+                                <ui:Label text="ACTIVE_PROTOCOL" class="text-label-caps" style="color: #c2c1ff; margin-bottom: 8px;" />
+                                <ui:Label name="lbl-protocol-desc" text="El Archivo aguarda tu primera decisión." class="text-body-sm" style="color: #c7c4d6; font-size: 11px;" />
+                            </ui:VisualElement>
+                            
+                            <ui:VisualElement class="glass-panel" style="padding: 12px 20px; margin-bottom: 12px;">
+                                <ui:Label text="ÚLTIMO FRAGMENTO" class="text-label-caps" style="color: #918fa0; margin-bottom: 4px;" />
+                                <ui:Label name="lbl-last-fragment" text="—" class="text-body-sm" style="color: #dce1fb;" />
+                                <ui:Label name="lbl-continue-hint" text="MEMORIES continúa tu progreso." class="text-body-sm" style="color: #7af0c8; font-size: 10px; margin-top: 4px;" />
+                            </ui:VisualElement>
+                            
+                            <ui:VisualElement class="glass-panel" style="padding: 12px 20px; border-left-color: rgba(255,180,171,0.5); border-left-width: 2px;">
+                                <ui:Label text="REINICIO DE ARCHIVO" class="text-label-caps" style="color: #ffb4ab; margin-bottom: 6px;" />
+                                <ui:Label name="lbl-reset-hint" text="Borra progreso, estadísticas y desbloqueos." class="text-body-sm" style="color: #918fa0; font-size: 9px; margin-bottom: 8px;" />
+                                <ui:Button name="btn-reset-progress" text="REINICIAR ARCHIVO" class="calibration-btn-outline" style="margin-bottom: 4px; padding: 6px 12px; font-size: 10px;" />
+                                <ui:Button name="btn-reset-progress-confirm" text="CONFIRMAR REINICIO" class="calibration-btn-ghost" style="color: #ffb4ab; font-size: 9px; padding: 4px;" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:ScrollView>
+                    
+                    <!-- Mental map (right) — Interactive level selector -->
+                    <ui:VisualElement class="glass-panel" style="flex-grow: 1; padding: 24px; position: relative;">
+                        <!-- Map header -->
+                        <ui:VisualElement style="position: absolute; top: 24px; right: 24px; align-items: flex-end;">
+                            <ui:Label text="COORD_SYSTEM: ALPHA_VOID" class="text-label-caps" style="color: #464554;" />
+                            <ui:Label name="lbl-map-progress" text="0 nodos restaurados" class="text-body-sm" style="color: #918fa0; font-size: 10px;" />
+                            <ui:Label text="Pulsa un nodo para entrar" class="text-body-sm" style="color: #464554; font-size: 9px; margin-top: 2px;" />
+                        </ui:VisualElement>
+                        
+                        <!-- Central hub node -->
+                        <ui:VisualElement style="position: absolute; left: 50%; top: 50%; margin-left: -24px; margin-top: -24px; width: 48px; height: 48px; border-radius: 9999px; border-width: 1px; border-color: #c2c1ff; align-items: center; justify-content: center; background-color: rgba(12,19,36,0.5);">
+                            <ui:Label text="◆" style="font-size: 20px; color: #c2c1ff;" />
+                        </ui:VisualElement>
+                        
+                        <!-- Level 01 Node (top-left) -->
+                        <ui:VisualElement style="position: absolute; top: 15%; left: 20%; align-items: center;">
+                            <ui:Button name="btn-level-01" text="01" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
+                            <ui:Label name="lbl-level-01" text="PRIMER RASTRO" class="text-label-caps" style="font-size: 9px; color: #918fa0; margin-top: 8px;" />
+                        </ui:VisualElement>
+                        
+                        <!-- Level 02 Node (top-center) -->
+                        <ui:VisualElement style="position: absolute; top: 10%; left: 48%; align-items: center;">
+                            <ui:Button name="btn-level-02" text="02" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
+                            <ui:Label name="lbl-level-02" text="CAMINO COMPARTIDO" class="text-label-caps" style="font-size: 9px; color: #918fa0; margin-top: 8px;" />
+                        </ui:VisualElement>
+                        
+                        <!-- Level 03 Node (top-right) -->
+                        <ui:VisualElement style="position: absolute; top: 20%; right: 15%; align-items: center;">
+                            <ui:Button name="btn-level-03" text="03" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
+                            <ui:Label name="lbl-level-03" text="GALERÍA DEL ECO" class="text-label-caps" style="font-size: 11px; color: #918fa0; margin-top: 8px;" />
+                        </ui:VisualElement>
+                        
+                        <!-- Level 04 Node (bottom-left) -->
+                        <ui:VisualElement style="position: absolute; bottom: 25%; left: 18%; align-items: center;">
+                            <ui:Button name="btn-level-04" text="04" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
+                            <ui:Label name="lbl-level-04" text="CRUCE DOBLE" class="text-label-caps" style="font-size: 11px; color: #918fa0; margin-top: 8px;" />
+                        </ui:VisualElement>
+                        
+                        <!-- Level 05 Node (bottom-center) -->
+                        <ui:VisualElement style="position: absolute; bottom: 18%; left: 45%; align-items: center;">
+                            <ui:Button name="btn-level-05" text="05" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
+                            <ui:Label name="lbl-level-05" text="CADENA ESTABLE" class="text-label-caps" style="font-size: 9px; color: #918fa0; margin-top: 8px;" />
+                        </ui:VisualElement>
+                        
+                        <!-- Level 06 Node (bottom-right) -->
+                        <ui:VisualElement style="position: absolute; bottom: 28%; right: 12%; align-items: center;">
+                            <ui:Button name="btn-level-06" text="06" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
+                            <ui:Label name="lbl-level-06" text="NUCLEO" class="text-label-caps" style="font-size: 9px; color: #918fa0; margin-top: 8px;" />
+                        </ui:VisualElement>
+                        
+                        <!-- Level 07 Node (center-right) -->
+                        <ui:VisualElement style="position: absolute; top: 48%; right: 8%; align-items: center;">
+                            <ui:Button name="btn-level-07" text="07" class="level-button" style="width: 48px; height: 48px; font-size: 16px; rotate: 45deg;" />
+                            <ui:Label name="lbl-level-07" text="ENLACE" class="text-label-caps" style="font-size: 11px; color: #918fa0; margin-top: 8px;" />
+                        </ui:VisualElement>
+                        
+                        <ui:VisualElement style="position: absolute; bottom: 12%; left: 18%; align-items: center;">
+                            <ui:Button name="btn-level-08" text="08" class="level-button" style="width: 44px; height: 44px; font-size: 14px; rotate: 45deg;" />
+                            <ui:Label name="lbl-level-08" text="VACÍO" class="text-label-caps" style="font-size: 10px; color: #918fa0; margin-top: 6px;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement style="position: absolute; bottom: 8%; left: 42%; align-items: center;">
+                            <ui:Button name="btn-level-09" text="09" class="level-button" style="width: 44px; height: 44px; font-size: 14px; rotate: 45deg;" />
+                            <ui:Label name="lbl-level-09" text="ENERGÍA" class="text-label-caps" style="font-size: 10px; color: #918fa0; margin-top: 6px;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement style="position: absolute; bottom: 14%; right: 22%; align-items: center;">
+                            <ui:Button name="btn-level-10" text="10" class="level-button" style="width: 44px; height: 44px; font-size: 14px; rotate: 45deg;" />
+                            <ui:Label name="lbl-level-10" text="ARCHIVO" class="text-label-caps" style="font-size: 10px; color: #918fa0; margin-top: 6px;" />
+                        </ui:VisualElement>
+                        
+                        <!-- Connecting lines (decorative) -->
+                        <ui:VisualElement style="position: absolute; left: 30%; top: 35%; width: 40%; height: 1px;" class="line-h" />
+                        <ui:VisualElement style="position: absolute; left: 50%; top: 25%; width: 1px; height: 50%;" class="line-v" />
+                        <ui:VisualElement style="position: absolute; left: 25%; top: 30%; width: 1px; height: 40%;" class="line-v" />
+                        <ui:VisualElement style="position: absolute; right: 20%; top: 35%; width: 1px; height: 35%;" class="line-v" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            
+            <!-- PANEL 3: CALIBRATION PREVIEW (SYSTEM HOVER) -->
+            <ui:VisualElement name="panel-calibration-preview" class="preview-panel" style="padding: 96px; position: absolute; left: 0; top: 0; right: 0; bottom: 0;">
+                <ui:Label text="CALIBRACIÓN DEL SISTEMA" class="text-headline-xl" style="color: #c2c1ff; letter-spacing: 9.6px; margin-bottom: 12px;" />
+                <ui:Label text="COGNITIVE SYSTEM PREVIEW // CALIBRATION" class="text-label-caps" style="color: #464554; opacity: 0.7; margin-bottom: 24px;" />
+                <ui:VisualElement class="accent-line" style="margin-bottom: 32px;" />
+                
+                <ui:VisualElement style="flex-direction: row; justify-content: space-between; flex-grow: 1; height: 80%;">
+                    <!-- Audio preview -->
+                    <ui:VisualElement class="bento-cell" style="width: 31%; height: 100%;">
+                        <ui:VisualElement class="bento-cell-header" style="margin-bottom: 16px;">
+                            <ui:Label text="AUDIO" class="bento-cell-title" />
+                            <ui:Label text="🔊" class="bento-cell-icon" />
+                        </ui:VisualElement>
+                        <ui:Label text="Ajustes de sonoridad actuales" class="text-body-sm" style="font-size: 11px; color: #918fa0; margin-bottom: 24px;" />
+                        <ui:Label name="lbl-preview-audio-master" text="Master: 84%" class="text-label-caps" style="font-size: 11px; margin-bottom: 16px;" />
+                        <ui:Label name="lbl-preview-audio-music" text="Música: 60%" class="text-label-caps" style="font-size: 11px; margin-bottom: 16px;" />
+                        <ui:Label name="lbl-preview-audio-sfx" text="SFX: 72%" class="text-label-caps" style="font-size: 11px; margin-bottom: 16px;" />
+                    </ui:VisualElement>
+                    
+                    <!-- Video preview -->
+                    <ui:VisualElement class="bento-cell" style="width: 31%; height: 100%;">
+                        <ui:VisualElement class="bento-cell-header" style="margin-bottom: 16px;">
+                            <ui:Label text="VIDEO" class="bento-cell-title" />
+                            <ui:Label text="🖥" class="bento-cell-icon" />
+                        </ui:VisualElement>
+                        <ui:Label text="Ajustes de pantalla actuales" class="text-body-sm" style="font-size: 11px; color: #918fa0; margin-bottom: 24px;" />
+                        <ui:Label name="lbl-preview-video-res" text="Resolución: —" class="text-label-caps" style="font-size: 11px; margin-bottom: 16px;" />
+                        <ui:Label name="lbl-preview-video-fs" text="Pantalla Completa: SI" class="text-label-caps" style="font-size: 11px; margin-bottom: 16px;" />
+                        <ui:Label name="lbl-preview-video-scale" text="Escala UI: Normal" class="text-label-caps" style="font-size: 11px; margin-bottom: 16px;" />
+                    </ui:VisualElement>
+                    
+                    <!-- Control/Neural preview -->
+                    <ui:VisualElement class="bento-cell" style="width: 31%; height: 100%;">
+                        <ui:VisualElement class="bento-cell-header" style="margin-bottom: 16px;">
+                            <ui:Label text="NEURAL" class="bento-cell-title" />
+                            <ui:Label text="🎯" class="bento-cell-icon" />
+                        </ui:VisualElement>
+                        <ui:Label text="Parámetros de sensibilidad" class="text-body-sm" style="font-size: 11px; color: #918fa0; margin-bottom: 24px;" />
+                        <ui:Label name="lbl-preview-neural-sens" text="Sensibilidad: 1.0" class="text-label-caps" style="font-size: 11px; margin-bottom: 16px;" />
+                        <ui:Label name="lbl-preview-neural-echo" text="Opacidad Eco: 60%" class="text-label-caps" style="font-size: 11px; margin-bottom: 16px;" />
+                        <ui:Label text="Calibración: NOMINAL" class="text-label-caps" style="font-size: 11px; color: #7af0c8; margin-bottom: 16px;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            
+            <!-- PANEL 4: DISCONNECT OFFLINE (DISCONNECT HOVER) -->
+            <ui:VisualElement name="panel-disconnect-offline" class="preview-panel disconnect-offline-overlay" style="position: absolute; left: -320px; top: -72px; right: 0; bottom: 0;">
+                <ui:VisualElement style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.85);" />
+                
+                <ui:VisualElement style="flex-grow: 1; align-items: center; justify-content: center; padding: 96px; z-index: 100;">
+                    <ui:Label text="CONEXIÓN FINALIZADA" class="text-headline-xl text-glow" style="color: #ffb4ab; letter-spacing: 12px;" />
+                    <ui:Label text="COGNITIVE DE-SYNC IN PROGRESS" class="text-label-caps" style="color: rgba(255,180,171,0.6); margin-top: 12px; margin-bottom: 48px;" />
+                    
+                    <ui:VisualElement class="glass-panel" style="width: 480px; padding: 24px; border-color: rgba(255,180,171,0.2); border-left-color: #ffb4ab; border-left-width: 2px;">
+                        <ui:Label text="OFFLINE // DETECTING COGNITIVE SHIFT" class="text-label-caps" style="color: #ffb4ab; margin-bottom: 16px;" />
+                        <ui:Label text="[LOG] Saving neural pathways... SUCCESS" class="terminal-log-line" style="font-size: 11px; color: rgba(220,225,251,0.7);" />
+                        <ui:Label text="[LOG] Disconnecting synapse port 988... SUCCESS" class="terminal-log-line" style="font-size: 11px; color: rgba(220,225,251,0.7); margin-top: 6px;" />
+                        <ui:Label text="[LOG] Core integrity saved. Safe to terminate simulation." class="terminal-log-line" style="font-size: 11px; color: #7af0c8; margin-top: 6px;" />
+                    </ui:VisualElement>
+                    
+                    <ui:Label text="PULSA EL BOTON PARA DESCONECTAR EL ARCHIVO." class="text-label-caps blink-animation" style="color: rgba(255,180,171,0.4); margin-top: 48px; font-size: 10px;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            
         </ui:VisualElement>
-        
+
         <!-- ============================================== -->
         <!-- BENTO GRID SETTINGS PANEL (hidden overlay)    -->
         <!-- ============================================== -->
@@ -265,6 +390,14 @@
                                 <ui:Label name="lbl-sfx-val" text="72%" class="setting-value" />
                             </ui:VisualElement>
                             <ui:Slider name="sld-sfx" low-value="0" high-value="1" value="0.72" />
+                        </ui:VisualElement>
+
+                        <ui:VisualElement class="setting-row">
+                            <ui:VisualElement class="setting-row-header">
+                                <ui:Label text="Echo Voice" class="setting-label" />
+                                <ui:Label name="lbl-echo-voice-val" text="70%" class="setting-value" />
+                            </ui:VisualElement>
+                            <ui:Slider name="sld-echo-voice" low-value="0" high-value="1" value="0.7" />
                         </ui:VisualElement>
                     </ui:VisualElement>
                     
@@ -326,7 +459,7 @@
                             </ui:VisualElement>
                             <ui:Slider name="SensitivitySlider" low-value="0.1" high-value="5" value="1" />
                         </ui:VisualElement>
-
+ 
                         <ui:VisualElement class="setting-row" style="margin-top: 16px;">
                             <ui:VisualElement class="setting-row-header">
                                 <ui:Label text="Echo Opacity" class="setting-label" />
@@ -385,7 +518,7 @@
                             <ui:Slider name="sld-menu-text" low-value="1" high-value="1.6" value="1.25" />
                         </ui:VisualElement>
                     </ui:VisualElement>
-
+ 
                     <!-- CELL 5: CALIBRATION STATUS -->
                     <ui:VisualElement class="bento-cell" style="width: 48%; margin-right: 2%; margin-bottom: 16px; align-items: center; justify-content: center;">
                         <ui:VisualElement class="bento-cell-header" style="width: 100%;">

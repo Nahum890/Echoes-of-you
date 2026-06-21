@@ -51,8 +51,13 @@ public class TimedMovingPlatform : MonoBehaviour, IResettableLevelObject
 
         if (pressed && !_wasActive)
         {
+            GameFeelController.Instance?.PlayMechanicTick(transform.position, 0.75f);
             if (TutorialHUD.Instance != null)
                 TutorialHUD.Instance.ShowMessage("Puente activo", "", 1.2f);
+        }
+        else if (!pressed && _wasActive)
+        {
+            GameFeelController.Instance?.PlayMechanicTick(transform.position, 0.35f);
         }
         _wasActive = pressed;
     }

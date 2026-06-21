@@ -36,7 +36,11 @@ public static class LevelValidator
             Object.FindObjectsOfType<EchoKineticBody>().Length +
             Object.FindObjectsOfType<EchoShieldField>().Length +
             Object.FindObjectsOfType<EchoConflictTrap>().Length +
-            Object.FindObjectsOfType<DynamicTransformMotor>().Length;
+            Object.FindObjectsOfType<DynamicTransformMotor>().Length +
+            Object.FindObjectsOfType<TimedMovingPlatform>().Length +
+            Object.FindObjectsOfType<GhostBridge>().Length +
+            Object.FindObjectsOfType<MemoryPlatform>().Length +
+            Object.FindObjectsOfType<DoorController>().Length;
         if (dynamicSystemCount < 1)
         {
             Debug.LogWarning($"[LevelValidator] {name}: Missing dynamic echo systems.");
@@ -114,6 +118,15 @@ public static class LevelValidator
         if (Object.FindObjectOfType<LevelEscapeSequence>() == null)
             Debug.LogWarning($"[LevelValidator] {name}: No LevelEscapeSequence.");
 
+        if (!ValidateCameraSightline(name))
+            passed = false;
+
+        if (!ValidatePlayableKitIntegrity(name))
+            passed = false;
+
+        if (!ValidateWalkableSeparation(name))
+            passed = false;
+
         if (passed)
             Debug.Log($"[LevelValidator] PASS: {name}");
         else
@@ -139,6 +152,128 @@ public static class LevelValidator
         return heights.ToArray();
     }
 
+    static bool ValidateCameraSightline(string sceneName)
+    {
+        Camera cameraRef = Camera.main;
+        PlayerController player = Object.FindObjectOfType<PlayerController>();
+        LevelExit exit = Object.FindObjectOfType<LevelExit>();
+        if (cameraRef == null || player == null)
+        {
+            Debug.LogWarning($"[LevelValidator] {sceneName}: Missing camera or player for sightline validation.");
+            return false;
+        }
+
+        bool passed = true;
+        passed &= CheckSightline(sceneName, cameraRef.transform.position, player.transform.position + Vector3.up * 1.35f, "player");
+        if (exit != null)
+            passed &= CheckSightline(sceneName, cameraRef.transform.position, exit.transform.position + Vector3.up * 1.4f, "exit");
+        return passed;
+    }
+
+    static bool ValidatePlayableKitIntegrity(string sceneName)
+    {
+        bool passed = true;
+        LevelKitPiece[] pieces = Object.FindObjectsOfType<LevelKitPiece>();
+        int walkableCount = 0;
+
+        for (int i = 0; i < pieces.Length; i++)
+        {
+            LevelKitPiece piece = pieces[i];
+            if (piece == null || !piece.walkableSurface)
+                continue;
+
+            walkableCount++;
+            Collider colliderRef = piece.GetComponent<Collider>();
+            if (colliderRef == null || colliderRef.isTrigger)
+            {
+                Debug.LogWarning($"[LevelValidator] {sceneName}: Walkable kit piece {piece.name} is missing a solid collider.");
+                passed = false;
+            }
+
+            if (piece.footprintSize.x <= 0.1f || piece.footprintSize.z <= 0.1f)
+            {
+                Debug.LogWarning($"[LevelValidator] {sceneName}: Walkable kit piece {piece.name} has invalid footprint metadata.");
+                passed = false;
+            }
+        }
+
+        if (walkableCount < 4)
+        {
+            Debug.LogWarning($"[LevelValidator] {sceneName}: Too few walkable megakit pieces ({walkableCount}).");
+            passed = false;
+        }
+
+        return passed;
+    }
+
+    static bool ValidateWalkableSeparation(string sceneName)
+    {
+        bool passed = true;
+        List<Collider> colliders = new List<Collider>();
+        LevelKitPiece[] pieces = Object.FindObjectsOfType<LevelKitPiece>();
+
+        for (int i = 0; i < pieces.Length; i++)
+        {
+            if (pieces[i] == null || !pieces[i].walkableSurface)
+                continue;
+
+            Collider colliderRef = pieces[i].GetComponent<Collider>();
+            if (colliderRef != null && !colliderRef.isTrigger)
+                colliders.Add(colliderRef);
+        }
+
+        for (int a = 0; a < colliders.Count; a++)
+        {
+            Bounds first = colliders[a].bounds;
+            for (int b = a + 1; b < colliders.Count; b++)
+            {
+                Bounds second = colliders[b].bounds;
+                float topA = first.max.y;
+                float topB = second.max.y;
+                if (Mathf.Abs(topA - topB) > 0.08f)
+                    continue;
+
+                float overlapX = Mathf.Min(first.max.x, second.max.x) - Mathf.Max(first.min.x, second.min.x);
+                float overlapZ = Mathf.Min(first.max.z, second.max.z) - Mathf.Max(first.min.z, second.min.z);
+                if (overlapX > 0.08f && overlapZ > 0.08f)
+                {
+                    Debug.LogWarning($"[LevelValidator] {sceneName}: Walkable pieces overlap on the same plane: {colliders[a].name} and {colliders[b].name}.");
+                    passed = false;
+                }
+            }
+        }
+
+        return passed;
+    }
+
+    static bool CheckSightline(string sceneName, Vector3 from, Vector3 to, string targetName)
+    {
+        Vector3 direction = to - from;
+        float distance = direction.magnitude;
+        if (distance <= 0.01f)
+            return true;
+
+        if (!Physics.Raycast(from, direction.normalized, out RaycastHit hit, distance - 0.35f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+            return true;
+
+        if (hit.collider != null && hit.collider.CompareTag("Player"))
+            return true;
+
+        if (hit.collider != null && hit.collider.GetComponentInParent<DoorController>() != null)
+            return true;
+
+        // Barrier walls and non-walkable environmental pieces are expected framing
+        if (hit.collider != null && hit.collider.name.StartsWith("Barrier"))
+            return true;
+
+        LevelKitPiece kitPiece = hit.collider != null ? hit.collider.GetComponent<LevelKitPiece>() : null;
+        if (kitPiece != null && !kitPiece.walkableSurface)
+            return true;
+
+        Debug.LogWarning($"[LevelValidator] {sceneName}: Camera sightline to {targetName} is blocked by {hit.collider?.name}.");
+        return false;
+    }
+
     public static void ValidateAllLevels()
     {
         string[] levelScenes =
@@ -152,7 +287,12 @@ public static class LevelValidator
             "Assets/Scenes/Level_07.unity",
             "Assets/Scenes/Level_08.unity",
             "Assets/Scenes/Level_09.unity",
-            "Assets/Scenes/Level_10.unity"
+            "Assets/Scenes/Level_10.unity",
+            "Assets/Scenes/Level_11.unity",
+            "Assets/Scenes/Level_12.unity",
+            "Assets/Scenes/Level_13.unity",
+            "Assets/Scenes/Level_14.unity",
+            "Assets/Scenes/Level_15.unity"
         };
 
         int passed = 0;
