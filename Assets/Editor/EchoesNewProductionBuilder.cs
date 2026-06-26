@@ -402,4 +402,23 @@ public static class EchoesNewProductionBuilder
         public ModulePlacement config;
         public GameObject gameObject;
     }
+
+    [MenuItem("Echoes of You/Diagnóstico/Listar Modelos Reales (excluye SciFi)", false, 300)]
+    public static void ListRealProjectAssets()
+    {
+        string[] modelGuids = AssetDatabase.FindAssets("t:Model");
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        sb.AppendLine("=== MODELOS 3D EN Assets/3D Models (excluyendo SciFi MegaKit) ===");
+        foreach (string guid in modelGuids)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            if (path.StartsWith("Assets/3D Models/") && !path.Contains("SciFi"))
+                sb.AppendLine(path);
+        }
+        string outputPath = "Assets/_RealAssetManifest.txt";
+        File.WriteAllText(outputPath, sb.ToString());
+        AssetDatabase.Refresh();
+        Debug.Log($"[Echoes Production] Manifiesto escrito en {outputPath}");
+        EditorUtility.RevealInFinder(outputPath);
+    }
 }

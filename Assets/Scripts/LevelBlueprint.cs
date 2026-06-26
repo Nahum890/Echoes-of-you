@@ -99,6 +99,7 @@ public class LevelBlueprint : ScriptableObject
     public Color fogColor = new Color(0.12f, 0.14f, 0.2f, 1f);
     public float fogDensity = 0.008f;
     public Color skyColor = new Color(0.2f, 0.22f, 0.28f, 1f);
+    public Color ambientColor = new Color(0.06f, 0.08f, 0.12f, 1f);
     public Vector3 directionalLightRotation = new Vector3(50f, -30f, 0f);
     public Color directionalLightColor = Color.white;
     public float directionalLightIntensity = 1f;

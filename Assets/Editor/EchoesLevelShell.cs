@@ -30,20 +30,27 @@ public static class EchoesLevelShell
     {
         RenderSettings.fog = true;
         RenderSettings.fogMode = FogMode.ExponentialSquared;
-        RenderSettings.fogColor = new Color(0.05f, 0.07f, 0.12f, 1f); // Abyssal navy-indigo
-        RenderSettings.fogDensity = Mathf.Min(0.008f, blueprint.fogDensity * 0.1f);
-        RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
-        RenderSettings.ambientSkyColor = new Color(0.08f, 0.12f, 0.20f, 1f);
-        RenderSettings.ambientEquatorColor = new Color(0.04f, 0.06f, 0.11f, 1f);
-        RenderSettings.ambientGroundColor = new Color(0.02f, 0.03f, 0.06f, 1f);
+
+        // Usa los valores reales del blueprint. Sin esto, los 15 niveles
+        // comparten la misma atmósfera sin importar qué se les configure.
+        RenderSettings.fogColor = blueprint.fogColor;
+        RenderSettings.fogDensity = Mathf.Clamp(blueprint.fogDensity, 0.012f, 0.04f);
+
+        // Ambient plano, no Trilight — PS1 no suaviza el contraste entre
+        // superficies con tres colores direccionales. Un solo tono de piso,
+        // bajo y uniforme, deja que las luces puntuales hagan el contraste.
+        RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+        RenderSettings.ambientLight = blueprint.ambientColor;
+        RenderSettings.ambientIntensity = 0.55f;
+
         RenderSettings.skybox = null;
-        RenderSettings.reflectionIntensity = 0.4f;
+        RenderSettings.reflectionIntensity = 0f; // Sin reflejos de entorno. Nunca.
 
         GameObject atmosphereObj = new GameObject("AtmosphereController");
         AtmosphereController atmo = atmosphereObj.AddComponent<AtmosphereController>();
         SetSerializedValue(atmo, "enableGroundFog", true);
-        SetSerializedValue(atmo, "maxDustMotes", 36);
-        SetSerializedValue(atmo, "spawnVolume", new Vector3(52f, 16f, 52f));
+        SetSerializedValue(atmo, "maxDustMotes", 18); // menos partículas, más sucias — escuela, no espacio liminal abstracto
+        SetSerializedValue(atmo, "spawnVolume", new Vector3(30f, 8f, 30f));
     }
 
     public static void SpawnLevelLightingSettings(Transform parent, LevelBlueprint blueprint)
@@ -63,7 +70,7 @@ public static class EchoesLevelShell
         lightRef.type = LightType.Directional;
         lightRef.color = blueprint.directionalLightColor;
         lightRef.intensity = blueprint.directionalLightIntensity;
-        lightRef.shadows = LightShadows.Soft;
+        lightRef.shadows = LightShadows.Hard;
         lightRef.shadowStrength = 0.92f;
         lightObject.transform.rotation = Quaternion.Euler(blueprint.directionalLightRotation);
     }

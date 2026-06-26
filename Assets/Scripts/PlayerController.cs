@@ -428,6 +428,12 @@ public class PlayerController : MonoBehaviour
         _jumpBufferTimer = 0f;
         _coyoteTimer = 0f;
 
+        // Inherit platform velocity when jumping off it
+        if (_platformVelocity.sqrMagnitude > 0.01f)
+        {
+            _planarVelocity += Vector3.ProjectOnPlane(_platformVelocity, movementUp);
+        }
+
         float jumpSpeed = Mathf.Sqrt(2f * gravityStrength * jumpHeight);
         _verticalVelocity = movementUp * jumpSpeed;
         _grounded = false;

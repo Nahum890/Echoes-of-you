@@ -5,17 +5,51 @@ using System.Collections.Generic;
 
 public static class EchoesModuleFactory
 {
-    private const string SciFiRoot = "Assets/3D Models/Modular SciFi MegaKit[Standard]/Modular SciFi MegaKit[Standard]/FBX (Unity)";
-    private const string SciFiPlatformMetal = SciFiRoot + "/Platforms/Platform_Metal.fbx";
-    private const string SciFiPlatformSimple = SciFiRoot + "/Platforms/Platform_Simple.fbx";
-    private const string SciFiPlatformCenter = SciFiRoot + "/Platforms/Platform_CenterPlate.fbx";
-    private const string SciFiPlatformRamp = SciFiRoot + "/Platforms/Platform_Ramp_2.fbx";
-    private const string SciFiDoorDarkMetal = SciFiRoot + "/Platforms/Door_DarkMetal.fbx";
-    private const string SciFiDoorFrame = SciFiRoot + "/Platforms/Door_Frame_A.fbx";
-    private const string SciFiColumnSimple = SciFiRoot + "/Columns/Column_Simple.fbx";
-    private const string SciFiColumnAstra = SciFiRoot + "/Columns/Column_Astra.fbx";
-    private const string SciFiColumnLarge = SciFiRoot + "/Columns/Column_Large_Straight.fbx";
-    private const string SciFiWallBand = SciFiRoot + "/Walls/WallBand_Straight.fbx";
+    // --- Asset resolution: búsqueda dinámica excluyendo el kit sci-fi ---
+
+    /// <summary>
+    /// Busca un asset por término de nombre dentro del proyecto y devuelve su
+    /// ruta real, o null si no existe. Instantiate3DModel ya maneja el caso
+    /// null con un fallback de cubo procedural — por eso es seguro usar esto
+    /// en lugar de rutas hardcodeadas al kit sci-fi.
+    /// </summary>
+    private static string ResolveAssetPath(string searchTerm, string excludeTerm = null)
+    {
+        string[] guids = AssetDatabase.FindAssets("t:Model " + searchTerm);
+        foreach (string guid in guids)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            if (excludeTerm != null && path.Contains(excludeTerm)) continue;
+            string fileName = Path.GetFileNameWithoutExtension(path);
+            if (string.Equals(fileName, searchTerm, System.StringComparison.OrdinalIgnoreCase))
+            {
+                return path;
+            }
+        }
+        foreach (string guid in guids)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            if (excludeTerm != null && path.Contains(excludeTerm)) continue;
+            return path;
+        }
+        return null;
+    }
+
+    // Módulos escolares mapeados exactamente a las piezas del Kenney Furniture Kit del manifest real
+    private static string SchoolFloorModule  => ResolveAssetPath("floorFull", "SciFi");
+    private static string SchoolWallModule   => ResolveAssetPath("wall", "SciFi");
+    private static string SchoolDoorModule   => ResolveAssetPath("wallDoorway", "SciFi");
+    private static string SchoolColumnModule => ResolveAssetPath("wallCorner", "SciFi");
+    private static string SchoolDeskModule   => ResolveAssetPath("desk", "SciFi");
+    private static string SchoolLockerModule => ResolveAssetPath("bookcaseClosed", "SciFi");
+    private static string SchoolShelfModule  => ResolveAssetPath("bookcaseOpen", "SciFi");
+    private static string SchoolChairModule  => ResolveAssetPath("chairDesk", "SciFi") ?? ResolveAssetPath("chair", "SciFi");
+    private static string SchoolStairsModule => ResolveAssetPath("stairs", "SciFi");
+    private static string SchoolToiletModule => ResolveAssetPath("toilet", "SciFi");
+    private static string SchoolSinkModule   => ResolveAssetPath("bathroomSink", "SciFi");
+    private static string SchoolMirrorModule => ResolveAssetPath("bathroomMirror", "SciFi");
+    private static string SchoolDeadTreeModule => ResolveAssetPath("DeadTree_3", "SciFi") ?? ResolveAssetPath("DeadTree_1", "SciFi");
+    private static string SchoolFenceModule  => ResolveAssetPath("FencePiece", "SciFi") ?? ResolveAssetPath("fence", "SciFi");
 
     private const int GroundLayer = 6;
 
@@ -27,13 +61,13 @@ public static class EchoesModuleFactory
         switch (placement.type)
         {
             case ModuleType.StandardPlatform:
-                obj = MakePlatform(placement.name, placement.position, placement.scale, parent, EchoesMaterialLibrary.FloorMat, SciFiPlatformSimple);
+                obj = MakePlatform(placement.name, placement.position, placement.scale, parent, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
                 break;
             case ModuleType.BridgePlatform:
-                obj = MakePlatform(placement.name, placement.position, placement.scale, parent, EchoesMaterialLibrary.BridgeMat, SciFiPlatformMetal);
+                obj = MakePlatform(placement.name, placement.position, placement.scale, parent, EchoesMaterialLibrary.BridgeMat, SchoolFloorModule);
                 break;
             case ModuleType.RampPlatform:
-                obj = MakePlatform(placement.name, placement.position, placement.scale, parent, EchoesMaterialLibrary.BridgeMat, SciFiPlatformRamp);
+                obj = MakePlatform(placement.name, placement.position, placement.scale, parent, EchoesMaterialLibrary.BridgeMat, SchoolFloorModule);
                 break;
             case ModuleType.BarrierWall:
                 obj = MakeBarrierWall(placement.name, placement.position, placement.scale, parent);
@@ -174,7 +208,7 @@ public static class EchoesModuleFactory
             if (parts.Length > 2) float.TryParse(parts[2], out speed);
         }
 
-        GameObject bridge = Instantiate3DModel(SciFiPlatformSimple, name, inactiveLocal, scale, Quaternion.identity, anchor.transform, EchoesMaterialLibrary.BridgeMat);
+        GameObject bridge = Instantiate3DModel(SchoolFloorModule, name, inactiveLocal, scale, Quaternion.identity, anchor.transform, EchoesMaterialLibrary.BridgeMat);
         bridge.AddComponent<KenneyTiling>();
 
         TimedMovingPlatform platform = bridge.AddComponent<TimedMovingPlatform>();
@@ -202,7 +236,7 @@ public static class EchoesModuleFactory
     private static GameObject MakeBarrierWall(string name, Vector3 pos, Vector3 scale, Transform parent)
     {
         Vector3 wallScale = new Vector3(scale.x, Mathf.Max(scale.y, EchoesWorldMetrics.MinBarrierHeight), scale.z);
-        GameObject obj = Instantiate3DModel(SciFiWallBand, name, pos, wallScale, Quaternion.identity, parent, EchoesMaterialLibrary.DoorMat);
+        GameObject obj = Instantiate3DModel(SchoolWallModule, name, pos, wallScale, Quaternion.identity, parent, EchoesMaterialLibrary.DoorMat);
         if (obj != null) obj.AddComponent<KenneyTiling>();
         return obj;
     }
@@ -217,30 +251,8 @@ public static class EchoesModuleFactory
         col.size = new Vector3(2f, 0.12f, 2f);
         col.isTrigger = true;
 
-        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3D Models/kenney_prototype-kit/Models/FBX format/button-floor-square.fbx");
-        GameObject visual;
-        if (prefab != null)
-        {
-            visual = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
-            visual.name = "Visual";
-            visual.transform.SetParent(root.transform, false);
-            visual.transform.localPosition = new Vector3(0f, -0.06f, 0f);
-            visual.transform.localScale = new Vector3(2f, 1f, 2f);
-            Collider[] cols = visual.GetComponentsInChildren<Collider>();
-            foreach (var c in cols) Object.DestroyImmediate(c);
-            ApplyMaterialOverride(visual, EchoesMaterialLibrary.PlateMat);
-        }
-        else
-        {
-            visual = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            visual.name = "Visual";
-            visual.transform.SetParent(root.transform, false);
-            visual.transform.localPosition = Vector3.zero;
-            visual.transform.localScale = new Vector3(2f, 0.12f, 2f);
-            Object.DestroyImmediate(visual.GetComponent<Collider>());
-            visual.GetComponent<MeshRenderer>().sharedMaterial = EchoesMaterialLibrary.PlateMat;
-            visual.AddComponent<KenneyTiling>();
-        }
+        string plateModel = ResolveAssetPath("rugDoormat", "SciFi");
+        GameObject visual = Instantiate3DModel(plateModel, "Visual", new Vector3(0f, 0.01f, 0f), new Vector3(1.6f, 1f, 1.2f), Quaternion.identity, root.transform, EchoesMaterialLibrary.PlateMat);
 
         EchoesLevelShell.SpawnPointLight(name + "_Glow", pos + new Vector3(0f, 1.2f, 0f), new Color(0.24f, 0.56f, 0.74f, 1f), 0.55f, 4f, root.transform);
 
@@ -260,7 +272,7 @@ public static class EchoesModuleFactory
             pos.y += (EchoesWorldMetrics.MinDoorHeight - originalHeight) * 0.5f;
         }
 
-        GameObject door = Instantiate3DModel(SciFiDoorDarkMetal, name, pos, scale, Quaternion.identity, parent, EchoesMaterialLibrary.DoorMat);
+        GameObject door = Instantiate3DModel(SchoolDoorModule, name, pos, scale, Quaternion.identity, parent, EchoesMaterialLibrary.DoorMat);
         if (door != null)
         {
             door.AddComponent<KenneyTiling>();
@@ -280,7 +292,7 @@ public static class EchoesModuleFactory
 
         BoxCollider col = exitRoot.AddComponent<BoxCollider>();
         col.isTrigger = true;
-        col.size = new Vector3(3.5f, 4f, 2.5f);
+        col.size = new Vector3(3.5f, 4f, 3.5f);
         col.center = new Vector3(0f, 0.5f, 0f);
 
         Rigidbody rb = exitRoot.AddComponent<Rigidbody>();
@@ -289,50 +301,36 @@ public static class EchoesModuleFactory
 
         GameObject goalFocus = new GameObject("GoalFocus");
         goalFocus.transform.SetParent(exitRoot.transform, false);
-        goalFocus.transform.localPosition = new Vector3(0f, 2f, 0f);
+        goalFocus.transform.localPosition = new Vector3(0f, 1f, 0f);
 
         LevelExit exitComponent = exitRoot.AddComponent<LevelExit>();
         exitComponent.loadNextBuildIndex = false;
         exitComponent.nextSceneName = string.IsNullOrEmpty(customData) ? "MainMenu" : customData;
 
-        // Portal Pillars
-        Instantiate3DModel(SciFiColumnSimple, "LeftPillar", new Vector3(-1.6f, 0.5f, 0f), new Vector3(0.4f, 4.5f, 0.4f), Quaternion.identity, exitRoot.transform, EchoesMaterialLibrary.BridgeMat);
-        Instantiate3DModel(SciFiColumnSimple, "RightPillar", new Vector3(1.6f, 0.5f, 0f), new Vector3(0.4f, 4.5f, 0.4f), Quaternion.identity, exitRoot.transform, EchoesMaterialLibrary.BridgeMat);
-        Instantiate3DModel(SciFiPlatformSimple, "TopBeam", new Vector3(0f, 2.8f, 0f), new Vector3(3.6f, 0.4f, 0.4f), Quaternion.identity, exitRoot.transform, EchoesMaterialLibrary.GoalMat);
+        // Meta del Juego: El pupitre de Lyra solitario
+        GameObject lyraDesk = Instantiate3DModel(SchoolDeskModule, "LyraDesk", new Vector3(0f, 0.1f, 0f), new Vector3(1.3f, 1f, 0.8f), Quaternion.identity, exitRoot.transform, EchoesMaterialLibrary.MemoryMat);
+        
+        // Silla vacía
+        Instantiate3DModel(SchoolChairModule, "LyraChair", new Vector3(0f, 0.1f, -0.7f), new Vector3(0.9f, 0.9f, 0.9f), Quaternion.Euler(0f, 180f, 0f), exitRoot.transform, EchoesMaterialLibrary.ArchMat);
 
-        // Portal Surface
-        GameObject portalSurface = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        portalSurface.name = "PortalSurface";
-        portalSurface.transform.SetParent(exitRoot.transform, false);
-        portalSurface.transform.localPosition = new Vector3(0f, 1.2f, 0f);
-        portalSurface.transform.localScale = new Vector3(2.8f, 4f, 1f);
-        Object.DestroyImmediate(portalSurface.GetComponent<Collider>());
-
-        Material portalMat = new Material(Shader.Find("Standard"));
-        portalMat.color = new Color(0.25f, 0.45f, 0.9f, 0.12f);
-        SetupTransparentMaterial(portalMat);
-        portalMat.EnableKeyword("_EMISSION");
-        portalMat.SetColor("_EmissionColor", new Color(0.3f, 0.5f, 0.95f) * 2.2f);
-        portalSurface.GetComponent<MeshRenderer>().sharedMaterial = portalMat;
-
-        // Sky Beam
+        // Rayo de luz vertical cálida/dorada dura que corta la niebla (Cylinder translúcido)
         GameObject skyBeam = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
         skyBeam.name = "SkyBeam";
         skyBeam.transform.SetParent(exitRoot.transform, false);
         skyBeam.transform.localPosition = new Vector3(0f, 25f, 0f);
-        skyBeam.transform.localScale = new Vector3(0.6f, 25f, 0.6f);
+        skyBeam.transform.localScale = new Vector3(1.5f, 25f, 1.5f);
         Object.DestroyImmediate(skyBeam.GetComponent<Collider>());
 
         Material beamMat = new Material(Shader.Find("Standard"));
-        beamMat.color = new Color(0.5f, 0.65f, 0.9f, 0.18f);
+        beamMat.color = new Color(1.0f, 0.85f, 0.6f, 0.15f);
         SetupTransparentMaterial(beamMat);
         beamMat.EnableKeyword("_EMISSION");
-        beamMat.SetColor("_EmissionColor", new Color(0.4f, 0.55f, 0.85f) * 1.8f);
+        beamMat.SetColor("_EmissionColor", new Color(1.0f, 0.8f, 0.5f) * 2.0f);
         skyBeam.GetComponent<MeshRenderer>().sharedMaterial = beamMat;
 
-        // Beacons
-        EchoesLevelShell.SpawnPointLight("ExitBeacon", pos + new Vector3(0f, 5f, 0f), new Color(0.6f, 0.75f, 1f, 1f), 6f, 28f, exitRoot.transform);
-        EchoesLevelShell.SpawnPointLight("ExitGlow", pos + new Vector3(0f, 1.5f, 0f), new Color(0.4f, 0.6f, 0.95f, 1f), 4f, 14f, exitRoot.transform);
+        // Beacons luminosos cálidos del final del nivel
+        EchoesLevelShell.SpawnPointLight("ExitBeacon", pos + new Vector3(0f, 5f, 0f), new Color(1.0f, 0.8f, 0.4f, 1f), 6f, 28f, exitRoot.transform);
+        EchoesLevelShell.SpawnPointLight("ExitGlow", pos + new Vector3(0f, 1.5f, 0f), new Color(1.0f, 0.75f, 0.35f, 1f), 4f, 14f, exitRoot.transform);
 
         return exitRoot;
     }
@@ -411,20 +409,37 @@ public static class EchoesModuleFactory
 
     private static GameObject MakeDistantArchitecture(string name, Vector3 pos, Transform parent, string customData)
     {
+        // Versión escolar: silueta baja de tejados y cerca perimetral en el
+        // horizonte, NO monolitos. La escala humana es la regla — nada en el
+        // fondo del nivel debe superar 6-8 unidades de altura salvo casos
+        // narrativos explícitos (ej. Nivel 14, fragmentos flotantes).
         GameObject root = new GameObject(name);
         root.transform.SetParent(parent, false);
         root.transform.position = pos;
 
-        // Pillars nearby
-        MakeBrutalistBlock("HorizonPillarL", pos + new Vector3(-35f, 15f, 10f), new Vector3(0.5f, 30f, 0.5f), root.transform);
-        MakeBrutalistBlock("HorizonPillarR", pos + new Vector3(35f, 15f, 10f), new Vector3(0.5f, 30f, 0.5f), root.transform);
-        
-        // Massive background monoliths
-        MakeBrutalistBlock("DistantMonolith_Center", pos + new Vector3(0f, 25f, 75f), new Vector3(6f, 50f, 5f), root.transform);
-        MakeBrutalistBlock("DistantMonolith_Left", pos + new Vector3(-25f, 18f, 85f), new Vector3(4f, 36f, 4f), root.transform);
-        MakeBrutalistBlock("DistantMonolith_Right", pos + new Vector3(25f, 18f, 85f), new Vector3(4f, 36f, 4f), root.transform);
+        MakeBackgroundRooftop("Rooftop_L", pos + new Vector3(-18f, 4f, 40f), new Vector3(8f, 3f, 6f), root.transform);
+        MakeBackgroundRooftop("Rooftop_R", pos + new Vector3(18f, 4f, 42f), new Vector3(8f, 3f, 6f), root.transform);
+        MakeBackgroundFence("Fence_Line", pos + new Vector3(0f, 1.2f, 50f), new Vector3(40f, 2.4f, 0.2f), root.transform);
 
         return root;
+    }
+
+    private static GameObject MakeBackgroundRooftop(string name, Vector3 pos, Vector3 scale, Transform parent)
+    {
+        GameObject block = MakePlatform(name, pos, scale, parent, EchoesMaterialLibrary.ArchMat, SchoolWallModule);
+        MeshRenderer[] renderers = block.GetComponentsInChildren<MeshRenderer>();
+        foreach (var r in renderers)
+        {
+            r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            r.receiveShadows = false;
+        }
+        return block;
+    }
+
+    private static GameObject MakeBackgroundFence(string name, Vector3 pos, Vector3 scale, Transform parent)
+    {
+        GameObject fence = MakePlatform(name, pos, scale, parent, EchoesMaterialLibrary.ArchMat, SchoolWallModule);
+        return fence;
     }
 
     private static GameObject MakeLevelGoal(string name, Vector3 pos, Transform parent, string customData, string[] targetSignals)
@@ -483,21 +498,44 @@ public static class EchoesModuleFactory
 
     // --- NEW SYSTEM FACTORY METHOD IMPLEMENTATIONS ---
 
+    // --- NEW SYSTEM FACTORY METHOD IMPLEMENTATIONS ---
+
     private static GameObject MakeObservationChamber(string name, Vector3 pos, Vector3 scale, Transform parent)
     {
         GameObject root = new GameObject(name);
         root.transform.SetParent(parent, false);
         root.transform.position = pos;
 
-        // Elevated base platform
-        MakePlatform("ObsBase", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SciFiPlatformSimple);
+        // Suelo del Aula
+        MakePlatform("ClassroomFloor", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
 
-        // Columns framing the panorama
-        Instantiate3DModel(SciFiColumnAstra, "ObsColumnL", new Vector3(-scale.x * 0.45f, scale.y * 0.5f + 2.5f, 0f), new Vector3(0.5f, 5f, 0.5f), Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
-        Instantiate3DModel(SciFiColumnAstra, "ObsColumnR", new Vector3(scale.x * 0.45f, scale.y * 0.5f + 2.5f, 0f), new Vector3(0.5f, 5f, 0.5f), Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
+        // Paredes del aula con ventanas (dejan pasar la niebla/luz)
+        float wX = scale.x * 0.5f;
+        float wZ = scale.z * 0.5f;
+        Instantiate3DModel(SchoolWallModule, "ClassroomWallBack", new Vector3(0f, 0f, -wZ), new Vector3(scale.x, 3.5f, 0.2f), Quaternion.identity, root.transform, EchoesMaterialLibrary.WallTealMat);
+        Instantiate3DModel(SchoolWallModule, "ClassroomWallLeft", new Vector3(-wX, 0f, 0f), new Vector3(0.2f, 3.5f, scale.z), Quaternion.Euler(0f, 90f, 0f), root.transform, EchoesMaterialLibrary.WallTealMat);
+        Instantiate3DModel(SchoolWallModule, "ClassroomWallRight", new Vector3(wX, 0f, 0f), new Vector3(0.2f, 3.5f, scale.z), Quaternion.Euler(0f, 90f, 0f), root.transform, EchoesMaterialLibrary.WallTealMat);
 
-        // Point light casting shadows down
-        EchoesLevelShell.SpawnPointLight("ObsLight", new Vector3(0f, 4f, 0f), new Color(0.7f, 0.85f, 1f, 1f), 4f, 12f, root.transform);
+        // Pupitres y sillas escolares ordenados simétricamente
+        float deskSpacingX = Mathf.Min(3f, scale.x * 0.25f);
+        float deskSpacingZ = Mathf.Min(3f, scale.z * 0.25f);
+        
+        for (float xOffset = -scale.x * 0.25f; xOffset <= scale.x * 0.25f + 0.1f; xOffset += deskSpacingX)
+        {
+            for (float zOffset = -scale.z * 0.2f; zOffset <= scale.z * 0.3f + 0.1f; zOffset += deskSpacingZ)
+            {
+                Vector3 deskPos = new Vector3(xOffset, 0.1f, zOffset);
+                string deskName = $"Desk_{xOffset:0.0}_{zOffset:0.0}";
+                GameObject d = Instantiate3DModel(SchoolDeskModule, deskName, deskPos, new Vector3(1.2f, 1f, 0.8f), Quaternion.identity, root.transform, EchoesMaterialLibrary.MemoryMat);
+                
+                // Silla adyacente
+                Vector3 chairPos = deskPos + new Vector3(0f, 0f, -0.7f);
+                Instantiate3DModel(SchoolChairModule, deskName + "_Chair", chairPos, new Vector3(0.9f, 0.9f, 0.9f), Quaternion.Euler(0f, 180f, 0f), root.transform, EchoesMaterialLibrary.ArchMat);
+            }
+        }
+
+        // Luz de techo parpadeante fluorescente
+        EchoesLevelShell.SpawnPointLight("ClassroomLight", new Vector3(0f, 3f, 0f), new Color(0.85f, 0.95f, 1f, 1f), 5f, 15f, root.transform);
 
         return root;
     }
@@ -508,35 +546,70 @@ public static class EchoesModuleFactory
         root.transform.SetParent(parent, false);
         root.transform.position = pos;
 
-        // Trigger volume for Echo detection
+        // Trigger del Eco
         BoxCollider trigger = root.AddComponent<BoxCollider>();
         trigger.isTrigger = true;
-        trigger.size = new Vector3(scale.x, scale.y * 3f, scale.z); // Tall trigger to detect player/echoes
+        trigger.size = new Vector3(scale.x, scale.y * 3f, scale.z);
         trigger.center = new Vector3(0f, scale.y, 0f);
 
-        // The bridge physical body
-        GameObject bridge = Instantiate3DModel(SciFiPlatformSimple, "BridgeBody", Vector3.zero, scale, Quaternion.identity, root.transform, EchoesMaterialLibrary.EchoMat);
-        bridge.AddComponent<KenneyTiling>();
+        // Cuerpo físico del puente (un box collider plano invisible para caminar)
+        GameObject colliderObj = new GameObject("BridgeCollider");
+        colliderObj.transform.SetParent(root.transform, false);
+        colliderObj.transform.localPosition = Vector3.zero;
+        BoxCollider walkCol = colliderObj.AddComponent<BoxCollider>();
+        walkCol.size = scale;
+        walkCol.enabled = false; // Inicialmente fantasma
+        colliderObj.layer = GroundLayer;
+
+        // Representación visual: Serie de pupitres flotantes con el material del Eco
+        GameObject visualContainer = new GameObject("VisualModel");
+        visualContainer.transform.SetParent(root.transform, false);
+        visualContainer.transform.localPosition = Vector3.zero;
+
+        float length = Mathf.Max(scale.x, scale.z);
+        bool alignX = scale.x > scale.z;
+        float step = 2.2f; // Espaciado entre pupitres flotantes
         
-        Collider bridgeCol = bridge.GetComponent<Collider>();
-        if (bridgeCol != null) bridgeCol.enabled = false; // Initially phantom
+        for (float offset = -length * 0.45f; offset <= length * 0.45f; offset += step)
+        {
+            Vector3 deskLocal = alignX ? new Vector3(offset, 0f, 0f) : new Vector3(0f, 0f, offset);
+            GameObject d = Instantiate3DModel(SchoolDeskModule, $"FloatDesk_{offset:0.0}", deskLocal, new Vector3(1.2f, 1f, 0.8f), Quaternion.identity, visualContainer.transform, EchoesMaterialLibrary.EchoMat);
+            
+            // Silla flotante asociada
+            Vector3 chairLocal = deskLocal + (alignX ? new Vector3(0f, 0f, -0.6f) : new Vector3(-0.6f, 0f, 0f));
+            float chairRot = alignX ? 180f : 90f;
+            Instantiate3DModel(SchoolChairModule, $"FloatChair_{offset:0.0}", chairLocal, new Vector3(0.9f, 0.9f, 0.9f), Quaternion.Euler(0f, chairRot, 0f), visualContainer.transform, EchoesMaterialLibrary.EchoMat);
+        }
 
         TemporalBridge tb = root.AddComponent<TemporalBridge>();
-        SetSerializedValue(tb, "bridgeCollider", bridgeCol);
-        SetSerializedValue(tb, "visualMesh", bridge);
+        SetSerializedValue(tb, "bridgeCollider", walkCol);
+        SetSerializedValue(tb, "visualMesh", visualContainer);
 
         return root;
     }
 
     private static GameObject MakePerspectiveAnchor(string name, Vector3 pos, Vector3 scale, Transform parent, string customData)
     {
-        GameObject root = MakePlatform(name, pos, scale, parent, EchoesMaterialLibrary.FloorMat, SciFiPlatformCenter);
-        // Add a visual indicator or focus target
+        // El punto de anclaje de perspectiva es un pupitre de memoria interactivo
+        GameObject root = new GameObject(name);
+        root.transform.SetParent(parent, false);
+        root.transform.position = pos;
+
+        // Plataforma de base pequeña
+        MakePlatform("AnchorBase", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
+
+        // El pupitre de memoria
+        GameObject memoryDesk = Instantiate3DModel(SchoolDeskModule, "MemoryDesk", new Vector3(0f, 0.1f, 0f), new Vector3(1.4f, 1.1f, 0.9f), Quaternion.identity, root.transform, EchoesMaterialLibrary.MemoryMat);
+        
+        // Silla del pupitre
+        Instantiate3DModel(SchoolChairModule, "MemoryChair", new Vector3(0f, 0.1f, -0.7f), new Vector3(0.95f, 0.95f, 0.95f), Quaternion.Euler(0f, 180f, 0f), root.transform, EchoesMaterialLibrary.ArchMat);
+
+        // Cilindro indicador brillante sutil
         GameObject glow = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
         glow.name = "AnchorIndicator";
         glow.transform.SetParent(root.transform, false);
-        glow.transform.localPosition = new Vector3(0f, 0.15f, 0f);
-        glow.transform.localScale = new Vector3(1.2f, 0.05f, 1.2f);
+        glow.transform.localPosition = new Vector3(0f, 0.12f, 0f);
+        glow.transform.localScale = new Vector3(1.6f, 0.02f, 1.6f);
         Object.DestroyImmediate(glow.GetComponent<Collider>());
         glow.GetComponent<MeshRenderer>().sharedMaterial = EchoesMaterialLibrary.PlateMat;
 
@@ -549,14 +622,30 @@ public static class EchoesModuleFactory
         root.transform.SetParent(parent, false);
         root.transform.position = pos;
 
-        // Long narrow floor
-        MakePlatform("CorridorFloor", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SciFiPlatformSimple);
+        // Suelo del pasillo
+        MakePlatform("CorridorFloor", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
 
-        // Side walls to make it a corridor
-        Vector3 wallScaleL = new Vector3(0.3f, scale.y * 2.5f, scale.z);
-        Vector3 wallScaleR = new Vector3(0.3f, scale.y * 2.5f, scale.z);
-        Instantiate3DModel(SciFiWallBand, "WallL", new Vector3(-scale.x * 0.5f, scale.y * 0.5f, 0f), wallScaleL, Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
-        Instantiate3DModel(SciFiWallBand, "WallR", new Vector3(scale.x * 0.5f, scale.y * 0.5f, 0f), wallScaleR, Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
+        // Paredes laterales
+        float halfWidth = scale.x * 0.5f;
+        Vector3 wallScale = new Vector3(0.2f, 3.5f, scale.z);
+        Instantiate3DModel(SchoolWallModule, "WallL", new Vector3(-halfWidth, 0f, 0f), wallScale, Quaternion.Euler(0f, 90f, 0f), root.transform, EchoesMaterialLibrary.WallMustardMat);
+        Instantiate3DModel(SchoolWallModule, "WallR", new Vector3(halfWidth, 0f, 0f), wallScale, Quaternion.Euler(0f, 90f, 0f), root.transform, EchoesMaterialLibrary.WallMustardMat);
+
+        // Colocar estantes/casilleros (bookcaseClosed) empotrados en las paredes a intervalos
+        float step = 5f;
+        for (float z = -scale.z * 0.4f; z <= scale.z * 0.4f; z += step)
+        {
+            // Casillero Izquierdo
+            Instantiate3DModel(SchoolLockerModule, $"LockerL_{z:0.0}", new Vector3(-halfWidth + 0.4f, 0.1f, z), new Vector3(0.6f, 1.8f, 0.8f), Quaternion.Euler(0f, 90f, 0f), root.transform, EchoesMaterialLibrary.ArchMat);
+            // Casillero Derecho
+            Instantiate3DModel(SchoolLockerModule, $"LockerR_{z:0.0}", new Vector3(halfWidth - 0.4f, 0.1f, z + step * 0.5f), new Vector3(0.6f, 1.8f, 0.8f), Quaternion.Euler(0f, -90f, 0f), root.transform, EchoesMaterialLibrary.ArchMat);
+        }
+
+        // Luces de techo fluorescentes espaciadas en el pasillo
+        for (float z = -scale.z * 0.35f; z <= scale.z * 0.35f; z += 6f)
+        {
+            EchoesLevelShell.SpawnPointLight($"CorridorLight_{z:0.0}", new Vector3(0f, 3f, z), new Color(0.8f, 0.9f, 0.95f, 1f), 4f, 10f, root.transform);
+        }
 
         return root;
     }
@@ -567,29 +656,50 @@ public static class EchoesModuleFactory
         root.transform.SetParent(parent, false);
         root.transform.position = pos;
 
-        // Giant floor
-        MakePlatform("ArenaFloor", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SciFiPlatformSimple);
+        // Suelo gigante del patio
+        MakePlatform("PatioFloor", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
 
-        // Heavy pillars at the four corners
-        float offsetOffset = 0.4f;
-        Instantiate3DModel(SciFiColumnLarge, "PillarFL", new Vector3(-scale.x * offsetOffset, 0f, -scale.z * offsetOffset), new Vector3(1f, 10f, 1f), Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
-        Instantiate3DModel(SciFiColumnLarge, "PillarFR", new Vector3(scale.x * offsetOffset, 0f, -scale.z * offsetOffset), new Vector3(1f, 10f, 1f), Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
-        Instantiate3DModel(SciFiColumnLarge, "PillarBL", new Vector3(-scale.x * offsetOffset, 0f, scale.z * offsetOffset), new Vector3(1f, 10f, 1f), Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
-        Instantiate3DModel(SciFiColumnLarge, "PillarBR", new Vector3(scale.x * offsetOffset, 0f, scale.z * offsetOffset), new Vector3(1f, 10f, 1f), Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
+        // Vallas perimetrales en los bordes para encerrar el patio (City Pack)
+        float halfX = scale.x * 0.5f;
+        float halfZ = scale.z * 0.5f;
+        
+        // Valla delantera y trasera
+        for (float x = -halfX; x <= halfX + 0.1f; x += 3f)
+        {
+            Instantiate3DModel(SchoolFenceModule, $"FenceFront_{x:0.0}", new Vector3(x, 0.1f, -halfZ), new Vector3(1.2f, 1.2f, 0.2f), Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
+            Instantiate3DModel(SchoolFenceModule, $"FenceBack_{x:0.0}", new Vector3(x, 0.1f, halfZ), new Vector3(1.2f, 1.2f, 0.2f), Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
+        }
+        
+        // Valla izquierda y derecha
+        for (float z = -halfZ; z <= halfZ + 0.1f; z += 3f)
+        {
+            Instantiate3DModel(SchoolFenceModule, $"FenceLeft_{z:0.0}", new Vector3(-halfX, 0.1f, z), new Vector3(0.2f, 1.2f, 1.2f), Quaternion.Euler(0f, 90f, 0f), root.transform, EchoesMaterialLibrary.ArchMat);
+            Instantiate3DModel(SchoolFenceModule, $"FenceRight_{z:0.0}", new Vector3(halfX, 0.1f, z), new Vector3(0.2f, 1.2f, 1.2f), Quaternion.Euler(0f, 90f, 0f), root.transform, EchoesMaterialLibrary.ArchMat);
+        }
+
+        // Un gran árbol seco en el centro (Stylized Nature MegaKit)
+        Instantiate3DModel(SchoolDeadTreeModule, "CenterDeadTree", new Vector3(0f, 0f, 0f), new Vector3(1.5f, 1.5f, 1.5f), Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
 
         return root;
     }
 
     private static GameObject MakeErosionVault(string name, Vector3 pos, Vector3 scale, Transform parent, string customData)
     {
-        // Instantiates a platform and adds the ErosionSystem script
-        GameObject obj = MakePlatform(name, pos, scale, parent, EchoesMaterialLibrary.FloorMat, SciFiPlatformSimple);
+        // Plataforma de baño escolar erosionable
+        GameObject obj = MakePlatform(name, pos, scale, parent, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
         
         // Add trigger collider for detection
         BoxCollider trigger = obj.AddComponent<BoxCollider>();
         trigger.isTrigger = true;
-        trigger.size = new Vector3(1.05f, 3f, 1.05f);
+        trigger.size = new Vector3(scale.x, 3f, scale.z);
         trigger.center = new Vector3(0f, 1f, 0f);
+
+        // Decoraciones de baño: Inodoro y Lavamanos en las esquinas
+        float dX = scale.x * 0.35f;
+        float dZ = scale.z * 0.35f;
+        Instantiate3DModel(SchoolToiletModule, "BathToilet", new Vector3(-dX, 0.1f, dZ), new Vector3(0.8f, 0.8f, 0.8f), Quaternion.identity, obj.transform, EchoesMaterialLibrary.ArchMat);
+        Instantiate3DModel(SchoolSinkModule, "BathSink", new Vector3(dX, 0.1f, dZ), new Vector3(0.8f, 0.8f, 0.8f), Quaternion.Euler(0f, 180f, 0f), obj.transform, EchoesMaterialLibrary.ArchMat);
+        Instantiate3DModel(SchoolMirrorModule, "BathMirror", new Vector3(dX, 1.4f, dZ - 0.1f), new Vector3(0.6f, 0.8f, 0.05f), Quaternion.Euler(0f, 180f, 0f), obj.transform, EchoesMaterialLibrary.ArchMat);
 
         int durability = 3;
         if (!string.IsNullOrEmpty(customData)) int.TryParse(customData, out durability);
@@ -606,37 +716,46 @@ public static class EchoesModuleFactory
         root.transform.SetParent(parent, false);
         root.transform.position = pos;
 
-        // Base platform
-        MakePlatform("ResonanceBase", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SciFiPlatformSimple);
+        // Suelo de la Oficina / Sala de Profesores
+        MakePlatform("ResonanceBase", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
 
-        // We create two resonance pads
+        // Dos mesas/alfombras de resonancia temáticas
         GameObject pad1 = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
         pad1.name = "ResonancePad1";
         pad1.transform.SetParent(root.transform, false);
-        pad1.transform.localPosition = new Vector3(-scale.x * 0.3f, 0.1f, 0f);
-        pad1.transform.localScale = new Vector3(2f, 0.05f, 2f);
+        pad1.transform.localPosition = new Vector3(-scale.x * 0.3f, 0.05f, 0f);
+        pad1.transform.localScale = new Vector3(2.2f, 0.01f, 2.2f);
+        Object.DestroyImmediate(pad1.GetComponent<Collider>());
+        pad1.GetComponent<MeshRenderer>().sharedMaterial = EchoesMaterialLibrary.PlateMat;
+
+        // Escritorio decorativo en el pad 1
+        Instantiate3DModel(SchoolDeskModule, "OfficeDesk1", new Vector3(-scale.x * 0.3f, 0.1f, 0.5f), new Vector3(1.2f, 1f, 0.8f), Quaternion.identity, root.transform, EchoesMaterialLibrary.MemoryMat);
         
         BoxCollider trigger1 = pad1.AddComponent<BoxCollider>();
         trigger1.isTrigger = true;
-        trigger1.size = new Vector3(2f, 4f, 2f);
+        trigger1.size = new Vector3(2.5f, 4f, 2.5f);
         trigger1.center = new Vector3(0f, 2f, 0f);
         pad1.AddComponent<ResonanceZoneTrigger>();
 
         GameObject pad2 = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
         pad2.name = "ResonancePad2";
         pad2.transform.SetParent(root.transform, false);
-        pad2.transform.localPosition = new Vector3(scale.x * 0.3f, 0.1f, 0f);
-        pad2.transform.localScale = new Vector3(2f, 0.05f, 2f);
+        pad2.transform.localPosition = new Vector3(scale.x * 0.3f, 0.05f, 0f);
+        pad2.transform.localScale = new Vector3(2.2f, 0.01f, 2.2f);
+        Object.DestroyImmediate(pad2.GetComponent<Collider>());
+        pad2.GetComponent<MeshRenderer>().sharedMaterial = EchoesMaterialLibrary.PlateMat;
+
+        // Escritorio decorativo en el pad 2
+        Instantiate3DModel(SchoolDeskModule, "OfficeDesk2", new Vector3(scale.x * 0.3f, 0.1f, 0.5f), new Vector3(1.2f, 1f, 0.8f), Quaternion.identity, root.transform, EchoesMaterialLibrary.MemoryMat);
 
         BoxCollider trigger2 = pad2.AddComponent<BoxCollider>();
         trigger2.isTrigger = true;
-        trigger2.size = new Vector3(2f, 4f, 2f);
+        trigger2.size = new Vector3(2.5f, 4f, 2.5f);
         trigger2.center = new Vector3(0f, 2f, 0f);
         pad2.AddComponent<ResonanceZoneTrigger>();
 
         ResonanceSystem rs = root.AddComponent<ResonanceSystem>();
         
-        // Setup details
         var zone1 = new ResonanceSystem.ResonanceZone
         {
             triggerCollider = trigger1,
@@ -652,7 +771,6 @@ public static class EchoesModuleFactory
         SetSerializedValue(rs, "zones", zonesList);
         SetSerializedValue(rs, "requiredActiveZones", 2);
 
-        // Find or create signal
         if (targetSignals != null && targetSignals.Length > 0)
         {
             GameObject sigObj = GameObject.Find(targetSignals[0]);
@@ -663,22 +781,37 @@ public static class EchoesModuleFactory
             }
         }
 
+        // Iluminación cálida de oficina
+        EchoesLevelShell.SpawnPointLight("OfficeLightL", new Vector3(-scale.x * 0.3f, 2.5f, 0f), new Color(1.0f, 0.85f, 0.6f, 1f), 3f, 8f, root.transform);
+        EchoesLevelShell.SpawnPointLight("OfficeLightR", new Vector3(scale.x * 0.3f, 2.5f, 0f), new Color(1.0f, 0.85f, 0.6f, 1f), 3f, 8f, root.transform);
+
         return root;
     }
 
     private static GameObject MakeLiminalThreshold(string name, Vector3 pos, Vector3 scale, Transform parent, string customData)
     {
+        // Esquina de pasillo en L con niebla
         GameObject root = new GameObject(name);
         root.transform.SetParent(parent, false);
         root.transform.position = pos;
 
-        // Big trigger zone
+        // Trigger de la zona liminal
         BoxCollider trigger = root.AddComponent<BoxCollider>();
         trigger.isTrigger = true;
         trigger.size = scale;
 
-        // Visually represented by a fog volume
-        GameObject particles = MakeAmbientParticles("FogMotes", Vector3.zero, scale, root.transform);
+        // Geometría física de la esquina del pasillo
+        MakePlatform("CornerFloor", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
+        
+        // Paredes formando una L
+        float halfX = scale.x * 0.5f;
+        float halfZ = scale.z * 0.5f;
+        Instantiate3DModel(SchoolWallModule, "CornerWallBack", new Vector3(0f, 0f, halfZ), new Vector3(scale.x, 3.5f, 0.2f), Quaternion.identity, root.transform, EchoesMaterialLibrary.WallSageMat);
+        Instantiate3DModel(SchoolWallModule, "CornerWallLeft", new Vector3(-halfX, 0f, 0f), new Vector3(0.2f, 3.5f, scale.z), Quaternion.Euler(0f, 90f, 0f), root.transform, EchoesMaterialLibrary.WallSageMat);
+        Instantiate3DModel(SchoolColumnModule, "CornerCol", new Vector3(-halfX + 0.3f, 0f, halfZ - 0.3f), new Vector3(0.6f, 3.5f, 0.6f), Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
+
+        // Motes de niebla locales
+        MakeAmbientParticles("FogMotes", Vector3.zero, scale, root.transform);
 
         return root;
     }
@@ -689,22 +822,55 @@ public static class EchoesModuleFactory
         root.transform.SetParent(parent, false);
         root.transform.position = pos;
 
-        // Tower platforms stacked vertically
-        MakePlatform("FloorLow", new Vector3(0f, 0f, 0f), new Vector3(scale.x, 0.5f, scale.z), root.transform, EchoesMaterialLibrary.FloorMat, SciFiPlatformSimple);
-        MakePlatform("FloorMid", new Vector3(0f, 5f, 0f), new Vector3(scale.x * 0.8f, 0.5f, scale.z * 0.8f), root.transform, EchoesMaterialLibrary.BridgeMat, SciFiPlatformSimple);
-        MakePlatform("FloorHigh", new Vector3(0f, 10f, 0f), new Vector3(scale.x * 0.6f, 0.5f, scale.z * 0.6f), root.transform, EchoesMaterialLibrary.FloorMat, SciFiPlatformSimple);
+        // Tramo de Escaleras Escolares físicas
+        MakePlatform("SpireBaseFloor", new Vector3(0f, 0f, 0f), new Vector3(scale.x, 0.5f, scale.z), root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
+        
+        // Colocar escaleras de subida físicas
+        Instantiate3DModel(SchoolStairsModule, "StairsUp1", new Vector3(0f, 0f, -scale.z * 0.25f), new Vector3(scale.x * 0.5f, 3f, scale.z * 0.5f), Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
+        
+        // Descanso de escalera elevado
+        MakePlatform("SpireMidLanding", new Vector3(0f, 3f, scale.z * 0.25f), new Vector3(scale.x, 0.5f, scale.z * 0.5f), root.transform, EchoesMaterialLibrary.BridgeMat, SchoolFloorModule);
+        
+        // Escaleras de subida 2
+        Instantiate3DModel(SchoolStairsModule, "StairsUp2", new Vector3(0f, 3.5f, scale.z * 0.25f), new Vector3(scale.x * 0.5f, 3f, scale.z * 0.5f), Quaternion.Euler(0f, 180f, 0f), root.transform, EchoesMaterialLibrary.ArchMat);
+        
+        // Planta superior
+        MakePlatform("SpireTopFloor", new Vector3(0f, 6.5f, -scale.z * 0.25f), new Vector3(scale.x, 0.5f, scale.z * 0.5f), root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
 
-        // Giant center column
-        Instantiate3DModel(SciFiColumnLarge, "TowerSpire", new Vector3(0f, 5f, 0f), new Vector3(1.5f, 12f, 1.5f), Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
+        // Luz de pared en el descanso
+        EchoesLevelShell.SpawnPointLight("StaircaseLight", new Vector3(0f, 4.5f, scale.z * 0.25f), new Color(0.9f, 0.9f, 0.85f, 1f), 3f, 8f, root.transform);
 
         return root;
     }
 
     private static GameObject MakeVoidGallery(string name, Vector3 pos, Vector3 scale, Transform parent)
     {
-        // Spawns a platform. Later updates can add the visibility shader or script.
-        GameObject obj = MakePlatform(name, pos, scale, parent, EchoesMaterialLibrary.FloorMat, SciFiPlatformSimple);
-        return obj;
+        // Biblioteca Escolar / Galería de Libros
+        GameObject root = new GameObject(name);
+        root.transform.SetParent(parent, false);
+        root.transform.position = pos;
+
+        // Suelo de la Galería
+        MakePlatform("GalleryFloor", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
+
+        // Instanciar filas de estanterías de libros (bookcaseOpen) llenas de libros (City Pack / Furniture Kit)
+        float dX = scale.x * 0.35f;
+        float dZ = scale.z * 0.35f;
+        
+        // Estanterías a los lados
+        Instantiate3DModel(SchoolShelfModule, "LibraryShelf1", new Vector3(-dX, 0.1f, -dZ), new Vector3(0.6f, 2f, 1.8f), Quaternion.identity, root.transform, EchoesMaterialLibrary.WallMustardMat);
+        Instantiate3DModel(SchoolShelfModule, "LibraryShelf2", new Vector3(-dX, 0.1f, 0f), new Vector3(0.6f, 2f, 1.8f), Quaternion.identity, root.transform, EchoesMaterialLibrary.WallMustardMat);
+        Instantiate3DModel(SchoolShelfModule, "LibraryShelf3", new Vector3(-dX, 0.1f, dZ), new Vector3(0.6f, 2f, 1.8f), Quaternion.identity, root.transform, EchoesMaterialLibrary.WallMustardMat);
+
+        Instantiate3DModel(SchoolShelfModule, "LibraryShelf4", new Vector3(dX, 0.1f, -dZ), new Vector3(0.6f, 2f, 1.8f), Quaternion.identity, root.transform, EchoesMaterialLibrary.WallMustardMat);
+        Instantiate3DModel(SchoolShelfModule, "LibraryShelf5", new Vector3(dX, 0.1f, 0f), new Vector3(0.6f, 2f, 1.8f), Quaternion.identity, root.transform, EchoesMaterialLibrary.WallMustardMat);
+        Instantiate3DModel(SchoolShelfModule, "LibraryShelf6", new Vector3(dX, 0.1f, dZ), new Vector3(0.6f, 2f, 1.8f), Quaternion.identity, root.transform, EchoesMaterialLibrary.WallMustardMat);
+
+        // Luz cálida mortecina de biblioteca
+        EchoesLevelShell.SpawnPointLight("LibraryLight1", new Vector3(0f, 2.5f, -dZ * 0.5f), new Color(1.0f, 0.8f, 0.5f, 1f), 3.5f, 10f, root.transform);
+        EchoesLevelShell.SpawnPointLight("LibraryLight2", new Vector3(0f, 2.5f, dZ * 0.5f), new Color(1.0f, 0.8f, 0.5f, 1f), 3.5f, 10f, root.transform);
+
+        return root;
     }
 
     // --- UTILITIES ---
@@ -725,7 +891,8 @@ public static class EchoesModuleFactory
         box.size = Vector3.one;
 
         LevelKitPiece kitPiece = container.AddComponent<LevelKitPiece>();
-        bool isWalkable = (modelPath.Contains("Platform") || modelPath.Contains("Ramp") || name.Contains("Platform") || name.Contains("Floor") || name.Contains("Ramp") || name.Contains("Bridge") || name.Contains("Catwalk") || name.Contains("Ledge") || name.Contains("Tower") || name.Contains("Chamber") || name.Contains("Plat") || name.Contains("Floor") || name.Contains("Elevator"))
+        string safePath = modelPath ?? "";
+        bool isWalkable = (safePath.Contains("Platform") || safePath.Contains("Ramp") || name.Contains("Platform") || name.Contains("Floor") || name.Contains("Ramp") || name.Contains("Bridge") || name.Contains("Catwalk") || name.Contains("Ledge") || name.Contains("Tower") || name.Contains("Chamber") || name.Contains("Plat") || name.Contains("Floor") || name.Contains("Elevator"))
             && !name.Contains("Beam") && !name.Contains("Pillar") && !name.Contains("Wall") && !name.Contains("Barrier") && !name.Contains("Door") && !name.Contains("Frame") && !name.Contains("Gate");
         
         SetSerializedValue(kitPiece, "pieceId", name);
@@ -780,7 +947,7 @@ public static class EchoesModuleFactory
 
     private static GameObject MakeBrutalistBlock(string name, Vector3 pos, Vector3 scale, Transform parent)
     {
-        GameObject block = MakePlatform(name, pos, scale, parent, EchoesMaterialLibrary.ArchMat, SciFiPlatformSimple);
+        GameObject block = MakePlatform(name, pos, scale, parent, EchoesMaterialLibrary.ArchMat, SchoolFloorModule);
         MeshRenderer[] renderers = block.GetComponentsInChildren<MeshRenderer>();
         foreach (var r in renderers)
         {

@@ -38,10 +38,10 @@ public class LevelExit : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"[LevelExit] OnTriggerEnter: {other.name} tag={other.tag}");
-
         if (!other.CompareTag("Player"))
             return;
+
+        Debug.Log($"[LevelExit] OnTriggerEnter: {other.name} tag={other.tag}");
 
         if (!_isUnlocked || (_goal != null && !_goal.CanComplete()))
         {

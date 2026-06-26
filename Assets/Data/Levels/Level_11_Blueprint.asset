@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be9d0c6961d9b24992d8c11589b2350, type: 3}
+  m_Name: Level_11_Blueprint
+  m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
+  levelName: Level_11
+  nextLevel: Level_12
+  actNumber: 3
+  archetype: 2
+  maxEchoes: 1
+  maxRecordSeconds: 14
+  activeParadoxes: 
+  fogColor: {r: 0.1, g: 0.12, b: 0.16, a: 1}
+  fogDensity: 0.022
+  skyColor: {r: 0.12, g: 0.14, b: 0.18, a: 1}
+  directionalLightRotation: {x: 50, y: -45, z: 0}
+  directionalLightColor: {r: 0.7, g: 0.75, b: 0.8, a: 1}
+  directionalLightIntensity: 0.5
+  narrativeIntroTitle: "Nivel 11 \u2014 Conexión"
+  narrativeIntroDesc: "El patio interior de la escuela está inundado por la lluvia. Contrapesa la gran plataforma basculante con la masa de tu eco."
+  narrativeIntroDuration: 8
+  puzzleObjectiveText: Coloca a tu eco en el extremo izquierdo de la plataforma basculante para poder subir por la derecha.
+  puzzleActiveText: "Eco equilibrando la plataforma."
+  puzzleCompleteText: "Plataforma basculante superada."
+  pathHints:
+  - {x: -8, y: 1.1, z: -12}
+  - {x: -5, y: 1.1, z: 2}
+  - {x: 8, y: 4.5, z: 12}
+  modules:
+  - name: PlayerStart
+    type: 7
+    position: {x: -8, y: 1.1, z: -12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals:
+  - name: PatioRecreo
+    type: 25
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 24, y: 0.5, z: 24}
+    customData: 
+    targetSignals:
+  - name: PlatBasculante
+    type: 8
+    position: {x: 0, y: 0, z: 2}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 12, y: 0.5, z: 4}
+    customData: 0,0,0|0,3,0|3
+    targetSignals:
+  - name: PlatePatio
+    type: 4
+    position: {x: -5, y: 0.33, z: 2}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 
+    targetSignals:
+  - name: LevelExit_Area
+    type: 6
+    position: {x: 8, y: 4.5, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: Level_12
+    targetSignals:
+  - name: LevelGoal
+    type: 13
+    position: {x: 8, y: 4.5, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Usa tu eco en el contrapeso izquierdo.|La plataforma se eleva por la derecha.|Patio superado.
+    targetSignals:
+  - name: LevelRuntime
+    type: 14
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Coloca el eco como contrapeso.|El eco sube el andamio.|Camino libre.
+    targetSignals:

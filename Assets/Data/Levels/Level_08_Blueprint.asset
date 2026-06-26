@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be9d0c6961d9b24992d8c11589b2350, type: 3}
+  m_Name: Level_08_Blueprint
+  m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
+  levelName: Level_08
+  nextLevel: Level_09
+  actNumber: 2
+  archetype: 1
+  maxEchoes: 1
+  maxRecordSeconds: 12
+  activeParadoxes: 
+  fogColor: {r: 0.05, g: 0.05, b: 0.05, a: 1}
+  fogDensity: 0.035
+  skyColor: {r: 0.02, g: 0.02, b: 0.02, a: 1}
+  directionalLightRotation: {x: 65, y: 0, z: 0}
+  directionalLightColor: {r: 0.9, g: 0.9, b: 0.95, a: 1}
+  directionalLightIntensity: 0.6
+  narrativeIntroTitle: "Nivel 8 \u2014 Autosabotaje"
+  narrativeIntroDesc: "El hueco de la escalera principal está destruido. No pises la misma plataforma que tu eco; colapsará. Coordina tus pasos con su pasado."
+  narrativeIntroDuration: 8
+  puzzleObjectiveText: Sube por las escaleras flotantes coordinándote temporalmente con tu eco.
+  puzzleActiveText: "Eco avanzando en las escaleras."
+  puzzleCompleteText: "Escalera colapsada superada."
+  pathHints:
+  - {x: 0, y: 1.1, z: -12}
+  - {x: 0, y: 3.1, z: 0}
+  - {x: 0, y: 6.6, z: 14}
+  modules:
+  - name: PlayerStart
+    type: 7
+    position: {x: 0, y: 1.1, z: -12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals:
+  - name: TorreEscalera
+    type: 29
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 10, y: 0.5, z: 10}
+    customData: 
+    targetSignals:
+  - name: PuentePupitres
+    type: 22
+    position: {x: 0, y: 3, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 4, y: 0.5, z: 12}
+    customData: 
+    targetSignals:
+  - name: LevelExit_Area
+    type: 6
+    position: {x: 0, y: 6.6, z: 14}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: Level_09
+    targetSignals:
+  - name: LevelGoal
+    type: 13
+    position: {x: 0, y: 6.6, z: 14}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Coordinación estricta de saltos con tu eco.|El puente responde al eco.|Escaleras superadas.
+    targetSignals:
+  - name: LevelRuntime
+    type: 14
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Sigue el compás del eco.|El eco despeja el paso.|Paso superior desbloqueado.
+    targetSignals:

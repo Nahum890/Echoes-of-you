@@ -210,11 +210,31 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
         if (c == null)
             return false;
 
-        return (acceptPlayer && c.CompareTag(playerTag)) ||
-               (acceptEcho && c.CompareTag(echoTag)) ||
-               (acceptEchoProjection && c.CompareTag(echoProjectionTag)) ||
-               c.CompareTag("KineticBlock") ||
+        return HasAcceptedTag(c, playerTag, acceptPlayer) ||
+               HasAcceptedTag(c, echoTag, acceptEcho) ||
+               HasAcceptedTag(c, echoProjectionTag, acceptEchoProjection) ||
+               HasTag(c, "KineticBlock") ||
                c.GetComponentInParent<KineticPushableBlock>() != null;
+    }
+
+    static bool HasAcceptedTag(Collider c, string tagName, bool enabled)
+    {
+        return enabled && HasTag(c, tagName);
+    }
+
+    static bool HasTag(Collider c, string tagName)
+    {
+        if (c == null || string.IsNullOrEmpty(tagName))
+            return false;
+
+        try
+        {
+            return c.CompareTag(tagName);
+        }
+        catch (UnityException)
+        {
+            return false;
+        }
     }
 
     void TriggerNearbyPlayerPush()

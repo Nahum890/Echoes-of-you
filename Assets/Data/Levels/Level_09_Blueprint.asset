@@ -1,0 +1,113 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be9d0c6961d9b24992d8c11589b2350, type: 3}
+  m_Name: Level_09_Blueprint
+  m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
+  levelName: Level_09
+  nextLevel: Level_10
+  actNumber: 3
+  archetype: 2
+  maxEchoes: 2
+  maxRecordSeconds: 16
+  activeParadoxes: 
+  fogColor: {r: 0.1, g: 0.08, b: 0.14, a: 1}
+  fogDensity: 0.024
+  skyColor: {r: 0.12, g: 0.1, b: 0.18, a: 1}
+  directionalLightRotation: {x: 45, y: -45, z: 0}
+  directionalLightColor: {r: 0.9, g: 0.7, b: 0.85, a: 1}
+  directionalLightIntensity: 0.7
+  narrativeIntroTitle: "Nivel 9 \u2014 Control"
+  narrativeIntroDesc: "El aula de música tiene dos ecos activos. Sincroniza a Echo_A en la cabina 1 y a Echo_B en la cabina 2 para cruzar las rejas secuenciales."
+  narrativeIntroDuration: 8
+  puzzleObjectiveText: Sincroniza dos ecos en las válvulas de las cabinas para abrir las dos rejas de salida.
+  puzzleActiveText: "Ambos ecos activos en las cabinas."
+  puzzleCompleteText: "Cabinas de música sincronizadas."
+  pathHints:
+  - {x: 0, y: 1.1, z: -12}
+  - {x: -5, y: 1.1, z: 0}
+  - {x: 5, y: 1.1, z: 0}
+  - {x: 0, y: 1.1, z: 16}
+  modules:
+  - name: PlayerStart
+    type: 7
+    position: {x: 0, y: 1.1, z: -12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals:
+  - name: CabinaA
+    type: 21
+    position: {x: -5, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 6, y: 0.5, z: 6}
+    customData: 
+    targetSignals:
+  - name: CabinaB
+    type: 21
+    position: {x: 5, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 6, y: 0.5, z: 6}
+    customData: 
+    targetSignals:
+  - name: PlateMusicA
+    type: 4
+    position: {x: -5, y: 0.33, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 
+    targetSignals:
+  - name: PlateMusicB
+    type: 4
+    position: {x: 5, y: 0.33, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 
+    targetSignals:
+  - name: DoorMusicA
+    type: 5
+    position: {x: 0, y: 1.5, z: 6}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 3, y: 3, z: 0.5}
+    customData: 
+    targetSignals:
+    - PlateMusicA
+  - name: DoorMusicB
+    type: 5
+    position: {x: 0, y: 1.5, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 3, y: 3, z: 0.5}
+    customData: 
+    targetSignals:
+    - PlateMusicB
+  - name: LevelExit_Area
+    type: 6
+    position: {x: 0, y: 1.1, z: 16}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: Level_10
+    targetSignals:
+  - name: LevelGoal
+    type: 13
+    position: {x: 0, y: 1.1, z: 16}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Sincroniza dos ecos en las placas A y B.|Las puertas se abren en orden.|Aula de música superada.
+    targetSignals:
+    - PlateMusicA
+    - PlateMusicB
+  - name: LevelRuntime
+    type: 14
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Graba dos ecos distintos.|Los ecos tocan los acordes pasados.|Camino libre.
+    targetSignals:

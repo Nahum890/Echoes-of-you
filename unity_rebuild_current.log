@@ -1,12 +1,11 @@
 [Licensing::Module] Trying to connect to existing licensing client channel...
-[Licensing::IpcConnector] Channel LicenseClient-lol xdd doesn't exist
 Built from '6000.4/staging' branch; Version is '6000.4.3f1 (39d1a88d4dd1) revision 3789224'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-lol xdd" at "2026-06-24T20:45:38.826835Z"
 OS: 'Windows 11  (10.0.26200) Professional' Language: 'es' Physical Memory: 7916 MB
 BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
 System  architecture: x64
 Process architecture: x64
-Date: 2026-06-07T19:54:21Z
-[Licensing::Module] Successfully launched the LicensingClient (PId: 15036)
+Date: 2026-06-24T20:45:38Z
 
 COMMAND LINE ARGUMENTS:
 C:\Program Files\Unity\Hub\Editor\6000.4.3f1\Editor\Unity.exe
@@ -14,12 +13,12 @@ C:\Program Files\Unity\Hub\Editor\6000.4.3f1\Editor\Unity.exe
 -batchmode
 -nographics
 -projectPath
-C:\Users\lol xdd\OneDrive\Documentos\Colegio\Echoes of you
+c:\Users\lol xdd\OneDrive\Documentos\Colegio\Echoes of you
 -executeMethod
 EchoesProductionBuilder.RebuildAll
 -logFile
-C:\Users\lol xdd\OneDrive\Documentos\Colegio\Echoes of you\unity_rebuild_current.log
-Successfully changed project path to: C:\Users\lol xdd\OneDrive\Documentos\Colegio\Echoes of you
+unity_rebuild_current.log
+Successfully changed project path to: c:\Users\lol xdd\OneDrive\Documentos\Colegio\Echoes of you
 C:/Users/lol xdd/OneDrive/Documentos/Colegio/Echoes of you
 [UnityMemory] Configuration Parameters - Can be set up in boot.config
     "memorysetup-temp-allocator-size-gi-baking-worker=262144"
@@ -56,27 +55,36 @@ C:/Users/lol xdd/OneDrive/Documentos/Colegio/Echoes of you
     "memorysetup-job-temp-allocator-block-size=2097152"
     "memorysetup-job-temp-allocator-block-size-background=1048576"
     "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
-Player connection [15376]  Target information:
+Player connection [18236]  Target information:
 
-Player connection [15376]  * "[IP] 192.168.100.22 [Port] 55504 [Flags] 2 [Guid] 3102821257 [EditorId] 3102821257 [Version] 1048832 [Id] WindowsEditor(7,Nacum-Computer) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+Player connection [18236]  * "[IP] 192.168.100.22 [Port] 55504 [Flags] 2 [Guid] 420037708 [EditorId] 420037708 [Version] 1048832 [Id] WindowsEditor(7,Nacum-Computer) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
 
-Player connection [15376] Host joined multi-casting on [225.0.0.222:54997]...
-Player connection [15376] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Player connection [18236] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [18236] Host joined alternative multi-casting on [225.0.0.222:34997]...
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
 [Physics::Module] Id: 0xdecafbad
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-lol xdd" at "2026-06-07T19:54:21.9352642Z"
-[Package Manager] Connected to IPC stream "Upm-27972" after 0.5 seconds.
+[Package Manager] Connected to IPC stream "Upm-12316" after 0.4 seconds.
 [Licensing::Module] Licensing is not yet initialized.
+[Licensing::Client] Error: HandshakeResponse reported an error:
+	ResponseCode: 505
+	ResponseStatus: Unsupported protocol version '1.18.1'.
+[Licensing::Module] Error: Failed to handshake to channel: "LicenseClient-lol xdd"
+[Licensing::IpcConnector] LicenseClient-lol xdd channel disconnected successfully.
+[Licensing::IpcConnector] Channel LicenseClient-lol xdd-6000.4.3 doesn't exist
+[Licensing::Module] Successfully launched the LicensingClient (PId: 20852)
+Starting IPC server.
+Waiting for clients to connect on \\.\pipe\Unity-LicenseClient-lol xdd-6000.4.3, press Ctrl-C to exit.
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-lol xdd-6000.4.3" at "2026-06-24T20:45:41.0248199Z"
 [Licensing::Client] Handshaking with LicensingClient:
   Version:                 1.18.1+9fbee8e
-  Session Id:              f80cc58a9d5b4ebd838b3adaf7690c33
-  Correlation Id:          d834dda89e1da3b43942abf594799c12
-  External correlation Id: 3332089911624701416
+  Session Id:              b7ca6fc1a2704ac89e4e0debbfbbc012
+  Correlation Id:          52be8ac185d93186157a757445f9b33c
+  External correlation Id: 7807151250147903296
   Machine Id:              w7ylYLYEOiNEPibPGPfp3vH+x2I=
-[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-lol xdd" (connect: 0.57s, validation: 0.09s, handshake: 1.85s)
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-lol xdd-notifications" at "2026-06-07T19:54:23.8709663Z"
-[Licensing::Module] Connected to LicensingClient (PId: 15036, launch time: 0.01, total connection time: 2.50s)
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-lol xdd-6000.4.3" (connect: 0.57s, validation: 0.12s, handshake: 2.86s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-lol xdd-6000.4.3-notifications" at "2026-06-24T20:45:44.0086205Z"
+[Licensing::Module] Connected to LicensingClient (PId: 20852, launch time: 0.01, total connection time: 3.55s)
 [Licensing::Module] Error: Access token is unavailable; failed to update
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Module] License group:
@@ -84,10 +92,10 @@ Input System module state changed to: Initialized.
   Product: Unity Personal
   Type: Assigned
   Expiration: Unlimited
-[Licensing::Client] Successfully updated license, isAsync: True, time: 0.02
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.05
 [Licensing::Client] Successfully resolved entitlement details
-[Licensing::Module] Licensing Background thread has ended after 2.56s
-[Licensing::Module] Licensing is initialized (took 1.58s).
+[Licensing::Module] Licensing Background thread has ended after 5.35s
+[Licensing::Module] Licensing is initialized (took 4.56s).
 [Licensing::Client] Successfully resolved entitlement details
 Library Redirect Path: Library/
 Default GameObject Tag: Player already registered
@@ -97,7 +105,7 @@ Default GameObject Tag: Player already registered
 [Physics::Module] SDK Version: 4.1.2
 [Physics::Module] Integration Version: 1.0.0
 [Physics::Module] Threading Mode: Multi-Threaded
-Artifact Garbage Collection - Removed 1 unused hashed content files
+Artifact Garbage Collection - Removed 7 unused hashed content files
 Initialize engine version: 6000.4.3f1 (39d1a88d4dd1)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.4.3f1/Editor/Data/Resources/UnitySubsystems
 [Subsystems] Discovering subsystems at path C:/Users/lol xdd/OneDrive/Documentos/Colegio/Echoes of you/Assets
@@ -112,7 +120,7 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.4.3f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.4.3f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.4.3f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56972
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56316
 CodeReloadManager initialized
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
@@ -121,28 +129,28 @@ AcceleratorClientConnectionCallback - disconnected - :0
 Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.4.3f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
-Registered in 0.004753 seconds.
+Registered in 0.002131 seconds.
 Native extension for WindowsStandalone target not found
 Package Manager log level set to [2]
 ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  0.629 seconds
-Domain Reload Profiling: 1363ms
-	BeginReloadAssembly (238ms)
-		CreateAndSetChildDomain (20ms)
-	RebuildCommonClasses (54ms)
+- Finished resetting the current domain, in  0.683 seconds
+Domain Reload Profiling: 1300ms
+	BeginReloadAssembly (201ms)
+		CreateAndSetChildDomain (23ms)
+	RebuildCommonClasses (47ms)
 	RebuildNativeTypeToScriptingClass (16ms)
-	initialDomainReloadingComplete (101ms)
-	LoadAllAssembliesAndSetupDomain (319ms)
-		LoadAssemblies (212ms)
-		AnalyzeDomain (305ms)
-			TypeCache.Refresh (303ms)
-				TypeCache.ScanAssembly (279ms)
-	FinalizeReload (635ms)
+	initialDomainReloadingComplete (79ms)
+	LoadAllAssembliesAndSetupDomain (271ms)
+		LoadAssemblies (173ms)
+		AnalyzeDomain (260ms)
+			TypeCache.Refresh (259ms)
+				TypeCache.ScanAssembly (242ms)
+	FinalizeReload (686ms)
 		SetupLoadedEditorAssemblies (0ms)
-			InitializePlatformSupportModulesInManaged (81ms)
-			BeforeProcessingInitializeOnLoad (121ms)
-			ProcessInitializeOnLoadAttributes (137ms)
+			InitializePlatformSupportModulesInManaged (108ms)
+			BeforeProcessingInitializeOnLoad (149ms)
+			ProcessInitializeOnLoadAttributes (154ms)
 			ProcessInitializeOnLoadMethodAttributes (180ms)
 [Licensing::Client] Successfully resolved entitlement details
 Application.AssetDatabase Initial Refresh Start
@@ -212,22 +220,68 @@ Application.AssetDatabase Initial Refresh Start
 [Subsystems] No new subsystems found in resolved package list.
 [Package Manager] Done registering packages in 0.06 seconds
 [ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:80
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: C:\Users\lol xdd\OneDrive\Documentos\Colegio\Echoes of you
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/Ping - application/grpc -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'gRPC - /UnityILPP.PostProcessing/Ping'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'gRPC - /UnityILPP.PostProcessing/Ping'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/Ping - 200 - application/grpc 43.9858ms
 Starting: C:\Program Files\Unity\Hub\Editor\6000.4.3f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
 WorkingDir: C:/Users/lol xdd/OneDrive/Documentos/Colegio/Echoes of you
 DisplayProgressbar: Compiling Scripts
-[ApiUpdater] Total time: 2809ms, Parse response file: 129ms, Collect updater configs: 433ms, Update: 2234ms, Save: 13ms Files: 1 modified / 1 visited / 17 total (Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll).
-ExitCode: 0 Duration: 14s
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/ConfigurePostProcessors - application/grpc -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'gRPC - /UnityILPP.PostProcessing/ConfigurePostProcessors'
+warn: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
+      Assembly system.runtime.interopservices.windowsruntime has duplicate hint path. Ignoring "C:\Program Files\Unity\Hub\Editor\6000.4.3f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\Facades\System.Runtime.InteropServices.WindowsRuntime.dll" in favor of "C:\Program Files\Unity\Hub\Editor\6000.4.3f1\Editor\Data\NetStandard\Extensions\2.0.0\System.Runtime.InteropServices.WindowsRuntime.dll"
+warn: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
+      Assembly system.componentmodel.composition has duplicate hint path. Ignoring "C:\Program Files\Unity\Hub\Editor\6000.4.3f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\System.ComponentModel.Composition.dll" in favor of "C:\Program Files\Unity\Hub\Editor\6000.4.3f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.ComponentModel.Composition.dll"
+info: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
+      Resolved Unity.Burst.Cecil, Version=0.11.6.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e with Library\PackageCache\com.unity.burst@6bb9aca3ef38\Unity.Burst.CodeGen\Unity.Burst.Cecil.dll
+info: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
+      Resolved Mono.Cecil, Version=0.11.5.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e with Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff\Mono.Cecil.dll
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'gRPC - /UnityILPP.PostProcessing/ConfigurePostProcessors'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/ConfigurePostProcessors - 200 - application/grpc 320.8691ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/PostProcessAssembly - application/grpc -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'gRPC - /UnityILPP.PostProcessing/PostProcessAssembly'
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      Processing assembly Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll, with 138 defines and 326 references
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      running Unity.Jobs.CodeGen.JobsILPostProcessor
+info: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
+      Resolved Unity.Collections, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null with Library\Bee\artifacts\1900b0aE.dag\Unity.Collections.dll
+info: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
+      Resolved UnityEditor.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null with C:\Program Files\Unity\Hub\Editor\6000.4.3f1\Editor\Data\Managed\UnityEngine\UnityEditor.CoreModule.dll
+info: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
+      Resolved UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null with C:\Program Files\Unity\Hub\Editor\6000.4.3f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      running zzzUnity.Burst.CodeGen.BurstILPostProcessor
+info: Unity.ILPP.Runner.PostProcessingAssemblyLoadContext[0]
+      Resolved Unity.Burst.Cecil.Rocks, Version=0.11.6.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e with Library\PackageCache\com.unity.burst@6bb9aca3ef38\Unity.Burst.CodeGen\Unity.Burst.Cecil.Rocks.dll
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'gRPC - /UnityILPP.PostProcessing/PostProcessAssembly'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/PostProcessAssembly - 200 - application/grpc 1193.2181ms
+ExitCode: 0 Duration: 13s
 [628/792    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
-[BUSY       6s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
-[788/792    6s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
-Assets\Editor\PlayerAnimationRepair.cs(100,114): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
-
-Assets\Editor\PlayerAnimationRepair.cs(100,42): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
-
-Assets\Editor\PlayerAnimationRepair.cs(104,105): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
-
-Assets\Editor\PlayerAnimationRepair.cs(104,37): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
-
+[788/792    5s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
 Assets\Editor\LevelValidator.cs(27,34): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
 
 Assets\Editor\LevelValidator.cs(28,34): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
@@ -262,6 +316,14 @@ Assets\Editor\LevelValidator.cs(112,13): warning CS0618: 'Object.FindObjectOfTyp
 
 Assets\Editor\LevelValidator.cs(118,13): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
 
+Assets\Editor\PlayerAnimationRepair.cs(100,114): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+
+Assets\Editor\PlayerAnimationRepair.cs(100,42): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+
+Assets\Editor\PlayerAnimationRepair.cs(104,105): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+
+Assets\Editor\PlayerAnimationRepair.cs(104,37): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+
 Assets\Editor\LevelValidator.cs(141,35): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
 
 Assets\Editor\LevelValidator.cs(158,35): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
@@ -271,10 +333,6 @@ Assets\Editor\LevelValidator.cs(159,26): warning CS0618: 'Object.FindObjectOfTyp
 Assets\Editor\LevelValidator.cs(176,34): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
 
 Assets\Editor\LevelValidator.cs(213,34): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
-
-Assets\Editor\EchoesProductionBuilder.cs(919,9): warning CS0618: 'Rigidbody.drag' is obsolete: 'Please use Rigidbody.linearDamping instead. (UnityUpgradable) -> linearDamping'
-
-Assets\Editor\EchoesProductionBuilder.cs(920,9): warning CS0618: 'Rigidbody.angularDrag' is obsolete: 'Please use Rigidbody.angularDamping instead. (UnityUpgradable) -> angularDamping'
 [789/792    1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
 Processing assembly Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll, with 138 defines and 326 references
 
@@ -285,14 +343,7 @@ running Unity.Jobs.CodeGen.JobsILPostProcessor
 running zzzUnity.Burst.CodeGen.BurstILPostProcessor
 [790/792    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
 [791/792    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
-*** Tundra build success (14.29 seconds), 5 items updated, 792 evaluated
-[API Updater] Updated Files:
-Skipping ScriptUpdater consent dialog. Consent declined based on command line parameters.
-Finished running ScriptUpdaters
-Assets\Editor\PlayerAnimationRepair.cs(100,114): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
-Assets\Editor\PlayerAnimationRepair.cs(100,42): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
-Assets\Editor\PlayerAnimationRepair.cs(104,105): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
-Assets\Editor\PlayerAnimationRepair.cs(104,37): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+*** Tundra build success (13.30 seconds), 5 items updated, 792 evaluated
 Assets\Editor\LevelValidator.cs(27,34): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
 Assets\Editor\LevelValidator.cs(28,34): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
 Assets\Editor\LevelValidator.cs(36,13): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
@@ -310,14 +361,16 @@ Assets\Editor\LevelValidator.cs(84,26): warning CS0618: 'Object.FindObjectsOfTyp
 Assets\Editor\LevelValidator.cs(108,33): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
 Assets\Editor\LevelValidator.cs(112,13): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
 Assets\Editor\LevelValidator.cs(118,13): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Editor\PlayerAnimationRepair.cs(100,114): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets\Editor\PlayerAnimationRepair.cs(100,42): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
+Assets\Editor\PlayerAnimationRepair.cs(104,105): warning CS0618: 'FindObjectsSortMode' is obsolete: 'FindObjectsSortMode has been deprecated. Use the FindObjectsByType overloads that do not take a FindObjectsSortMode parameter.'
+Assets\Editor\PlayerAnimationRepair.cs(104,37): warning CS0618: 'Object.FindObjectsByType<T>(FindObjectsInactive, FindObjectsSortMode)' is obsolete: 'FindObjectsByType with FindObjectsSortMode parameter has been deprecated. Use FindObjectsByType<T>() or FindObjectsByType<T>(FindObjectsInactive) instead. InstanceID will be replaced in the future with EntityId and previous sort order cannot be maintained.'
 Assets\Editor\LevelValidator.cs(141,35): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
 Assets\Editor\LevelValidator.cs(158,35): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
 Assets\Editor\LevelValidator.cs(159,26): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
 Assets\Editor\LevelValidator.cs(176,34): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
 Assets\Editor\LevelValidator.cs(213,34): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
-Assets\Editor\EchoesProductionBuilder.cs(919,9): warning CS0618: 'Rigidbody.drag' is obsolete: 'Please use Rigidbody.linearDamping instead. (UnityUpgradable) -> linearDamping'
-Assets\Editor\EchoesProductionBuilder.cs(920,9): warning CS0618: 'Rigidbody.angularDrag' is obsolete: 'Please use Rigidbody.angularDamping instead. (UnityUpgradable) -> angularDamping'
-AssetDatabase: script compilation time: 15.160260s
+AssetDatabase: script compilation time: 14.069035s
 Begin MonoManager ReloadAssembly
 Assembly Assembly-CSharp-Editor-firstpass.dll at Library/ScriptAssemblies/Assembly-CSharp-Editor-firstpass.dll not valid. Loading of assembly skipped.
 Assembly Assembly-CSharp-firstpass.dll at Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll not valid. Loading of assembly skipped.
@@ -356,115 +409,114 @@ Assembly UnityEngine.UI.Tests.dll at Library/ScriptAssemblies/UnityEngine.UI.Tes
 Native extension for WindowsStandalone target not found
 ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  4.205 seconds
-Domain Reload Profiling: 8754ms
-	BeginReloadAssembly (451ms)
-		DisableScriptedObjects (39ms)
-		CreateAndSetChildDomain (210ms)
-	RebuildCommonClasses (51ms)
-	RebuildNativeTypeToScriptingClass (17ms)
-	initialDomainReloadingComplete (3383ms)
-	LoadAllAssembliesAndSetupDomain (645ms)
-		LoadAssemblies (562ms)
-		AnalyzeDomain (219ms)
-			TypeCache.Refresh (142ms)
-				TypeCache.ScanAssembly (127ms)
-			BuildScriptInfoCaches (61ms)
+- Finished resetting the current domain, in  3.487 seconds
+Domain Reload Profiling: 8202ms
+	BeginReloadAssembly (480ms)
+		DisableScriptedObjects (40ms)
+		CreateAndSetChildDomain (184ms)
+	RebuildCommonClasses (56ms)
+	RebuildNativeTypeToScriptingClass (40ms)
+	initialDomainReloadingComplete (3680ms)
+	LoadAllAssembliesAndSetupDomain (458ms)
+		LoadAssemblies (454ms)
+		AnalyzeDomain (187ms)
+			TypeCache.Refresh (115ms)
+				TypeCache.ScanAssembly (105ms)
+			BuildScriptInfoCaches (57ms)
 			ResolveRequiredComponents (13ms)
-	FinalizeReload (4208ms)
+	FinalizeReload (3488ms)
 		SetupLoadedEditorAssemblies (0ms)
-			InitializePlatformSupportModulesInManaged (32ms)
-			BeforeProcessingInitializeOnLoad (262ms)
-			ProcessInitializeOnLoadAttributes (3079ms)
-			ProcessInitializeOnLoadMethodAttributes (324ms)
-			AfterProcessingInitializeOnLoad (28ms)
-		AwakeInstancesAfterBackupRestoration (63ms)
+			InitializePlatformSupportModulesInManaged (28ms)
+			BeforeProcessingInitializeOnLoad (272ms)
+			ProcessInitializeOnLoadAttributes (2649ms)
+			ProcessInitializeOnLoadMethodAttributes (218ms)
+			AfterProcessingInitializeOnLoad (8ms)
+		AwakeInstancesAfterBackupRestoration (29ms)
 (Values over 0.050ms)
-Asset Pipeline Refresh (id=665a623f48a7ba846a992ed4c5cbb1bb): Total: 26.397 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+Asset Pipeline Refresh (id=9c8ef37eed0f28e45b6274637a837c18): Total: 23.907 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
 	Summary:
 		Imports: total=0 (actual=0, local cache=0, cache server=0)
-		Asset DB Process Time: managed=0 ms, native=5578 ms
-		Asset DB Callback time: managed=893 ms, native=99 ms
-		Scripting: domain reloads=1, domain reload time=4559 ms, compile time=15169 ms, other=95 ms
-		Project Asset Count: scripts=1155, non-scripts=4770
+		Asset DB Process Time: managed=0 ms, native=4249 ms
+		Asset DB Callback time: managed=676 ms, native=64 ms
+		Scripting: domain reloads=1, domain reload time=4725 ms, compile time=14072 ms, other=116 ms
+		Project Asset Count: scripts=1341, non-scripts=6568
 		Asset File Changes: new=0, changed=1, moved=0, deleted=0
 		Scan Filter Count: 0
-	InvokePackagesCallback: 71.963ms
-	ApplyChangesToAssetFolders: 1.012ms
-	Scan: 215.143ms
-	OnSourceAssetsModified: 1.285ms
-	CategorizeScriptCompilationAssets: 38.575ms
-	ProcessAssetsWithTransientArtifactChanges: 103.471ms
-	CategorizeAssets: 623.125ms
-	CompileScripts: 15168.510ms
-	ImportOutOfDateAssets: 4235.861ms (4229.399ms without children)
-		UnloadImportedAssets: 0.357ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 2.428ms
-		OnDemandSchedulerStart: 3.661ms
-	PostProcessAllAssets: 916.486ms
-		VCAutoAddAssetPostprocess 15.642ms
-		PostProcessCallbackCreateDeferredMaterials 1.481ms
-		ShaderAssetModifiedCallback 0.717ms
-		WindowTitlePostprocess 0.458ms
-		ComputeShaderImportPostprocess 0.257ms
-		AssemblyValidation.PostprocessAllAssets 0.050ms
-		MonoPostProcessAllAssets: 892.869ms
-			AssetPostprocessor.OnPostprocessAllAssets 490.727ms
-			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 256.486ms
-			SyncVS.PostprocessSyncProject 32.344ms
-			StyleCatalogPostProcessor.OnPostprocessAllAssets 27.846ms
-			BuilderAssetPostprocessor.OnPostprocessAllAssets 8.139ms
-			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 4.995ms
-			SpeedTree9Postprocessor.OnPostprocessAllAssets 4.971ms
-			AssetChangedListener.OnPostprocessAllAssets 3.454ms
-			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 3.275ms
-			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 2.392ms
-			MaterialPostprocessor.OnPostprocessAllAssets 2.179ms
-			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 1.760ms
-			CubeLutAssetImporter.OnPostprocessAllAssets 1.481ms
-			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 1.056ms
-			TextAssetPostProcessor.OnPostprocessAllAssets 0.920ms
-			PostProcessor.OnPostprocessAllAssets 0.890ms
-			AssetEvents.OnPostprocessAllAssets 0.767ms
-			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.494ms
-			AudioMixerPostprocessor.OnPostprocessAllAssets 0.492ms
-			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.483ms
-			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.464ms
-			AssetProcessor.OnPostprocessAllAssets 0.453ms
-			CinemachineSettings.OnPostprocessAllAssets 0.415ms
-			AudioContainerPostProcessor.OnPostprocessAllAssets 0.372ms
-			SpeedTreePostProcessor.OnPostprocessAllAssets 0.357ms
-			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.343ms
-			SamplePostprocessor.OnPostprocessAllAssets 0.238ms
-			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.232ms
-			ConfigAssetsTracker.OnPostprocessAllAssets 0.176ms
-			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.151ms
-	PostAssetChangesProfiler: 10.884ms
-	UnloadStreamsBegin: 4.792ms
-	PersistCurrentRevisions: 0.609ms
-	GenerateScriptTypeHashes: 20.677ms
-	GenerateScriptTypeSerializationHashes: 28.645ms
-	Untracked: 4990.420ms
+	InvokePackagesCallback: 64.722ms
+	ApplyChangesToAssetFolders: 0.924ms
+	Scan: 247.536ms
+	OnSourceAssetsModified: 2.199ms
+	CategorizeScriptCompilationAssets: 42.434ms
+	ProcessAssetsWithTransientArtifactChanges: 62.633ms
+	CategorizeAssets: 128.443ms
+	CompileScripts: 14071.932ms
+	ImportOutOfDateAssets: 3495.580ms (3491.864ms without children)
+		UnloadImportedAssets: 0.213ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 2.006ms
+		OnDemandSchedulerStart: 1.488ms
+	PostProcessAllAssets: 677.422ms
+		VCAutoAddAssetPostprocess 2.389ms
+		PostProcessCallbackCreateDeferredMaterials 0.065ms
+		MonoPostProcessAllAssets: 674.207ms
+			AssetPostprocessor.OnPostprocessAllAssets 311.000ms
+			UniversalRenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 191.340ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 76.114ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 21.854ms
+			SyncVS.PostprocessSyncProject 12.927ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 3.055ms
+			ShaderGraphAssetPostProcessor.OnPostprocessAllAssets 2.450ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 2.420ms
+			AssetChangedListener.OnPostprocessAllAssets 2.146ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 1.922ms
+			MaterialPostprocessor.OnPostprocessAllAssets 1.245ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 1.036ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 1.008ms
+			AssetEvents.OnPostprocessAllAssets 0.994ms
+			SpriteEditorTexturePostprocessor.OnPostprocessAllAssets 0.657ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.493ms
+			CubeLutAssetImporter.OnPostprocessAllAssets 0.472ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.456ms
+			PostProcessor.OnPostprocessAllAssets 0.448ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.427ms
+			AssetProcessor.OnPostprocessAllAssets 0.396ms
+			CinemachineSettings.OnPostprocessAllAssets 0.362ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.355ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.289ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.284ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.275ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.249ms
+			SamplePostprocessor.OnPostprocessAllAssets 0.180ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.153ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.089ms
+	PostAssetChangesProfiler: 1.268ms
+	UnloadStreamsBegin: 4.620ms
+	PersistCurrentRevisions: 0.438ms
+	GenerateScriptTypeHashes: 4.841ms
+	GenerateScriptTypeSerializationHashes: 7.915ms
+	Untracked: 5098.276ms
 
 Application.AssetDatabase Initial Refresh End
 Shader Hidden/ChartRasterizerHardware is not supported: GPU does not support conservative rasterization
-Scanning for USB devices : 4.729ms
+Scanning for USB devices : 1.113ms
 Initializing Unity extensions:
 [MODES] ModeService[none].Initialize
 [MODES] ModeService[none].LoadModes
 [MODES] Loading mode Default (0) for mode-current-id-Echoes of you
 Unloading 151 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4334 unused Assets / (3.0 MB). Loaded Objects now: 5241.
-Memory consumption went from 207.9 MB to 204.9 MB.
-Total: 19.951300 ms (FindLiveObjects: 0.596100 ms CreateObjectMapping: 0.806700 ms MarkObjects: 15.167800 ms  DeleteObjects: 3.144400 ms)
+Unloading 4346 unused Assets / (2.3 MB). Loaded Objects now: 5253.
+Memory consumption went from 213.3 MB to 211.0 MB.
+Total: 25.839400 ms (FindLiveObjects: 0.696500 ms CreateObjectMapping: 1.127400 ms MarkObjects: 16.571700 ms  DeleteObjects: 7.438100 ms)
 
-Launched and connected shader compiler UnityShaderCompiler.exe after 0.05 seconds
-Start importing Assets/Materials/Echoes/Mat_Plate.mat using Guid(66fc01219a1227942b0cdeebe204c2d0) (NativeFormatImporter) -> (Import Result ID: '4e7abb5349a25c40f44725d9487efb94') in 0.0557508 seconds [static dependencies only]. Details - ImportResultOutputID=e7d591257c9aedf164cf32f735f0b042 DependenciesID=660be7074f227c5ab9e58a5ae49fa0d0 StaticDependenciesID=16cb4a8eb2530659bfcd3ca433d45613 
-Start importing Assets/Materials/Echoes/Mat_Door.mat using Guid(697598182351bb24cb7097340268d8d4) (NativeFormatImporter) -> (Import Result ID: '662d6c437fe4b42c3d54307a3dad47dc') in 0.0113112 seconds [static dependencies only]. Details - ImportResultOutputID=11072da6c4b94af6db7eda2e908b083d DependenciesID=1c26947b7621b5a4cec4f3ce8b80db1d StaticDependenciesID=41e639dba42c886277529ec23a14433e 
-Start importing Assets/Materials/Echoes/Mat_Echo.mat using Guid(be9a965487fa400449864f1c22c3e7df) (NativeFormatImporter) -> (Import Result ID: 'cbe324ce8a80258ffa590d45e6763147') in 0.0058711 seconds [static dependencies only]. Details - ImportResultOutputID=c358b0287190658b838a685ef6a62761 DependenciesID=cfc7a161329682dcc50f8ae830fef331 StaticDependenciesID=ebe1e7029d22e41f7b2526afaaf58393 
-Start importing Assets/Prefabs/PlayerAnimController.controller using Guid(eeab5e21720dedd48bb135f9df6cefa8) (NativeFormatImporter) -> (Import Result ID: 'd2c780e98fe09ddb5a9db2a0129e3f1c') in 0.0061974 seconds [static dependencies only]. Details - ImportResultOutputID=e409eb157b6bc70b6008def2fe3eb425 DependenciesID=fb08dd405478cf42f442c39d4e6fd588 StaticDependenciesID=9625d92286120375489feef21e721157 
-Asset Pipeline Refresh (id=58d8a630f4d420944b852c5462a55a02): Total: 0.282 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Asset Pipeline Refresh (id=46378a24830a75846a255af901fc7045): Total: 0.044 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.03 seconds
+Start importing Assets/Materials/Echoes/Mat_WallSage.mat using Guid(02e3fe6878f5af64ab1f11dfbae2f6a8) (NativeFormatImporter) -> (Import Result ID: '7701c654a2414b9815c789b208325525') in 0.0149085 seconds [static dependencies only]. Details - ImportResultOutputID=f2eeb792571e68839e6021077051374e DependenciesID=3df82c027f05621c4f1367470fcc3511 StaticDependenciesID=b57bfd55bcdbb5858cafcd83c0e05146 
+Start importing Assets/Materials/Echoes/Mat_Plate.mat using Guid(66fc01219a1227942b0cdeebe204c2d0) (NativeFormatImporter) -> (Import Result ID: 'fa58ae59f615822a53a624d40c267385') in 0.0082646 seconds [static dependencies only]. Details - ImportResultOutputID=e7d591257c9aedf164cf32f735f0b042 DependenciesID=159dde79a39f258abc721905eaf342f6 StaticDependenciesID=92297249931e749340ae747f4e4e4d4a 
+Start importing Assets/Materials/Echoes/Mat_Door.mat using Guid(697598182351bb24cb7097340268d8d4) (NativeFormatImporter) -> (Import Result ID: '51a57a97bf9a26453a489dacc4b1f19e') in 0.0043042 seconds [static dependencies only]. Details - ImportResultOutputID=11072da6c4b94af6db7eda2e908b083d DependenciesID=1dab5465cc73c5c3869c63d01b672232 StaticDependenciesID=dcf9f8e13088564c8bec49061ec7d6ad 
+Start importing Assets/Materials/Echoes/Mat_WallRose.mat using Guid(8a6ec6b288fb91e4b95345198f1b073a) (NativeFormatImporter) -> (Import Result ID: '6e7fb9a618c5e80c9707107dd195ebc3') in 0.002965 seconds [static dependencies only]. Details - ImportResultOutputID=311f38baf9363521563661eaa9d34bc9 DependenciesID=a814c7dd06e060600ee2121046e69058 StaticDependenciesID=47412b5b4537013880fc378d725a2574 
+Start importing Assets/Materials/Echoes/Mat_WallTeal.mat using Guid(1b0c9ae3aa96b7f47844fbc780089d41) (NativeFormatImporter) -> (Import Result ID: 'af8b5de5a98b0c57e448df2af120afcc') in 0.0032115 seconds [static dependencies only]. Details - ImportResultOutputID=d1458177f918a88e64efd8dc1ad9672a DependenciesID=2bbc2a4388db23462531f2be7789d44b StaticDependenciesID=155cad8dcd013c315d3bf621120840b4 
+Start importing Assets/Materials/Echoes/Mat_WallMustard.mat using Guid(fc4f79e9de63c7649b2ce7c8f352e02b) (NativeFormatImporter) -> (Import Result ID: '590d1df6c6cad1701958ed1f17214175') in 0.0059081 seconds [static dependencies only]. Details - ImportResultOutputID=abb8910fa89618ca8922ebed71b7cf1f DependenciesID=be7533c047c85be359e19fca821fa168 StaticDependenciesID=3a4b23c817bcd9287bb4aa1d4a65d42d 
+Start importing Assets/Prefabs/PlayerAnimController.controller using Guid(eeab5e21720dedd48bb135f9df6cefa8) (NativeFormatImporter) -> (Import Result ID: '44894d41bd6c7411d23b683600e8718a') in 0.0036719 seconds [static dependencies only]. Details - ImportResultOutputID=a751b63a259b20e03cb8196f8b58a257 DependenciesID=27dc9ff48b0e9ad494cdde0f8822c68f StaticDependenciesID=5271a11cb7720a52e3ced17ba8642558 
+Asset Pipeline Refresh (id=0934432fcf68c5a408a5ef8a13d59de3): Total: 0.192 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=9a1fee8b451aa5b4ca24aeadf45178c4): Total: 0.021 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
 [Echoes] Player Animator configurado.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
@@ -473,14 +525,14 @@ UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,st
 UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 SetupPlayerAnimator:Setup () (at Assets/Editor/SetupPlayerAnimator.cs:221)
-EchoesProductionBuilder:EnsureAnimatorController () (at Assets/Editor/EchoesProductionBuilder.cs:2796)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:64)
+EchoesProductionBuilder:EnsureAnimatorController () (at Assets/Editor/EchoesProductionBuilder.cs:3284)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:71)
 
 (Filename: Assets/Editor/SetupPlayerAnimator.cs Line: 221)
 
-Start importing Assets/Prefabs/PlayerAnimController.controller using Guid(eeab5e21720dedd48bb135f9df6cefa8) (NativeFormatImporter) -> (Import Result ID: 'fdd63a7765ed06f5e08bfc3d7938c4b7') in 0.007674 seconds [static dependencies only]. Details - ImportResultOutputID=80aa4b937ce720e8049a8888929f00ce DependenciesID=5bfeae615bccd033c5677235099dcf51 StaticDependenciesID=cb856cfcd0777cf5f51ea1f9509b52a3 
-Asset Pipeline Refresh (id=f942ee3533a47644e99c5809bfa7321a): Total: 0.090 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Asset Pipeline Refresh (id=76e8a31f1ccd7bd4fbfbcfc93a9691de): Total: 0.022 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Start importing Assets/Prefabs/PlayerAnimController.controller using Guid(eeab5e21720dedd48bb135f9df6cefa8) (NativeFormatImporter) -> (Import Result ID: 'd4ea55d34eaaf329417b1e393f8d1a1d') in 0.0026864 seconds [static dependencies only]. Details - ImportResultOutputID=04e5c5445bd071b273e36de536dcbd13 DependenciesID=4c0065f2ec4be879022d22ecfadc4afc StaticDependenciesID=b2a5369e5a033cdba1d4aac4412beb56 
+Asset Pipeline Refresh (id=9d6ec31b79f3cb64f8f1a6c3abe2108b): Total: 0.069 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=3f53e38687723e7449e00be43ee492a0): Total: 0.011 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
 [Echoes] Player Animator configurado.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
@@ -490,15 +542,15 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 SetupPlayerAnimator:Setup () (at Assets/Editor/SetupPlayerAnimator.cs:221)
 EchoesLocomotionSettingsBuilder:EnsureLocomotionSettings () (at Assets/Editor/EchoesLocomotionSettingsBuilder.cs:15)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:66)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:73)
 
 (Filename: Assets/Editor/SetupPlayerAnimator.cs Line: 221)
 
-Asset Pipeline Refresh (id=3da96c2c05fb8b149aa15cc6ca9067ac): Total: 0.022 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Prefabs/PlayerAnimController.controller using Guid(eeab5e21720dedd48bb135f9df6cefa8) (NativeFormatImporter) -> (Import Result ID: '2cbb3278ced07ad6f1926609740647b6') in 0.0186109 seconds [static dependencies only]. Details - ImportResultOutputID=a464dad7c0f0b110ebedff49eec5274e DependenciesID=f134dc023a5188f1c97b8155f368e0fb StaticDependenciesID=b9d07b6bced814e5e20ef0725987e471 
-Start importing Assets/Resources/EchoesLocomotionSettings.asset using Guid(09dff367dfeead44bb8c95332653b2a9) (NativeFormatImporter) -> (Import Result ID: '4f4648718b037ac38ae47c867533c3f1') in 0.0043915 seconds [static dependencies only]. Details - ImportResultOutputID=1b3df80d0020db2a6a38dcd212c29119 DependenciesID=d69274dd61be345a218977d88fae6aa0 StaticDependenciesID=3bcbda933d5e55f600a3d3f3c9c75130 
-Asset Pipeline Refresh (id=240d3760112c416498e1b6fbe237a817): Total: 0.136 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Asset Pipeline Refresh (id=59ffcc47d8c9c1f4c9634600996dde0f): Total: 0.021 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=57c9fae39b16af648b3e4929a40df638): Total: 0.020 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Prefabs/PlayerAnimController.controller using Guid(eeab5e21720dedd48bb135f9df6cefa8) (NativeFormatImporter) -> (Import Result ID: '283b398516bc26e375fbc7f15c9fa39c') in 0.0039105 seconds [static dependencies only]. Details - ImportResultOutputID=9d0a797bc4a916c3dbadc862b0c2918e DependenciesID=f36c0637ba5b68d81bb2c1adad971708 StaticDependenciesID=1cf49b41d6fb6a78af396314fc9bd852 
+Start importing Assets/Resources/EchoesLocomotionSettings.asset using Guid(09dff367dfeead44bb8c95332653b2a9) (NativeFormatImporter) -> (Import Result ID: '4f4648718b037ac38ae47c867533c3f1') in 0.00403 seconds [static dependencies only]. Details - ImportResultOutputID=1b3df80d0020db2a6a38dcd212c29119 DependenciesID=d69274dd61be345a218977d88fae6aa0 StaticDependenciesID=3bcbda933d5e55f600a3d3f3c9c75130 
+Asset Pipeline Refresh (id=cd6acd01a70659e4ea77e11f7da8e144): Total: 0.082 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=474a5c0e35e24f140a2f6f58c6472b01): Total: 0.015 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
 [Echoes] Player Animator configurado.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
@@ -509,241 +561,241 @@ UnityEngine.Debug:Log (object)
 SetupPlayerAnimator:Setup () (at Assets/Editor/SetupPlayerAnimator.cs:221)
 PlayerAnimationRepair:RepairProjectAnimationSetup () (at Assets/Editor/PlayerAnimationRepair.cs:29)
 EchoesLocomotionSettingsBuilder:EnsureLocomotionSettings () (at Assets/Editor/EchoesLocomotionSettingsBuilder.cs:37)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:66)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:73)
 
 (Filename: Assets/Editor/SetupPlayerAnimator.cs Line: 221)
 
-Loaded scene 'Library/Unused/f35f43157740c1848aca8122a0fe4807'
-	Deserialize:            1.514 ms
-	Integration:            15.492 ms
+Loaded scene 'Library/Unused/190c112784edf744c94f34825ad66041'
+	Deserialize:            0.837 ms
+	Integration:            12.310 ms
 	Integration of assets:  0.002 ms
-	Thread Wait Time:       0.636 ms
-	Total Operation Time:   17.644 ms
-Start importing Assets/Prefabs/EchoPrefab.prefab using Guid(8d38dfd767baaa04cb84cc974dc6ea4c) (PrefabImporter) -> (Import Result ID: '411cca2c347ff03abf47ceafd20959cc') in 0.021994 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=2a320a6c2d86a25edd34c373eacf2a7b DependenciesID=6fc063c14cc2955c682a0646908d6a68 StaticDependenciesID=0ecc3855e9ce87f2839f5d834eec2386 
-Asset Pipeline Refresh (id=6c4945d2a9baa8045b673403d96624d0): Total: 0.141 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+	Thread Wait Time:       0.086 ms
+	Total Operation Time:   13.235 ms
+Start importing Assets/Prefabs/EchoPrefab.prefab using Guid(8d38dfd767baaa04cb84cc974dc6ea4c) (PrefabImporter) -> (Import Result ID: '411cca2c347ff03abf47ceafd20959cc') in 0.021593 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=2a320a6c2d86a25edd34c373eacf2a7b DependenciesID=6fc063c14cc2955c682a0646908d6a68 StaticDependenciesID=0ecc3855e9ce87f2839f5d834eec2386 
+Asset Pipeline Refresh (id=276e30d3e05dc2145b22073c2108c7b3): Total: 0.139 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Opening scene 'Assets/Scenes/MainMenu.unity'
-Unloading 7 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 8 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/MainMenu.unity'
-	Deserialize:            245.864 ms
-	Integration:            827.233 ms
-	Integration of assets:  48.128 ms
-	Thread Wait Time:       0.082 ms
-	Total Operation Time:   1121.307 ms
-Unloading 6270 unused Assets / (1.5 MB). Loaded Objects now: 5581.
-Memory consumption went from 256.2 MB to 254.7 MB.
-Total: 36.142300 ms (FindLiveObjects: 1.442800 ms CreateObjectMapping: 0.886500 ms MarkObjects: 19.767200 ms  DeleteObjects: 14.043700 ms)
+	Deserialize:            104.512 ms
+	Integration:            430.563 ms
+	Integration of assets:  17.540 ms
+	Thread Wait Time:       -0.002 ms
+	Total Operation Time:   552.612 ms
+Unloading 6269 unused Assets / (1.4 MB). Loaded Objects now: 5597.
+Memory consumption went from 253.6 MB to 252.2 MB.
+Total: 15.691900 ms (FindLiveObjects: 0.600600 ms CreateObjectMapping: 0.509700 ms MarkObjects: 10.182400 ms  DeleteObjects: 4.397200 ms)
 
 Opening scene 'Assets/Scenes/Level_01.unity'
-Unloading 16 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 14 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_01.unity'
-	Deserialize:            128.865 ms
-	Integration:            467.876 ms
-	Integration of assets:  23.594 ms
-	Thread Wait Time:       0.019 ms
-	Total Operation Time:   620.354 ms
-Unloading 1 unused Assets / (0.5 KB). Loaded Objects now: 11812.
-Memory consumption went from 263.5 MB to 263.5 MB.
-Total: 12.106800 ms (FindLiveObjects: 0.755600 ms CreateObjectMapping: 0.431700 ms MarkObjects: 10.840700 ms  DeleteObjects: 0.076200 ms)
+	Deserialize:            48.172 ms
+	Integration:            244.106 ms
+	Integration of assets:  6.579 ms
+	Thread Wait Time:       0.069 ms
+	Total Operation Time:   298.926 ms
+Unloading 7 unused Assets / (3.1 KB). Loaded Objects now: 11369.
+Memory consumption went from 260.7 MB to 260.7 MB.
+Total: 13.048500 ms (FindLiveObjects: 0.646000 ms CreateObjectMapping: 0.389400 ms MarkObjects: 11.931500 ms  DeleteObjects: 0.080400 ms)
 
-Start importing Assets/Scenes/Level_01.unity using Guid(2d7c481f66083734aa0a306e5a8b9278) (DefaultImporter) -> (Import Result ID: '582edc8ccb6ec8f039fdf28461ed20ea') in 0.0032557 seconds [static dependencies only]. Details - ImportResultOutputID=94e532b8d21a36d97dd6cb037ad9fbf9 DependenciesID=d6a2ccf2f135b878973caee2aa823f90 StaticDependenciesID=017e66e47741098502b7047c2f12348a 
-Asset Pipeline Refresh (id=0bd800d1c54e76f47ba5e8b0c12cb1a5): Total: 0.133 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_01.unity using Guid(2d7c481f66083734aa0a306e5a8b9278) (DefaultImporter) -> (Import Result ID: 'b1e080947747d760be9b0bba6deb5922') in 0.0027883 seconds [static dependencies only]. Details - ImportResultOutputID=94e532b8d21a36d97dd6cb037ad9fbf9 DependenciesID=71627ce36e0b5d7a13438f104c15fd04 StaticDependenciesID=dad595e45e07196e5d5779ba8431acb8 
+Asset Pipeline Refresh (id=d8ea871599587fb47a8ec76cdf35e061): Total: 0.108 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Opening scene 'Assets/Scenes/Level_02.unity'
-Unloading 24 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 26 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_02.unity'
-	Deserialize:            26.265 ms
-	Integration:            245.350 ms
-	Integration of assets:  0.097 ms
-	Thread Wait Time:       0.075 ms
-	Total Operation Time:   271.788 ms
-Unloading 162 unused Assets / (330.0 KB). Loaded Objects now: 11858.
-Memory consumption went from 280.9 MB to 280.5 MB.
-Total: 18.834700 ms (FindLiveObjects: 0.890000 ms CreateObjectMapping: 0.623800 ms MarkObjects: 16.716200 ms  DeleteObjects: 0.603000 ms)
+	Deserialize:            18.336 ms
+	Integration:            206.453 ms
+	Integration of assets:  0.162 ms
+	Thread Wait Time:       0.063 ms
+	Total Operation Time:   225.015 ms
+Unloading 150 unused Assets / (57.9 KB). Loaded Objects now: 11953.
+Memory consumption went from 282.9 MB to 282.9 MB.
+Total: 15.498500 ms (FindLiveObjects: 1.558400 ms CreateObjectMapping: 1.484000 ms MarkObjects: 11.715800 ms  DeleteObjects: 0.738700 ms)
 
-Start importing Assets/Scenes/Level_02.unity using Guid(a08fac385001580498f7f0e3e017f427) (DefaultImporter) -> (Import Result ID: 'f30e526366c4012d2fcdf5ef73cfbe22') in 0.0021869 seconds [static dependencies only]. Details - ImportResultOutputID=317638d0737c057f5f35738508ae17c3 DependenciesID=11a3d4a27785bf9891982972ec2a1f22 StaticDependenciesID=f5eff4d994271c53c69c42790fef4974 
-Asset Pipeline Refresh (id=4dad674a87393cb41812fcff2f0b058c): Total: 0.110 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_02.unity using Guid(a08fac385001580498f7f0e3e017f427) (DefaultImporter) -> (Import Result ID: '6a30480a5dfa808d436749310160ebc9') in 0.0016052 seconds [static dependencies only]. Details - ImportResultOutputID=317638d0737c057f5f35738508ae17c3 DependenciesID=d3a3eae50360715e4a2bed48788654c1 StaticDependenciesID=6fe5df3598b572d89f56fd3f4067a5aa 
+Asset Pipeline Refresh (id=5153da6a973d3e543af57da90756c872): Total: 0.090 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Opening scene 'Assets/Scenes/Level_03.unity'
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_03.unity'
-	Deserialize:            16.234 ms
-	Integration:            286.449 ms
-	Integration of assets:  0.079 ms
-	Thread Wait Time:       0.036 ms
-	Total Operation Time:   302.798 ms
-Unloading 150 unused Assets / (58.0 KB). Loaded Objects now: 11837.
-Memory consumption went from 280.6 MB to 280.6 MB.
-Total: 18.566200 ms (FindLiveObjects: 3.020500 ms CreateObjectMapping: 0.918000 ms MarkObjects: 14.136400 ms  DeleteObjects: 0.488800 ms)
+	Deserialize:            16.218 ms
+	Integration:            217.190 ms
+	Integration of assets:  0.052 ms
+	Thread Wait Time:       0.027 ms
+	Total Operation Time:   233.487 ms
+Unloading 150 unused Assets / (58.0 KB). Loaded Objects now: 11932.
+Memory consumption went from 282.7 MB to 282.6 MB.
+Total: 14.707300 ms (FindLiveObjects: 0.789600 ms CreateObjectMapping: 0.761200 ms MarkObjects: 12.865200 ms  DeleteObjects: 0.289800 ms)
 
-Start importing Assets/Scenes/Level_03.unity using Guid(24e7c25a474c4a6419f33cd8786f4561) (DefaultImporter) -> (Import Result ID: '7c15adf57e661858ac50dac2ec3401dc') in 0.0088118 seconds [static dependencies only]. Details - ImportResultOutputID=02ea06e48eea26b2565ff6a0418e599d DependenciesID=6ada8da8ce877e7abcb3f5b4678dc003 StaticDependenciesID=f91e0bf700e9a839fd083173da16b1a9 
-Asset Pipeline Refresh (id=b1dabce75aed88748a27eab07dc0b73c): Total: 0.128 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_03.unity using Guid(24e7c25a474c4a6419f33cd8786f4561) (DefaultImporter) -> (Import Result ID: '783cd3cdd37e56c6031333e9ef566609') in 0.0056565 seconds [static dependencies only]. Details - ImportResultOutputID=02ea06e48eea26b2565ff6a0418e599d DependenciesID=aafa235eeb4730569fa032e46bc26192 StaticDependenciesID=091ff230338d72afb6c410ac872bd82d 
+Asset Pipeline Refresh (id=5356af40286744843b917101a9ecb267): Total: 0.140 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Opening scene 'Assets/Scenes/Level_04.unity'
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_04.unity'
-	Deserialize:            14.144 ms
-	Integration:            329.735 ms
-	Integration of assets:  0.046 ms
-	Thread Wait Time:       0.030 ms
-	Total Operation Time:   343.955 ms
-Unloading 150 unused Assets / (57.9 KB). Loaded Objects now: 11862.
-Memory consumption went from 280.8 MB to 280.8 MB.
-Total: 27.725100 ms (FindLiveObjects: 4.949200 ms CreateObjectMapping: 2.153300 ms MarkObjects: 19.957600 ms  DeleteObjects: 0.662200 ms)
+	Deserialize:            19.131 ms
+	Integration:            220.727 ms
+	Integration of assets:  0.122 ms
+	Thread Wait Time:       0.130 ms
+	Total Operation Time:   240.111 ms
+Unloading 156 unused Assets / (60.3 KB). Loaded Objects now: 11962.
+Memory consumption went from 282.7 MB to 282.6 MB.
+Total: 21.106300 ms (FindLiveObjects: 0.957000 ms CreateObjectMapping: 0.372400 ms MarkObjects: 18.718000 ms  DeleteObjects: 1.056600 ms)
 
-Start importing Assets/Scenes/Level_04.unity using Guid(9bb68c7d4028a34488dc444cb022f03d) (DefaultImporter) -> (Import Result ID: '49445a1a32e3934a72e03e4a3fff034f') in 0.0028912 seconds [static dependencies only]. Details - ImportResultOutputID=93d8bec9e5de35253250b59b2a90b2ad DependenciesID=bc835a36fd004e386f71991981e1b4da StaticDependenciesID=4aa7df2ad71b08e318d960d93e884b48 
-Asset Pipeline Refresh (id=75d5c906f0d732f439a3c3f8acba268d): Total: 0.105 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_04.unity using Guid(9bb68c7d4028a34488dc444cb022f03d) (DefaultImporter) -> (Import Result ID: 'ab8dc5e1a37f4b5e601f998306e3994a') in 0.0016164 seconds [static dependencies only]. Details - ImportResultOutputID=93d8bec9e5de35253250b59b2a90b2ad DependenciesID=4bfb76e4412bba6f50c510c7bac06805 StaticDependenciesID=9a7c66020c334ae9ef73dfb4302e92be 
+Asset Pipeline Refresh (id=334ffb8f77e81ff4e8710afeb1c277a1): Total: 0.108 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Opening scene 'Assets/Scenes/Level_05.unity'
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_05.unity'
-	Deserialize:            15.966 ms
-	Integration:            211.139 ms
-	Integration of assets:  0.057 ms
-	Thread Wait Time:       0.104 ms
-	Total Operation Time:   227.265 ms
-Unloading 162 unused Assets / (63.5 KB). Loaded Objects now: 11828.
-Memory consumption went from 281.7 MB to 281.6 MB.
-Total: 19.930200 ms (FindLiveObjects: 2.034800 ms CreateObjectMapping: 0.591100 ms MarkObjects: 16.722500 ms  DeleteObjects: 0.578900 ms)
+	Deserialize:            12.961 ms
+	Integration:            215.525 ms
+	Integration of assets:  0.053 ms
+	Thread Wait Time:       0.098 ms
+	Total Operation Time:   228.638 ms
+Unloading 162 unused Assets / (63.4 KB). Loaded Objects now: 11923.
+Memory consumption went from 283.7 MB to 283.6 MB.
+Total: 12.948800 ms (FindLiveObjects: 1.583100 ms CreateObjectMapping: 0.444600 ms MarkObjects: 10.568400 ms  DeleteObjects: 0.351200 ms)
 
-Start importing Assets/Scenes/Level_05.unity using Guid(49b765a7f1882e64b9f9e3c0a8fe5585) (DefaultImporter) -> (Import Result ID: '75cd5d9daa50c85b5e48cd7159fa6026') in 0.0020737 seconds [static dependencies only]. Details - ImportResultOutputID=0a3c40e534ad94e86d3dce43d31acc85 DependenciesID=bad398f985a77ced8e43fb2c4e4ddd1d StaticDependenciesID=edd10bb1f4c6602f266fb325365ad53a 
-Asset Pipeline Refresh (id=1e9570189562a8541a52750a2126fd3e): Total: 0.106 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_05.unity using Guid(49b765a7f1882e64b9f9e3c0a8fe5585) (DefaultImporter) -> (Import Result ID: '194a1d8fefcfe2b0392ce162e420aecc') in 0.0016075 seconds [static dependencies only]. Details - ImportResultOutputID=0a3c40e534ad94e86d3dce43d31acc85 DependenciesID=a0c72c2d3de7b2515f936bbdd376ad24 StaticDependenciesID=a9c542be57f594f7647a08c4e9052789 
+Asset Pipeline Refresh (id=5144b3a63fa230b40b0a70f86891f7da): Total: 0.129 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Opening scene 'Assets/Scenes/Level_06.unity'
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_06.unity'
-	Deserialize:            15.979 ms
-	Integration:            228.661 ms
-	Integration of assets:  0.043 ms
-	Thread Wait Time:       0.067 ms
-	Total Operation Time:   244.750 ms
-Unloading 156 unused Assets / (61.0 KB). Loaded Objects now: 11798.
-Memory consumption went from 280.7 MB to 280.7 MB.
-Total: 15.667200 ms (FindLiveObjects: 0.733700 ms CreateObjectMapping: 0.377600 ms MarkObjects: 14.194600 ms  DeleteObjects: 0.359900 ms)
+	Deserialize:            15.203 ms
+	Integration:            229.051 ms
+	Integration of assets:  0.041 ms
+	Thread Wait Time:       0.017 ms
+	Total Operation Time:   244.312 ms
+Unloading 162 unused Assets / (63.5 KB). Loaded Objects now: 11902.
+Memory consumption went from 282.7 MB to 282.6 MB.
+Total: 17.168200 ms (FindLiveObjects: 0.747100 ms CreateObjectMapping: 0.385100 ms MarkObjects: 15.603300 ms  DeleteObjects: 0.430500 ms)
 
-Start importing Assets/Scenes/Level_06.unity using Guid(5824af7ba36d1ba43b06bce631c86020) (DefaultImporter) -> (Import Result ID: 'eec1eb6e4329d48b2a57eb5216a9f5af') in 0.0018888 seconds [static dependencies only]. Details - ImportResultOutputID=80d6530578b54ae0fd4f636b909f014c DependenciesID=7fcbe6e62269848a2e3f73d346f31c85 StaticDependenciesID=b2fbb56428851ca0c75d1d53f08ae5d6 
-Asset Pipeline Refresh (id=c0bc4aac700e9af4e9a9a59ed1e353e4): Total: 0.073 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_06.unity using Guid(5824af7ba36d1ba43b06bce631c86020) (DefaultImporter) -> (Import Result ID: 'e735505171f8a6877cafa12010b98d01') in 0.001669 seconds [static dependencies only]. Details - ImportResultOutputID=80d6530578b54ae0fd4f636b909f014c DependenciesID=2d44244d7441ee09bd110c3cc727172e StaticDependenciesID=5113103f950960e8a82ece81e1139fae 
+Asset Pipeline Refresh (id=df14d04b4708d0e4db7e07d9d12f0122): Total: 0.113 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Opening scene 'Assets/Scenes/Level_07.unity'
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_07.unity'
-	Deserialize:            14.573 ms
-	Integration:            254.019 ms
-	Integration of assets:  0.049 ms
-	Thread Wait Time:       0.134 ms
-	Total Operation Time:   268.776 ms
-Unloading 150 unused Assets / (57.2 KB). Loaded Objects now: 11841.
-Memory consumption went from 280.8 MB to 280.8 MB.
-Total: 22.680400 ms (FindLiveObjects: 0.799000 ms CreateObjectMapping: 0.458000 ms MarkObjects: 20.323700 ms  DeleteObjects: 1.097900 ms)
+	Deserialize:            12.621 ms
+	Integration:            216.921 ms
+	Integration of assets:  0.022 ms
+	Thread Wait Time:       0.060 ms
+	Total Operation Time:   229.624 ms
+Unloading 152 unused Assets / (58.4 KB). Loaded Objects now: 11936.
+Memory consumption went from 283.1 MB to 283.0 MB.
+Total: 16.660200 ms (FindLiveObjects: 0.682100 ms CreateObjectMapping: 1.012600 ms MarkObjects: 14.642100 ms  DeleteObjects: 0.318500 ms)
 
-Start importing Assets/Scenes/Level_07.unity using Guid(c51439b14a06bd147b99c62545b6f4a4) (DefaultImporter) -> (Import Result ID: '66706788de7586e4d020870933c5b231') in 0.0020571 seconds [static dependencies only]. Details - ImportResultOutputID=ab9c0aefa29dd2f60c7356762ca59120 DependenciesID=8ce9842ea120c969e69a6a1ec8e00043 StaticDependenciesID=7625b6a5443a61a8bada665c8d86faf5 
-Asset Pipeline Refresh (id=401a4ee7d19e4b745b3c65c08ee32edd): Total: 0.099 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_07.unity using Guid(c51439b14a06bd147b99c62545b6f4a4) (DefaultImporter) -> (Import Result ID: 'd8781a78ce67ffc3509d049e189a4cf5') in 0.0019322 seconds [static dependencies only]. Details - ImportResultOutputID=ab9c0aefa29dd2f60c7356762ca59120 DependenciesID=77aff07eda27cfc93f2bf508af9f75c4 StaticDependenciesID=0f6913ebf3a9cd01d79bf74cb9b98795 
+Asset Pipeline Refresh (id=10f6e6d86229bf94b88c532fce2d06a7): Total: 0.079 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Opening scene 'Assets/Scenes/Level_08.unity'
-Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 24 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_08.unity'
-	Deserialize:            13.834 ms
-	Integration:            205.723 ms
-	Integration of assets:  0.308 ms
-	Thread Wait Time:       0.048 ms
-	Total Operation Time:   219.913 ms
-Unloading 150 unused Assets / (58.3 KB). Loaded Objects now: 11485.
-Memory consumption went from 280.7 MB to 280.7 MB.
-Total: 19.227600 ms (FindLiveObjects: 1.266400 ms CreateObjectMapping: 0.692800 ms MarkObjects: 16.976700 ms  DeleteObjects: 0.290500 ms)
+	Deserialize:            10.915 ms
+	Integration:            204.203 ms
+	Integration of assets:  0.062 ms
+	Thread Wait Time:       0.177 ms
+	Total Operation Time:   215.358 ms
+Unloading 162 unused Assets / (63.5 KB). Loaded Objects now: 11583.
+Memory consumption went from 282.5 MB to 282.4 MB.
+Total: 18.020500 ms (FindLiveObjects: 0.679500 ms CreateObjectMapping: 0.384300 ms MarkObjects: 16.654200 ms  DeleteObjects: 0.300800 ms)
 
-Start importing Assets/Scenes/Level_08.unity using Guid(c79b74db661755c46997e2ce65f9e5d0) (DefaultImporter) -> (Import Result ID: '53e6f10b5d3b480ceb1169c4725a2462') in 0.0020396 seconds [static dependencies only]. Details - ImportResultOutputID=2c1f96d8ca5826a8d44e35722e239bf3 DependenciesID=4d262035ee09ebee4cf86b9b0c1901f5 StaticDependenciesID=45e7d8c84353ce7d563b6c55f9ddb14a 
-Asset Pipeline Refresh (id=77003b2ca7a4b6d4e831b6568bb9cc62): Total: 0.087 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_08.unity using Guid(c79b74db661755c46997e2ce65f9e5d0) (DefaultImporter) -> (Import Result ID: 'f4c3605d5bf700a129bc2c21cdd76f1a') in 0.0016677 seconds [static dependencies only]. Details - ImportResultOutputID=2c1f96d8ca5826a8d44e35722e239bf3 DependenciesID=774dc6d9e2706a3ca67c72e49b87627e StaticDependenciesID=4a3f5cfeacb415c96acdcd277832d872 
+Asset Pipeline Refresh (id=36fbdb02e87f16a44a13fa153ea066f6): Total: 0.081 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Opening scene 'Assets/Scenes/Level_09.unity'
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_09.unity'
-	Deserialize:            16.495 ms
-	Integration:            237.439 ms
-	Integration of assets:  0.061 ms
-	Thread Wait Time:       0.030 ms
-	Total Operation Time:   254.026 ms
-Unloading 156 unused Assets / (60.9 KB). Loaded Objects now: 11837.
-Memory consumption went from 281.1 MB to 281.0 MB.
-Total: 19.827700 ms (FindLiveObjects: 1.325000 ms CreateObjectMapping: 0.491200 ms MarkObjects: 17.493900 ms  DeleteObjects: 0.515300 ms)
+	Deserialize:            14.114 ms
+	Integration:            195.898 ms
+	Integration of assets:  0.035 ms
+	Thread Wait Time:       0.018 ms
+	Total Operation Time:   210.065 ms
+Unloading 150 unused Assets / (58.3 KB). Loaded Objects now: 11926.
+Memory consumption went from 282.9 MB to 282.9 MB.
+Total: 21.314600 ms (FindLiveObjects: 2.156500 ms CreateObjectMapping: 0.499400 ms MarkObjects: 18.339000 ms  DeleteObjects: 0.317700 ms)
 
-Start importing Assets/Scenes/Level_09.unity using Guid(dc27e47fcbdbfe94abf8fca7670cc0af) (DefaultImporter) -> (Import Result ID: 'f854b0f3db010689569cafea6adc1111') in 0.0023773 seconds [static dependencies only]. Details - ImportResultOutputID=715ec631cf587f2d90020579f4149c5c DependenciesID=23ea44803a76eb51db0020ab01042d04 StaticDependenciesID=097a9304fa43051617382dc82c60d25b 
-Asset Pipeline Refresh (id=4591b998147076749a504f8c8e4fc723): Total: 0.086 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_09.unity using Guid(dc27e47fcbdbfe94abf8fca7670cc0af) (DefaultImporter) -> (Import Result ID: 'a2d673d4fbd270cc7133c9247b02900e') in 0.0015685 seconds [static dependencies only]. Details - ImportResultOutputID=715ec631cf587f2d90020579f4149c5c DependenciesID=80c3e9daa679bf72abda44cfcc2487b6 StaticDependenciesID=27255a2d7df2f2117f70ae5e8d357808 
+Asset Pipeline Refresh (id=506f2b6d5f62ddf41bd4e19ec9c1e1c8): Total: 0.087 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Opening scene 'Assets/Scenes/Level_10.unity'
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_10.unity'
-	Deserialize:            10.567 ms
-	Integration:            211.312 ms
-	Integration of assets:  0.041 ms
-	Thread Wait Time:       0.019 ms
-	Total Operation Time:   221.939 ms
-Unloading 150 unused Assets / (58.1 KB). Loaded Objects now: 11642.
-Memory consumption went from 281.6 MB to 281.5 MB.
-Total: 19.462400 ms (FindLiveObjects: 0.761500 ms CreateObjectMapping: 0.430700 ms MarkObjects: 17.618200 ms  DeleteObjects: 0.647900 ms)
+	Deserialize:            31.688 ms
+	Integration:            229.531 ms
+	Integration of assets:  0.276 ms
+	Thread Wait Time:       -0.225 ms
+	Total Operation Time:   261.270 ms
+Unloading 152 unused Assets / (252.5 KB). Loaded Objects now: 11952.
+Memory consumption went from 284.0 MB to 283.7 MB.
+Total: 25.683900 ms (FindLiveObjects: 0.818800 ms CreateObjectMapping: 0.425600 ms MarkObjects: 24.070400 ms  DeleteObjects: 0.367200 ms)
 
-Start importing Assets/Scenes/Level_10.unity using Guid(98cf224a1a8663f4d90e61fadd7bb17d) (DefaultImporter) -> (Import Result ID: '166088871b4a439815825ff71a9a2d0d') in 0.0017517 seconds [static dependencies only]. Details - ImportResultOutputID=65ec34fd91e3a098531c5ea6bfe7724d DependenciesID=30d43e62cdc37373b5d20946369914eb StaticDependenciesID=88d3b660747f9d278a605d8ffdf9f19f 
-Asset Pipeline Refresh (id=c56c8b4c86adbf145abeea1689952254): Total: 0.107 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_10.unity using Guid(98cf224a1a8663f4d90e61fadd7bb17d) (DefaultImporter) -> (Import Result ID: 'aad7d8b05905f4f35b462f632399a409') in 0.0026581 seconds [static dependencies only]. Details - ImportResultOutputID=65ec34fd91e3a098531c5ea6bfe7724d DependenciesID=2e7408aaeb2c2a4b6bebf760da3c4722 StaticDependenciesID=a76e66955e2f809ffadbd10e232fa28b 
+Asset Pipeline Refresh (id=f7949fb360e9a9a4fb0c094859cc5290): Total: 0.127 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Opening scene 'Assets/Scenes/Level_11.unity'
-Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 24 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_11.unity'
-	Deserialize:            10.765 ms
-	Integration:            214.634 ms
-	Integration of assets:  0.053 ms
-	Thread Wait Time:       0.043 ms
-	Total Operation Time:   225.495 ms
-Unloading 150 unused Assets / (58.3 KB). Loaded Objects now: 11625.
-Memory consumption went from 280.8 MB to 280.8 MB.
-Total: 23.919000 ms (FindLiveObjects: 1.304200 ms CreateObjectMapping: 1.214400 ms MarkObjects: 20.976400 ms  DeleteObjects: 0.421700 ms)
+	Deserialize:            13.914 ms
+	Integration:            212.094 ms
+	Integration of assets:  0.038 ms
+	Thread Wait Time:       0.045 ms
+	Total Operation Time:   226.091 ms
+Unloading 156 unused Assets / (60.8 KB). Loaded Objects now: 11720.
+Memory consumption went from 282.7 MB to 282.7 MB.
+Total: 20.524500 ms (FindLiveObjects: 0.664600 ms CreateObjectMapping: 0.395700 ms MarkObjects: 19.175200 ms  DeleteObjects: 0.287800 ms)
 
-Start importing Assets/Scenes/Level_11.unity using Guid(3bb85b5533549c649b5d63998bc7e295) (DefaultImporter) -> (Import Result ID: '45d896bc0453d68c9bf97fda794b4697') in 0.0024412 seconds [static dependencies only]. Details - ImportResultOutputID=99f0c22c7b3e4a24522ab8f0996a78c9 DependenciesID=2404c3f19765e1fc8f1f2c9f3f937e66 StaticDependenciesID=028895f9199efcf26d108bfa7ebd26fe 
-Asset Pipeline Refresh (id=761982936b6e2de48b8124893bf44710): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_11.unity using Guid(3bb85b5533549c649b5d63998bc7e295) (DefaultImporter) -> (Import Result ID: 'd5c88e2c52b54c3d0f750355841eb862') in 0.0018503 seconds [static dependencies only]. Details - ImportResultOutputID=99f0c22c7b3e4a24522ab8f0996a78c9 DependenciesID=5aae7457df2edbf6fcd15b71e3e9f66c StaticDependenciesID=3827beddcd70cb5e35b8c8d5ec72cf5d 
+Asset Pipeline Refresh (id=deac989c5ddf4e248b0d9f1c9f399c0a): Total: 0.092 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Opening scene 'Assets/Scenes/Level_12.unity'
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_12.unity'
-	Deserialize:            13.172 ms
-	Integration:            207.827 ms
-	Integration of assets:  0.036 ms
-	Thread Wait Time:       0.066 ms
-	Total Operation Time:   221.102 ms
-Unloading 150 unused Assets / (56.2 KB). Loaded Objects now: 11647.
-Memory consumption went from 281.1 MB to 281.0 MB.
-Total: 27.420600 ms (FindLiveObjects: 1.313900 ms CreateObjectMapping: 0.760200 ms MarkObjects: 24.910100 ms  DeleteObjects: 0.433600 ms)
+	Deserialize:            11.497 ms
+	Integration:            213.246 ms
+	Integration of assets:  0.028 ms
+	Thread Wait Time:       0.051 ms
+	Total Operation Time:   224.822 ms
+Unloading 150 unused Assets / (56.2 KB). Loaded Objects now: 11742.
+Memory consumption went from 283.0 MB to 282.9 MB.
+Total: 22.808300 ms (FindLiveObjects: 0.754200 ms CreateObjectMapping: 0.509200 ms MarkObjects: 21.253200 ms  DeleteObjects: 0.290000 ms)
 
-Start importing Assets/Scenes/Level_12.unity using Guid(354e0bae470c0f24cb4d737e8f7de390) (DefaultImporter) -> (Import Result ID: '0543ff7516665b00e89590c12eb45a82') in 0.0036024 seconds [static dependencies only]. Details - ImportResultOutputID=50dba321cd635ce98fcd375548ca6987 DependenciesID=ad0467df24eab562c8683c433de64462 StaticDependenciesID=aeb771ea2d11509eca16e0bf21b595b5 
-Asset Pipeline Refresh (id=2f41d4717bb05574d928b7d029a33030): Total: 0.082 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_12.unity using Guid(354e0bae470c0f24cb4d737e8f7de390) (DefaultImporter) -> (Import Result ID: '54c28fdc5e991db4793e7733208c24d3') in 0.0026188 seconds [static dependencies only]. Details - ImportResultOutputID=50dba321cd635ce98fcd375548ca6987 DependenciesID=bca419eb6213a4d6129fb20407e56334 StaticDependenciesID=cc9d8e2c5cfd1bda6eec6cf2cc955de1 
+Asset Pipeline Refresh (id=ab72ccc839d3bd14ab80ea8eec00768a): Total: 0.107 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Opening scene 'Assets/Scenes/Level_13.unity'
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_13.unity'
-	Deserialize:            13.019 ms
-	Integration:            206.556 ms
-	Integration of assets:  0.039 ms
-	Thread Wait Time:       0.086 ms
-	Total Operation Time:   219.700 ms
-Unloading 162 unused Assets / (63.5 KB). Loaded Objects now: 11609.
-Memory consumption went from 281.0 MB to 280.9 MB.
-Total: 25.426800 ms (FindLiveObjects: 1.069500 ms CreateObjectMapping: 0.483800 ms MarkObjects: 23.529200 ms  DeleteObjects: 0.342800 ms)
+	Deserialize:            12.072 ms
+	Integration:            238.668 ms
+	Integration of assets:  0.034 ms
+	Thread Wait Time:       0.017 ms
+	Total Operation Time:   250.792 ms
+Unloading 162 unused Assets / (63.7 KB). Loaded Objects now: 11715.
+Memory consumption went from 283.0 MB to 283.0 MB.
+Total: 26.350300 ms (FindLiveObjects: 0.683400 ms CreateObjectMapping: 0.366700 ms MarkObjects: 24.768800 ms  DeleteObjects: 0.528100 ms)
 
-Start importing Assets/Scenes/Level_13.unity using Guid(102cc5e73421d1f48aad2200d9186ef5) (DefaultImporter) -> (Import Result ID: '3a2ba104160451d42fef18c7a1ce218e') in 0.0018487 seconds [static dependencies only]. Details - ImportResultOutputID=a3e0964969704721666f208d4c8f1bcd DependenciesID=8d66cd23e26b9627454bf5012f7d81aa StaticDependenciesID=6a1bdc7267b6b3780b0e47358f99568f 
-Asset Pipeline Refresh (id=b67b4745a3d5e9d49b3cb8524e4c7215): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_13.unity using Guid(102cc5e73421d1f48aad2200d9186ef5) (DefaultImporter) -> (Import Result ID: 'a02fce171c92642e00bf71ca17b309a1') in 0.0018404 seconds [static dependencies only]. Details - ImportResultOutputID=a3e0964969704721666f208d4c8f1bcd DependenciesID=6079cbb2c0c15ff068bbbfcf58ca257e StaticDependenciesID=9fd408e640fd838a19b5682a419318ea 
+Asset Pipeline Refresh (id=59b1f7fb9618d6842a79f90771c2a07b): Total: 0.082 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Opening scene 'Assets/Scenes/Level_14.unity'
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_14.unity'
-	Deserialize:            14.400 ms
-	Integration:            198.861 ms
-	Integration of assets:  0.040 ms
-	Thread Wait Time:       0.051 ms
-	Total Operation Time:   213.352 ms
-Unloading 150 unused Assets / (58.2 KB). Loaded Objects now: 11691.
-Memory consumption went from 281.1 MB to 281.0 MB.
-Total: 24.330300 ms (FindLiveObjects: 0.762000 ms CreateObjectMapping: 0.404000 ms MarkObjects: 22.827100 ms  DeleteObjects: 0.335500 ms)
+	Deserialize:            13.223 ms
+	Integration:            212.933 ms
+	Integration of assets:  0.116 ms
+	Thread Wait Time:       0.126 ms
+	Total Operation Time:   226.398 ms
+Unloading 158 unused Assets / (62.1 KB). Loaded Objects now: 11925.
+Memory consumption went from 283.2 MB to 283.2 MB.
+Total: 28.222900 ms (FindLiveObjects: 0.793700 ms CreateObjectMapping: 0.425000 ms MarkObjects: 26.513900 ms  DeleteObjects: 0.487900 ms)
 
-Start importing Assets/Scenes/Level_14.unity using Guid(346b17d56f0c25f42a25a531c6c543bb) (DefaultImporter) -> (Import Result ID: '436e95d8663febaf385388742b6782a9') in 0.0024521 seconds [static dependencies only]. Details - ImportResultOutputID=5e8b0743336053584d3d3297752bbd1c DependenciesID=3f153de9618fa45ae25f8c9137f2519d StaticDependenciesID=b5fa05133b43056e53b51c520f8e8baa 
-Asset Pipeline Refresh (id=3e85cf9704b92a64c95412baddac99fb): Total: 0.085 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_14.unity using Guid(346b17d56f0c25f42a25a531c6c543bb) (DefaultImporter) -> (Import Result ID: '09acbcb8683bb1853fb5c9007e4ddad0') in 0.0016254 seconds [static dependencies only]. Details - ImportResultOutputID=5e8b0743336053584d3d3297752bbd1c DependenciesID=95c3957629dae72b7d37b6f8dec7a207 StaticDependenciesID=0c01be679890c9544a0b7e38d861e13c 
+Asset Pipeline Refresh (id=1a82e404d26491c4aa85cad12f66118f): Total: 0.123 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Opening scene 'Assets/Scenes/Level_15.unity'
-Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 24 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_15.unity'
-	Deserialize:            12.080 ms
-	Integration:            210.877 ms
-	Integration of assets:  0.056 ms
-	Thread Wait Time:       0.127 ms
-	Total Operation Time:   223.140 ms
-Unloading 150 unused Assets / (58.3 KB). Loaded Objects now: 11641.
-Memory consumption went from 281.2 MB to 281.2 MB.
-Total: 26.574300 ms (FindLiveObjects: 1.781700 ms CreateObjectMapping: 0.567600 ms MarkObjects: 23.921200 ms  DeleteObjects: 0.302000 ms)
+	Deserialize:            14.454 ms
+	Integration:            222.268 ms
+	Integration of assets:  0.053 ms
+	Thread Wait Time:       0.122 ms
+	Total Operation Time:   236.897 ms
+Unloading 150 unused Assets / (58.2 KB). Loaded Objects now: 11747.
+Memory consumption went from 283.2 MB to 283.1 MB.
+Total: 30.130400 ms (FindLiveObjects: 1.193900 ms CreateObjectMapping: 0.382100 ms MarkObjects: 28.232900 ms  DeleteObjects: 0.319800 ms)
 
-Start importing Assets/Scenes/Level_15.unity using Guid(e773a7deeaf9def4e819335e6da19ee7) (DefaultImporter) -> (Import Result ID: '9e6df86ec9002ea98a8c8cde749fe0dd') in 0.0029585 seconds [static dependencies only]. Details - ImportResultOutputID=0a442ac2ad321df00b2925a369b9cb53 DependenciesID=ca60fe27862b9decc1d6601de3291e9b StaticDependenciesID=db3cb1daa38dedea08572cb3f79a2065 
-Asset Pipeline Refresh (id=024f21bd4650acf448f61beacbeade00): Total: 0.081 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Asset Pipeline Refresh (id=f13c1ad0c913e42499065e8979ecbc4e): Total: 0.014 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_15.unity using Guid(e773a7deeaf9def4e819335e6da19ee7) (DefaultImporter) -> (Import Result ID: '760bdc4fb5c259ea29e609a9c86dd999') in 0.0020618 seconds [static dependencies only]. Details - ImportResultOutputID=0a442ac2ad321df00b2925a369b9cb53 DependenciesID=dc814aabcfe4dbad3fed53ac3e78b84a StaticDependenciesID=2108cbf5bdc872a358fd5aff39f583ec 
+Asset Pipeline Refresh (id=509d2fe332f80714a9b17c4610dc6a17): Total: 0.114 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=d76acf97426ace94ab9685123fce4bfd): Total: 0.030 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
 [Echoes] Player animation setup repaired: rigs, controller, scenes and echo prefab.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
@@ -753,11 +805,11 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 PlayerAnimationRepair:RepairProjectAnimationSetup () (at Assets/Editor/PlayerAnimationRepair.cs:34)
 EchoesLocomotionSettingsBuilder:EnsureLocomotionSettings () (at Assets/Editor/EchoesLocomotionSettingsBuilder.cs:37)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:66)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:73)
 
 (Filename: Assets/Editor/PlayerAnimationRepair.cs Line: 34)
 
-Asset Pipeline Refresh (id=edf285959886ce743afcbe73beb51e7c): Total: 0.008 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=3d898e3363176064eacc5c1166ebeb9e): Total: 0.008 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
 [Echoes] Locomotion settings ready. Assign Resources/EchoesLocomotionSettings.asset at runtime.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
@@ -766,124 +818,163 @@ UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,st
 UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 EchoesLocomotionSettingsBuilder:EnsureLocomotionSettings () (at Assets/Editor/EchoesLocomotionSettingsBuilder.cs:40)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:66)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:73)
 
 (Filename: Assets/Editor/EchoesLocomotionSettingsBuilder.cs Line: 40)
 
-Asset Pipeline Refresh (id=323c9913dabc02f45ba92da7bafebbd7): Total: 0.104 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=a9531f44aa98c3240afc4faa31878bd6): Total: 0.113 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4108 unused Assets / (11.7 MB). Loaded Objects now: 5278.
-Memory consumption went from 276.8 MB to 265.1 MB.
-Total: 18.249900 ms (FindLiveObjects: 0.509300 ms CreateObjectMapping: 1.287500 ms MarkObjects: 11.095500 ms  DeleteObjects: 5.355500 ms)
+Unloading 4146 unused Assets / (11.2 MB). Loaded Objects now: 5293.
+Memory consumption went from 278.6 MB to 267.4 MB.
+Total: 25.428300 ms (FindLiveObjects: 1.370900 ms CreateObjectMapping: 1.255100 ms MarkObjects: 16.188800 ms  DeleteObjects: 6.608800 ms)
 
-Start importing Assets/Scenes/MainMenu.unity using Guid(6e2a3d826ac98a146ae2071cc2c237cf) (DefaultImporter) -> (Import Result ID: '2890d0c5d6b7f24cbb07b8b7e72199a7') in 0.001152 seconds [static dependencies only]. Details - ImportResultOutputID=ee4b320de3cce26806c1085b04336024 DependenciesID=516b46bf91164e36ad2695eaeb9262ce StaticDependenciesID=4f9042494e6b4da8d74c09f7a9b574c3 
-Asset Pipeline Refresh (id=38b3e8806732fec49b46c62ea687d2f6): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/MainMenu.unity using Guid(6e2a3d826ac98a146ae2071cc2c237cf) (DefaultImporter) -> (Import Result ID: '4610753842c6d67e0ce02623a56afe29') in 0.0016881 seconds [static dependencies only]. Details - ImportResultOutputID=ee4b320de3cce26806c1085b04336024 DependenciesID=295d22bcd120429315c5d3f694d5c078 StaticDependenciesID=613ce8e2658d602e53489dcc9d265dbe 
+Asset Pipeline Refresh (id=970ba2fc237b9714f97733761e73747d): Total: 0.102 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 202 unused Assets / (0.9 MB). Loaded Objects now: 5277.
-Memory consumption went from 274.7 MB to 273.8 MB.
-Total: 7.688600 ms (FindLiveObjects: 0.231900 ms CreateObjectMapping: 0.130600 ms MarkObjects: 6.895200 ms  DeleteObjects: 0.429600 ms)
+Unloading 201 unused Assets / (0.8 MB). Loaded Objects now: 5294.
+Memory consumption went from 276.4 MB to 275.6 MB.
+Total: 9.109500 ms (FindLiveObjects: 0.272800 ms CreateObjectMapping: 0.147800 ms MarkObjects: 8.238900 ms  DeleteObjects: 0.448400 ms)
 
-Start importing Assets/Scenes/Level_01.unity using Guid(2d7c481f66083734aa0a306e5a8b9278) (DefaultImporter) -> (Import Result ID: '81ab29a5459990fa5681d845e60aa5f8') in 0.001511 seconds [static dependencies only]. Details - ImportResultOutputID=94e532b8d21a36d97dd6cb037ad9fbf9 DependenciesID=ee0a238b244128fa1f5e0827d0c1fcfb StaticDependenciesID=e2fb081d23009ee0e5f6e9479ee2acfa 
-Asset Pipeline Refresh (id=8b6ef06158529db4aaf02be541b9a9f0): Total: 0.072 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[Echoes Production] Level_01: todos los m├│dulos usaron asset real.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+EchoesProductionBuilder:PrintFallbackReport (string) (at Assets/Editor/EchoesProductionBuilder.cs:279)
+EchoesProductionBuilder:BuildLevel01 () (at Assets/Editor/EchoesProductionBuilder.cs:479)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:77)
+
+(Filename: Assets/Editor/EchoesProductionBuilder.cs Line: 279)
+
+Start importing Assets/Scenes/Level_01.unity using Guid(2d7c481f66083734aa0a306e5a8b9278) (DefaultImporter) -> (Import Result ID: '1f6defa12e5e9195b546c8ee9f2f8aa5') in 0.0013008 seconds [static dependencies only]. Details - ImportResultOutputID=94e532b8d21a36d97dd6cb037ad9fbf9 DependenciesID=998c6175b7f2c955ec82a35008647f3f StaticDependenciesID=1b22acba5a13373002d6f24829670d75 
+Asset Pipeline Refresh (id=f80564536b6115c4fbd7b58e2a7d7476): Total: 0.078 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4124 unused Assets / (7.6 MB). Loaded Objects now: 5279.
-Memory consumption went from 284.5 MB to 277.0 MB.
-Total: 18.294700 ms (FindLiveObjects: 0.689200 ms CreateObjectMapping: 0.439900 ms MarkObjects: 11.931800 ms  DeleteObjects: 5.232200 ms)
+Unloading 4119 unused Assets / (7.2 MB). Loaded Objects now: 5294.
+Memory consumption went from 285.9 MB to 278.7 MB.
+Total: 20.679700 ms (FindLiveObjects: 0.758800 ms CreateObjectMapping: 0.521900 ms MarkObjects: 15.073400 ms  DeleteObjects: 4.322900 ms)
 
-Start importing Assets/Scenes/Level_02.unity using Guid(a08fac385001580498f7f0e3e017f427) (DefaultImporter) -> (Import Result ID: '94d6b882be0082a7a4b4da489228da86') in 0.0034669 seconds [static dependencies only]. Details - ImportResultOutputID=317638d0737c057f5f35738508ae17c3 DependenciesID=e66dfe8604e43f80bc8e6830fa32b6c9 StaticDependenciesID=0b03fe996d06c6bb601b925239b4857e 
-Asset Pipeline Refresh (id=ad48ee1762bad0e4fb2c5718aebdacbf): Total: 0.096 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_02.unity using Guid(a08fac385001580498f7f0e3e017f427) (DefaultImporter) -> (Import Result ID: '432bd404fb86b06a19a286dc04561f5c') in 0.0015502 seconds [static dependencies only]. Details - ImportResultOutputID=317638d0737c057f5f35738508ae17c3 DependenciesID=abb8e2df150a8aa27efe2c19575205b9 StaticDependenciesID=0f5b1e3e627e6893f2c182c68fc03c03 
+Asset Pipeline Refresh (id=8bbe24752475f644e83942b35918572e): Total: 0.085 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4107 unused Assets / (7.2 MB). Loaded Objects now: 5279.
-Memory consumption went from 286.2 MB to 279.0 MB.
-Total: 14.036600 ms (FindLiveObjects: 0.491100 ms CreateObjectMapping: 0.873500 ms MarkObjects: 9.664700 ms  DeleteObjects: 3.005500 ms)
+Unloading 4141 unused Assets / (7.3 MB). Loaded Objects now: 5294.
+Memory consumption went from 289.1 MB to 281.8 MB.
+Total: 15.851900 ms (FindLiveObjects: 0.625500 ms CreateObjectMapping: 0.320200 ms MarkObjects: 11.372600 ms  DeleteObjects: 3.531400 ms)
 
-Start importing Assets/Scenes/Level_03.unity using Guid(24e7c25a474c4a6419f33cd8786f4561) (DefaultImporter) -> (Import Result ID: 'c982976d5917234a1c56daf8eebdb779') in 0.001551 seconds [static dependencies only]. Details - ImportResultOutputID=02ea06e48eea26b2565ff6a0418e599d DependenciesID=9dda30f646d9bad0d27c2b489c3191db StaticDependenciesID=b469a1dac20bdf4685ec0120427dbb08 
-Asset Pipeline Refresh (id=fba5cbe6cb37dc84a814aff7d8531bc6): Total: 0.097 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_03.unity using Guid(24e7c25a474c4a6419f33cd8786f4561) (DefaultImporter) -> (Import Result ID: '4ff36ed08112be02447f023d82cf6266') in 0.0012406 seconds [static dependencies only]. Details - ImportResultOutputID=02ea06e48eea26b2565ff6a0418e599d DependenciesID=baada9936979a1a9cdb6d7c5d50540ef StaticDependenciesID=575d3a7eb21471fffb50d142eba89d79 
+Asset Pipeline Refresh (id=61f810d580fb61d4fa51d2a4244a69e7): Total: 0.107 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4107 unused Assets / (7.3 MB). Loaded Objects now: 5279.
-Memory consumption went from 288.0 MB to 280.6 MB.
-Total: 14.811600 ms (FindLiveObjects: 0.442100 ms CreateObjectMapping: 0.282500 ms MarkObjects: 10.413800 ms  DeleteObjects: 3.671000 ms)
+Unloading 4147 unused Assets / (7.3 MB). Loaded Objects now: 5294.
+Memory consumption went from 292.2 MB to 284.9 MB.
+Total: 17.006600 ms (FindLiveObjects: 0.444900 ms CreateObjectMapping: 0.253400 ms MarkObjects: 10.604800 ms  DeleteObjects: 5.701300 ms)
 
-Start importing Assets/Scenes/Level_04.unity using Guid(9bb68c7d4028a34488dc444cb022f03d) (DefaultImporter) -> (Import Result ID: 'd1b6b21505f4bbdc9d73968fbb7edd8c') in 0.0017371 seconds [static dependencies only]. Details - ImportResultOutputID=93d8bec9e5de35253250b59b2a90b2ad DependenciesID=26e6411131c1662eba1cbbf5ee490773 StaticDependenciesID=5a17237e9dbef171c7c132aceac279c4 
-Asset Pipeline Refresh (id=56f22ae151da8e74cbfe957590ccd5c1): Total: 0.083 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_04.unity using Guid(9bb68c7d4028a34488dc444cb022f03d) (DefaultImporter) -> (Import Result ID: '059cd6658ee0bb9aca482c01f9b667f4') in 0.0026973 seconds [static dependencies only]. Details - ImportResultOutputID=93d8bec9e5de35253250b59b2a90b2ad DependenciesID=14d8bae5e394326f4807c5618913522e StaticDependenciesID=0e2a198f9341cac642473ca81de5938e 
+Asset Pipeline Refresh (id=11d576f2ea58d714088312961ea3a759): Total: 0.117 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4114 unused Assets / (7.8 MB). Loaded Objects now: 5279.
-Memory consumption went from 289.7 MB to 281.9 MB.
-Total: 11.066800 ms (FindLiveObjects: 0.359200 ms CreateObjectMapping: 0.207900 ms MarkObjects: 7.566000 ms  DeleteObjects: 2.931900 ms)
+Unloading 4148 unused Assets / (6.9 MB). Loaded Objects now: 5294.
+Memory consumption went from 295.5 MB to 288.7 MB.
+Total: 12.522500 ms (FindLiveObjects: 0.544200 ms CreateObjectMapping: 0.252900 ms MarkObjects: 8.594100 ms  DeleteObjects: 3.129800 ms)
 
-Start importing Assets/Scenes/Level_05.unity using Guid(49b765a7f1882e64b9f9e3c0a8fe5585) (DefaultImporter) -> (Import Result ID: 'c48287645bd18e545a5250949810f544') in 0.0061735 seconds [static dependencies only]. Details - ImportResultOutputID=0a3c40e534ad94e86d3dce43d31acc85 DependenciesID=41f97c040bc10f7f89b4b8ace0895c78 StaticDependenciesID=c26bdc0a1b4a7e9177cb57e483cd5859 
-Asset Pipeline Refresh (id=726f27874c691f446a4695a56ad5cf86): Total: 0.136 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_05.unity using Guid(49b765a7f1882e64b9f9e3c0a8fe5585) (DefaultImporter) -> (Import Result ID: '6059d3b5b5e260a1270d5d100e56dcaf') in 0.0015316 seconds [static dependencies only]. Details - ImportResultOutputID=0a3c40e534ad94e86d3dce43d31acc85 DependenciesID=82e542da0f46b8b4f1c87f07752ed7b6 StaticDependenciesID=d6f68cf01eb1dd0019069d2a731f0505 
+Asset Pipeline Refresh (id=e825beec47c0aad4eb921ab13ef8a6ca): Total: 0.095 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4109 unused Assets / (7.8 MB). Loaded Objects now: 5279.
-Memory consumption went from 291.4 MB to 283.6 MB.
-Total: 11.063800 ms (FindLiveObjects: 0.418000 ms CreateObjectMapping: 0.228100 ms MarkObjects: 7.710700 ms  DeleteObjects: 2.705300 ms)
+Unloading 4149 unused Assets / (7.3 MB). Loaded Objects now: 5294.
+Memory consumption went from 298.6 MB to 291.4 MB.
+Total: 12.695200 ms (FindLiveObjects: 0.425300 ms CreateObjectMapping: 0.242900 ms MarkObjects: 9.193000 ms  DeleteObjects: 2.832500 ms)
 
-Start importing Assets/Scenes/Level_06.unity using Guid(5824af7ba36d1ba43b06bce631c86020) (DefaultImporter) -> (Import Result ID: 'd3037a25d4df251585f14a4baa72e227') in 0.0012451 seconds [static dependencies only]. Details - ImportResultOutputID=80d6530578b54ae0fd4f636b909f014c DependenciesID=2b11b8bc800e0f0eb88aa09c1976b775 StaticDependenciesID=363fa609ec9c134b608b8cb5c62f3a8d 
-Asset Pipeline Refresh (id=7b14989e4b8330c44bff78a7a2b61f86): Total: 0.090 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_06.unity using Guid(5824af7ba36d1ba43b06bce631c86020) (DefaultImporter) -> (Import Result ID: '4880be1f2bb184b2f51e1e6a2531f5b7') in 0.0016115 seconds [static dependencies only]. Details - ImportResultOutputID=80d6530578b54ae0fd4f636b909f014c DependenciesID=6d7b67d4657e1833ab12a5ebd87e29ab StaticDependenciesID=0e02c67607c79d4908f4ab86caaf292c 
+Asset Pipeline Refresh (id=3eb8c0eeb6d3dd549b420ffc6b2613b3): Total: 0.103 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4101 unused Assets / (7.6 MB). Loaded Objects now: 5279.
-Memory consumption went from 293.1 MB to 285.4 MB.
-Total: 12.332200 ms (FindLiveObjects: 0.377600 ms CreateObjectMapping: 0.223900 ms MarkObjects: 7.865300 ms  DeleteObjects: 3.863600 ms)
+Unloading 4135 unused Assets / (7.3 MB). Loaded Objects now: 5294.
+Memory consumption went from 301.6 MB to 294.3 MB.
+Total: 14.037500 ms (FindLiveObjects: 0.985600 ms CreateObjectMapping: 0.336100 ms MarkObjects: 8.348200 ms  DeleteObjects: 4.365000 ms)
 
-Start importing Assets/Scenes/Level_07.unity using Guid(c51439b14a06bd147b99c62545b6f4a4) (DefaultImporter) -> (Import Result ID: '20c75611499783c019363e3bb8b8fa86') in 0.0017613 seconds [static dependencies only]. Details - ImportResultOutputID=ab9c0aefa29dd2f60c7356762ca59120 DependenciesID=d4d360d648d0cbc095b570acf44a7145 StaticDependenciesID=0df0236bda58c038fd97272a516b6fc6 
-Asset Pipeline Refresh (id=cbdfdb3422b64d54c9428ebdfc5ec677): Total: 0.110 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[Echoes Production] LevelRuntimeController en modo silencioso para este nivel.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+EchoesProductionBuilder:SpawnLevelRuntime (UnityEngine.Transform,string,string,string) (at Assets/Editor/EchoesProductionBuilder.cs:1979)
+EchoesProductionBuilder:BuildLevel07 () (at Assets/Editor/EchoesProductionBuilder.cs:935)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:83)
+
+(Filename: Assets/Editor/EchoesProductionBuilder.cs Line: 1979)
+
+Start importing Assets/Scenes/Level_07.unity using Guid(c51439b14a06bd147b99c62545b6f4a4) (DefaultImporter) -> (Import Result ID: 'f1f3a08882c559c5830d2659d84511e5') in 0.0012673 seconds [static dependencies only]. Details - ImportResultOutputID=ab9c0aefa29dd2f60c7356762ca59120 DependenciesID=aa1fe2913988a65ea166a9bab40432ce StaticDependenciesID=a70348d041c44e1ab6f47e493b8bc195 
+Asset Pipeline Refresh (id=83242d6e822c92a488ae8959fb2e8947): Total: 0.095 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4101 unused Assets / (7.8 MB). Loaded Objects now: 5279.
-Memory consumption went from 294.9 MB to 287.1 MB.
-Total: 12.155700 ms (FindLiveObjects: 0.391800 ms CreateObjectMapping: 0.248600 ms MarkObjects: 8.582300 ms  DeleteObjects: 2.931500 ms)
+Unloading 4145 unused Assets / (7.3 MB). Loaded Objects now: 5294.
+Memory consumption went from 305.1 MB to 297.8 MB.
+Total: 15.135500 ms (FindLiveObjects: 0.445300 ms CreateObjectMapping: 0.267600 ms MarkObjects: 8.908800 ms  DeleteObjects: 5.512200 ms)
 
-Start importing Assets/Scenes/Level_08.unity using Guid(c79b74db661755c46997e2ce65f9e5d0) (DefaultImporter) -> (Import Result ID: 'a5fc5fb532f0d6fb840b9bad537deae2') in 0.0017193 seconds [static dependencies only]. Details - ImportResultOutputID=2c1f96d8ca5826a8d44e35722e239bf3 DependenciesID=951b8a0f1596929412fdb05910cc71f7 StaticDependenciesID=3b89751a04a41666602c850e9a146bf5 
-Asset Pipeline Refresh (id=20a10e1095edb134dab740f829166957): Total: 0.090 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_08.unity using Guid(c79b74db661755c46997e2ce65f9e5d0) (DefaultImporter) -> (Import Result ID: 'a58d2fc546e777ead2a44394926cac99') in 0.0014812 seconds [static dependencies only]. Details - ImportResultOutputID=2c1f96d8ca5826a8d44e35722e239bf3 DependenciesID=11acee57cb5786526bded7d85dd02772 StaticDependenciesID=b5f345bafbedc8fd74803224ddca0aa2 
+Asset Pipeline Refresh (id=a802bd55b5bc5744e9a1a997d6a9f1e5): Total: 0.130 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4109 unused Assets / (7.5 MB). Loaded Objects now: 5279.
-Memory consumption went from 295.6 MB to 288.1 MB.
-Total: 11.572400 ms (FindLiveObjects: 0.617100 ms CreateObjectMapping: 0.290700 ms MarkObjects: 7.382100 ms  DeleteObjects: 3.281000 ms)
+Unloading 4135 unused Assets / (6.9 MB). Loaded Objects now: 5294.
+Memory consumption went from 307.1 MB to 300.2 MB.
+Total: 14.225100 ms (FindLiveObjects: 0.726100 ms CreateObjectMapping: 0.489100 ms MarkObjects: 9.516900 ms  DeleteObjects: 3.490500 ms)
 
-Start importing Assets/Scenes/Level_09.unity using Guid(dc27e47fcbdbfe94abf8fca7670cc0af) (DefaultImporter) -> (Import Result ID: '63233da475a629eaff9b5204a772cbc8') in 0.0019986 seconds [static dependencies only]. Details - ImportResultOutputID=715ec631cf587f2d90020579f4149c5c DependenciesID=06458a8d328a3b71c0a814c73cfa29bb StaticDependenciesID=ab53654c3e7130447f34fde598f954f2 
-Asset Pipeline Refresh (id=44080b9998e88b841a9f89a4139b0665): Total: 0.071 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_09.unity using Guid(dc27e47fcbdbfe94abf8fca7670cc0af) (DefaultImporter) -> (Import Result ID: 'bfe10db40caecc50a64259c622712f44') in 0.0013335 seconds [static dependencies only]. Details - ImportResultOutputID=715ec631cf587f2d90020579f4149c5c DependenciesID=f98d9add255b1dbc969faae3adc30f0d StaticDependenciesID=2839b245f0a317f89789b9d40a21b0c2 
+Asset Pipeline Refresh (id=4e56afe83e20af549a2b8eec2bb4d067): Total: 0.105 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4107 unused Assets / (7.8 MB). Loaded Objects now: 5279.
-Memory consumption went from 297.4 MB to 289.6 MB.
-Total: 18.113400 ms (FindLiveObjects: 1.313700 ms CreateObjectMapping: 0.391900 ms MarkObjects: 9.651400 ms  DeleteObjects: 6.753400 ms)
+Unloading 4141 unused Assets / (7.3 MB). Loaded Objects now: 5294.
+Memory consumption went from 310.3 MB to 303.0 MB.
+Total: 13.751500 ms (FindLiveObjects: 0.480700 ms CreateObjectMapping: 0.258600 ms MarkObjects: 10.046100 ms  DeleteObjects: 2.964100 ms)
 
-Start importing Assets/Scenes/Level_10.unity using Guid(98cf224a1a8663f4d90e61fadd7bb17d) (DefaultImporter) -> (Import Result ID: '106f5caea63c339977a1492706c3394a') in 0.002225 seconds [static dependencies only]. Details - ImportResultOutputID=65ec34fd91e3a098531c5ea6bfe7724d DependenciesID=c8313bf02fd7cd39e1276a2fcab7557b StaticDependenciesID=ea3c681318d73e32352d65b226a57383 
-Asset Pipeline Refresh (id=98d2620eaefacb849a30366cdee4b156): Total: 0.182 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_10.unity using Guid(98cf224a1a8663f4d90e61fadd7bb17d) (DefaultImporter) -> (Import Result ID: 'fa19ea6dc6f3078ebde2624565e65131') in 0.0025921 seconds [static dependencies only]. Details - ImportResultOutputID=65ec34fd91e3a098531c5ea6bfe7724d DependenciesID=1da429f0532d8c561e14b31d14579e1d StaticDependenciesID=c927205af15d20ace1ff4002790a4af1 
+Asset Pipeline Refresh (id=46ec72362915ad145befe2fd44119faf): Total: 0.102 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4107 unused Assets / (7.8 MB). Loaded Objects now: 5279.
-Memory consumption went from 298.6 MB to 290.7 MB.
-Total: 12.651400 ms (FindLiveObjects: 0.736900 ms CreateObjectMapping: 0.372900 ms MarkObjects: 8.541800 ms  DeleteObjects: 2.998200 ms)
+Unloading 4145 unused Assets / (6.9 MB). Loaded Objects now: 5294.
+Memory consumption went from 313.6 MB to 306.8 MB.
+Total: 13.852300 ms (FindLiveObjects: 0.511700 ms CreateObjectMapping: 0.292000 ms MarkObjects: 9.731400 ms  DeleteObjects: 3.315200 ms)
 
-Start importing Assets/Scenes/Level_11.unity using Guid(3bb85b5533549c649b5d63998bc7e295) (DefaultImporter) -> (Import Result ID: '328e504c7eb6874f974e765afe7dc286') in 0.0011972 seconds [static dependencies only]. Details - ImportResultOutputID=99f0c22c7b3e4a24522ab8f0996a78c9 DependenciesID=6c6969813976305e223ffd7c5e053890 StaticDependenciesID=ddd1e0e681887b30d246e8d8226837f0 
-Asset Pipeline Refresh (id=3ea086f219ef57b4db1cc6ff608a0ee4): Total: 0.072 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_11.unity using Guid(3bb85b5533549c649b5d63998bc7e295) (DefaultImporter) -> (Import Result ID: '7b1fdd8c5599000b61bb3b265449d034') in 0.0015246 seconds [static dependencies only]. Details - ImportResultOutputID=99f0c22c7b3e4a24522ab8f0996a78c9 DependenciesID=d166002e772fae1620204ae3cbf19db1 StaticDependenciesID=76c5309d52efde7fe1f347e65b509f19 
+Asset Pipeline Refresh (id=bdf97636a704c8f45847f12decefdf50): Total: 0.094 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4107 unused Assets / (7.3 MB). Loaded Objects now: 5279.
-Memory consumption went from 299.7 MB to 292.4 MB.
-Total: 10.552200 ms (FindLiveObjects: 0.390000 ms CreateObjectMapping: 0.277400 ms MarkObjects: 7.174900 ms  DeleteObjects: 2.708600 ms)
+Unloading 4141 unused Assets / (6.5 MB). Loaded Objects now: 5294.
+Memory consumption went from 316.2 MB to 309.7 MB.
+Total: 11.167800 ms (FindLiveObjects: 0.479000 ms CreateObjectMapping: 0.275100 ms MarkObjects: 7.386200 ms  DeleteObjects: 3.025400 ms)
 
-Start importing Assets/Scenes/Level_12.unity using Guid(354e0bae470c0f24cb4d737e8f7de390) (DefaultImporter) -> (Import Result ID: '0db2f0153e85ee2779d4ecd530985d5a') in 0.0014194 seconds [static dependencies only]. Details - ImportResultOutputID=50dba321cd635ce98fcd375548ca6987 DependenciesID=d2cbd218b5d7777c930f15d76f9cc4f3 StaticDependenciesID=c11262ba9004632f6823dfbf456e98f6 
-Asset Pipeline Refresh (id=3b0f92f4c61a4d54699761c3f0cb33af): Total: 0.080 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_12.unity using Guid(354e0bae470c0f24cb4d737e8f7de390) (DefaultImporter) -> (Import Result ID: '31e81c21acef72d71338ca2fe15d828b') in 0.0023515 seconds [static dependencies only]. Details - ImportResultOutputID=50dba321cd635ce98fcd375548ca6987 DependenciesID=cfe21bdbef4adf7888ed7312eda2beb8 StaticDependenciesID=58c0ba597bffce501b8b06b49c30120c 
+Asset Pipeline Refresh (id=de0e5dab546cde240b3f9126d56fb500): Total: 0.084 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4113 unused Assets / (7.2 MB). Loaded Objects now: 5279.
-Memory consumption went from 301.0 MB to 293.8 MB.
-Total: 11.956100 ms (FindLiveObjects: 0.426700 ms CreateObjectMapping: 0.268400 ms MarkObjects: 8.527300 ms  DeleteObjects: 2.732100 ms)
+Unloading 4147 unused Assets / (7.0 MB). Loaded Objects now: 5294.
+Memory consumption went from 318.8 MB to 311.8 MB.
+Total: 14.172300 ms (FindLiveObjects: 0.433600 ms CreateObjectMapping: 0.259900 ms MarkObjects: 8.928200 ms  DeleteObjects: 4.548700 ms)
 
-Start importing Assets/Scenes/Level_13.unity using Guid(102cc5e73421d1f48aad2200d9186ef5) (DefaultImporter) -> (Import Result ID: '055b157bf49e4c1ec78916c6e07dbc62') in 0.001363 seconds [static dependencies only]. Details - ImportResultOutputID=a3e0964969704721666f208d4c8f1bcd DependenciesID=e1b692baf3f8078b3892efd41c1f2f28 StaticDependenciesID=aecc7dc5f607df3de77b155fb0fd2da7 
-Asset Pipeline Refresh (id=76e3b37d2e57fd540bf46b1109255154): Total: 0.086 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_13.unity using Guid(102cc5e73421d1f48aad2200d9186ef5) (DefaultImporter) -> (Import Result ID: 'e133fcb7cb77e36fb4be5f37252ff6b0') in 0.0027645 seconds [static dependencies only]. Details - ImportResultOutputID=a3e0964969704721666f208d4c8f1bcd DependenciesID=b69cc6cfece8f9f29e594cdfa3a8e330 StaticDependenciesID=145015c2c2fc91b22972a21e665e70d7 
+Asset Pipeline Refresh (id=672acc0df1c583546b7147de27c8f6bc): Total: 0.093 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4101 unused Assets / (7.8 MB). Loaded Objects now: 5279.
-Memory consumption went from 302.1 MB to 294.3 MB.
-Total: 18.743600 ms (FindLiveObjects: 0.458600 ms CreateObjectMapping: 0.251400 ms MarkObjects: 10.031200 ms  DeleteObjects: 7.990900 ms)
+Unloading 4141 unused Assets / (7.3 MB). Loaded Objects now: 5294.
+Memory consumption went from 321.5 MB to 314.2 MB.
+Total: 14.905200 ms (FindLiveObjects: 1.450000 ms CreateObjectMapping: 0.659100 ms MarkObjects: 9.200700 ms  DeleteObjects: 3.593000 ms)
 
-Start importing Assets/Scenes/Level_14.unity using Guid(346b17d56f0c25f42a25a531c6c543bb) (DefaultImporter) -> (Import Result ID: 'f0ad4859b355b17ddb425a9a4902a0dd') in 0.0013406 seconds [static dependencies only]. Details - ImportResultOutputID=5e8b0743336053584d3d3297752bbd1c DependenciesID=17ccf86c883197b45791493fa0dd53cc StaticDependenciesID=a1dda4fd7dc2e6927fe3b2dbc23a6559 
-Asset Pipeline Refresh (id=130c9cf760c211544b48e0eddd4082ba): Total: 0.074 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[Echoes Production] LevelRuntimeController en modo silencioso para este nivel.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+EchoesProductionBuilder:SpawnLevelRuntime (UnityEngine.Transform,string,string,string) (at Assets/Editor/EchoesProductionBuilder.cs:1979)
+EchoesProductionBuilder:BuildLevel14 () (at Assets/Editor/EchoesProductionBuilder.cs:1510)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:90)
+
+(Filename: Assets/Editor/EchoesProductionBuilder.cs Line: 1979)
+
+Start importing Assets/Scenes/Level_14.unity using Guid(346b17d56f0c25f42a25a531c6c543bb) (DefaultImporter) -> (Import Result ID: '1fedb5a28d3b93176aa9c2b73c9fbddd') in 0.0020139 seconds [static dependencies only]. Details - ImportResultOutputID=5e8b0743336053584d3d3297752bbd1c DependenciesID=9ab537a0a8fae39aa804a14f6b01caf1 StaticDependenciesID=c4fb22fd81414bc718e04ea3e95cd177 
+Asset Pipeline Refresh (id=0107cb97049404f45a58ae55a309c64a): Total: 0.097 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 Unloading 22 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4101 unused Assets / (7.3 MB). Loaded Objects now: 5279.
-Memory consumption went from 303.3 MB to 295.9 MB.
-Total: 11.497400 ms (FindLiveObjects: 0.406800 ms CreateObjectMapping: 0.212300 ms MarkObjects: 7.252100 ms  DeleteObjects: 3.624600 ms)
+Unloading 4139 unused Assets / (7.3 MB). Loaded Objects now: 5294.
+Memory consumption went from 324.8 MB to 317.5 MB.
+Total: 11.586100 ms (FindLiveObjects: 0.640700 ms CreateObjectMapping: 0.361500 ms MarkObjects: 7.721000 ms  DeleteObjects: 2.860700 ms)
 
-Start importing Assets/Scenes/Level_15.unity using Guid(e773a7deeaf9def4e819335e6da19ee7) (DefaultImporter) -> (Import Result ID: 'e901ccdea7c6c54bc8e697b8693e8bcb') in 0.0012413 seconds [static dependencies only]. Details - ImportResultOutputID=0a442ac2ad321df00b2925a369b9cb53 DependenciesID=c91eda2a1bfe8bd464a4f42bbec9b7e4 StaticDependenciesID=db167ac0cb4be5c129ea34a1e720c39d 
-Asset Pipeline Refresh (id=86f1c1cc42b69714891fe231fdef94e0): Total: 0.083 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Asset Pipeline Refresh (id=6111ea0dcf7a1c1489669916f0e87b66): Total: 0.012 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Start importing Assets/Scenes/Level_15.unity using Guid(e773a7deeaf9def4e819335e6da19ee7) (DefaultImporter) -> (Import Result ID: '9c3f536fb02b1b885d1a08f244ba8717') in 0.0037922 seconds [static dependencies only]. Details - ImportResultOutputID=0a442ac2ad321df00b2925a369b9cb53 DependenciesID=1854ff07bce48537d5878a1bd7fd615a StaticDependenciesID=c106cbfeb03754ca9e40f2bf2881fb7c 
+Asset Pipeline Refresh (id=006b2a84083648b46b9625ef7b10a2d4): Total: 0.082 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=0caeead29f1861b43b55b7daad0aba23): Total: 0.021 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
 [Echoes Production] Scenes rebuilt. Running validation...
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
@@ -891,21 +982,34 @@ UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOpt
 UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
 UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:89)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:96)
 
-(Filename: Assets/Editor/EchoesProductionBuilder.cs Line: 89)
+(Filename: Assets/Editor/EchoesProductionBuilder.cs Line: 96)
 
 Opening scene 'Assets/Scenes/Level_01.unity'
 Unloading 1 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_01.unity'
-	Deserialize:            13.041 ms
-	Integration:            205.300 ms
-	Integration of assets:  0.022 ms
-	Thread Wait Time:       0.052 ms
-	Total Operation Time:   218.415 ms
-Unloading 151 unused Assets / (0.6 MB). Loaded Objects now: 11834.
-Memory consumption went from 306.2 MB to 305.6 MB.
-Total: 12.678900 ms (FindLiveObjects: 0.768900 ms CreateObjectMapping: 0.431500 ms MarkObjects: 11.012700 ms  DeleteObjects: 0.464600 ms)
+	Deserialize:            8.846 ms
+	Integration:            251.125 ms
+	Integration of assets:  0.066 ms
+	Thread Wait Time:       0.031 ms
+	Total Operation Time:   260.067 ms
+Unloading 180 unused Assets / (425.1 KB). Loaded Objects now: 11399.
+Memory consumption went from 328.8 MB to 328.4 MB.
+Total: 19.066100 ms (FindLiveObjects: 1.067700 ms CreateObjectMapping: 0.734000 ms MarkObjects: 16.452700 ms  DeleteObjects: 0.808600 ms)
+
+[LevelValidator] Level_01: No EchoPathHint.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:110)
+LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
+
+(Filename: Assets/Editor/LevelValidator.cs Line: 110)
 
 [LevelValidator] PASS: Level_01
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -916,21 +1020,34 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:131)
 LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:90)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
 
 (Filename: Assets/Editor/LevelValidator.cs Line: 131)
 
 Opening scene 'Assets/Scenes/Level_02.unity'
 Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_02.unity'
-	Deserialize:            13.198 ms
-	Integration:            190.592 ms
-	Integration of assets:  1.565 ms
-	Thread Wait Time:       0.043 ms
-	Total Operation Time:   205.397 ms
-Unloading 14 unused Assets / (5.8 KB). Loaded Objects now: 11860.
-Memory consumption went from 283.0 MB to 283.0 MB.
-Total: 13.052500 ms (FindLiveObjects: 0.751000 ms CreateObjectMapping: 0.381900 ms MarkObjects: 11.832000 ms  DeleteObjects: 0.086300 ms)
+	Deserialize:            15.261 ms
+	Integration:            221.240 ms
+	Integration of assets:  1.875 ms
+	Thread Wait Time:       0.057 ms
+	Total Operation Time:   238.432 ms
+Unloading 2 unused Assets / (0.5 KB). Loaded Objects now: 11954.
+Memory consumption went from 280.1 MB to 280.1 MB.
+Total: 11.876100 ms (FindLiveObjects: 1.018400 ms CreateObjectMapping: 0.642800 ms MarkObjects: 10.145800 ms  DeleteObjects: 0.067600 ms)
+
+[LevelValidator] Level_02: No EchoPathHint.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:110)
+LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
+
+(Filename: Assets/Editor/LevelValidator.cs Line: 110)
 
 [LevelValidator] PASS: Level_02
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -941,21 +1058,34 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:131)
 LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:90)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
 
 (Filename: Assets/Editor/LevelValidator.cs Line: 131)
 
 Opening scene 'Assets/Scenes/Level_03.unity'
-Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_03.unity'
-	Deserialize:            11.863 ms
-	Integration:            183.480 ms
-	Integration of assets:  0.045 ms
-	Thread Wait Time:       0.048 ms
-	Total Operation Time:   195.435 ms
-Unloading 2 unused Assets / (0.5 KB). Loaded Objects now: 11839.
-Memory consumption went from 283.0 MB to 283.0 MB.
-Total: 9.450100 ms (FindLiveObjects: 0.692800 ms CreateObjectMapping: 0.349700 ms MarkObjects: 8.357100 ms  DeleteObjects: 0.049100 ms)
+	Deserialize:            13.552 ms
+	Integration:            267.857 ms
+	Integration of assets:  0.033 ms
+	Thread Wait Time:       0.136 ms
+	Total Operation Time:   281.578 ms
+Unloading 2 unused Assets / (0.5 KB). Loaded Objects now: 11933.
+Memory consumption went from 279.8 MB to 279.8 MB.
+Total: 12.242900 ms (FindLiveObjects: 2.262100 ms CreateObjectMapping: 1.068500 ms MarkObjects: 8.855700 ms  DeleteObjects: 0.054500 ms)
+
+[LevelValidator] Level_03: No EchoPathHint.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:110)
+LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
+
+(Filename: Assets/Editor/LevelValidator.cs Line: 110)
 
 [LevelValidator] PASS: Level_03
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -966,21 +1096,34 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:131)
 LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:90)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
 
 (Filename: Assets/Editor/LevelValidator.cs Line: 131)
 
 Opening scene 'Assets/Scenes/Level_04.unity'
-Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_04.unity'
-	Deserialize:            11.269 ms
-	Integration:            181.754 ms
-	Integration of assets:  0.024 ms
-	Thread Wait Time:       0.121 ms
-	Total Operation Time:   193.168 ms
-Unloading 2 unused Assets / (0.5 KB). Loaded Objects now: 11864.
-Memory consumption went from 277.9 MB to 277.9 MB.
-Total: 15.741000 ms (FindLiveObjects: 0.682500 ms CreateObjectMapping: 0.348800 ms MarkObjects: 14.660200 ms  DeleteObjects: 0.048300 ms)
+	Deserialize:            13.006 ms
+	Integration:            207.375 ms
+	Integration of assets:  0.038 ms
+	Thread Wait Time:       0.040 ms
+	Total Operation Time:   220.459 ms
+Unloading 8 unused Assets / (3.1 KB). Loaded Objects now: 11963.
+Memory consumption went from 279.8 MB to 279.8 MB.
+Total: 15.865700 ms (FindLiveObjects: 0.720400 ms CreateObjectMapping: 0.410200 ms MarkObjects: 14.648600 ms  DeleteObjects: 0.084900 ms)
+
+[LevelValidator] Level_04: No EchoPathHint.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:110)
+LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
+
+(Filename: Assets/Editor/LevelValidator.cs Line: 110)
 
 [LevelValidator] PASS: Level_04
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -991,21 +1134,34 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:131)
 LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:90)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
 
 (Filename: Assets/Editor/LevelValidator.cs Line: 131)
 
 Opening scene 'Assets/Scenes/Level_05.unity'
 Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_05.unity'
-	Deserialize:            11.802 ms
-	Integration:            187.315 ms
-	Integration of assets:  0.033 ms
-	Thread Wait Time:       0.178 ms
-	Total Operation Time:   199.328 ms
-Unloading 14 unused Assets / (5.7 KB). Loaded Objects now: 11830.
-Memory consumption went from 277.9 MB to 277.9 MB.
-Total: 16.897400 ms (FindLiveObjects: 0.728600 ms CreateObjectMapping: 0.356500 ms MarkObjects: 15.726400 ms  DeleteObjects: 0.084900 ms)
+	Deserialize:            13.731 ms
+	Integration:            201.212 ms
+	Integration of assets:  0.040 ms
+	Thread Wait Time:       0.043 ms
+	Total Operation Time:   215.027 ms
+Unloading 14 unused Assets / (5.8 KB). Loaded Objects now: 11924.
+Memory consumption went from 280.7 MB to 280.7 MB.
+Total: 13.865300 ms (FindLiveObjects: 0.800700 ms CreateObjectMapping: 0.412500 ms MarkObjects: 12.542900 ms  DeleteObjects: 0.108100 ms)
+
+[LevelValidator] Level_05: No EchoPathHint.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:110)
+LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
+
+(Filename: Assets/Editor/LevelValidator.cs Line: 110)
 
 [LevelValidator] PASS: Level_05
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -1016,21 +1172,34 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:131)
 LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:90)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
 
 (Filename: Assets/Editor/LevelValidator.cs Line: 131)
 
 Opening scene 'Assets/Scenes/Level_06.unity'
-Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_06.unity'
-	Deserialize:            11.647 ms
-	Integration:            186.281 ms
-	Integration of assets:  0.029 ms
-	Thread Wait Time:       0.013 ms
-	Total Operation Time:   197.971 ms
-Unloading 8 unused Assets / (3.1 KB). Loaded Objects now: 11809.
-Memory consumption went from 277.8 MB to 277.8 MB.
-Total: 18.742300 ms (FindLiveObjects: 0.751600 ms CreateObjectMapping: 0.390900 ms MarkObjects: 17.521100 ms  DeleteObjects: 0.077500 ms)
+	Deserialize:            13.233 ms
+	Integration:            197.447 ms
+	Integration of assets:  0.033 ms
+	Thread Wait Time:       0.047 ms
+	Total Operation Time:   210.761 ms
+Unloading 14 unused Assets / (5.8 KB). Loaded Objects now: 11903.
+Memory consumption went from 279.7 MB to 279.6 MB.
+Total: 14.223900 ms (FindLiveObjects: 0.721900 ms CreateObjectMapping: 0.390300 ms MarkObjects: 12.998700 ms  DeleteObjects: 0.111400 ms)
+
+[LevelValidator] Level_06: No EchoPathHint.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:110)
+LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
+
+(Filename: Assets/Editor/LevelValidator.cs Line: 110)
 
 [LevelValidator] PASS: Level_06
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -1041,21 +1210,34 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:131)
 LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:90)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
 
 (Filename: Assets/Editor/LevelValidator.cs Line: 131)
 
 Opening scene 'Assets/Scenes/Level_07.unity'
 Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_07.unity'
-	Deserialize:            11.908 ms
-	Integration:            182.589 ms
-	Integration of assets:  0.024 ms
+	Deserialize:            13.335 ms
+	Integration:            203.219 ms
+	Integration of assets:  0.060 ms
 	Thread Wait Time:       0.051 ms
-	Total Operation Time:   194.572 ms
-Unloading 2 unused Assets / (0.5 KB). Loaded Objects now: 11843.
-Memory consumption went from 277.8 MB to 277.8 MB.
-Total: 13.953600 ms (FindLiveObjects: 0.735300 ms CreateObjectMapping: 0.383200 ms MarkObjects: 12.787300 ms  DeleteObjects: 0.046600 ms)
+	Total Operation Time:   216.666 ms
+Unloading 4 unused Assets / (1.7 KB). Loaded Objects now: 11937.
+Memory consumption went from 280.0 MB to 280.0 MB.
+Total: 18.108800 ms (FindLiveObjects: 0.735700 ms CreateObjectMapping: 0.411800 ms MarkObjects: 16.892200 ms  DeleteObjects: 0.067800 ms)
+
+[LevelValidator] Level_07: No EchoPathHint.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:110)
+LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
+
+(Filename: Assets/Editor/LevelValidator.cs Line: 110)
 
 [LevelValidator] PASS: Level_07
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -1066,21 +1248,34 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:131)
 LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:90)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
 
 (Filename: Assets/Editor/LevelValidator.cs Line: 131)
 
 Opening scene 'Assets/Scenes/Level_08.unity'
-Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 6 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_08.unity'
-	Deserialize:            8.283 ms
-	Integration:            185.757 ms
-	Integration of assets:  0.024 ms
-	Thread Wait Time:       0.047 ms
-	Total Operation Time:   194.111 ms
-Unloading 2 unused Assets / (0.5 KB). Loaded Objects now: 11496.
-Memory consumption went from 277.6 MB to 277.6 MB.
-Total: 21.518100 ms (FindLiveObjects: 0.701900 ms CreateObjectMapping: 0.350200 ms MarkObjects: 20.407000 ms  DeleteObjects: 0.057500 ms)
+	Deserialize:            9.060 ms
+	Integration:            197.831 ms
+	Integration of assets:  0.034 ms
+	Thread Wait Time:       0.072 ms
+	Total Operation Time:   206.997 ms
+Unloading 14 unused Assets / (5.8 KB). Loaded Objects now: 11584.
+Memory consumption went from 279.4 MB to 279.4 MB.
+Total: 17.487600 ms (FindLiveObjects: 0.701000 ms CreateObjectMapping: 0.367600 ms MarkObjects: 16.307500 ms  DeleteObjects: 0.109700 ms)
+
+[LevelValidator] Level_08: No EchoPathHint.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:110)
+LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
+
+(Filename: Assets/Editor/LevelValidator.cs Line: 110)
 
 [LevelValidator] PASS: Level_08
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -1091,21 +1286,34 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:131)
 LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:90)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
 
 (Filename: Assets/Editor/LevelValidator.cs Line: 131)
 
 Opening scene 'Assets/Scenes/Level_09.unity'
-Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_09.unity'
-	Deserialize:            12.274 ms
-	Integration:            203.749 ms
-	Integration of assets:  0.069 ms
-	Thread Wait Time:       0.012 ms
-	Total Operation Time:   216.103 ms
-Unloading 8 unused Assets / (3.1 KB). Loaded Objects now: 11839.
-Memory consumption went from 278.0 MB to 278.0 MB.
-Total: 22.696800 ms (FindLiveObjects: 1.291900 ms CreateObjectMapping: 0.529400 ms MarkObjects: 20.785300 ms  DeleteObjects: 0.088900 ms)
+	Deserialize:            11.587 ms
+	Integration:            192.610 ms
+	Integration of assets:  0.031 ms
+	Thread Wait Time:       0.023 ms
+	Total Operation Time:   204.252 ms
+Unloading 2 unused Assets / (0.5 KB). Loaded Objects now: 11927.
+Memory consumption went from 279.8 MB to 279.8 MB.
+Total: 19.609100 ms (FindLiveObjects: 0.689500 ms CreateObjectMapping: 0.390700 ms MarkObjects: 18.473000 ms  DeleteObjects: 0.054600 ms)
+
+[LevelValidator] Level_09: No EchoPathHint.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:110)
+LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
+
+(Filename: Assets/Editor/LevelValidator.cs Line: 110)
 
 [LevelValidator] PASS: Level_09
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -1116,21 +1324,34 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:131)
 LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:90)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
 
 (Filename: Assets/Editor/LevelValidator.cs Line: 131)
 
 Opening scene 'Assets/Scenes/Level_10.unity'
 Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_10.unity'
-	Deserialize:            10.133 ms
-	Integration:            238.657 ms
-	Integration of assets:  0.043 ms
-	Thread Wait Time:       0.063 ms
-	Total Operation Time:   248.895 ms
-Unloading 2 unused Assets / (0.5 KB). Loaded Objects now: 11644.
-Memory consumption went from 277.7 MB to 277.7 MB.
-Total: 19.646000 ms (FindLiveObjects: 0.685100 ms CreateObjectMapping: 0.351300 ms MarkObjects: 18.550200 ms  DeleteObjects: 0.057900 ms)
+	Deserialize:            12.571 ms
+	Integration:            192.518 ms
+	Integration of assets:  0.030 ms
+	Thread Wait Time:       0.018 ms
+	Total Operation Time:   205.136 ms
+Unloading 4 unused Assets / (1.7 KB). Loaded Objects now: 11953.
+Memory consumption went from 280.7 MB to 280.7 MB.
+Total: 17.754400 ms (FindLiveObjects: 0.812300 ms CreateObjectMapping: 0.408600 ms MarkObjects: 16.470300 ms  DeleteObjects: 0.061900 ms)
+
+[LevelValidator] Level_10: No EchoPathHint.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:110)
+LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
+
+(Filename: Assets/Editor/LevelValidator.cs Line: 110)
 
 [LevelValidator] PASS: Level_10
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -1141,21 +1362,34 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:131)
 LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:90)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
 
 (Filename: Assets/Editor/LevelValidator.cs Line: 131)
 
 Opening scene 'Assets/Scenes/Level_11.unity'
-Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_11.unity'
-	Deserialize:            10.359 ms
-	Integration:            197.304 ms
-	Integration of assets:  0.055 ms
-	Thread Wait Time:       0.022 ms
-	Total Operation Time:   207.739 ms
-Unloading 2 unused Assets / (0.5 KB). Loaded Objects now: 11627.
-Memory consumption went from 277.7 MB to 277.7 MB.
-Total: 24.171700 ms (FindLiveObjects: 0.746400 ms CreateObjectMapping: 0.387400 ms MarkObjects: 22.974900 ms  DeleteObjects: 0.061700 ms)
+	Deserialize:            10.862 ms
+	Integration:            206.909 ms
+	Integration of assets:  0.063 ms
+	Thread Wait Time:       0.041 ms
+	Total Operation Time:   217.876 ms
+Unloading 8 unused Assets / (3.1 KB). Loaded Objects now: 11721.
+Memory consumption went from 279.6 MB to 279.6 MB.
+Total: 21.085500 ms (FindLiveObjects: 1.345600 ms CreateObjectMapping: 0.608700 ms MarkObjects: 19.036000 ms  DeleteObjects: 0.093300 ms)
+
+[LevelValidator] Level_11: No EchoPathHint.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:110)
+LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
+
+(Filename: Assets/Editor/LevelValidator.cs Line: 110)
 
 [LevelValidator] PASS: Level_11
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -1166,21 +1400,34 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:131)
 LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:90)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
 
 (Filename: Assets/Editor/LevelValidator.cs Line: 131)
 
 Opening scene 'Assets/Scenes/Level_12.unity'
 Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_12.unity'
-	Deserialize:            9.387 ms
-	Integration:            245.745 ms
-	Integration of assets:  0.022 ms
-	Thread Wait Time:       0.063 ms
-	Total Operation Time:   255.218 ms
-Unloading 2 unused Assets / (0.5 KB). Loaded Objects now: 11649.
-Memory consumption went from 277.9 MB to 277.9 MB.
-Total: 21.915000 ms (FindLiveObjects: 0.678500 ms CreateObjectMapping: 0.816400 ms MarkObjects: 20.364500 ms  DeleteObjects: 0.054200 ms)
+	Deserialize:            10.586 ms
+	Integration:            194.456 ms
+	Integration of assets:  0.028 ms
+	Thread Wait Time:       0.129 ms
+	Total Operation Time:   205.199 ms
+Unloading 2 unused Assets / (0.5 KB). Loaded Objects now: 11743.
+Memory consumption went from 279.7 MB to 279.7 MB.
+Total: 22.589500 ms (FindLiveObjects: 0.702800 ms CreateObjectMapping: 0.362000 ms MarkObjects: 21.463400 ms  DeleteObjects: 0.059600 ms)
+
+[LevelValidator] Level_12: No EchoPathHint.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:110)
+LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
+
+(Filename: Assets/Editor/LevelValidator.cs Line: 110)
 
 [LevelValidator] PASS: Level_12
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -1191,21 +1438,34 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:131)
 LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:90)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
 
 (Filename: Assets/Editor/LevelValidator.cs Line: 131)
 
 Opening scene 'Assets/Scenes/Level_13.unity'
 Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_13.unity'
-	Deserialize:            10.434 ms
-	Integration:            191.144 ms
-	Integration of assets:  0.062 ms
-	Thread Wait Time:       0.052 ms
-	Total Operation Time:   201.691 ms
-Unloading 14 unused Assets / (5.8 KB). Loaded Objects now: 11611.
-Memory consumption went from 277.7 MB to 277.7 MB.
-Total: 20.373000 ms (FindLiveObjects: 0.673200 ms CreateObjectMapping: 0.345700 ms MarkObjects: 19.253300 ms  DeleteObjects: 0.099600 ms)
+	Deserialize:            10.487 ms
+	Integration:            207.705 ms
+	Integration of assets:  0.030 ms
+	Thread Wait Time:       0.133 ms
+	Total Operation Time:   218.355 ms
+Unloading 14 unused Assets / (5.9 KB). Loaded Objects now: 11716.
+Memory consumption went from 279.7 MB to 279.7 MB.
+Total: 24.902800 ms (FindLiveObjects: 0.733200 ms CreateObjectMapping: 0.389800 ms MarkObjects: 23.679100 ms  DeleteObjects: 0.099400 ms)
+
+[LevelValidator] Level_13: No EchoPathHint.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:110)
+LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
+
+(Filename: Assets/Editor/LevelValidator.cs Line: 110)
 
 [LevelValidator] PASS: Level_13
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -1216,21 +1476,34 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:131)
 LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:90)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
 
 (Filename: Assets/Editor/LevelValidator.cs Line: 131)
 
 Opening scene 'Assets/Scenes/Level_14.unity'
-Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_14.unity'
-	Deserialize:            11.186 ms
-	Integration:            216.653 ms
-	Integration of assets:  0.032 ms
-	Thread Wait Time:       0.064 ms
-	Total Operation Time:   227.934 ms
-Unloading 2 unused Assets / (0.5 KB). Loaded Objects now: 11693.
-Memory consumption went from 277.8 MB to 277.8 MB.
-Total: 34.524400 ms (FindLiveObjects: 0.718200 ms CreateObjectMapping: 0.410900 ms MarkObjects: 33.337200 ms  DeleteObjects: 0.056400 ms)
+	Deserialize:            13.125 ms
+	Integration:            201.592 ms
+	Integration of assets:  0.026 ms
+	Thread Wait Time:       0.050 ms
+	Total Operation Time:   214.792 ms
+Unloading 10 unused Assets / (4.4 KB). Loaded Objects now: 11926.
+Memory consumption went from 279.9 MB to 279.9 MB.
+Total: 22.972200 ms (FindLiveObjects: 0.767400 ms CreateObjectMapping: 0.406700 ms MarkObjects: 21.672700 ms  DeleteObjects: 0.123800 ms)
+
+[LevelValidator] Level_14: No EchoPathHint.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:110)
+LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
+
+(Filename: Assets/Editor/LevelValidator.cs Line: 110)
 
 [LevelValidator] PASS: Level_14
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -1241,21 +1514,34 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:131)
 LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:90)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
 
 (Filename: Assets/Editor/LevelValidator.cs Line: 131)
 
 Opening scene 'Assets/Scenes/Level_15.unity'
-Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/Scenes/Level_15.unity'
-	Deserialize:            12.963 ms
-	Integration:            199.624 ms
-	Integration of assets:  0.035 ms
-	Thread Wait Time:       0.048 ms
-	Total Operation Time:   212.669 ms
-Unloading 2 unused Assets / (0.5 KB). Loaded Objects now: 11643.
-Memory consumption went from 278.6 MB to 278.6 MB.
-Total: 30.556700 ms (FindLiveObjects: 1.207100 ms CreateObjectMapping: 0.407000 ms MarkObjects: 28.883700 ms  DeleteObjects: 0.056800 ms)
+	Deserialize:            11.629 ms
+	Integration:            207.468 ms
+	Integration of assets:  0.075 ms
+	Thread Wait Time:       0.029 ms
+	Total Operation Time:   219.200 ms
+Unloading 2 unused Assets / (0.5 KB). Loaded Objects now: 11748.
+Memory consumption went from 280.5 MB to 280.5 MB.
+Total: 25.586000 ms (FindLiveObjects: 0.820000 ms CreateObjectMapping: 0.408600 ms MarkObjects: 24.275700 ms  DeleteObjects: 0.080100 ms)
+
+[LevelValidator] Level_15: No EchoPathHint.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:110)
+LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
+
+(Filename: Assets/Editor/LevelValidator.cs Line: 110)
 
 [LevelValidator] PASS: Level_15
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -1266,7 +1552,7 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 LevelValidator:ValidateScene (UnityEngine.SceneManagement.Scene) (at Assets/Editor/LevelValidator.cs:131)
 LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:310)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:90)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
 
 (Filename: Assets/Editor/LevelValidator.cs Line: 131)
 
@@ -1278,7 +1564,7 @@ UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,st
 UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 LevelValidator:ValidateAllLevels () (at Assets/Editor/LevelValidator.cs:314)
-EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:90)
+EchoesProductionBuilder:RebuildAll () (at Assets/Editor/EchoesProductionBuilder.cs:97)
 
 (Filename: Assets/Editor/LevelValidator.cs Line: 314)
 
@@ -1288,10 +1574,24 @@ Batchmode quit successfully invoked - shutting down!
 Input System module state changed to: ShutdownInProgress.
 Input Polling Thread exited.
 Input System module state changed to: Shutdown.
-[Licensing::IpcConnector] LicenseClient-lol xdd-notifications channel disconnected successfully.
-[Licensing::IpcConnector] LicenseClient-lol xdd channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-lol xdd-6000.4.3-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-lol xdd-6000.4.3 channel disconnected successfully.
 AcceleratorClientConnectionCallback - disconnected - :0
+Shut down.
 Cleanup mono
 CodeReloadManager destroyed
+abort_threads: Failed aborting id: 00000000000018E8, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 00000000000051A4, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 0000000000004B98, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 00000000000018E8, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 00000000000051A4, mono_thread_manage will ignore it
+
+abort_threads: Failed aborting id: 0000000000004B98, mono_thread_manage will ignore it
+
+debugger-agent: Unable to listen on 3216
 Exiting batchmode successfully now!
 Exiting without the bug reporter. Application will terminate with return code 0

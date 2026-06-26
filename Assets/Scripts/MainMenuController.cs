@@ -378,8 +378,17 @@ public class MainMenuController : MonoBehaviour
     {
         _settingsPanel?.AddToClassList("hidden");
         _levelSelectPanel?.AddToClassList("hidden");
-        _mainContent?.AddToClassList("hidden");
-        _voidIntro?.RemoveFromClassList("hidden");
+        _rightContentContainer?.RemoveFromClassList("hidden");
+
+        if (_voidIntro != null)
+        {
+            _mainContent?.AddToClassList("hidden");
+            _voidIntro.RemoveFromClassList("hidden");
+        }
+        else
+        {
+            _mainContent?.RemoveFromClassList("hidden");
+        }
 
         if (_menuBg != null)
         {
@@ -401,6 +410,7 @@ public class MainMenuController : MonoBehaviour
         _levelSelectPanel?.AddToClassList("hidden");
         _voidIntro?.AddToClassList("hidden");
         _mainContent?.RemoveFromClassList("hidden");
+        _rightContentContainer?.RemoveFromClassList("hidden");
 
         if (_menuBg != null)
         {
@@ -420,10 +430,21 @@ public class MainMenuController : MonoBehaviour
     {
         _levelSelectPanel?.AddToClassList("hidden");
         _voidIntro?.AddToClassList("hidden");
-        _mainContent?.AddToClassList("hidden");
-        _settingsPanel?.RemoveFromClassList("hidden");
+        _rightContentContainer?.RemoveFromClassList("hidden");
+
+        if (_settingsPanel != null)
+        {
+            _mainContent?.AddToClassList("hidden");
+            _settingsPanel.RemoveFromClassList("hidden");
+        }
+        else
+        {
+            _mainContent?.RemoveFromClassList("hidden");
+        }
+
         SetActiveNav(_btnSettings);
-        _activePreviewPanelName = "panel-calibration-preview";
+        _activePreviewPanelName = "";
+        ShowPreviewPanel("panel-calibration-preview");
         LoadCurrentSettingsIntoUI();
     }
 
@@ -436,6 +457,18 @@ public class MainMenuController : MonoBehaviour
 
     void LoadLevel(string levelName)
     {
+        if (string.IsNullOrWhiteSpace(levelName))
+        {
+            Debug.LogError("[MainMenuController] Cannot load an empty level name.");
+            return;
+        }
+
+        if (!Application.CanStreamedLevelBeLoaded(levelName))
+        {
+            Debug.LogError($"[MainMenuController] Scene '{levelName}' is not in Build Settings or cannot be loaded.");
+            return;
+        }
+
         if (SceneTransitionManager.Instance != null)
         {
             SceneTransitionManager.Instance.LoadScene(levelName);

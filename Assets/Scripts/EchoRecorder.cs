@@ -14,7 +14,7 @@ public class EchoRecorder : MonoBehaviour
     [SerializeField] Transform echoSpawnRoot;
     [SerializeField] int maxEchoes = 2;
     [SerializeField] float maxRecordSeconds = 6f;
-    [SerializeField] float minRecordSeconds = 0.35f;
+    [SerializeField] float minRecordSeconds = 0.1f;
 
     [Header("Proyeccion")]
     [SerializeField] KeyCode projectionKey = KeyCode.F;
@@ -167,7 +167,7 @@ public class EchoRecorder : MonoBehaviour
 
         AudioClip voiceClip = StopVoiceCapture(elapsed);
 
-        if (elapsed < minRecordSeconds || _frames.Count < 2)
+        if (_frames.Count < 2)
         {
             _frames.Clear();
             DestroyProjectionPilot();
@@ -271,7 +271,7 @@ public class EchoRecorder : MonoBehaviour
         _micDevice = Microphone.devices != null && Microphone.devices.Length > 0 ? Microphone.devices[0] : null;
         if (string.IsNullOrEmpty(_micDevice))
         {
-            Debug.LogWarning("EchoRecorder: no hay microfono disponible para grabar la voz del eco.");
+            Debug.Log("EchoRecorder: no hay microfono disponible — el eco se creara sin voz.");
             return;
         }
 
@@ -288,7 +288,7 @@ public class EchoRecorder : MonoBehaviour
         _micClip = Microphone.Start(_micDevice, false, captureSeconds, _micFrequency);
         if (_micClip == null)
         {
-            Debug.LogWarning($"EchoRecorder: no se pudo iniciar el microfono '{_micDevice}'.");
+            Debug.Log($"EchoRecorder: no se pudo iniciar el microfono '{_micDevice}' — eco sin voz.");
             return;
         }
 
@@ -330,7 +330,7 @@ public class EchoRecorder : MonoBehaviour
 
         if (!_micReady || sampleCount <= 0)
         {
-            Debug.LogWarning($"EchoRecorder: el microfono no entrego muestras validas para el eco. Tiempo activo: {Time.realtimeSinceStartup - _micStartRealtime:0.00}s.");
+            Debug.Log($"EchoRecorder: el microfono no entrego muestras validas — eco sin voz. Tiempo activo: {Time.realtimeSinceStartup - _micStartRealtime:0.00}s.");
             _micClip = null;
             _micDevice = null;
             return null;

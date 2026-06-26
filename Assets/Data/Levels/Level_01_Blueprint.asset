@@ -16,152 +16,72 @@ MonoBehaviour:
   nextLevel: Level_02
   actNumber: 1
   archetype: 0
-  maxEchoes: 1
-  maxRecordSeconds: 12
+  maxEchoes: 0
+  maxRecordSeconds: 0
   activeParadoxes: 
-  fogColor: {r: 0.12, g: 0.14, b: 0.2, a: 1}
-  fogDensity: 0.008
-  skyColor: {r: 0.2, g: 0.22, b: 0.28, a: 1}
-  directionalLightRotation: {x: 50, y: -30, z: 0}
-  directionalLightColor: {r: 1, g: 1, b: 1, a: 1}
-  directionalLightIntensity: 1
-  narrativeIntroTitle: "Nivel 1 \u2014 Despertar Sim\xE9trico"
-  narrativeIntroDesc: "Baja por la rampa al nivel inferior. Graba un eco parado sobre
-    la placa para abrir la compuerta superior. Regresa r\xE1pido y cr\xFAzala mientras
-    tu eco mantiene el port\xF3n abierto."
-  narrativeIntroDuration: 10
-  puzzleObjectiveText: Activa la placa inferior proyectando un eco y cruza antes
-    de que baje la compuerta.
-  puzzleActiveText: "El eco del portal responde en la simulaci\xF3n."
-  puzzleCompleteText: "Fractura sim\xE9trica superada."
+  fogColor: {r: 0.15, g: 0.15, b: 0.15, a: 1}
+  fogDensity: 0.035
+  skyColor: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+  directionalLightRotation: {x: 45, y: -45, z: 0}
+  directionalLightColor: {r: 0.8, g: 0.85, b: 0.9, a: 1}
+  directionalLightIntensity: 0.6
+  narrativeIntroTitle: "Nivel 1 \u2014 Desorientación"
+  narrativeIntroDesc: "Despiertas en un pasillo interminable. Camina a través de la bruma escolar. Encuentra la salida de tus propios pensamientos."
+  narrativeIntroDuration: 8
+  puzzleObjectiveText: Camina a través del pasillo liminal hacia la luz de la meta.
+  puzzleActiveText: "La bruma del colegio te rodea."
+  puzzleCompleteText: "Camino inicial despejado."
   pathHints:
-  - {x: 0, y: 7.1, z: -1}
-  - {x: 0, y: 1.1, z: 18}
-  - {x: 0, y: 7.1, z: -6}
+  - {x: 0, y: 1.1, z: -10}
+  - {x: 0, y: 1.1, z: 13}
+  - {x: 15, y: 1.1, z: 13}
   modules:
-  - name: StartPlatform
-    type: 0
-    position: {x: 0, y: 6, z: 0}
+  - name: PlayerStart
+    type: 7
+    position: {x: 0, y: 1.1, z: -10}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 8, y: 0.5, z: 8}
-    customData: 
-    targetSignals: []
-  - name: BarrierStart_L
-    type: 3
-    position: {x: -3.8, y: 7.5, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0.4, y: 3, z: 8}
-    customData: 
-    targetSignals: []
-  - name: BarrierStart_R
-    type: 3
-    position: {x: 3.8, y: 7.5, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0.4, y: 3, z: 8}
-    customData: 
-    targetSignals: []
-  - name: RampDown
-    type: 2
-    position: {x: 0, y: 3, z: 8}
-    rotation: {x: 22, y: 0, z: 0}
-    scale: {x: 4, y: 0.5, z: 10}
-    customData: 
-    targetSignals: []
-  - name: LowerPlatform
-    type: 0
-    position: {x: 0, y: 0, z: 18}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 10, y: 0.5, z: 10}
-    customData: 
-    targetSignals: []
-  - name: Plate1
-    type: 4
-    position: {x: 0, y: 0.33, z: 18}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 1, y: 1, z: 1}
-    customData: 
-    targetSignals: []
-  - name: ExitGate
-    type: 5
-    position: {x: 0, y: 7.5, z: -3.8}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 4, y: 3, z: 0.5}
+    scale: {x: 0, y: 0, z: 0}
     customData: 
     targetSignals:
-    - Plate1
-  - name: ExitPlatform
-    type: 0
-    position: {x: 0, y: 6, z: -7}
+  - name: Corridor1
+    type: 24
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 6, y: 0.5, z: 20}
+    customData: 
+    targetSignals:
+  - name: Corner1
+    type: 28
+    position: {x: 0, y: 0, z: 13}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 6, y: 0.5, z: 6}
     customData: 
-    targetSignals: []
+    targetSignals:
+  - name: Corridor2
+    type: 24
+    position: {x: 8, y: 0, z: 13}
+    rotation: {x: 0, y: 90, z: 0}
+    scale: {x: 6, y: 0.5, z: 16}
+    customData: 
+    targetSignals:
   - name: LevelExit_Area
     type: 6
-    position: {x: 0, y: 7.25, z: -6}
-    rotation: {x: 0, y: 0, z: 0}
+    position: {x: 15, y: 1.1, z: 13}
+    rotation: {x: 0, y: 90, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: Level_02
-    targetSignals: []
-  - name: PlayerStart
-    type: 7
-    position: {x: 0, y: 7.1, z: -1}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
-    targetSignals: []
-  - name: Tut_L01_Simetria
-    type: 9
-    position: {x: 0, y: 7, z: -1}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 8, y: 3, z: 4}
-    customData: "Nivel 1 \u2014 Despertar Sim\xE9trico|Baja por la rampa al nivel
-      inferior. Graba un eco parado sobre la placa para abrir la compuerta superior.
-      Regresa r\xE1pido y cr\xFAzala mientras tu eco mantiene el port\xF3n abierto."
-    targetSignals: []
-  - name: Light_LowerPlate
-    type: 10
-    position: {x: 0, y: 3, z: 18}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 40C0FF,4,10
-    targetSignals: []
-  - name: Light_Exit
-    type: 10
-    position: {x: 0, y: 9, z: -6}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 2699FF,5,10
-    targetSignals: []
-  - name: DistantArch
-    type: 12
-    position: {x: 0, y: 0, z: 12}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
-    targetSignals: []
-  - name: AmbientParticles
-    type: 11
-    position: {x: 0, y: 2, z: 8}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 18, y: 8, z: 18}
-    customData: 
-    targetSignals: []
+    targetSignals:
   - name: LevelGoal
     type: 13
-    position: {x: 0, y: 7.25, z: -6}
+    position: {x: 15, y: 1.1, z: 13}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
-    customData: "Activa la placa inferior proyectando un eco y cruza antes de que
-      baje la compuerta.|El eco del portal responde en la simulaci\xF3n.|Fractura
-      sim\xE9trica superada."
+    customData: Camina hacia la meta a través del pasillo escolar.|Bruma densa.|Salida alcanzada.
     targetSignals:
-    - Plate1
   - name: LevelRuntime
     type: 14
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
-    customData: Proyecta tu eco a la placa inferior y cruza la compuerta.|El eco
-      es tu llave del pasado.|El primer enlace se ha completado.
-    targetSignals: []
+    customData: Encuentra la salida.|La bruma te rodea.|Saliste del pasillo.
+    targetSignals:

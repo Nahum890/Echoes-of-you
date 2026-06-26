@@ -193,6 +193,10 @@ public class PauseMenu : MonoBehaviour
 
     void Update()
     {
+        // Retry initialization if UI tree wasn't ready during OnEnable/Start
+        if (!_initialized)
+            InitializeUI();
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (_paused)

@@ -15,137 +15,88 @@ MonoBehaviour:
   levelName: Level_02
   nextLevel: Level_03
   actNumber: 1
-  archetype: 3
-  maxEchoes: 2
-  maxRecordSeconds: 14
+  archetype: 0
+  maxEchoes: 1
+  maxRecordSeconds: 8
   activeParadoxes: 
-  fogColor: {r: 0.04, g: 0.05, b: 0.08, a: 1}
-  fogDensity: 0.043
-  skyColor: {r: 0.04, g: 0.05, b: 0.08, a: 1}
+  fogColor: {r: 0.12, g: 0.14, b: 0.18, a: 1}
+  fogDensity: 0.025
+  skyColor: {r: 0.15, g: 0.17, b: 0.22, a: 1}
   directionalLightRotation: {x: 50, y: -30, z: 0}
-  directionalLightColor: {r: 1, g: 1, b: 1, a: 1}
-  directionalLightIntensity: 1
-  narrativeIntroTitle: "Nivel 2 \u2014 Plataformas Cruzadas"
-  narrativeIntroDesc: Sincroniza tus ecos en las placas cruzadas para elevar las
-    plataformas y cruzar el puente superior.
-  narrativeIntroDuration: 10
-  puzzleObjectiveText: Sincroniza tus ecos en las placas cruzadas para elevar las
-    plataformas y cruzar el puente.
-  puzzleActiveText: "El contrapeso de la memoria est\xE1 listo."
-  puzzleCompleteText: Enlace completado.
+  directionalLightColor: {r: 0.85, g: 0.9, b: 0.95, a: 1}
+  directionalLightIntensity: 0.8
+  narrativeIntroTitle: "Nivel 2 \u2014 Repetición"
+  narrativeIntroDesc: "El tiempo se repite en el aula de clase. Graba un eco presionando el pedal en el aula anterior para abrir la puerta de la siguiente."
+  narrativeIntroDuration: 8
+  puzzleObjectiveText: Usa tu eco para abrir la compuerta intermedia del aula.
+  puzzleActiveText: "Sincroniza el pedal del aula."
+  puzzleCompleteText: "Compuerta del aula superada."
   pathHints:
-  - {x: 0, y: 1.1, z: 0}
-  - {x: -6, y: 7.1, z: 12}
+  - {x: 0, y: 1.1, z: -12}
+  - {x: 0, y: 1.1, z: 10}
   modules:
-  - name: StartPlatform
-    type: 0
-    position: {x: 0, y: 0, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 14, y: 0.5, z: 8}
-    customData: 
-    targetSignals: []
-  - name: LeftTower
-    type: 0
-    position: {x: -6, y: 6, z: 12}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 4, y: 0.5, z: 4}
-    customData: 
-    targetSignals: []
-  - name: RightTower
-    type: 0
-    position: {x: 6, y: 6, z: 12}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 4, y: 0.5, z: 4}
-    customData: 
-    targetSignals: []
-  - name: PlateA
-    type: 4
-    position: {x: -4, y: 0.33, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
-    targetSignals: []
-  - name: PlateB
-    type: 4
-    position: {x: 4, y: 0.33, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
-    targetSignals: []
-  - name: PlateC
-    type: 4
-    position: {x: 6, y: 6.33, z: 12}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
-    targetSignals: []
-  - name: ElevLeft
-    type: 8
-    position: {x: -6, y: 0, z: 6}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 3, y: 0.5, z: 3}
-    customData: 0,0,0|0,6,0|6
-    targetSignals:
-    - PlateB
-  - name: ElevRight
-    type: 8
-    position: {x: 6, y: 0, z: 6}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 3, y: 0.5, z: 3}
-    customData: 0,0,0|0,6,0|6
-    targetSignals:
-    - PlateA
-  - name: BridgeDoor
-    type: 5
-    position: {x: 0, y: 7.5, z: 12}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 4, y: 3, z: 0.5}
-    customData: 
-    targetSignals:
-    - PlateC
-  - name: BridgeHigh
-    type: 1
-    position: {x: 0, y: 6, z: 12}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 8, y: 0.5, z: 3}
-    customData: 
-    targetSignals: []
-  - name: LevelExit_Area
-    type: 6
-    position: {x: -6, y: 7.25, z: 12}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: Level_03
-    targetSignals: []
   - name: PlayerStart
     type: 7
-    position: {x: 0, y: 1.1, z: 0}
+    position: {x: 0, y: 1.1, z: -12}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
     customData: 
-    targetSignals: []
-  - name: DistantArch
-    type: 12
-    position: {x: 0, y: 0, z: 12}
+    targetSignals:
+  - name: Aula1
+    type: 21
+    position: {x: 0, y: 0, z: -6}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
+    scale: {x: 10, y: 0.5, z: 10}
     customData: 
-    targetSignals: []
+    targetSignals:
+  - name: Plate1
+    type: 4
+    position: {x: -3, y: 0.33, z: -6}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 
+    targetSignals:
+  - name: Door1
+    type: 5
+    position: {x: 0, y: 1.5, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 3, y: 3, z: 0.5}
+    customData: 
+    targetSignals:
+    - Plate1
+  - name: Aula2
+    type: 21
+    position: {x: 0, y: 0, z: 6}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 10, y: 0.5, z: 10}
+    customData: 
+    targetSignals:
+  - name: LevelExit_Area
+    type: 6
+    position: {x: 0, y: 1.1, z: 10}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: Level_03
+    targetSignals:
   - name: LevelGoal
     type: 13
-    position: {x: -6, y: 7.25, z: 12}
+    position: {x: 0, y: 1.1, z: 10}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
-    customData: "Sincroniza tus ecos en las placas cruzadas para elevar las plataformas
-      y cruzar el puente superior.|El contrapeso de la memoria est\xE1 listo.|Enlace
-      completado."
+    customData: Usa tu eco en el pedal para abrir el portón.|El eco abre la compuerta.|Aula superada.
     targetSignals:
-    - PlateC
+    - Plate1
   - name: LevelRuntime
     type: 14
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
-    customData: "Sincroniza tus ecos en las placas cruzadas.|El contrapeso de la
-      memoria est\xE1 listo.|Enlace completado."
-    targetSignals: []
+    customData: Proyecta un eco en el pedal.|Tu pasado abre el camino.|Camino libre.
+    targetSignals:
+  - name: Tut_L02
+    type: 9
+    position: {x: 0, y: 1.1, z: -12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 8, y: 3, z: 4}
+    customData: Nivel 2 — Repetición|Graba un eco presionando la alfombrilla del Aula 1. Luego cruza el portón del centro mientras el eco la pisa.
+    targetSignals:

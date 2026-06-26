@@ -16,6 +16,12 @@ public static class EchoesMaterialLibrary
     public static Material ArchMat => GetOrCreateArchMat();
     public static Material LiminalFogMat => GetOrCreateLiminalFogMat();
 
+    public static Material WallTealMat    => GetOrCreateMaterial("Mat_WallTeal",    HexColor("2B4A4A"));
+    public static Material WallMustardMat => GetOrCreateMaterial("Mat_WallMustard", HexColor("5A4A2E"));
+    public static Material WallSageMat    => GetOrCreateMaterial("Mat_WallSage",    HexColor("3A4A38"));
+    public static Material WallRoseMat    => GetOrCreateMaterial("Mat_WallRose",    HexColor("4A3438"));
+    public static Material MemoryMat      => GetOrCreateEmissiveMaterial("Mat_Memory", HexColor("8A5A2E"), HexColor("E8B262") * 0.9f);
+
     public static void EnsureMaterials()
     {
         Shader standardShader = Shader.Find("Standard");
@@ -35,35 +41,11 @@ public static class EchoesMaterialLibrary
         var player = PlayerMat;
         var echo = EchoMat;
         var fog = LiminalFogMat;
-
-        // Apply physical textures and shading properties
-        SetupMaterialTextures(floor, 
-            "Assets/Materials/Concrete047A_2K-JPG (1)/Concrete047A_2K-JPG_Color.jpg", 
-            "Assets/Materials/Concrete047A_2K-JPG (1)/Concrete047A_2K-JPG_NormalGL.jpg", 
-            "Assets/Materials/Concrete047A_2K-JPG (1)/Concrete047A_2K-JPG_AmbientOcclusion.jpg", 
-            0.85f, 0.02f, 0.18f, new Vector2(4.0f, 4.0f));
-
-        SetupMaterialTextures(arch, 
-            "Assets/Materials/Concrete047A_2K-JPG (1)/Concrete047A_2K-JPG_Color.jpg", 
-            "Assets/Materials/Concrete047A_2K-JPG (1)/Concrete047A_2K-JPG_NormalGL.jpg", 
-            "Assets/Materials/Concrete047A_2K-JPG (1)/Concrete047A_2K-JPG_AmbientOcclusion.jpg", 
-            0.75f, 0.02f, 0.22f, new Vector2(3.0f, 3.0f));
-
-        SetupMaterialTextures(bridge, 
-            "Assets/Materials/Metal054B_2K-JPG/Metal054B_2K-JPG_Color.jpg", 
-            "Assets/Materials/Metal054B_2K-JPG/Metal054B_2K-JPG_NormalGL.jpg", 
-            null, 
-            0.75f, 0.85f, 0.45f, new Vector2(3.0f, 3.0f));
-
-        SetupMaterialTextures(plate, 
-            "Assets/Materials/placas.jpg", 
-            null, null, 
-            1.0f, 0.4f, 0.75f, null);
-
-        SetupMaterialTextures(door, 
-            "Assets/Materials/Puerta.jpg", 
-            null, null, 
-            1.0f, 0.6f, 0.4f, null);
+        var wallTeal    = WallTealMat;
+        var wallMustard = WallMustardMat;
+        var wallSage    = WallSageMat;
+        var wallRose    = WallRoseMat;
+        var memory      = MemoryMat;
 
         if (goal != null)
         {
@@ -111,6 +93,8 @@ public static class EchoesMaterialLibrary
         if (material != null)
         {
             material.color = color;
+            material.SetFloat("_Metallic", 0f);
+            material.SetFloat("_Glossiness", 0.05f);
             if (emissive)
             {
                 material.EnableKeyword("_EMISSION");
@@ -121,6 +105,8 @@ public static class EchoesMaterialLibrary
 
         material = new Material(Shader.Find("Standard"));
         material.color = color;
+        material.SetFloat("_Metallic", 0f);
+        material.SetFloat("_Glossiness", 0.05f);
         if (emissive)
         {
             material.EnableKeyword("_EMISSION");
@@ -139,6 +125,8 @@ public static class EchoesMaterialLibrary
         if (material != null)
         {
             material.color = albedo;
+            material.SetFloat("_Metallic", 0f);
+            material.SetFloat("_Glossiness", 0.05f);
             material.EnableKeyword("_EMISSION");
             material.SetColor("_EmissionColor", emission);
             return material;
@@ -146,6 +134,8 @@ public static class EchoesMaterialLibrary
 
         material = new Material(Shader.Find("Standard"));
         material.color = albedo;
+        material.SetFloat("_Metallic", 0f);
+        material.SetFloat("_Glossiness", 0.05f);
         material.EnableKeyword("_EMISSION");
         material.SetColor("_EmissionColor", emission);
 

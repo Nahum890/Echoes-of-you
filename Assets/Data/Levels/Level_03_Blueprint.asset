@@ -19,177 +19,85 @@ MonoBehaviour:
   maxEchoes: 1
   maxRecordSeconds: 10
   activeParadoxes: 
-  fogColor: {r: 0.02, g: 0.02, b: 0.04, a: 1}
-  fogDensity: 0.06
-  skyColor: {r: 0.02, g: 0.02, b: 0.04, a: 1}
-  directionalLightRotation: {x: 50, y: -30, z: 0}
-  directionalLightColor: {r: 1, g: 1, b: 1, a: 1}
-  directionalLightIntensity: 1
-  narrativeIntroTitle: "Nivel 3 \u2014 La Paradoja del Conflicto"
-  narrativeIntroDesc: "Tu eco en la c\xE1mara izquierda desactiva la barrera roja,
-    pero estar ah\xED activa una trampa que cierra la puerta final. Coordina los
-    tiempos de salida de tu eco."
-  narrativeIntroDuration: 10
-  puzzleObjectiveText: "Neutraliza el muro de energ\xEDa sin activar la trampa de
-    conflicto al salir."
-  puzzleActiveText: La paradoja temporal se activa.
-  puzzleCompleteText: Paradoja superada.
+  fogColor: {r: 0.1, g: 0.12, b: 0.15, a: 1}
+  fogDensity: 0.02
+  skyColor: {r: 0.12, g: 0.14, b: 0.18, a: 1}
+  directionalLightRotation: {x: 55, y: -45, z: 0}
+  directionalLightColor: {r: 0.8, g: 0.8, b: 0.85, a: 1}
+  directionalLightIntensity: 0.7
+  narrativeIntroTitle: "Nivel 3 \u2014 Indecisión"
+  narrativeIntroDesc: "El vestíbulo escolar se divide. Un camino hacia la izquierda abre la compuerta de la derecha. Envía tu eco a decidir por ti."
+  narrativeIntroDuration: 8
+  puzzleObjectiveText: Envía tu eco por el pasillo izquierdo para abrir la reja del pasillo derecho.
+  puzzleActiveText: "Placa izquierda pulsada."
+  puzzleCompleteText: "Salida derecha franqueada."
   pathHints:
-  - {x: 0, y: 1.1, z: 0}
-  - {x: -8, y: 1.1, z: 12}
-  - {x: 0, y: 1.1, z: 12}
-  - {x: 0, y: 1.1, z: 26}
+  - {x: 0, y: 1.1, z: -12}
+  - {x: -6, y: 1.1, z: 4}
+  - {x: 6, y: 1.1, z: 9}
   modules:
-  - name: StartPlatform
-    type: 0
-    position: {x: 0, y: 0, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 10, y: 0.5, z: 8}
-    customData: 
-    targetSignals: []
-  - name: Corridor
-    type: 1
-    position: {x: 0, y: 0, z: 12}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 4, y: 0.5, z: 16}
-    customData: 
-    targetSignals: []
-  - name: ExitPlatform
-    type: 0
-    position: {x: 0, y: 0, z: 24}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 10, y: 0.5, z: 8}
-    customData: 
-    targetSignals: []
-  - name: ControlChamber
-    type: 0
-    position: {x: -8, y: 0, z: 12}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 6, y: 0.5, z: 6}
-    customData: 
-    targetSignals: []
-  - name: ControlPlate
-    type: 4
-    position: {x: -8, y: 0.33, z: 12}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
-    targetSignals: []
-  - name: Signal_Shield
-    type: 15
-    position: {x: 0, y: 0, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: "Energ\xEDa Neutralizada|false|false"
-    targetSignals: []
-  - name: Signal_Trap
-    type: 15
-    position: {x: 0, y: 0, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: Trampa Paradoja|false|false
-    targetSignals: []
-  - name: Cond_Shield
-    type: 16
-    position: {x: 0, y: 0, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: AllPlatesSimultaneous
-    targetSignals:
-    - ControlPlate
-    - Signal_Shield
-  - name: Muro_Energia
-    type: 17
-    position: {x: 0, y: 1.5, z: 8}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 4, y: 3, z: 1.2}
-    customData: 
-    targetSignals:
-    - Signal_Shield
-  - name: ExitGate
-    type: 5
-    position: {x: 0, y: 1.5, z: 18}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 4, y: 3, z: 0.5}
-    customData: 
-    targetSignals: []
-  - name: ControlTrap
-    type: 18
-    position: {x: -8, y: 1.5, z: 12}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 5, y: 3, z: 5}
-    customData: 
-    targetSignals:
-    - ExitGate
-    - Signal_Trap
-  - name: LevelExit_Area
-    type: 6
-    position: {x: 0, y: 1.25, z: 26}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: Level_04
-    targetSignals: []
   - name: PlayerStart
     type: 7
-    position: {x: 0, y: 1.1, z: 0}
+    position: {x: 0, y: 1.1, z: -12}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
     customData: 
-    targetSignals: []
-  - name: Tut_L03_Paradoja
-    type: 9
-    position: {x: 0, y: 1, z: 0}
+    targetSignals:
+  - name: VestibuloBase
+    type: 0
+    position: {x: 0, y: 0, z: -8}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 10, y: 3, z: 8}
-    customData: "Nivel 3 \u2014 La Paradoja del Conflicto|Tu eco en la c\xE1mara
-      izquierda desactiva la barrera roja, pero estar ah\xED activa una trampa que
-      cierra la puerta final. Graba un recorrido donde el eco pise la placa unos
-      segundos, luego SALGA de la c\xE1mara izquierda. Cruza la barrera y espera
-      a que el eco salga para cruzar la compuerta."
-    targetSignals: []
-  - name: Light_ControlChamber
-    type: 10
-    position: {x: -8, y: 3, z: 12}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 3D7CFF,3,8
-    targetSignals: []
-  - name: Light_Hazard
-    type: 10
-    position: {x: 0, y: 3, z: 8}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: FF2A14,3.5,10
-    targetSignals: []
-  - name: Light_Exit
-    type: 10
-    position: {x: 0, y: 4, z: 26}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 2699FF,5,10
-    targetSignals: []
-  - name: DistantArch
-    type: 12
-    position: {x: 0, y: 0, z: 14}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
+    scale: {x: 8, y: 0.5, z: 6}
     customData: 
-    targetSignals: []
+    targetSignals:
+  - name: CorridorL
+    type: 24
+    position: {x: -6, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 4, y: 0.5, z: 14}
+    customData: 
+    targetSignals:
+  - name: CorridorR
+    type: 24
+    position: {x: 6, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 4, y: 0.5, z: 14}
+    customData: 
+    targetSignals:
+  - name: PlateL
+    type: 4
+    position: {x: -6, y: 0.33, z: 4}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 
+    targetSignals:
+  - name: DoorR
+    type: 5
+    position: {x: 6, y: 1.5, z: 4}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 3, y: 3, z: 0.5}
+    customData: 
+    targetSignals:
+    - PlateL
+  - name: LevelExit_Area
+    type: 6
+    position: {x: 6, y: 1.1, z: 9}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: Level_04
+    targetSignals:
   - name: LevelGoal
     type: 13
-    position: {x: 0, y: 1.25, z: 26}
+    position: {x: 6, y: 1.1, z: 9}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
-    customData: "Neutraliza el muro de energ\xEDa sin activar la trampa de conflicto
-      al salir.|La paradoja temporal se activa.|Paradoja superada."
+    customData: Envía tu eco a la placa izquierda.|El pasillo derecho se abre.|Vestíbulo superado.
     targetSignals:
-    - Signal_Shield
-    - Signal_Trap
+    - PlateL
   - name: LevelRuntime
     type: 14
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
-    customData: "Neutraliza la barrera de energ\xEDa y evita la trampa de conflicto.|El
-      eco es tu llave y tu prisi\xF3n.|Acceso libre."
-    targetSignals: []
+    customData: Usa tu eco como bifurcador.|La reja del pasillo derecho responde.|Camino libre.
+    targetSignals:

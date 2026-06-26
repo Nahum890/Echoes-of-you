@@ -41,6 +41,36 @@ public class EchoPlayback : MonoBehaviour
         EnsureVisualAnimator();
         EnsureOptionalComponent("EchoSpectralTrail");
         EnsureOptionalComponent("EchoTemporalVisual");
+        EnsureOptionalComponent("CharacterPush");
+
+        // Add CapsuleCollider so other CharacterControllers (like the player) collide with the echo physically
+        CapsuleCollider cap = gameObject.GetComponent<CapsuleCollider>();
+        if (cap == null)
+            cap = gameObject.AddComponent<CapsuleCollider>();
+        cap.height = EchoHeight;
+        cap.radius = EchoRadius;
+        cap.center = new Vector3(0f, EchoHeight * 0.5f, 0f);
+
+        // Ignore collision with all PlayerOnlyBarrier colliders
+        // Wrapped in try-catch because the tag may not exist in TagManager
+        try
+        {
+            GameObject[] barriers = GameObject.FindGameObjectsWithTag("PlayerOnlyBarrier");
+            foreach (var b in barriers)
+            {
+                Collider col = b.GetComponent<Collider>();
+                if (col != null)
+                    Physics.IgnoreCollision(_cc, col);
+                Collider childCol = b.GetComponentInChildren<Collider>();
+                if (childCol != null)
+                    Physics.IgnoreCollision(_cc, childCol);
+            }
+        }
+        catch (UnityException)
+        {
+            // Tag not defined — no barriers to ignore, which is fine
+        }
+
         RemovePlayerOnlyAnimationBootstraps();
         _anim = ResolveEchoAnimator();
         
@@ -217,10 +247,17 @@ public class EchoPlayback : MonoBehaviour
 
         RecordFrame.Evaluate(_frames, _time, out Vector3 nextPosition, out Quaternion nextRotation);
 
-        _cc.enabled = false;
-        transform.SetPositionAndRotation(nextPosition, nextRotation);
-        _cc.enabled = true;
-        _cc.Move(-transform.up * 0.001f);
+        Vector3 moveOffset = nextPosition - transform.position;
+
+        // Keep CharacterController active so it sweeps physically and pushes objects
+        _cc.Move(moveOffset);
+
+        // Snap to target if blocked to prevent permanent drift from the recorded path
+        if (Vector3.Distance(transform.position, nextPosition) > 0.05f)
+        {
+            transform.position = nextPosition;
+        }
+        transform.rotation = nextRotation;
     }
 
     void Update()
