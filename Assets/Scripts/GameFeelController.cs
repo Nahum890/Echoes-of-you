@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
-#if UNITY_POST_PROCESSING_STACK_V2
-using UnityEngine.Rendering.PostProcessing;
-#endif
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 /// <summary>
 /// Sistema de Game Feel con jerarquía de intensidad.
@@ -270,35 +269,33 @@ public class GameFeelController : MonoBehaviour
             RequestCameraPulse(breatheFov, 0.05f);
         }
 
-#if UNITY_POST_PROCESSING_STACK_V2
-        PostProcessProfile profile = PostProcessingSetup.RuntimeProfile;
+        VolumeProfile profile = PostProcessingSetup.RuntimeProfile;
         if (profile != null)
         {
-            if (profile.TryGetSettings<ChromaticAberration>(out var ca))
+            if (profile.TryGet<ChromaticAberration>(out var ca))
             {
                 ca.intensity.value = Mathf.MoveTowards(ca.intensity.value, targetCA, Time.unscaledDeltaTime * 1.5f);
             }
-            if (profile.TryGetSettings<LensDistortion>(out var ld))
+            if (profile.TryGet<LensDistortion>(out var ld))
             {
                 ld.intensity.value = Mathf.MoveTowards(ld.intensity.value, targetLD, Time.unscaledDeltaTime * 60f);
             }
-            if (profile.TryGetSettings<Vignette>(out var vignette))
+            if (profile.TryGet<Vignette>(out var vignette))
             {
                 vignette.intensity.value = Mathf.MoveTowards(vignette.intensity.value, targetVignette, Time.unscaledDeltaTime * 1.8f);
             }
-            if (profile.TryGetSettings<ColorGrading>(out var grading))
+            if (profile.TryGet<ColorAdjustments>(out var grading))
             {
                 grading.postExposure.value = Mathf.MoveTowards(grading.postExposure.value, targetExposure, Time.unscaledDeltaTime * 1.5f);
                 float targetSaturation = isRecording ? -42f : -28f;
                 grading.saturation.value = Mathf.MoveTowards(grading.saturation.value, targetSaturation, Time.unscaledDeltaTime * (isRecording ? 28f : 8f));
             }
-            if (profile.TryGetSettings<Grain>(out var grain))
+            if (profile.TryGet<FilmGrain>(out var grain))
             {
                 float targetGrain = isRecording ? 0.55f : 0.28f;
                 grain.intensity.value = Mathf.MoveTowards(grain.intensity.value, targetGrain, Time.unscaledDeltaTime * 2.2f);
             }
         }
-#endif
     }
 
     void OnDestroy()
