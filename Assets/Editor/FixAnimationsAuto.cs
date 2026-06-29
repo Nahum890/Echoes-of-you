@@ -1,45 +1,47 @@
-using UnityEngine;
+using System;
+using System.Reflection;
 using UnityEditor;
 
 [InitializeOnLoad]
-public class FixAnimationsAuto 
+public class FixAnimationsAuto
 {
+    const string RepairVersionKey = "EchoesAnimationsFixed_20260521";
+
     static FixAnimationsAuto()
     {
-        // Quitamos la condición de EditorPrefs temporalmente para forzar que se arregle el nuevo modelo
-        // if (EditorPrefs.GetBool("AnimationsFixed", false)) return;
+        EditorApplication.delayCall += RunFixOnce;
+    }
+
+    static void RunFixOnce()
+    {
+        if (EditorPrefs.GetBool(RepairVersionKey, false))
+            return;
+
         RunFix();
     }
 
     [MenuItem("Echoes/Force Fix Character and Animations")]
     public static void RunFix()
     {
-        string[] paths = new string[] {
-            "Assets/3D Models/Character Base/characterBase.fbx",
-            "Assets/3D Models/lowpoly-character-freerigged-/source/LowPolyCharacterModel/FBX/LowPolyCharacter.fbx",
-            "Assets/3D Models/Animaciones/Locomotion/idle.fbx",
-            "Assets/3D Models/Animaciones/Locomotion/walking.fbx",
-            "Assets/3D Models/Animaciones/Locomotion/running.fbx",
-            "Assets/3D Models/Animaciones/Locomotion/jump.fbx"
-        };
-
-        bool anyFixed = false;
-        foreach (var p in paths)
+        Type repairType = Type.GetType("PlayerAnimationRepair");
+        if (repairType == null)
         {
-            var importer = AssetImporter.GetAtPath(p) as ModelImporter;
-            if (importer != null && importer.animationType != ModelImporterAnimationType.Human)
-            {
-                importer.animationType = ModelImporterAnimationType.Human;
-                importer.SaveAndReimport();
-                Debug.Log("[Echoes] Reimported to Humanoid: " + p);
-                anyFixed = true;
-            }
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            for (int i = 0; i < assemblies.Length && repairType == null; i++)
+                repairType = assemblies[i].GetType("PlayerAnimationRepair");
         }
 
-        if (anyFixed)
+        MethodInfo method = repairType?.GetMethod("RepairProjectAnimationSetup", BindingFlags.Public | BindingFlags.Static);
+        if (method != null)
         {
-            Debug.Log("[Echoes] Successfully configured Character and Animations as Humanoid.");
+            method.Invoke(null, null);
         }
-        EditorPrefs.SetBool("AnimationsFixed", true);
+        else
+        {
+            RigSetup.EnsureGenericAnimationRigs();
+            SetupPlayerAnimator.Setup();
+        }
+
+        EditorPrefs.SetBool(RepairVersionKey, true);
     }
 }

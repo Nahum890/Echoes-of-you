@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be9d0c6961d9b24992d8c11589b2350, type: 3}
+  m_Name: Level_14_Blueprint
+  m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
+  levelName: Level_14
+  nextLevel: Level_15
+  actNumber: 4
+  archetype: 3
+  maxEchoes: 1
+  maxRecordSeconds: 12
+  activeParadoxes: 
+  fogColor: {r: 0.2, g: 0.2, b: 0.25, a: 1}
+  fogDensity: 0.035
+  skyColor: {r: 0.22, g: 0.22, b: 0.28, a: 1}
+  directionalLightRotation: {x: 45, y: -45, z: 0}
+  directionalLightColor: {r: 1.0, g: 1.0, b: 1.0, a: 1}
+  directionalLightIntensity: 0.9
+  narrativeIntroTitle: "Nivel 14 \u2014 Aceptación"
+  narrativeIntroDesc: "El camino del no retorno. Tu eco camina sobre el abismo construyendo un puente de pupitres invisibles. Sigue su trayectoria exacta."
+  narrativeIntroDuration: 8
+  puzzleObjectiveText: Cruza el puente flotante de pupitres siguiendo la trayectoria de tu eco.
+  puzzleActiveText: "Puente de pupitres materializado."
+  puzzleCompleteText: "Fractura del abismo cruzada."
+  pathHints:
+  - {x: 0, y: 1.1, z: -14}
+  - {x: 0, y: 1.1, z: 12}
+  modules:
+  - name: PlayerStart
+    type: 7
+    position: {x: 0, y: 1.1, z: -14}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals:
+  - name: PlatInicio
+    type: 0
+    position: {x: 0, y: 0, z: -10}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 4, y: 0.5, z: 4}
+    customData: 
+    targetSignals:
+  - name: PuentePupitresaccept
+    type: 22
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 4, y: 0.5, z: 16}
+    customData: 
+    targetSignals:
+  - name: PlatFinal
+    type: 0
+    position: {x: 0, y: 0, z: 10}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 4, y: 0.5, z: 4}
+    customData: 
+    targetSignals:
+  - name: LevelExit_Area
+    type: 6
+    position: {x: 0, y: 1.1, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: Level_15
+    targetSignals:
+  - name: LevelGoal
+    type: 13
+    position: {x: 0, y: 1.1, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Sigue los pasos de tu eco sobre la nada.|El eco materializa los pupitres.|Camino cruzado.
+    targetSignals:
+  - name: LevelRuntime
+    type: 14
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Proyecta al eco sobre el vacío.|Camina sobre sus huellas del pasado.|Meta alcanzada.
+    targetSignals:

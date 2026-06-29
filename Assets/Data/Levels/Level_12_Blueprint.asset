@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be9d0c6961d9b24992d8c11589b2350, type: 3}
+  m_Name: Level_12_Blueprint
+  m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
+  levelName: Level_12
+  nextLevel: Level_13
+  actNumber: 4
+  archetype: 3
+  maxEchoes: 1
+  maxRecordSeconds: 12
+  activeParadoxes: 
+  fogColor: {r: 0.14, g: 0.08, b: 0.12, a: 1}
+  fogDensity: 0.025
+  skyColor: {r: 0.16, g: 0.1, b: 0.14, a: 1}
+  directionalLightRotation: {x: 45, y: -30, z: 0}
+  directionalLightColor: {r: 0.9, g: 0.6, b: 0.8, a: 1}
+  directionalLightIntensity: 0.5
+  narrativeIntroTitle: "Nivel 12 \u2014 Conflicto"
+  narrativeIntroDesc: "El gimnasio escolar alberga recuerdos rotos. Tu propio eco se corrompe y te persigue. Evita cruzarte con tu trayectoria pasada."
+  narrativeIntroDuration: 8
+  puzzleObjectiveText: Esquiva a tu eco corrupto que persigue tus pasos para alcanzar la puerta final.
+  puzzleActiveText: "Eco corrupto en persecución."
+  puzzleCompleteText: "Gimnasio superado a salvo."
+  pathHints:
+  - {x: 0, y: 1.1, z: -16}
+  - {x: 0, y: 1.1, z: 12}
+  - {x: 0, y: 1.1, z: 18}
+  modules:
+  - name: PlayerStart
+    type: 7
+    position: {x: 0, y: 1.1, z: -16}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals:
+  - name: Gimnasio
+    type: 25
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 20, y: 0.5, z: 32}
+    customData: 
+    targetSignals:
+  - name: TrapConflicto
+    type: 18
+    position: {x: 0, y: 0.5, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 18, y: 3, z: 10}
+    customData: 
+    targetSignals:
+  - name: PlateGym
+    type: 4
+    position: {x: 0, y: 0.33, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 
+    targetSignals:
+  - name: DoorGym
+    type: 5
+    position: {x: 0, y: 1.5, z: 15}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 3, y: 3, z: 0.5}
+    customData: 
+    targetSignals:
+    - PlateGym
+  - name: LevelExit_Area
+    type: 6
+    position: {x: 0, y: 1.1, z: 18}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: Level_13
+    targetSignals:
+  - name: LevelGoal
+    type: 13
+    position: {x: 0, y: 1.1, z: 18}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Pisa el pedal evadiendo tu propio eco.|El eco corrupto te persigue.|Gimnasio superado.
+    targetSignals:
+    - PlateGym
+  - name: LevelRuntime
+    type: 14
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Corre hacia el pedal.|Huye de tu propio eco pasado.|Puerta abierta.
+    targetSignals:

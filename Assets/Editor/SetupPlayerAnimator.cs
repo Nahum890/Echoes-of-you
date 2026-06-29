@@ -1,196 +1,306 @@
 #if UNITY_EDITOR
-using UnityEngine;
+using System.IO;
 using UnityEditor;
 using UnityEditor.Animations;
+using UnityEngine;
 
-/// <summary>
-/// Editor tool: crea o reconfigura el Animator Controller del jugador
-/// con todos los estados, transiciones y parámetros necesarios.
-/// Menú: Echoes > Setup Player Animator
-/// </summary>
 public static class SetupPlayerAnimator
 {
     const string ControllerPath = "Assets/Prefabs/PlayerAnimController.controller";
     const string AnimBasePath = "Assets/3D Models/Animaciones/Locomotion/";
 
+    const string ParamSpeed = "Speed";
+    const string ParamIsGrounded = "IsGrounded";
+    const string ParamIsRecording = "IsRecording";
+    const string ParamVerticalSpeed = "VerticalSpeed";
+    const string ParamTurn = "Turn";
+
+    [MenuItem("Echoes of You/FIX - Setup Player Animator", false, 82)]
     [MenuItem("Echoes/Setup Player Animator")]
     public static void Setup()
     {
-        // Cargar o crear el controller
         AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(ControllerPath);
         if (controller == null)
-        {
             controller = AnimatorController.CreateAnimatorControllerAtPath(ControllerPath);
-            Debug.Log("SetupPlayerAnimator: creado nuevo AnimatorController");
-        }
 
-        // --- Parámetros ---
         ClearParameters(controller);
-        controller.AddParameter("Speed", AnimatorControllerParameterType.Float);
+        controller.AddParameter(ParamSpeed, AnimatorControllerParameterType.Float);
         controller.AddParameter("VelocityX", AnimatorControllerParameterType.Float);
         controller.AddParameter("VelocityZ", AnimatorControllerParameterType.Float);
-        controller.AddParameter("Grounded", AnimatorControllerParameterType.Bool);
+        controller.AddParameter(ParamVerticalSpeed, AnimatorControllerParameterType.Float);
+        controller.AddParameter(ParamTurn, AnimatorControllerParameterType.Float);
+        controller.AddParameter(ParamIsGrounded, AnimatorControllerParameterType.Bool);
+        controller.AddParameter(ParamIsRecording, AnimatorControllerParameterType.Bool);
+        controller.AddParameter("IsEchoPlayback", AnimatorControllerParameterType.Bool);
         controller.AddParameter("Falling", AnimatorControllerParameterType.Bool);
         controller.AddParameter("Jump", AnimatorControllerParameterType.Trigger);
-        controller.AddParameter("IsRecording", AnimatorControllerParameterType.Bool);
-        controller.AddParameter("IsEchoPlayback", AnimatorControllerParameterType.Bool);
+        controller.AddParameter("JumpStart", AnimatorControllerParameterType.Trigger);
+        controller.AddParameter("StartRun", AnimatorControllerParameterType.Trigger);
+        controller.AddParameter("StopRun", AnimatorControllerParameterType.Trigger);
+        controller.AddParameter("HardLanding", AnimatorControllerParameterType.Trigger);
+        controller.AddParameter("PushButton", AnimatorControllerParameterType.Trigger);
+        controller.AddParameter("RecordStart", AnimatorControllerParameterType.Trigger);
+        controller.AddParameter("RecordStop", AnimatorControllerParameterType.Trigger);
+        controller.AddParameter("Death", AnimatorControllerParameterType.Trigger);
+        controller.AddParameter("Respawn", AnimatorControllerParameterType.Trigger);
+        controller.AddParameter("State", AnimatorControllerParameterType.Int);
 
-        // --- Layer base ---
         AnimatorControllerLayer baseLayer = controller.layers[0];
-        AnimatorStateMachine sm = baseLayer.stateMachine;
+        AnimatorStateMachine stateMachine = baseLayer.stateMachine;
+        ClearStateMachine(stateMachine);
 
-        // Limpiar estados existentes
-        foreach (var state in sm.states)
-            sm.RemoveState(state.state);
-        foreach (var child in sm.stateMachines)
-            sm.RemoveStateMachine(child.stateMachine);
-
-        // --- Cargar clips ---
         AnimationClip idleClip = LoadClip("idle.fbx");
         AnimationClip walkClip = LoadClip("walking.fbx");
-        AnimationClip jumpClip = LoadClip("jump.fbx");
         AnimationClip runClip = LoadClip("running.fbx");
+        AnimationClip jumpClip = LoadClip("jump.fbx");
+        AnimationClip turnLeftClip = LoadClip("left turn 90.fbx");
+        AnimationClip turnRightClip = LoadClip("right turn 90.fbx");
+        AnimationClip fallClip = jumpClip != null ? jumpClip : idleClip;
+        AnimationClip recordClip = idleClip;
 
-        // Usar idle como fallback para estados sin clip específico
-        AnimationClip fallClip = idleClip;   // Fall usa idle (sin anim específica)
-        AnimationClip recordClip = idleClip; // Record usa idle con modificación via script
+        AnimatorState idle = stateMachine.AddState("Idle", new Vector3(0f, 0f, 0f));
+        idle.motion = idleClip;
 
-        // --- Crear estados ---
-        AnimatorState stateIdle = sm.AddState("Idle", new Vector3(0, 0, 0));
-        stateIdle.motion = idleClip;
+        AnimatorState walkRun = stateMachine.AddState("WalkRun", new Vector3(260f, 0f, 0f));
+        walkRun.motion = CreateLocomotionTree(controller, idleClip, walkClip, runClip);
 
-        AnimatorState stateWalk = sm.AddState("Walk", new Vector3(250, 0, 0));
-        stateWalk.motion = walkClip;
-        stateWalk.speedParameterActive = true;
-        stateWalk.speedParameter = "Speed";
-        // Normalizar velocidad: Speed 6 = velocidad normal de anim
-        stateWalk.speed = 1f;
+        AnimatorState startRun = stateMachine.AddState("Start Run", new Vector3(250f, 130f, 0f));
+        startRun.motion = runClip != null ? runClip : walkClip;
+        startRun.speed = 1.25f;
 
-        AnimatorState stateJump = sm.AddState("Jump", new Vector3(125, -120, 0));
-        stateJump.motion = jumpClip;
+        AnimatorState stopRun = stateMachine.AddState("Stop Run", new Vector3(390f, 130f, 0f));
+        stopRun.motion = idleClip;
 
-        AnimatorState stateFall = sm.AddState("Fall", new Vector3(250, -120, 0));
-        stateFall.motion = fallClip;
+        AnimatorState jump = stateMachine.AddState("Jump Start", new Vector3(120f, -130f, 0f));
+        jump.motion = jumpClip;
 
-        AnimatorState stateRecord = sm.AddState("Record", new Vector3(125, 120, 0));
-        stateRecord.motion = recordClip;
+        AnimatorState fall = stateMachine.AddState("Falling", new Vector3(310f, -130f, 0f));
+        fall.motion = fallClip;
 
-        sm.defaultState = stateIdle;
+        AnimatorState landingSoft = stateMachine.AddState("Landing Soft", new Vector3(500f, -120f, 0f));
+        landingSoft.motion = idleClip;
+        landingSoft.speed = 1.35f;
 
-        // --- Transiciones ---
+        AnimatorState landingHard = stateMachine.AddState("Landing Hard", new Vector3(650f, -120f, 0f));
+        landingHard.motion = idleClip;
+        landingHard.speed = 0.85f;
 
-        // Idle -> Walk (Speed > 0.1)
-        AnimatorStateTransition idleToWalk = stateIdle.AddTransition(stateWalk);
-        idleToWalk.hasExitTime = false;
-        idleToWalk.duration = 0.15f;
-        idleToWalk.AddCondition(AnimatorConditionMode.Greater, 0.1f, "Speed");
+        AnimatorState turnLeft = stateMachine.AddState("Turn Left", new Vector3(-160f, 20f, 0f));
+        turnLeft.motion = turnLeftClip != null ? turnLeftClip : idleClip;
 
-        // Walk -> Idle (Speed < 0.1)
-        AnimatorStateTransition walkToIdle = stateWalk.AddTransition(stateIdle);
-        walkToIdle.hasExitTime = false;
-        walkToIdle.duration = 0.2f;
-        walkToIdle.AddCondition(AnimatorConditionMode.Less, 0.1f, "Speed");
+        AnimatorState turnRight = stateMachine.AddState("Turn Right", new Vector3(-160f, -100f, 0f));
+        turnRight.motion = turnRightClip != null ? turnRightClip : idleClip;
 
-        // Idle -> Jump (Jump trigger)
-        AnimatorStateTransition idleToJump = stateIdle.AddTransition(stateJump);
-        idleToJump.hasExitTime = false;
-        idleToJump.duration = 0.05f;
-        idleToJump.AddCondition(AnimatorConditionMode.If, 0, "Jump");
+        AnimatorState pushButton = stateMachine.AddState("Push Button", new Vector3(120f, 260f, 0f));
+        pushButton.motion = idleClip;
 
-        // Walk -> Jump (Jump trigger)
-        AnimatorStateTransition walkToJump = stateWalk.AddTransition(stateJump);
-        walkToJump.hasExitTime = false;
-        walkToJump.duration = 0.05f;
-        walkToJump.AddCondition(AnimatorConditionMode.If, 0, "Jump");
+        AnimatorState record = stateMachine.AddState("Record Start", new Vector3(120f, 130f, 0f));
+        record.motion = recordClip;
 
-        // Jump -> Fall (after exit time, not grounded)
-        AnimatorStateTransition jumpToFall = stateJump.AddTransition(stateFall);
-        jumpToFall.hasExitTime = true;
-        jumpToFall.exitTime = 0.35f;
-        jumpToFall.duration = 0.1f;
-        jumpToFall.AddCondition(AnimatorConditionMode.IfNot, 0, "Grounded");
+        AnimatorState recordStop = stateMachine.AddState("Record Stop", new Vector3(260f, 260f, 0f));
+        recordStop.motion = idleClip;
+        recordStop.speed = 1.2f;
 
-        // Jump -> Idle (grounded early, low speed)
-        AnimatorStateTransition jumpToIdle = stateJump.AddTransition(stateIdle);
-        jumpToIdle.hasExitTime = true;
-        jumpToIdle.exitTime = 0.8f;
-        jumpToIdle.duration = 0.15f;
-        jumpToIdle.AddCondition(AnimatorConditionMode.If, 0, "Grounded");
-        jumpToIdle.AddCondition(AnimatorConditionMode.Less, 0.1f, "Speed");
+        AnimatorState death = stateMachine.AddState("Death", new Vector3(500f, 260f, 0f));
+        death.motion = idleClip;
+        death.speed = 0.55f;
 
-        // Jump -> Walk (grounded early, moving)
-        AnimatorStateTransition jumpToWalk = stateJump.AddTransition(stateWalk);
-        jumpToWalk.hasExitTime = true;
-        jumpToWalk.exitTime = 0.8f;
-        jumpToWalk.duration = 0.15f;
-        jumpToWalk.AddCondition(AnimatorConditionMode.If, 0, "Grounded");
-        jumpToWalk.AddCondition(AnimatorConditionMode.Greater, 0.1f, "Speed");
+        AnimatorState respawn = stateMachine.AddState("Respawn", new Vector3(650f, 260f, 0f));
+        respawn.motion = idleClip;
+        respawn.speed = 0.8f;
 
-        // Fall -> Idle (grounded, low speed)
-        AnimatorStateTransition fallToIdle = stateFall.AddTransition(stateIdle);
-        fallToIdle.hasExitTime = false;
-        fallToIdle.duration = 0.15f;
-        fallToIdle.AddCondition(AnimatorConditionMode.If, 0, "Grounded");
-        fallToIdle.AddCondition(AnimatorConditionMode.Less, 0.1f, "Speed");
+        stateMachine.defaultState = idle;
 
-        // Fall -> Walk (grounded, moving)
-        AnimatorStateTransition fallToWalk = stateFall.AddTransition(stateWalk);
-        fallToWalk.hasExitTime = false;
-        fallToWalk.duration = 0.15f;
-        fallToWalk.AddCondition(AnimatorConditionMode.If, 0, "Grounded");
-        fallToWalk.AddCondition(AnimatorConditionMode.Greater, 0.1f, "Speed");
+        AddAnyTrigger(stateMachine, startRun, "StartRun", 0.04f);
+        AddAnyTrigger(stateMachine, stopRun, "StopRun", 0.04f);
+        AddAnyTrigger(stateMachine, landingHard, "HardLanding", 0.04f);
+        AddAnyTrigger(stateMachine, pushButton, "PushButton", 0.04f);
+        AddAnyTrigger(stateMachine, record, "RecordStart", 0.04f);
+        AddAnyTrigger(stateMachine, recordStop, "RecordStop", 0.04f);
+        AddAnyTrigger(stateMachine, death, "Death", 0.02f);
+        AddAnyTrigger(stateMachine, respawn, "Respawn", 0.02f);
 
-        // Any State -> Record (IsRecording)
-        AnimatorStateTransition anyToRecord = sm.AddAnyStateTransition(stateRecord);
+        AnimatorStateTransition anyToWalk = stateMachine.AddAnyStateTransition(walkRun);
+        anyToWalk.hasExitTime = false;
+        anyToWalk.duration = 0.1f;
+        anyToWalk.canTransitionToSelf = true;
+        anyToWalk.AddCondition(AnimatorConditionMode.Greater, 0.08f, ParamSpeed);
+        anyToWalk.AddCondition(AnimatorConditionMode.IfNot, 0f, ParamIsRecording);
+
+        AddTransition(idle, walkRun, false, 0.12f, t =>
+        {
+            t.AddCondition(AnimatorConditionMode.Greater, 0.08f, ParamSpeed);
+            t.AddCondition(AnimatorConditionMode.IfNot, 0f, ParamIsRecording);
+        });
+
+        AddTransition(walkRun, idle, false, 0.12f, t =>
+        {
+            t.AddCondition(AnimatorConditionMode.Less, 0.06f, ParamSpeed);
+            t.AddCondition(AnimatorConditionMode.IfNot, 0f, ParamIsRecording);
+        });
+
+        AnimatorStateTransition anyToJump = stateMachine.AddAnyStateTransition(jump);
+        anyToJump.hasExitTime = false;
+        anyToJump.duration = 0.06f;
+        anyToJump.canTransitionToSelf = false;
+        anyToJump.AddCondition(AnimatorConditionMode.If, 0f, "JumpStart");
+        anyToJump.AddCondition(AnimatorConditionMode.IfNot, 0f, ParamIsRecording);
+
+        AddTransition(jump, fall, true, 0.08f, t =>
+        {
+            t.exitTime = 0.72f;
+            t.AddCondition(AnimatorConditionMode.IfNot, 0f, ParamIsGrounded);
+        });
+
+        AddTransition(jump, landingSoft, false, 0.06f, t =>
+        {
+            t.AddCondition(AnimatorConditionMode.If, 0f, ParamIsGrounded);
+            t.AddCondition(AnimatorConditionMode.Less, 0.1f, ParamSpeed);
+        });
+
+        AddTransition(jump, walkRun, false, 0.06f, t =>
+        {
+            t.AddCondition(AnimatorConditionMode.If, 0f, ParamIsGrounded);
+            t.AddCondition(AnimatorConditionMode.Greater, 0.1f, ParamSpeed);
+        });
+
+        AddTransition(fall, landingSoft, false, 0.06f, t =>
+        {
+            t.AddCondition(AnimatorConditionMode.If, 0f, ParamIsGrounded);
+            t.AddCondition(AnimatorConditionMode.Less, 0.1f, ParamSpeed);
+        });
+
+        AddTransition(fall, walkRun, false, 0.1f, t =>
+        {
+            t.AddCondition(AnimatorConditionMode.If, 0f, ParamIsGrounded);
+            t.AddCondition(AnimatorConditionMode.Greater, 0.1f, ParamSpeed);
+        });
+
+        AddTransition(startRun, walkRun, true, 0.04f, t => t.exitTime = 0.45f);
+        AddTransition(stopRun, idle, true, 0.05f, t => t.exitTime = 0.42f);
+        AddTransition(landingSoft, idle, true, 0.05f, t => t.exitTime = 0.36f);
+        AddTransition(landingHard, idle, true, 0.08f, t => t.exitTime = 0.58f);
+        AddTransition(pushButton, idle, true, 0.06f, t => t.exitTime = 0.55f);
+        AddTransition(recordStop, idle, true, 0.05f, t => t.exitTime = 0.35f);
+        AddTransition(respawn, idle, true, 0.08f, t => t.exitTime = 0.75f);
+
+        AddTransition(idle, turnLeft, false, 0.05f, t => t.AddCondition(AnimatorConditionMode.Less, -0.35f, ParamTurn));
+        AddTransition(idle, turnRight, false, 0.05f, t => t.AddCondition(AnimatorConditionMode.Greater, 0.35f, ParamTurn));
+        AddTransition(turnLeft, idle, true, 0.06f, t => t.exitTime = 0.65f);
+        AddTransition(turnRight, idle, true, 0.06f, t => t.exitTime = 0.65f);
+
+        AnimatorStateTransition anyToRecord = stateMachine.AddAnyStateTransition(record);
         anyToRecord.hasExitTime = false;
-        anyToRecord.duration = 0.1f;
+        anyToRecord.duration = 0.08f;
         anyToRecord.canTransitionToSelf = false;
-        anyToRecord.AddCondition(AnimatorConditionMode.If, 0, "IsRecording");
+        anyToRecord.AddCondition(AnimatorConditionMode.If, 0f, ParamIsRecording);
 
-        // Record -> Idle (stop recording)
-        AnimatorStateTransition recordToIdle = stateRecord.AddTransition(stateIdle);
-        recordToIdle.hasExitTime = false;
-        recordToIdle.duration = 0.2f;
-        recordToIdle.AddCondition(AnimatorConditionMode.IfNot, 0, "IsRecording");
+        AddTransition(record, jump, false, 0.08f, t =>
+        {
+            t.AddCondition(AnimatorConditionMode.IfNot, 0f, ParamIsRecording);
+            t.AddCondition(AnimatorConditionMode.IfNot, 0f, ParamIsGrounded);
+        });
+
+        AddTransition(record, idle, false, 0.1f, t =>
+        {
+            t.AddCondition(AnimatorConditionMode.IfNot, 0f, ParamIsRecording);
+            t.AddCondition(AnimatorConditionMode.If, 0f, ParamIsGrounded);
+            t.AddCondition(AnimatorConditionMode.Less, 0.1f, ParamSpeed);
+        });
+
+        AddTransition(record, walkRun, false, 0.1f, t =>
+        {
+            t.AddCondition(AnimatorConditionMode.IfNot, 0f, ParamIsRecording);
+            t.AddCondition(AnimatorConditionMode.If, 0f, ParamIsGrounded);
+            t.AddCondition(AnimatorConditionMode.Greater, 0.1f, ParamSpeed);
+        });
 
         EditorUtility.SetDirty(controller);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
+        Debug.Log("[Echoes] Player Animator configurado.");
+    }
 
-        Debug.Log($"SetupPlayerAnimator: controller configurado con 5 estados y {CountTransitions(sm)} transiciones en '{ControllerPath}'");
+    static BlendTree CreateLocomotionTree(AnimatorController controller, AnimationClip idleClip, AnimationClip walkClip, AnimationClip runClip)
+    {
+        BlendTree blendTree = new BlendTree
+        {
+            name = "WalkRunBlend",
+            blendType = BlendTreeType.Simple1D,
+            blendParameter = ParamSpeed
+        };
+
+        blendTree.AddChild(idleClip, 0f);
+        blendTree.AddChild(walkClip != null ? walkClip : idleClip, 0.1f);
+        blendTree.AddChild(runClip != null ? runClip : walkClip, 5.5f);
+        AssetDatabase.AddObjectToAsset(blendTree, controller);
+        return blendTree;
+    }
+
+    static void AddTransition(AnimatorState from, AnimatorState to, bool hasExitTime, float duration, System.Action<AnimatorStateTransition> configure)
+    {
+        AnimatorStateTransition transition = from.AddTransition(to);
+        transition.hasExitTime = hasExitTime;
+        transition.duration = duration;
+        transition.canTransitionToSelf = false;
+        configure?.Invoke(transition);
+    }
+
+    static void AddAnyTrigger(AnimatorStateMachine stateMachine, AnimatorState to, string trigger, float duration)
+    {
+        AnimatorStateTransition transition = stateMachine.AddAnyStateTransition(to);
+        transition.hasExitTime = false;
+        transition.duration = duration;
+        transition.canTransitionToSelf = false;
+        transition.AddCondition(AnimatorConditionMode.If, 0f, trigger);
     }
 
     static AnimationClip LoadClip(string filename)
     {
         string path = AnimBasePath + filename;
+        string clipHint = Path.GetFileNameWithoutExtension(filename).Replace(" ", "").ToLowerInvariant();
         Object[] assets = AssetDatabase.LoadAllAssetsAtPath(path);
-        
-        if (assets != null)
+        AnimationClip fallback = null;
+
+        for (int i = 0; i < assets.Length; i++)
         {
-            foreach (Object asset in assets)
-            {
-                if (asset is AnimationClip clip && !clip.name.StartsWith("__preview__"))
-                    return clip;
-            }
+            AnimationClip clip = assets[i] as AnimationClip;
+            if (clip == null || clip.name.StartsWith("__preview__"))
+                continue;
+
+            string clipName = clip.name.Replace(" ", "").ToLowerInvariant();
+            if (clipName.Contains(clipHint) || clipName.Contains("mixamo"))
+                return clip;
+
+            if (fallback == null)
+                fallback = clip;
         }
 
-        Debug.LogWarning($"SetupPlayerAnimator: no se encontró clip en '{path}'. Se usará null (Unity creará pose por defecto).");
-        return null;
+        if (fallback == null)
+            Debug.LogWarning("[Echoes] Clip no encontrado: " + path);
+
+        return fallback;
     }
 
     static void ClearParameters(AnimatorController controller)
     {
-        // Limpiar todos los parámetros existentes
         while (controller.parameters.Length > 0)
             controller.RemoveParameter(0);
     }
 
-    static int CountTransitions(AnimatorStateMachine sm)
+    static void ClearStateMachine(AnimatorStateMachine stateMachine)
     {
-        int count = sm.anyStateTransitions.Length;
-        foreach (var state in sm.states)
-            count += state.state.transitions.Length;
-        return count;
+        ChildAnimatorState[] states = stateMachine.states;
+        for (int i = states.Length - 1; i >= 0; i--)
+            stateMachine.RemoveState(states[i].state);
+
+        ChildAnimatorStateMachine[] subStateMachines = stateMachine.stateMachines;
+        for (int i = subStateMachines.Length - 1; i >= 0; i--)
+            stateMachine.RemoveStateMachine(subStateMachines[i].stateMachine);
+
+        AnimatorStateTransition[] anyStateTransitions = stateMachine.anyStateTransitions;
+        for (int i = anyStateTransitions.Length - 1; i >= 0; i--)
+            stateMachine.RemoveAnyStateTransition(anyStateTransitions[i]);
     }
 }
 #endif

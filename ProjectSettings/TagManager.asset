@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Player
   - Echo
+  - EchoProjection
+  - KineticBlock
+  - PlayerOnlyBarrier
   layers:
   - Default
   - TransparentFX

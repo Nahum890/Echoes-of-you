@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be9d0c6961d9b24992d8c11589b2350, type: 3}
+  m_Name: Level_05_Blueprint
+  m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
+  levelName: Level_05
+  nextLevel: Level_06
+  actNumber: 1
+  archetype: 0
+  maxEchoes: 1
+  maxRecordSeconds: 12
+  activeParadoxes: 
+  fogColor: {r: 0.16, g: 0.08, b: 0.08, a: 1}
+  fogDensity: 0.028
+  skyColor: {r: 0.2, g: 0.1, b: 0.1, a: 1}
+  directionalLightRotation: {x: 45, y: -30, z: 0}
+  directionalLightColor: {r: 1.0, g: 0.5, b: 0.3, a: 1}
+  directionalLightIntensity: 0.6
+  narrativeIntroTitle: "Nivel 5 \u2014 Culpa"
+  narrativeIntroDesc: "El laboratorio escolar está electrificado. El vapor caliente daña al eco. Memoriza el patrón para grabar una ruta evasiva perfecta."
+  narrativeIntroDuration: 8
+  puzzleObjectiveText: Esquiva el campo de vapor con tu eco para desactivar la esclusa del fondo.
+  puzzleActiveText: "Eco avanzando en la trampa."
+  puzzleCompleteText: "Laboratorio neutralizado."
+  pathHints:
+  - {x: 0, y: 1.1, z: -12}
+  - {x: 0, y: 1.1, z: 4}
+  - {x: 0, y: 1.1, z: 12}
+  modules:
+  - name: PlayerStart
+    type: 7
+    position: {x: 0, y: 1.1, z: -12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals:
+  - name: LabGrande
+    type: 21
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 12, y: 0.5, z: 16}
+    customData: 
+    targetSignals:
+  - name: VaporToxico
+    type: 17
+    position: {x: 0, y: 0.5, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 10, y: 3, z: 2}
+    customData: 
+    targetSignals:
+  - name: PlateLab
+    type: 4
+    position: {x: 0, y: 0.33, z: 4}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 
+    targetSignals:
+  - name: DoorLab
+    type: 5
+    position: {x: 0, y: 1.5, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 3, y: 3, z: 0.5}
+    customData: 
+    targetSignals:
+    - PlateLab
+  - name: LevelExit_Area
+    type: 6
+    position: {x: 0, y: 1.1, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: Level_06
+    targetSignals:
+  - name: LevelGoal
+    type: 13
+    position: {x: 0, y: 1.1, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Esquiva el vapor y pisa el pedal.|El eco desactiva la compuerta.|Camino liberado.
+    targetSignals:
+    - PlateLab
+  - name: LevelRuntime
+    type: 14
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Evita el vapor con tu eco.|El eco mantiene el paso abierto.|Frontera superada.
+    targetSignals:
