@@ -108,14 +108,14 @@ public class EchoPlayback : MonoBehaviour
                     col.a = opacity;
                     mat.color = col;
                 }
-                if (mat.HasProperty("_Mode"))
+                if (mat.HasProperty("_Surface"))
                 {
-                    mat.SetFloat("_Mode", 3f);
+                    mat.SetFloat("_Surface", 1f);
                     mat.SetOverrideTag("RenderType", "Transparent");
                     mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
                     mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
                     mat.SetInt("_ZWrite", 0);
-                    mat.EnableKeyword("_ALPHABLEND_ON");
+                    mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
                     mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
                 }
             }
@@ -506,14 +506,14 @@ public class EchoPlayback : MonoBehaviour
             material.EnableKeyword("_EMISSION");
             material.SetColor("_EmissionColor", new Color(0.02f, 0.65f, 1f, 1f) * 1.7f);
         }
-        if (material.HasProperty("_Mode"))
+        if (material.HasProperty("_Surface"))
         {
-            material.SetFloat("_Mode", 3f);
+            material.SetFloat("_Surface", 1f);
             material.SetOverrideTag("RenderType", "Transparent");
             material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
             material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             material.SetInt("_ZWrite", 0);
-            material.EnableKeyword("_ALPHABLEND_ON");
+            material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
             material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
         }
     }

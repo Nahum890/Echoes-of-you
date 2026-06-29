@@ -73,7 +73,7 @@ public class EchoTemporalVisual : MonoBehaviour
                 continue;
 
             r.GetPropertyBlock(_block);
-            _block.SetColor("_Color", new Color(tint.r, tint.g, tint.b, alpha));
+            _block.SetColor("_BaseColor", new Color(tint.r, tint.g, tint.b, alpha));
             if (r.sharedMaterial != null && r.sharedMaterial.HasProperty("_EmissionColor"))
                 _block.SetColor("_EmissionColor", tint * (glitching ? 1.8f : 0.55f));
             r.SetPropertyBlock(_block);
@@ -85,12 +85,12 @@ public class EchoTemporalVisual : MonoBehaviour
         if (!material.HasProperty("_Color"))
             return;
 
-        material.SetFloat("_Mode", 3f);
+        material.SetFloat("_Surface", 1f);
         material.SetOverrideTag("RenderType", "Transparent");
         material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
         material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
         material.SetInt("_ZWrite", 0);
-        material.EnableKeyword("_ALPHABLEND_ON");
+        material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
         material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
         if (material.HasProperty("_EmissionColor"))
             material.EnableKeyword("_EMISSION");

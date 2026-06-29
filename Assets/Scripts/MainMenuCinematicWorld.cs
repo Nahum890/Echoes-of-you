@@ -326,19 +326,19 @@ public class MainMenuCinematicWorld : MonoBehaviour
 
     void BuildMaterials()
     {
-        Shader shader = Shader.Find("Standard");
+        Shader shader = Shader.Find(EchoesUrpMaterials.LitShaderName);
         _archMat = new Material(shader);
         _archMat.color = new Color(0.22f, 0.26f, 0.34f, 1f);
         _archMat.SetFloat("_Metallic", 0.3f);
-        _archMat.SetFloat("_Glossiness", 0.45f);
+        _archMat.SetFloat("_Smoothness", 0.45f);
 
         _echoMat = new Material(shader);
         _echoMat.color = new Color(0.35f, 0.85f, 1f, 0.55f);
-        _echoMat.SetFloat("_Mode", 3f);
+        _echoMat.SetFloat("_Surface", 1f);
         _echoMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
         _echoMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
         _echoMat.SetInt("_ZWrite", 0);
-        _echoMat.EnableKeyword("_ALPHABLEND_ON");
+        _echoMat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
         _echoMat.EnableKeyword("_EMISSION");
         _echoMat.SetColor("_EmissionColor", new Color(0.35f, 0.85f, 1f) * 1.5f);
         _echoMat.renderQueue = 3000;
@@ -346,7 +346,7 @@ public class MainMenuCinematicWorld : MonoBehaviour
         _circuitMat = new Material(shader);
         _circuitMat.color = new Color(0.02f, 0.15f, 0.12f, 1f);
         _circuitMat.SetFloat("_Metallic", 0.8f);
-        _circuitMat.SetFloat("_Glossiness", 0.7f);
+        _circuitMat.SetFloat("_Smoothness", 0.7f);
         _circuitMat.EnableKeyword("_EMISSION");
         _circuitMat.SetColor("_EmissionColor", new Color(0.08f, 0.45f, 0.35f) * 0.9f);
 

@@ -462,12 +462,12 @@ public class EchoRecorder : MonoBehaviour
                 Material material = new Material(mats[m]);
                 if (material.HasProperty("_Color"))
                     material.color = ghostColor;
-                material.SetFloat("_Mode", 3f);
+                material.SetFloat("_Surface", 1f);
                 material.SetOverrideTag("RenderType", "Transparent");
                 material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
                 material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
                 material.SetInt("_ZWrite", 0);
-                material.EnableKeyword("_ALPHABLEND_ON");
+                material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
                 material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
                 if (material.HasProperty("_EmissionColor"))
                 {

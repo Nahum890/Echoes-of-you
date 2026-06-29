@@ -156,7 +156,7 @@ public class LevelExit : MonoBehaviour
 
             MaterialPropertyBlock block = new MaterialPropertyBlock();
             rendererRef.GetPropertyBlock(block);
-            block.SetColor("_Color", tint);
+            block.SetColor("_BaseColor", tint);
             block.SetColor("_EmissionColor", _isUnlocked ? tint * 2.5f : tint * 0.3f);
             rendererRef.SetPropertyBlock(block);
         }

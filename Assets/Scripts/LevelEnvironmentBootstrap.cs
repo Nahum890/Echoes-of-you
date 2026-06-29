@@ -289,7 +289,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         if (_runtimeEchoPlateMaterial != null)
             return _runtimeEchoPlateMaterial;
 
-        Shader shader = Shader.Find("Standard");
+        Shader shader = Shader.Find(EchoesUrpMaterials.LitShaderName);
         _runtimeEchoPlateMaterial = new Material(shader);
         _runtimeEchoPlateMaterial.name = "Runtime_EchoPlate_Blue";
         _runtimeEchoPlateMaterial.color = new Color(0.03f, 0.14f, 0.24f, 1f);

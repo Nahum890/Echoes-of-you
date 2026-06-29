@@ -321,7 +321,7 @@ public static class EchoesModuleFactory
         skyBeam.transform.localScale = new Vector3(1.5f, 25f, 1.5f);
         Object.DestroyImmediate(skyBeam.GetComponent<Collider>());
 
-        Material beamMat = new Material(Shader.Find("Standard"));
+        Material beamMat = new Material(Shader.Find(EchoesUrpMaterials.LitShaderName));
         beamMat.color = new Color(1.0f, 0.85f, 0.6f, 0.15f);
         SetupTransparentMaterial(beamMat);
         beamMat.EnableKeyword("_EMISSION");
@@ -959,12 +959,12 @@ public static class EchoesModuleFactory
 
     private static void SetupTransparentMaterial(Material mat)
     {
-        mat.SetFloat("_Mode", 3);
+        mat.SetFloat("_Surface", 1f);
         mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
         mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
         mat.SetInt("_ZWrite", 0);
         mat.DisableKeyword("_ALPHATEST_ON");
-        mat.EnableKeyword("_ALPHABLEND_ON");
+        mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
         mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
         mat.renderQueue = 3000;
     }
@@ -1096,7 +1096,7 @@ public static class EchoesModuleFactory
         beam.transform.localScale = new Vector3(scaledSize.x, Mathf.Min(scaledSize.y, 3.2f), scaledSize.z);
         Object.DestroyImmediate(beam.GetComponent<Collider>());
 
-        Material hazardMat = new Material(Shader.Find("Standard"));
+        Material hazardMat = new Material(Shader.Find(EchoesUrpMaterials.LitShaderName));
         hazardMat.color = new Color(1f, 0.16f, 0.08f, 0.62f);
         hazardMat.EnableKeyword("_EMISSION");
         hazardMat.SetColor("_EmissionColor", new Color(1f, 0.12f, 0.04f) * 2.6f);

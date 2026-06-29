@@ -860,13 +860,13 @@ public static class EchoesProductionBuilder
         visual.transform.SetParent(root.transform, false);
         visual.transform.localScale = size;
         Object.DestroyImmediate(visual.GetComponent<Collider>());
-        Material mat = new Material(Shader.Find("Standard"));
+        Material mat = new Material(Shader.Find(EchoesUrpMaterials.LitShaderName));
         mat.color = new Color(0.6f, 0.2f, 0.8f, 0.15f);
-        mat.SetFloat("_Mode", 3);
+        mat.SetFloat("_Surface", 1f);
         mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
         mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
         mat.SetInt("_ZWrite", 0);
-        mat.EnableKeyword("_ALPHABLEND_ON");
+        mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
         mat.renderQueue = 3000;
         visual.GetComponent<MeshRenderer>().sharedMaterial = mat;
 
@@ -2170,7 +2170,7 @@ public static class EchoesProductionBuilder
         beam.transform.localScale = new Vector3(scaledSize.x, Mathf.Min(scaledSize.y, 3.2f), scaledSize.z);
         Object.DestroyImmediate(beam.GetComponent<Collider>());
 
-        Material hazardMat = new Material(Shader.Find("Standard"));
+        Material hazardMat = new Material(Shader.Find(EchoesUrpMaterials.LitShaderName));
         hazardMat.color = new Color(1f, 0.16f, 0.08f, 0.62f);
         hazardMat.EnableKeyword("_EMISSION");
         hazardMat.SetColor("_EmissionColor", new Color(1f, 0.12f, 0.04f) * 2.6f);
@@ -2345,14 +2345,14 @@ public static class EchoesProductionBuilder
         portalSurface.transform.localScale = new Vector3(2.8f, 4f, 1f);
         Object.DestroyImmediate(portalSurface.GetComponent<Collider>());
 
-        Material portalMat = new Material(Shader.Find("Standard"));
+        Material portalMat = new Material(Shader.Find(EchoesUrpMaterials.LitShaderName));
         portalMat.color = new Color(0.25f, 0.45f, 0.9f, 0.12f);
-        portalMat.SetFloat("_Mode", 3);
+        portalMat.SetFloat("_Surface", 1f);
         portalMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
         portalMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
         portalMat.SetInt("_ZWrite", 0);
         portalMat.DisableKeyword("_ALPHATEST_ON");
-        portalMat.EnableKeyword("_ALPHABLEND_ON");
+        portalMat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
         portalMat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
         portalMat.renderQueue = 3000;
         portalMat.EnableKeyword("_EMISSION");
@@ -2367,14 +2367,14 @@ public static class EchoesProductionBuilder
         skyBeam.transform.localScale = new Vector3(0.6f, 25f, 0.6f);
         Object.DestroyImmediate(skyBeam.GetComponent<Collider>());
 
-        Material beamMat = new Material(Shader.Find("Standard"));
+        Material beamMat = new Material(Shader.Find(EchoesUrpMaterials.LitShaderName));
         beamMat.color = new Color(0.5f, 0.65f, 0.9f, 0.18f);
-        beamMat.SetFloat("_Mode", 3);
+        beamMat.SetFloat("_Surface", 1f);
         beamMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
         beamMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
         beamMat.SetInt("_ZWrite", 0);
         beamMat.DisableKeyword("_ALPHATEST_ON");
-        beamMat.EnableKeyword("_ALPHABLEND_ON");
+        beamMat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
         beamMat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
         beamMat.renderQueue = 3000;
         beamMat.EnableKeyword("_EMISSION");
@@ -2644,7 +2644,7 @@ public static class EchoesProductionBuilder
         visual.transform.SetParent(zone.transform, false);
         visual.transform.localScale = killSize;
         Object.DestroyImmediate(visual.GetComponent<Collider>());
-        Material hazardMat = new Material(Shader.Find("Standard"));
+        Material hazardMat = new Material(Shader.Find(EchoesUrpMaterials.LitShaderName));
         hazardMat.color = new Color(1f, 0.12f, 0.06f, 0.5f);
         hazardMat.EnableKeyword("_EMISSION");
         hazardMat.SetColor("_EmissionColor", new Color(1.2f, 0.1f, 0.05f));
@@ -2997,7 +2997,7 @@ public static class EchoesProductionBuilder
 
     static void EnsureMaterials()
     {
-        Shader standardShader = Shader.Find("Standard");
+        Shader standardShader = Shader.Find(EchoesUrpMaterials.LitShaderName);
         if (standardShader == null)
         {
             Debug.LogError("[Echoes Production] Could not find Standard shader!");
@@ -3090,7 +3090,7 @@ public static class EchoesProductionBuilder
             Texture2D tex = AssetDatabase.LoadAssetAtPath<Texture2D>(albedoPath);
             if (tex != null)
             {
-                mat.SetTexture("_MainTex", tex);
+                mat.SetTexture("_BaseMap", tex);
             }
         }
 
@@ -3115,11 +3115,11 @@ public static class EchoesProductionBuilder
         }
 
         mat.SetFloat("_Metallic", metallic);
-        mat.SetFloat("_Glossiness", smoothness);
+        mat.SetFloat("_Smoothness", smoothness);
 
         if (tiling.HasValue)
         {
-            mat.SetTextureScale("_MainTex", tiling.Value);
+            mat.SetTextureScale("_BaseMap", tiling.Value);
             if (!string.IsNullOrEmpty(normalPath))
                 mat.SetTextureScale("_BumpMap", tiling.Value);
             if (!string.IsNullOrEmpty(aoPath))
@@ -3158,7 +3158,7 @@ public static class EchoesProductionBuilder
             return material;
         }
 
-        material = new Material(Shader.Find("Standard"));
+        material = new Material(Shader.Find(EchoesUrpMaterials.LitShaderName));
         material.color = color;
         if (tex != null) material.mainTexture = tex;
         if (emissive)
@@ -3180,7 +3180,7 @@ public static class EchoesProductionBuilder
         Material material = AssetDatabase.LoadAssetAtPath<Material>(path);
         if (material == null)
         {
-            material = new Material(Shader.Find("Standard"));
+            material = new Material(Shader.Find(EchoesUrpMaterials.LitShaderName));
             AssetDatabase.CreateAsset(material, path);
         }
 
@@ -3197,7 +3197,7 @@ public static class EchoesProductionBuilder
         Material material = AssetDatabase.LoadAssetAtPath<Material>(path);
         if (material == null)
         {
-            material = new Material(Shader.Find("Standard"));
+            material = new Material(Shader.Find(EchoesUrpMaterials.LitShaderName));
             AssetDatabase.CreateAsset(material, path);
         }
 
@@ -3217,7 +3217,7 @@ public static class EchoesProductionBuilder
         material.SetTexture("_OcclusionMap", null);
         material.DisableKeyword("_NORMALMAP");
         material.SetFloat("_Metallic", 0f);
-        material.SetFloat("_Glossiness", 0.05f);
+        material.SetFloat("_Smoothness", 0.05f);
     }
 
     static Material GetOrCreateTransparentMaterial(string name, Color color, bool emissive)
@@ -3235,15 +3235,15 @@ public static class EchoesProductionBuilder
             return material;
         }
 
-        material = new Material(Shader.Find("Standard"));
+        material = new Material(Shader.Find(EchoesUrpMaterials.LitShaderName));
         material.color = color;
-        material.SetFloat("_Mode", 3f);
+        material.SetFloat("_Surface", 1f);
         material.SetOverrideTag("RenderType", "Transparent");
         material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
         material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
         material.SetInt("_ZWrite", 0);
         material.DisableKeyword("_ALPHATEST_ON");
-        material.EnableKeyword("_ALPHABLEND_ON");
+        material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
         material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
         material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
         if (emissive)
@@ -3269,7 +3269,7 @@ public static class EchoesProductionBuilder
             return material;
         }
 
-        material = new Material(Shader.Find("Standard"));
+        material = new Material(Shader.Find(EchoesUrpMaterials.LitShaderName));
         material.color = color;
         if (tex != null) material.mainTexture = tex;
         material.EnableKeyword("_EMISSION");

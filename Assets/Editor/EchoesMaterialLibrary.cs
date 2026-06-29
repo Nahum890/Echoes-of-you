@@ -6,6 +6,9 @@ public static class EchoesMaterialLibrary
 {
     public const string MaterialRoot = "Assets/Materials/Echoes";
 
+    // URP Lit shader. Reemplaza al "Standard" del Built-in pipeline.
+    public const string LitShaderName = "Universal Render Pipeline/Lit";
+
     public static Material FloorMat => GetOrCreateFloorMat();
     public static Material PlateMat => GetOrCreatePlateMat();
     public static Material BridgeMat => GetOrCreateBridgeMat();
@@ -24,10 +27,10 @@ public static class EchoesMaterialLibrary
 
     public static void EnsureMaterials()
     {
-        Shader standardShader = Shader.Find("Standard");
-        if (standardShader == null)
+        Shader litShader = Shader.Find(LitShaderName);
+        if (litShader == null)
         {
-            Debug.LogError("[Echoes Material Library] Could not find Standard shader!");
+            Debug.LogError("[Echoes Material Library] Could not find URP Lit shader! ¿Está URP instalado y asignado?");
             return;
         }
 
@@ -77,7 +80,7 @@ public static class EchoesMaterialLibrary
         Material material = AssetDatabase.LoadAssetAtPath<Material>(path);
         if (material != null) return material;
 
-        material = new Material(Shader.Find("Standard"));
+        material = new Material(Shader.Find(LitShaderName));
         material.color = new Color(0.2f, 0.22f, 0.28f, 0.5f);
         SetupTransparentMaterial(material);
         
@@ -94,7 +97,7 @@ public static class EchoesMaterialLibrary
         {
             material.color = color;
             material.SetFloat("_Metallic", 0f);
-            material.SetFloat("_Glossiness", 0.05f);
+            material.SetFloat("_Smoothness", 0.05f);
             if (emissive)
             {
                 material.EnableKeyword("_EMISSION");
@@ -103,10 +106,10 @@ public static class EchoesMaterialLibrary
             return material;
         }
 
-        material = new Material(Shader.Find("Standard"));
+        material = new Material(Shader.Find(LitShaderName));
         material.color = color;
         material.SetFloat("_Metallic", 0f);
-        material.SetFloat("_Glossiness", 0.05f);
+        material.SetFloat("_Smoothness", 0.05f);
         if (emissive)
         {
             material.EnableKeyword("_EMISSION");
@@ -126,16 +129,16 @@ public static class EchoesMaterialLibrary
         {
             material.color = albedo;
             material.SetFloat("_Metallic", 0f);
-            material.SetFloat("_Glossiness", 0.05f);
+            material.SetFloat("_Smoothness", 0.05f);
             material.EnableKeyword("_EMISSION");
             material.SetColor("_EmissionColor", emission);
             return material;
         }
 
-        material = new Material(Shader.Find("Standard"));
+        material = new Material(Shader.Find(LitShaderName));
         material.color = albedo;
         material.SetFloat("_Metallic", 0f);
-        material.SetFloat("_Glossiness", 0.05f);
+        material.SetFloat("_Smoothness", 0.05f);
         material.EnableKeyword("_EMISSION");
         material.SetColor("_EmissionColor", emission);
 
@@ -159,7 +162,7 @@ public static class EchoesMaterialLibrary
             return material;
         }
 
-        material = new Material(Shader.Find("Standard"));
+        material = new Material(Shader.Find(LitShaderName));
         material.color = color;
         SetupTransparentMaterial(material);
 
@@ -174,16 +177,18 @@ public static class EchoesMaterialLibrary
         return material;
     }
 
+    // Configura transparencia para URP/Lit (modelo de "surface type", no el _Mode del Standard).
     private static void SetupTransparentMaterial(Material material)
     {
-        material.SetFloat("_Mode", 3); // Transparent mode
+        material.SetFloat("_Surface", 1f); // 0 = Opaque, 1 = Transparent
+        material.SetFloat("_Blend", 0f);   // 0 = Alpha
         material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
         material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
         material.SetInt("_ZWrite", 0);
         material.DisableKeyword("_ALPHATEST_ON");
-        material.EnableKeyword("_ALPHABLEND_ON");
         material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-        material.renderQueue = 3000;
+        material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+        material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent; // 3000
     }
 
     private static void SetupMaterialTextures(
@@ -201,7 +206,7 @@ public static class EchoesMaterialLibrary
         if (!string.IsNullOrEmpty(albedoPath))
         {
             Texture2D tex = AssetDatabase.LoadAssetAtPath<Texture2D>(albedoPath);
-            if (tex != null) mat.SetTexture("_MainTex", tex);
+            if (tex != null) mat.SetTexture("_BaseMap", tex);
         }
 
         if (!string.IsNullOrEmpty(normalPath))
@@ -222,11 +227,11 @@ public static class EchoesMaterialLibrary
         }
 
         mat.SetFloat("_Metallic", metallic);
-        mat.SetFloat("_Glossiness", smoothness);
+        mat.SetFloat("_Smoothness", smoothness);
 
         if (tiling.HasValue)
         {
-            mat.SetTextureScale("_MainTex", tiling.Value);
+            mat.SetTextureScale("_BaseMap", tiling.Value);
             if (!string.IsNullOrEmpty(normalPath))
                 mat.SetTextureScale("_BumpMap", tiling.Value);
             if (!string.IsNullOrEmpty(aoPath))

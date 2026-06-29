@@ -56,16 +56,16 @@ public class EchoPathHint : MonoBehaviour
             Renderer rend = sphere.GetComponent<Renderer>();
             if (rend != null)
             {
-                Material mat = new Material(Shader.Find("Standard"));
+                Material mat = new Material(Shader.Find(EchoesUrpMaterials.LitShaderName));
                 mat.color = hintColor;
                 mat.EnableKeyword("_EMISSION");
                 mat.SetColor("_EmissionColor", hintColor * 2f);
-                mat.SetFloat("_Mode", 3f);
+                mat.SetFloat("_Surface", 1f);
                 mat.SetOverrideTag("RenderType", "Transparent");
                 mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
                 mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
                 mat.SetInt("_ZWrite", 0);
-                mat.EnableKeyword("_ALPHABLEND_ON");
+                mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
                 mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
                 rend.sharedMaterial = mat;
             }

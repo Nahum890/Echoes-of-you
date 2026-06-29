@@ -188,7 +188,7 @@ public static class EchoesLevelBuilder
     static void CreateMaterials()
     {
         // Force Standard shader — project uses Built‑in Render Pipeline
-        Shader standardShader = Shader.Find("Standard");
+        Shader standardShader = Shader.Find(EchoesUrpMaterials.LitShaderName);
         if (standardShader == null)
         {
             Debug.LogError("[Echoes] Could not find Standard shader!");
@@ -264,7 +264,7 @@ public static class EchoesLevelBuilder
             Texture2D tex = AssetDatabase.LoadAssetAtPath<Texture2D>(albedoPath);
             if (tex != null)
             {
-                mat.SetTexture("_MainTex", tex);
+                mat.SetTexture("_BaseMap", tex);
             }
         }
 
@@ -289,11 +289,11 @@ public static class EchoesLevelBuilder
         }
 
         mat.SetFloat("_Metallic", metallic);
-        mat.SetFloat("_Glossiness", smoothness);
+        mat.SetFloat("_Smoothness", smoothness);
 
         if (tiling.HasValue)
         {
-            mat.SetTextureScale("_MainTex", tiling.Value);
+            mat.SetTextureScale("_BaseMap", tiling.Value);
             if (!string.IsNullOrEmpty(normalPath))
                 mat.SetTextureScale("_BumpMap", tiling.Value);
             if (!string.IsNullOrEmpty(aoPath))
@@ -325,13 +325,13 @@ public static class EchoesLevelBuilder
         if (transparent)
         {
             // Standard shader transparent mode
-            mat.SetFloat("_Mode", 3); // Transparent
+            mat.SetFloat("_Surface", 1f); // Transparent
             mat.SetOverrideTag("RenderType", "Transparent");
             mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
             mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             mat.SetInt("_ZWrite", 0);
             mat.DisableKeyword("_ALPHATEST_ON");
-            mat.EnableKeyword("_ALPHABLEND_ON");
+            mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
             mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
             mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
         }
