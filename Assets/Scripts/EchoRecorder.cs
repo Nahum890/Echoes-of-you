@@ -81,6 +81,9 @@ public class EchoRecorder : MonoBehaviour
 
     void Update()
     {
+        // Echo system disabled for this level
+        if (maxEchoes <= 0) return;
+
         bool projectionHold = Input.GetKey(projectionKey);
         bool hold = Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.R);
 

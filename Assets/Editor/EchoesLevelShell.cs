@@ -174,7 +174,7 @@ public static class EchoesLevelShell
 
         EchoRecorder recorder = player.AddComponent<EchoRecorder>();
         SetSerializedValue(recorder, "echoPrefab", AssetDatabase.LoadAssetAtPath<GameObject>(EchoPrefabPath));
-        SetSerializedValue(recorder, "maxEchoes", blueprint.maxEchoes);
+        SetSerializedValue(recorder, "maxEchoes", blueprint.echoEnabled ? blueprint.maxEchoes : 0);
         SetSerializedValue(recorder, "maxRecordSeconds", blueprint.maxRecordSeconds);
 
         player.AddComponent<PlayerLocomotionAnimator>();

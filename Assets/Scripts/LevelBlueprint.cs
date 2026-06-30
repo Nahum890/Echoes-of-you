@@ -89,6 +89,7 @@ public class LevelBlueprint : ScriptableObject
     public LevelArchetype archetype = LevelArchetype.Standard;
     
     [Header("Echo Limits")]
+    public bool echoEnabled = true;
     public int maxEchoes = 1;
     public float maxRecordSeconds = 12f;
 
