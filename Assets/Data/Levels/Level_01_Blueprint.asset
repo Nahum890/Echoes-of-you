@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be9d0c6961d9b24992d8c11589b2350, type: 3}
+  m_Name: Level_01_Blueprint
+  m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
+  levelName: Level_01
+  nextLevel: Level_02
+  actNumber: 1
+  archetype: 0
+  maxEchoes: 0
+  maxRecordSeconds: 0
+  activeParadoxes: 
+  fogColor: {r: 0.15, g: 0.15, b: 0.15, a: 1}
+  fogDensity: 0.035
+  skyColor: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+  directionalLightRotation: {x: 45, y: -45, z: 0}
+  directionalLightColor: {r: 0.8, g: 0.85, b: 0.9, a: 1}
+  directionalLightIntensity: 0.6
+  narrativeIntroTitle: "Nivel 1 \u2014 Desorientación"
+  narrativeIntroDesc: "Despiertas en un pasillo interminable. Camina a través de la bruma escolar. Encuentra la salida de tus propios pensamientos."
+  narrativeIntroDuration: 8
+  puzzleObjectiveText: Camina a través del pasillo liminal hacia la luz de la meta.
+  puzzleActiveText: "La bruma del colegio te rodea."
+  puzzleCompleteText: "Camino inicial despejado."
+  pathHints:
+  - {x: 0, y: 1.1, z: -10}
+  - {x: 0, y: 1.1, z: 13}
+  - {x: 15, y: 1.1, z: 13}
+  modules:
+  - name: PlayerStart
+    type: 7
+    position: {x: 0, y: 1.1, z: -10}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals:
+  - name: Corridor1
+    type: 24
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 6, y: 0.5, z: 20}
+    customData: 
+    targetSignals:
+  - name: Corner1
+    type: 28
+    position: {x: 0, y: 0, z: 13}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 6, y: 0.5, z: 6}
+    customData: 
+    targetSignals:
+  - name: Corridor2
+    type: 24
+    position: {x: 8, y: 0, z: 13}
+    rotation: {x: 0, y: 90, z: 0}
+    scale: {x: 6, y: 0.5, z: 16}
+    customData: 
+    targetSignals:
+  - name: LevelExit_Area
+    type: 6
+    position: {x: 15, y: 1.1, z: 13}
+    rotation: {x: 0, y: 90, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: Level_02
+    targetSignals:
+  - name: LevelGoal
+    type: 13
+    position: {x: 15, y: 1.1, z: 13}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Camina hacia la meta a través del pasillo escolar.|Bruma densa.|Salida alcanzada.
+    targetSignals:
+  - name: LevelRuntime
+    type: 14
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Encuentra la salida.|La bruma te rodea.|Saliste del pasillo.
+    targetSignals:

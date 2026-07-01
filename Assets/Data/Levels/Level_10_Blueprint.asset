@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be9d0c6961d9b24992d8c11589b2350, type: 3}
+  m_Name: Level_10_Blueprint
+  m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
+  levelName: Level_10
+  nextLevel: Level_11
+  actNumber: 3
+  archetype: 2
+  maxEchoes: 1
+  maxRecordSeconds: 12
+  activeParadoxes: 
+  fogColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
+  fogDensity: 0.02
+  skyColor: {r: 0.15, g: 0.15, b: 0.15, a: 1}
+  directionalLightRotation: {x: 45, y: -30, z: 0}
+  directionalLightColor: {r: 1.0, g: 0.8, b: 0.6, a: 1}
+  directionalLightIntensity: 0.8
+  narrativeIntroTitle: "Nivel 10 \u2014 Recuerdos"
+  narrativeIntroDesc: "El pasillo de arte revela dibujos del pasado. Tu eco parado frente al cuadro revelará el código para abrir la puerta de salida."
+  narrativeIntroDuration: 8
+  puzzleObjectiveText: Usa tu eco frente al cuadro de arte para revelar el pasadizo.
+  puzzleActiveText: "Eco interactuando con el cuadro."
+  puzzleCompleteText: "Pasadizo de arte abierto."
+  pathHints:
+  - {x: 0, y: 1.1, z: -12}
+  - {x: 0, y: 1.1, z: 0}
+  - {x: 0, y: 1.1, z: 14}
+  modules:
+  - name: PlayerStart
+    type: 7
+    position: {x: 0, y: 1.1, z: -12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals:
+  - name: PasilloArte
+    type: 24
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 6, y: 0.5, z: 20}
+    customData: 
+    targetSignals:
+  - name: CuadroArte
+    type: 23
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 4, y: 0.5, z: 4}
+    customData: 
+    targetSignals:
+  - name: DoorArte
+    type: 5
+    position: {x: 0, y: 1.5, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 3, y: 3, z: 0.5}
+    customData: 
+    targetSignals:
+    - CuadroArte
+  - name: LevelExit_Area
+    type: 6
+    position: {x: 0, y: 1.1, z: 14}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: Level_11
+    targetSignals:
+  - name: LevelGoal
+    type: 13
+    position: {x: 0, y: 1.1, z: 14}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Coloca a tu eco frente al cuadro.|El cuadro revela el pasadizo.|Recuerdos superados.
+    targetSignals:
+    - CuadroArte
+  - name: LevelRuntime
+    type: 14
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: Pisa el ancla con tu eco.|El recuerdo abre la puerta secreta.|Camino libre.
+    targetSignals:

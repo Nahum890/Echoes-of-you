@@ -228,12 +228,12 @@ public static class AddParkourPlatforms
         {
             if (_parkourMat == null)
             {
-                _parkourMat = new Material(Shader.Find("Standard"));
+                _parkourMat = new Material(Shader.Find(EchoesUrpMaterials.LitShaderName));
                 _parkourMat.color = new Color(0.22f, 0.26f, 0.32f, 1f); // Gris-azul más claro que el suelo normal
                 _parkourMat.EnableKeyword("_EMISSION");
                 _parkourMat.SetColor("_EmissionColor", new Color(0.08f, 0.12f, 0.18f, 1f)); // Glow sutil
                 _parkourMat.SetFloat("_Metallic", 0.3f);
-                _parkourMat.SetFloat("_Glossiness", 0.55f);
+                _parkourMat.SetFloat("_Smoothness", 0.55f);
             }
             renderer.sharedMaterial = _parkourMat;
         }

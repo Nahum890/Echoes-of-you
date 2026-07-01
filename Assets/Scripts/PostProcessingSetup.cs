@@ -1,23 +1,50 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
-#if UNITY_POST_PROCESSING_STACK_V2
-using UnityEngine.Rendering.PostProcessing;
-#endif
 
 /// <summary>
-/// Auto-configura un Post Processing Volume global al iniciar la escena.
-/// Solo funciona si com.unity.postprocessing está instalado.
-/// Si no está instalado, el script no genera errores y no hace nada.
-/// Limpia volumes duplicados al cambiar de escena.
-/// Re-aplica PostProcessLayer en cada cambio de escena para evitar NullReferenceException.
+/// Configura el post-procesado del juego con el stack del Universal Render
+/// Pipeline (URP): crea un Volume global en runtime con un VolumeProfile y
+/// habilita el post-procesado en la cámara.
+///
+/// Reemplaza la implementación anterior basada en Post-Processing Stack v2
+/// (Built-in), que no se renderizaba bajo URP.
+///
+/// Nota: el Ambient Occlusion en URP es SSAO (un Renderer Feature en el asset
+/// del renderer), no un override de Volume, por lo que se configura en el
+/// editor sobre el Universal Renderer y no aquí.
 /// </summary>
 public class PostProcessingSetup : MonoBehaviour
 {
     static PostProcessingSetup _instance;
+
     static GameObject _volumeGo;
+    static Volume _volume;
+    static VolumeProfile _runtimeProfile;
+
+    Coroutine _setupRoutine;
+
+    /// Perfil de Volume en runtime, modulado por GameFeelController.
+    public static VolumeProfile RuntimeProfile => _runtimeProfile;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     static void AutoSetup()
+    {
+        EnsureInstance();
+        _instance?.ScheduleSetup();
+    }
+
+    public static void PrepareForSceneReload()
+    {
+        if (_instance == null)
+            return;
+
+        _instance.CleanupRuntimeObjects();
+    }
+
+    static void EnsureInstance()
     {
         if (_instance != null)
             return;
@@ -25,14 +52,11 @@ public class PostProcessingSetup : MonoBehaviour
         GameObject go = new GameObject("PostProcessingSetup");
         _instance = go.AddComponent<PostProcessingSetup>();
         DontDestroyOnLoad(go);
-
-        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (_instance != null)
-            _instance.Setup();
+        _instance?.ScheduleSetup();
     }
 
     void Awake()
@@ -44,86 +68,130 @@ public class PostProcessingSetup : MonoBehaviour
         }
 
         _instance = this;
-        Setup();
+        DontDestroyOnLoad(gameObject);
     }
 
-    void Setup()
+    void OnEnable()
     {
-#if UNITY_POST_PROCESSING_STACK_V2
-        SetupPostProcessing();
-#else
-        Debug.Log("PostProcessingSetup: com.unity.postprocessing no detectado.");
-#endif
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        ScheduleSetup();
     }
 
-#if UNITY_POST_PROCESSING_STACK_V2
-    void SetupPostProcessing()
+    void OnDisable()
     {
-        Camera cam = Camera.main;
-        if (cam == null) return;
+        SceneManager.sceneLoaded -= OnSceneLoaded;
 
-        // Limpiar el Layer si por alguna razón la cámara persiste (aunque en Echoes se recrea)
-        PostProcessLayer existingLayer = cam.GetComponent<PostProcessLayer>();
-        if (existingLayer == null)
+        if (_setupRoutine != null)
         {
-            PostProcessLayer layer = cam.gameObject.AddComponent<PostProcessLayer>();
-            layer.volumeTrigger = cam.transform;
-            layer.volumeLayer = LayerMask.GetMask("Default");
-            layer.antialiasingMode = PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing;
+            StopCoroutine(_setupRoutine);
+            _setupRoutine = null;
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (_instance != this)
+            return;
+
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        CleanupRuntimeObjects();
+        _instance = null;
+    }
+
+    void ScheduleSetup()
+    {
+        if (_setupRoutine != null)
+            StopCoroutine(_setupRoutine);
+
+        _setupRoutine = StartCoroutine(SetupWhenCameraReady());
+    }
+
+    IEnumerator SetupWhenCameraReady()
+    {
+        CleanupRuntimeObjects();
+
+        for (int frame = 0; frame < 40; frame++)
+        {
+            Camera cameraRef = Camera.main;
+            if (cameraRef != null)
+            {
+                SetupPostProcessing(cameraRef);
+                _setupRoutine = null;
+                yield break;
+            }
+
+            yield return null;
         }
 
-        // Siempre reconstruir el Volume global de 0 para asegurar Profile fresco
+        _setupRoutine = null;
+    }
+
+    void SetupPostProcessing(Camera cameraRef)
+    {
+        if (cameraRef == null)
+            return;
+
+        // Habilitar el post-procesado en la cámara (equivalente al checkbox
+        // "Post Processing" del UniversalAdditionalCameraData).
+        var camData = cameraRef.GetUniversalAdditionalCameraData();
+        if (camData != null)
+            camData.renderPostProcessing = true;
+
+        CleanupRuntimeObjects();
+
+        _runtimeProfile = ScriptableObject.CreateInstance<VolumeProfile>();
+
+        Bloom bloom = _runtimeProfile.Add<Bloom>(true);
+        bloom.intensity.Override(0.85f);
+        bloom.threshold.Override(1.2f);
+        bloom.scatter.Override(0.6f);
+
+        Tonemapping tonemapping = _runtimeProfile.Add<Tonemapping>(true);
+        tonemapping.mode.Override(TonemappingMode.ACES);
+
+        ColorAdjustments grading = _runtimeProfile.Add<ColorAdjustments>(true);
+        grading.postExposure.Override(-0.08f);
+        grading.contrast.Override(22f);
+        grading.saturation.Override(-28f);
+
+        Vignette vignette = _runtimeProfile.Add<Vignette>(true);
+        vignette.intensity.Override(0.33f);
+        vignette.smoothness.Override(0.92f);
+        vignette.color.Override(Color.black);
+
+        ChromaticAberration ca = _runtimeProfile.Add<ChromaticAberration>(true);
+        ca.intensity.Override(0.08f);
+
+        LensDistortion ld = _runtimeProfile.Add<LensDistortion>(true);
+        ld.intensity.Override(0f);
+
+        FilmGrain grain = _runtimeProfile.Add<FilmGrain>(true);
+        grain.type.Override(FilmGrainLookup.Medium1);
+        grain.intensity.Override(0.28f);
+        grain.response.Override(0.8f);
+
+        _volumeGo = new GameObject("GlobalPostProcessVolume");
+        DontDestroyOnLoad(_volumeGo);
+        _volume = _volumeGo.AddComponent<Volume>();
+        _volume.isGlobal = true;
+        _volume.priority = 1f;
+        _volume.profile = _runtimeProfile;
+    }
+
+    void CleanupRuntimeObjects()
+    {
         if (_volumeGo != null)
         {
             Destroy(_volumeGo);
+            _volumeGo = null;
+            _volume = null;
         }
 
-        _volumeGo = new GameObject("GlobalPostProcessVolume");
-        PostProcessVolume volume = _volumeGo.AddComponent<PostProcessVolume>();
-        volume.isGlobal = true;
-        volume.priority = 1;
-
-        PostProcessProfile profile = ScriptableObject.CreateInstance<PostProcessProfile>();
-
-        // --- Bloom ---
-        Bloom bloom = profile.AddSettings<Bloom>();
-        bloom.enabled.value = true;
-        bloom.intensity.value = 1.2f;
-        bloom.intensity.overrideState = true;
-        bloom.threshold.value = 1.1f;
-        bloom.threshold.overrideState = true;
-        bloom.softKnee.value = 0.5f;
-        bloom.softKnee.overrideState = true;
-        bloom.diffusion.value = 7f;
-        bloom.diffusion.overrideState = true;
-
-        // --- Color Grading ---
-        ColorGrading cg = profile.AddSettings<ColorGrading>();
-        cg.enabled.value = true;
-        cg.gradingMode.value = GradingMode.LowDefinitionRange;
-        cg.gradingMode.overrideState = true;
-        cg.lift.value = new Vector4(-0.1f, -0.05f, 0.05f, 0f);
-        cg.lift.overrideState = true;
-        cg.gamma.value = new Vector4(0f, 0f, 0.01f, 0.05f);
-        cg.gamma.overrideState = true;
-        cg.gain.value = new Vector4(0f, 0f, 0.02f, 0f);
-        cg.gain.overrideState = true;
-        cg.saturation.value = -15f;
-        cg.saturation.overrideState = true;
-        cg.contrast.value = 15f;
-        cg.contrast.overrideState = true;
-
-        // --- Vignette ---
-        Vignette vignette = profile.AddSettings<Vignette>();
-        vignette.enabled.value = true;
-        vignette.intensity.value = 0.4f;
-        vignette.intensity.overrideState = true;
-        vignette.smoothness.value = 1.0f;
-        vignette.smoothness.overrideState = true;
-        vignette.color.value = new Color(0f, 0f, 0f, 1f);
-        vignette.color.overrideState = true;
-
-        volume.profile = profile;
+        if (_runtimeProfile != null)
+        {
+            Destroy(_runtimeProfile);
+            _runtimeProfile = null;
+        }
     }
-#endif
 }

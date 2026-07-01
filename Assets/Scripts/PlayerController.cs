@@ -1,30 +1,54 @@
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerController : MonoBehaviour
+public partial class PlayerController : MonoBehaviour
 {
+    const string AnimatorParamSpeed = "Speed";
+    const string AnimatorParamIsGrounded = "IsGrounded";
+    const string AnimatorParamIsRecording = "IsRecording";
+    const string AnimatorLegacyGrounded = "Grounded";
+    const string AnimatorLegacyFalling = "Falling";
+    const string AnimatorLegacyJump = "Jump";
+    const string AnimatorParamVerticalSpeed = "VerticalSpeed";
+    const string AnimatorParamTurn = "Turn";
+    const string AnimatorParamHardLanding = "HardLanding";
+    const string AnimatorParamStartRun = "StartRun";
+    const string AnimatorParamStopRun = "StopRun";
+    const string AnimatorParamDeath = "Death";
+    const string AnimatorParamRespawn = "Respawn";
+
     [Header("Movimiento")]
-    public float moveSpeed = 6f;
-    public float sprintMultiplier = 1.0f;
-    public float acceleration = 24f;
-    public float deceleration = 28f;
-    public float rotationSharpness = 14f;
+    public float moveSpeed = 8f;
+    public float sprintMultiplier = 1.6f;
+    public float acceleration = 36f;
+    public float deceleration = 38f;
+    public float rotationSharpness = 16f;
     [Range(0.1f, 1f)]
-    public float airControlFactor = 0.75f;
+    public float airControlFactor = 0.72f;
 
     [Header("Salto / Gravedad")]
-    public float jumpHeight = 1.55f;
-    public float gravityStrength = 26f;
+    public float jumpHeight = 3.2f;
+    public float gravityStrength = 28f;
     public Vector3 defaultGravityDirection = Vector3.down;
     public float groundedStickForce = 5f;
-    public float gravityBlendSpeed = 9f;
-    public float fallGravityMultiplier = 1.6f;
+    public float gravityBlendSpeed = 12f;
+    public float fallGravityMultiplier = 2.0f;
     public bool alignToGroundNormal = true;
 
     [Header("Jump Assist")]
-    public float jumpBufferTime = 0.15f;
-    public float coyoteTime = 0.12f;
+    public float jumpBufferTime = 0.2f;
+    public float coyoteTime = 0.2f;
+
+    [Header("Peso / Game Feel")]
+    [SerializeField] float hardLandingSpeed = 13f;
+    [SerializeField] float softLandingPause = 0.012f;
+    [SerializeField] float hardLandingPause = 0.028f;
+    [SerializeField] float footstepDistance = 1.75f;
+    [SerializeField] float movementScrapeSpeed = 4.5f;
 
     [Header("Deteccion de suelo")]
     public Transform groundCheck;
@@ -39,6 +63,9 @@ public class PlayerController : MonoBehaviour
     Transform _cam;
     Animator _anim;
     Rigidbody _rb;
+    EchoRecorder _echoRecorder;
+    Transform _visualRoot;
+    Transform _modelRoot;
 
     readonly List<GravityZone> _gravityZones = new List<GravityZone>();
 
@@ -53,6 +80,28 @@ public class PlayerController : MonoBehaviour
     bool _isDead;
     bool _jumpedThisFrame;
     bool _isFalling;
+    bool _wasMoving;
+    bool _lastHardLanding;
+    bool _inputLocked;
+    float _landingLockTimer;
+    float _distanceSinceFootstep;
+    float _lastPlanarSpeed;
+    float _turnAmount;
+    float _sprintMomentumBonus;
+    float _gravityScale = 1f;
+    Vector3 _platformVelocity;
+
+    public enum PlayerAnimationState
+    {
+        Idle = 0,
+        Run = 1,
+        Jump = 2,
+        Recording = 3,
+        Falling = 4,
+        Landing = 5,
+        Death = 6,
+        Respawn = 7
+    }
 
     // Jump buffer & coyote
     float _jumpBufferTimer;
@@ -62,9 +111,20 @@ public class PlayerController : MonoBehaviour
     public Vector3 GravityDirection => _currentGravity.sqrMagnitude > 0.0001f ? _currentGravity.normalized : Vector3.down;
     public Vector3 GravityVector => _currentGravity;
     public bool IsGrounded => _grounded;
+    public bool IsAlive => !_isDead;
+    public bool IsInputLocked => _inputLocked;
+    public LayerMask GroundMask => groundMask;
+    public float PlanarSpeed => Vector3.ProjectOnPlane(_controller != null ? _controller.velocity : _planarVelocity, _currentUp).magnitude;
+    public Vector3 PlanarVelocity => _planarVelocity;
+    public float VerticalSpeed => Vector3.Dot(_verticalVelocity, _currentUp);
+    public float TurnAmount => _turnAmount;
+    public bool LastLandingWasHard => _lastHardLanding;
+    public PlayerAnimationState CurrentAnimationState { get; private set; }
+    public CharacterController Controller => _controller;
 
     void Awake()
     {
+        gameObject.tag = "Player";
         _controller = GetComponent<CharacterController>();
         TryGetComponent(out _rb);
         if (_rb != null)
@@ -74,10 +134,16 @@ public class PlayerController : MonoBehaviour
         }
 
         EnsureGroundCheck();
+        PlayerCharacterVisualSetup.EnsureOn(transform);
         EnsureVisualAnimator();
+        EnsureOptionalComponent("PlayerLocomotionAnimator");
+        EnsureOptionalComponent("PlayerAdvancedLocomotion");
+        PlayerAnimationRuntimeBootstrap.ApplyToHierarchy(gameObject);
+        EnsureCameraFocus();
         RefreshCameraReference();
 
         _anim = GetComponentInChildren<Animator>();
+        _echoRecorder = GetComponent<EchoRecorder>();
         _targetGravity = SafeGravity(defaultGravityDirection, gravityStrength);
         _currentGravity = _targetGravity;
         _currentUp = -_currentGravity.normalized;
@@ -91,6 +157,10 @@ public class PlayerController : MonoBehaviour
         _lastFacing = initialForward.normalized;
         transform.rotation = Quaternion.LookRotation(_lastFacing, _currentUp);
     }
+
+    void OnEnable() => ForceUnlockAndReset();
+
+    void Start() => ForceUnlockAndReset();
 
     void Update()
     {
@@ -129,68 +199,121 @@ public class PlayerController : MonoBehaviour
             _verticalVelocity = GravityDirection * groundedStickForce;
 
         Vector3 movementUp = ResolveMovementUp(preMoveProbe);
+
+        if (_inputLocked)
+        {
+            _planarVelocity = Vector3.zero;
+            _jumpBufferTimer = 0f;
+            _coyoteTimer = 0f;
+            if (_grounded)
+                _verticalVelocity = GravityDirection * groundedStickForce;
+
+            _controller.Move(_verticalVelocity * Time.deltaTime);
+            GroundProbe lockedProbe = ProbeGround(movementUp);
+            _grounded = lockedProbe.isGrounded || _controller.isGrounded;
+            UpdateOrientation(lockedProbe, Time.deltaTime);
+            UpdateMovementFeedback(movementUp, Time.deltaTime);
+            UpdateAnimator();
+            _jumpedThisFrame = false;
+            return;
+        }
+
         HandleMovementInput(movementUp);
         HandleJumpInput(movementUp);
 
         if (!_grounded || _jumpedThisFrame)
         {
-            float gravMul = 1f;
+            float gravMul = _gravityScale;
             float downSpeed = Vector3.Dot(_verticalVelocity, GravityDirection);
             if (downSpeed > 0f && !_jumpedThisFrame)
-                gravMul = fallGravityMultiplier;
+                gravMul *= fallGravityMultiplier;
             _verticalVelocity += _currentGravity * gravMul * Time.deltaTime;
         }
 
+        _gravityScale = 1f;
         _isFalling = !_grounded && Vector3.Dot(_verticalVelocity, GravityDirection) > 0.5f;
 
-        Vector3 motion = (_planarVelocity + _verticalVelocity) * Time.deltaTime;
+        Vector3 motion = (_planarVelocity + _verticalVelocity + _platformVelocity) * Time.deltaTime;
+        _platformVelocity = Vector3.zero;
         _controller.Move(motion);
 
         GroundProbe postMoveProbe = ProbeGround(movementUp);
-        // No re-groundear en el frame del salto — evita cancelar el impulso vertical
+        // No re-groundear en el frame del salto o mientras nos movemos hacia arriba (evita cancelar el salto instantáneamente)
         if (!_jumpedThisFrame)
         {
-            _grounded = postMoveProbe.isGrounded || _controller.isGrounded;
-            if (_grounded)
-                _verticalVelocity = GravityDirection * groundedStickForce;
+            bool movingUp = Vector3.Dot(_verticalVelocity, GravityDirection) < -0.1f;
+            if (!movingUp)
+            {
+                _grounded = postMoveProbe.isGrounded || _controller.isGrounded;
+                if (_grounded)
+                    _verticalVelocity = GravityDirection * groundedStickForce;
+            }
+            else
+            {
+                _grounded = false;
+            }
         }
 
         if (!_wasGrounded && _grounded)
         {
+            _lastHardLanding = downwardSpeed >= hardLandingSpeed;
+            _landingLockTimer = _lastHardLanding ? hardLandingPause : softLandingPause;
             GameFeelController.Instance?.PlayLanding(transform.position, movementUp, downwardSpeed);
+            if (_lastHardLanding)
+                TriggerAnimatorIfExists(AnimatorParamHardLanding);
+
+            // Trigger visual and physical landing tilt on the active third-person camera or cinematic camera dynamics
+            ThirdPersonCamera activeCam = ThirdPersonCamera.ResolveActive();
+            if (activeCam != null)
+                activeCam.PlayLandingTilt(downwardSpeed);
+            else
+            {
+                CinematicCameraDynamics cinematicCam = FindAnyObjectByType<CinematicCameraDynamics>();
+                if (cinematicCam != null)
+                    cinematicCam.PlayLandingTilt(downwardSpeed);
+            }
         }
 
         UpdateOrientation(postMoveProbe, Time.deltaTime);
+        UpdateMovementFeedback(movementUp, Time.deltaTime);
         UpdateAnimator();
 
         _jumpedThisFrame = false;
     }
 
-    public void RegisterGravityZone(GravityZone zone)
+    public void SetInputLocked(bool locked)
     {
-        if (zone == null || _gravityZones.Contains(zone))
+        _inputLocked = locked;
+        if (!locked)
             return;
 
-        _gravityZones.Add(zone);
+        _planarVelocity = Vector3.zero;
+        _jumpBufferTimer = 0f;
+        _coyoteTimer = 0f;
     }
 
-    public void UnregisterGravityZone(GravityZone zone)
+    public void SetPlanarVelocity(Vector3 velocity) => _planarVelocity = velocity;
+
+    public void AddPlanarImpulse(Vector3 impulse) => _planarVelocity += impulse;
+
+    public void AddVerticalImpulse(Vector3 upAxis, float speed) => _verticalVelocity = upAxis * speed;
+
+    public void SetVerticalStick() => _verticalVelocity = GravityDirection * groundedStickForce;
+
+    public void AddPlatformVelocity(Vector3 velocity) => _platformVelocity += velocity;
+
+    public void SetSprintMomentumBonus(float bonus) => _sprintMomentumBonus = Mathf.Max(0f, bonus);
+
+    public void ApplyGravityScale(float scale) => _gravityScale = Mathf.Clamp(scale, 0.05f, 2f);
+
+    public void ForceUnlockAndReset()
     {
-        if (zone == null)
-            return;
-
-        _gravityZones.Remove(zone);
+        _inputLocked = false;
+        _isDead = false;
+        _landingLockTimer = 0f;
+        if (_controller != null)
+            _controller.enabled = true;
     }
-
-    public void ForceGravity(Vector3 worldDirection, float strength = -1f, bool playFeedback = true)
-    {
-        Vector3 nextGravity = SafeGravity(worldDirection, strength > 0f ? strength : gravityStrength);
-        if (playFeedback && Vector3.Angle(_targetGravity, nextGravity) > 8f)
-            GameFeelController.Instance?.PlayGravityShift(transform.position, -nextGravity.normalized);
-
-        _targetGravity = nextGravity;
-    }
-
     public void Teleport(Vector3 worldPosition, Quaternion worldRotation)
     {
         _controller.enabled = false;
@@ -231,18 +354,40 @@ public class PlayerController : MonoBehaviour
         if (desiredDirection.sqrMagnitude > 1f)
             desiredDirection.Normalize();
 
-        float speed = moveSpeed * (Input.GetKey(KeyCode.LeftShift) ? sprintMultiplier : 1f);
+        float speed = moveSpeed * (1f + _sprintMomentumBonus);
+        if (Input.GetKey(KeyCode.LeftShift))
+            speed *= sprintMultiplier;
         Vector3 desiredVelocity = desiredDirection * speed;
 
         _planarVelocity = Vector3.ProjectOnPlane(_planarVelocity, movementUp);
         float sharpness = desiredVelocity.sqrMagnitude > 0.001f ? acceleration : deceleration;
         if (!_grounded)
             sharpness *= airControlFactor;
+        if (_landingLockTimer > 0f)
+        {
+            _landingLockTimer -= Time.deltaTime;
+            float retention = EchoesLocomotionSettings.Instance != null
+                ? EchoesLocomotionSettings.Instance.landingVelocityRetention
+                : 1f;
+            
+            // Rebuild landing impact: apply a physical stumble/slowdown depending on whether landing was hard
+            float penaltyFactor = _lastHardLanding ? 0.15f : 0.65f;
+            desiredVelocity = Vector3.Lerp(desiredVelocity * penaltyFactor, _planarVelocity, retention);
+        }
         _planarVelocity = DampVector(_planarVelocity, desiredVelocity, sharpness, Time.deltaTime);
     }
 
     void HandleJumpInput(Vector3 movementUp)
     {
+        // Variable jump height: cut upward velocity if button released
+        if (Input.GetButtonUp("Jump") || Input.GetKeyUp(KeyCode.Space))
+        {
+            if (Vector3.Dot(_verticalVelocity, movementUp) > 0f)
+            {
+                _verticalVelocity -= movementUp * (Vector3.Dot(_verticalVelocity, movementUp) * 0.5f);
+            }
+        }
+
         // Buffer the jump input
         if (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.Space))
             _jumpBufferTimer = jumpBufferTime;
@@ -257,13 +402,20 @@ public class PlayerController : MonoBehaviour
         _jumpBufferTimer = 0f;
         _coyoteTimer = 0f;
 
+        // Inherit platform velocity when jumping off it
+        if (_platformVelocity.sqrMagnitude > 0.01f)
+        {
+            _planarVelocity += Vector3.ProjectOnPlane(_platformVelocity, movementUp);
+        }
+
         float jumpSpeed = Mathf.Sqrt(2f * gravityStrength * jumpHeight);
         _verticalVelocity = movementUp * jumpSpeed;
         _grounded = false;
         _jumpedThisFrame = true;
 
-        if (_anim != null && _anim.runtimeAnimatorController != null)
-            _anim.SetTrigger("Jump");
+        if (HasAnimatorParameter(AnimatorLegacyJump, AnimatorControllerParameterType.Trigger))
+            _anim.SetTrigger(AnimatorLegacyJump);
+        TriggerAnimatorIfExists("JumpStart");
 
         GameFeelController.Instance?.PlayJump(transform.position, movementUp);
     }
@@ -287,233 +439,35 @@ public class PlayerController : MonoBehaviour
             _lastFacing = Vector3.Cross(transform.right, _currentUp).normalized;
 
         Quaternion targetRotation = Quaternion.LookRotation(_lastFacing, _currentUp);
+        Vector3 oldForward = Vector3.ProjectOnPlane(transform.forward, _currentUp).normalized;
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, DampingFactor(rotationSharpness, deltaTime));
-    }
-
-    void UpdateAnimator()
-    {
-        if (_anim == null || _anim.runtimeAnimatorController == null)
-            return;
-
-        Vector3 flatVelocity = Vector3.ProjectOnPlane(_controller.velocity, _currentUp);
-        _anim.SetFloat("Speed", flatVelocity.magnitude);
-        
-        Vector3 localVelocity = transform.InverseTransformDirection(_controller.velocity);
-        _anim.SetFloat("VelocityX", localVelocity.x);
-        _anim.SetFloat("VelocityZ", localVelocity.z);
-        
-        _anim.SetBool("Grounded", _grounded);
-        _anim.SetBool("Falling", _isFalling);
-    }
-
-    void UpdateTargetGravity()
-    {
-        GravityZone strongestZone = null;
-        int highestPriority = int.MinValue;
-
-        for (int i = _gravityZones.Count - 1; i >= 0; i--)
-        {
-            GravityZone zone = _gravityZones[i];
-            if (zone == null)
-            {
-                _gravityZones.RemoveAt(i);
-                continue;
-            }
-
-            if (zone.Priority >= highestPriority)
-            {
-                highestPriority = zone.Priority;
-                strongestZone = zone;
-            }
-        }
-
-        Vector3 nextGravity = strongestZone != null
-            ? strongestZone.GetGravityVector()
-            : SafeGravity(defaultGravityDirection, gravityStrength);
-
-        if (Vector3.Angle(_targetGravity, nextGravity) > 8f || Mathf.Abs(_targetGravity.magnitude - nextGravity.magnitude) > 0.5f)
-            GameFeelController.Instance?.PlayGravityShift(transform.position, -nextGravity.normalized);
-
-        _targetGravity = nextGravity;
-    }
-
-    void BlendGravity(float deltaTime)
-    {
-        Vector3 currentDirection = _currentGravity.sqrMagnitude > 0.0001f ? _currentGravity.normalized : Vector3.down;
-        Vector3 targetDirection = _targetGravity.normalized;
-        float blend = DampingFactor(gravityBlendSpeed, deltaTime);
-        Vector3 blendedDirection = Vector3.Slerp(currentDirection, targetDirection, blend).normalized;
-        float blendedStrength = Mathf.Lerp(_currentGravity.magnitude, _targetGravity.magnitude, blend);
-        _currentGravity = blendedDirection * blendedStrength;
-    }
-
-    Vector3 ResolveMovementUp(GroundProbe probe)
-    {
-        if (alignToGroundNormal && probe.hit.collider != null)
-            return probe.hit.normal;
-
-        return _currentUp;
-    }
-
-    GroundProbe ProbeGround(Vector3 probeUp)
-    {
-        Vector3 normalizedUp = probeUp.sqrMagnitude > 0.001f ? probeUp.normalized : transform.up;
-        Vector3 origin = groundCheck != null
-            ? groundCheck.position + normalizedUp * groundProbeRadius
-            : transform.position + normalizedUp * groundProbeRadius;
-
-        RaycastHit hit;
-        bool grounded = Physics.SphereCast(
-            origin,
-            groundProbeRadius,
-            -normalizedUp,
-            out hit,
-            groundProbeDistance + groundProbeRadius,
-            groundMask,
-            QueryTriggerInteraction.Ignore);
-
-        if (grounded)
-            grounded = hit.distance <= groundProbeDistance + 0.02f;
-
-        // Excluir colisiones con el propio jugador (failsafe si groundMask incluye Default)
-        if (grounded && hit.collider != null && hit.collider.transform.IsChildOf(transform))
-            grounded = false;
-
-        return new GroundProbe
-        {
-            isGrounded = grounded,
-            hit = hit
-        };
-    }
-
-    void EnsureGroundCheck()
-    {
-        if (groundCheck == null)
-        {
-            var gc = new GameObject("GroundCheck");
-            gc.transform.SetParent(transform, false);
-            groundCheck = gc.transform;
-        }
-
-        float localYOffset = -((_controller.height * 0.5f) - _controller.radius + 0.02f);
-        groundCheck.localPosition = new Vector3(0f, localYOffset, 0f);
-        groundCheck.localRotation = Quaternion.identity;
-    }
-
-    void RefreshCameraReference()
-    {
-        if (Camera.main != null)
-            _cam = Camera.main.transform;
-    }
-
-    void EnsureVisualAnimator()
-    {
-        Transform visualRoot = transform.Find("PlayerVisual");
-        if (visualRoot == null)
-        {
-            GameObject root = new GameObject("PlayerVisual");
-            root.transform.SetParent(transform, false);
-            visualRoot = root.transform;
-        }
-
-        if (visualRoot.childCount == 0)
-            CreateFallbackVisual(visualRoot);
-
-        Transform modelRoot = visualRoot.GetChild(0);
-        Animator visualAnimator = modelRoot.GetComponent<Animator>();
-        if (visualAnimator == null)
-            visualAnimator = modelRoot.GetComponentInChildren<Animator>(true);
-        if (visualAnimator != null)
-        {
-            visualAnimator.applyRootMotion = false;
-            visualAnimator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
-        }
-
-        SkinnedMeshRenderer[] renderers = modelRoot.GetComponentsInChildren<SkinnedMeshRenderer>(true);
-        for (int i = 0; i < renderers.Length; i++)
-            renderers[i].updateWhenOffscreen = true;
-    }
-
-    void CreateFallbackVisual(Transform visualRoot)
-    {
-        _anim = GetComponentInChildren<Animator>();
-
-        // Fallback capsule if no model found
-        GameObject capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-        capsule.name = "FallbackCapsule";
-        capsule.transform.SetParent(visualRoot, false);
-        capsule.transform.localPosition = new Vector3(0f, 1.05f, 0f);
-        capsule.transform.localRotation = Quaternion.identity;
-        capsule.transform.localScale = new Vector3(0.8f, 1.05f, 0.8f);
-
-        Collider capsuleCollider = capsule.GetComponent<Collider>();
-        if (capsuleCollider != null)
-            Destroy(capsuleCollider);
-
-        Renderer rendererRef = capsule.GetComponent<Renderer>();
-        if (rendererRef != null)
-        {
-            Material material = new Material(Shader.Find("Standard"));
-            material.color = new Color(0.87f, 0.91f, 0.96f, 1f);
-            rendererRef.sharedMaterial = material;
-        }
+        Vector3 newForward = Vector3.ProjectOnPlane(transform.forward, _currentUp).normalized;
+        if (oldForward.sqrMagnitude > 0.001f && newForward.sqrMagnitude > 0.001f)
+            _turnAmount = Mathf.MoveTowards(_turnAmount, Vector3.SignedAngle(oldForward, newForward, _currentUp) / Mathf.Max(deltaTime, 0.0001f), 720f * deltaTime);
     }
 
     void Die()
     {
         _isDead = true;
         _controller.enabled = false;
-        GameFeelController.Instance?.PlayPlayerDeath(transform.position);
-        Invoke(nameof(RestartScene), 1.2f);
-    }
-
-    void RestartScene()
-    {
-        if (Camera.main != null)
+        TriggerAnimatorIfExists(AnimatorParamDeath);
+        
+        if (LevelRuntimeController.Instance != null)
         {
-#if UNITY_POST_PROCESSING_STACK_V2
-            var ppLayer = Camera.main.GetComponent<UnityEngine.Rendering.PostProcessing.PostProcessLayer>();
-            if (ppLayer != null)
-                ppLayer.enabled = false; // Workaround for Unity PostProcessing NRE on scene reload
-#endif
+            LevelRuntimeController.Instance.HandlePlayerDeath(transform.position, 1.2f);
         }
-        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+        else
+        {
+            GameFeelController.Instance?.PlayPlayerDeath(transform.position);
+            StartCoroutine(FallbackRestart());
+        }
     }
 
-    void OnGUI()
+    System.Collections.IEnumerator FallbackRestart()
     {
-        if (!_isDead)
-            return;
-
-        GUIStyle style = new GUIStyle(GUI.skin.label);
-        style.fontSize = 50;
-        style.alignment = TextAnchor.MiddleCenter;
-        style.normal.textColor = Color.red;
-        style.fontStyle = FontStyle.Bold;
-
-        Rect bounds = new Rect(0, 0, Screen.width, Screen.height);
-        var shadowStyle = new GUIStyle(style);
-        shadowStyle.normal.textColor = Color.black;
-
-        Rect shadowRect = new Rect(2, 2, Screen.width, Screen.height);
-        GUI.Label(shadowRect, "HAS CAIDO AL VACIO", shadowStyle);
-        GUI.Label(bounds, "HAS CAIDO AL VACIO", style);
-
-        style.fontSize = 20;
-        style.normal.textColor = Color.white;
-        shadowStyle.fontSize = 20;
-        shadowStyle.normal.textColor = Color.black;
-
-        Rect hintRect = new Rect(0, Screen.height * 0.5f + 40, Screen.width, 50);
-        Rect hintShadowRect = new Rect(2, Screen.height * 0.5f + 42, Screen.width, 50);
-        GUI.Label(hintShadowRect, "Reiniciando...", shadowStyle);
-        GUI.Label(hintRect, "Reiniciando...", style);
-    }
-
-    static Vector3 SafeGravity(Vector3 direction, float strength)
-    {
-        Vector3 fallback = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector3.down;
-        return fallback * Mathf.Max(0.01f, strength);
+        yield return new WaitForSecondsRealtime(1.2f);
+        Time.timeScale = 1f;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
     }
 
     static float DampingFactor(float sharpness, float deltaTime)

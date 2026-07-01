@@ -10,18 +10,26 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
 {
     [SerializeField] string playerTag = "Player";
     [SerializeField] string echoTag = "Echo";
+    [SerializeField] string echoProjectionTag = "EchoProjection";
+    [SerializeField] bool acceptPlayer = true;
+    [SerializeField] bool acceptEcho = true;
+    [SerializeField] bool acceptEchoProjection = true;
 
     [Header("Visual Feedback")]
-    [SerializeField] Color inactiveColor = new Color(0.18f, 0.75f, 0.55f, 1f);   // Menta suave
-    [SerializeField] Color activeColor = new Color(0f, 1f, 0.75f, 1f);            // Verde brillante
-    [SerializeField] Color emissionInactive = new Color(0.05f, 0.25f, 0.15f, 1f); // Glow suave
-    [SerializeField] Color emissionActive = new Color(0f, 0.85f, 0.55f, 1f);      // Glow fuerte
-    [SerializeField] float pulseSpeed = 2.5f;
+    [SerializeField] Color inactiveColor = new Color(0.16f, 0.21f, 0.31f, 1f);    // Indigo-ceniza elegante
+    [SerializeField] Color activeColor = new Color(0f, 0.9f, 1f, 1f);            // Cyan cyber-brillante
+    [SerializeField] Color emissionInactive = new Color(0f, 0.1f, 0.17f, 1f);     // Aura cyan sutil
+    [SerializeField] Color emissionActive = new Color(0f, 1.33f, 1.6f, 1f);       // Destello cyan radiante
+    [SerializeField] float pulseSpeed = 2.0f;
     [SerializeField] bool createIndicatorLight = true;
-    [SerializeField] float lightIntensity = 2.5f;
-    [SerializeField] float lightRange = 4f;
+    [SerializeField] float lightIntensity = 0.85f;
+    [SerializeField] float lightRange = 4.5f;
+
+    [Header("Behavior")]
+    public float autoReleaseTimer = 0f;
 
     bool _pressed;
+    float _timeUntilRelease;
     Renderer _renderer;
     MaterialPropertyBlock _propBlock;
     Light _indicatorLight;
@@ -30,6 +38,7 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
     // Cache material property IDs
     static readonly int ColorId = Shader.PropertyToID("_Color");
     static readonly int EmissionColorId = Shader.PropertyToID("_EmissionColor");
+    static readonly Collider[] _overlapBuffer = new Collider[16];
 
     public bool IsPressed => _pressed;
 
@@ -37,8 +46,18 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
 
     void Awake()
     {
-        var col = GetComponent<BoxCollider>();
-        col.isTrigger = true;
+        BoxCollider boxCol = GetComponent<BoxCollider>();
+        if (boxCol == null)
+        {
+            Collider existing = GetComponent<Collider>();
+            if (existing != null)
+            {
+                DestroyImmediate(existing);
+            }
+            boxCol = gameObject.AddComponent<BoxCollider>();
+            boxCol.size = new Vector3(2f, 0.12f, 2f);
+        }
+        boxCol.isTrigger = true;
 
         _renderer = GetComponentInChildren<Renderer>();
         _propBlock = new MaterialPropertyBlock();
@@ -79,6 +98,12 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
         if (_pressed)
         {
             GameFeelController.Instance?.PlayPlatePress(transform.position);
+            TriggerNearbyPlayerPush();
+            Debug.Log($"[QA PressurePlate] {gameObject.name} ACTIVADO.");
+        }
+        else
+        {
+            Debug.Log($"[QA PressurePlate] {gameObject.name} DESACTIVADO.");
         }
     }
 
@@ -123,7 +148,10 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
 
     void FixedUpdate()
     {
-        var box = GetComponent<BoxCollider>();
+        BoxCollider box = GetComponent<BoxCollider>();
+        if (box == null)
+            return;
+
         Vector3 center = transform.TransformPoint(box.center);
         Vector3 halfExtents = Vector3.Scale(box.size, transform.lossyScale) * 0.5f;
 
@@ -131,19 +159,36 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
         halfExtents.y += 0.2f;
         center.y += 0.1f;
 
-        Collider[] hits = Physics.OverlapBox(center, halfExtents, transform.rotation);
+        int hitCount = Physics.OverlapBoxNonAlloc(center, halfExtents, _overlapBuffer, transform.rotation);
         
         bool foundActor = false;
-        foreach (var c in hits)
+        for (int i = 0; i < hitCount; i++)
         {
-            if (c.CompareTag(playerTag) || c.CompareTag(echoTag))
+            Collider c = _overlapBuffer[i];
+            if (IsAcceptedActor(c))
             {
                 foundActor = true;
                 break;
             }
         }
 
-        SetPressed(foundActor);
+        if (foundActor)
+        {
+            _timeUntilRelease = Time.time + autoReleaseTimer;
+            SetPressed(true);
+        }
+        else
+        {
+            if (autoReleaseTimer > 0f)
+            {
+                if (Time.time >= _timeUntilRelease)
+                    SetPressed(false);
+            }
+            else
+            {
+                SetPressed(false);
+            }
+        }
     }
 
     public void ResetLevelState()
@@ -151,5 +196,65 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
         SetPressed(false);
         _pulsePhase = 0f;
         UpdateVisuals(false);
+    }
+
+    public void ConfigureAcceptedActors(bool player, bool echo, bool echoProjection)
+    {
+        acceptPlayer = player;
+        acceptEcho = echo;
+        acceptEchoProjection = echoProjection;
+    }
+
+    bool IsAcceptedActor(Collider c)
+    {
+        if (c == null)
+            return false;
+
+        return HasAcceptedTag(c, playerTag, acceptPlayer) ||
+               HasAcceptedTag(c, echoTag, acceptEcho) ||
+               HasAcceptedTag(c, echoProjectionTag, acceptEchoProjection) ||
+               HasTag(c, "KineticBlock") ||
+               c.GetComponentInParent<KineticPushableBlock>() != null;
+    }
+
+    static bool HasAcceptedTag(Collider c, string tagName, bool enabled)
+    {
+        return enabled && HasTag(c, tagName);
+    }
+
+    static bool HasTag(Collider c, string tagName)
+    {
+        if (c == null || string.IsNullOrEmpty(tagName))
+            return false;
+
+        try
+        {
+            return c.CompareTag(tagName);
+        }
+        catch (UnityException)
+        {
+            return false;
+        }
+    }
+
+    void TriggerNearbyPlayerPush()
+    {
+        PlayerController player = FindAnyObjectByType<PlayerController>();
+        if (player == null || Vector3.Distance(player.transform.position, transform.position) > 2.4f)
+            return;
+
+        Animator animator = player.GetComponentInChildren<Animator>();
+        if (animator == null || animator.runtimeAnimatorController == null)
+            return;
+
+        AnimatorControllerParameter[] parameters = animator.parameters;
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            if (parameters[i].type == AnimatorControllerParameterType.Trigger && parameters[i].name == "PushButton")
+            {
+                animator.SetTrigger("PushButton");
+                return;
+            }
+        }
     }
 }
