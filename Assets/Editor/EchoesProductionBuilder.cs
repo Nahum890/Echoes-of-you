@@ -1019,6 +1019,33 @@ public static partial class EchoesProductionBuilder
         return goal;
     }
 
+    static GravityZone CreateGravityZone(string name, Vector3 position, Vector3 size, Vector3 gravityDirection, float gravityStrength, int priority, Transform parent)
+    {
+        GameObject root = new GameObject(name);
+        root.transform.SetParent(parent, false);
+        root.transform.position = position;
+
+        BoxCollider col = root.AddComponent<BoxCollider>();
+        col.isTrigger = true;
+        col.size = size;
+
+        GravityZone zone = root.AddComponent<GravityZone>();
+        SetSerializedValue(zone, "gravityDirection", gravityDirection);
+        SetSerializedValue(zone, "gravityStrength", gravityStrength);
+        SetSerializedValue(zone, "priority", priority);
+
+        // Visual indicator (translucent violet box, URP transparent material)
+        GameObject visual = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        visual.name = "Visual";
+        visual.transform.SetParent(root.transform, false);
+        visual.transform.localScale = size;
+        Object.DestroyImmediate(visual.GetComponent<Collider>());
+        visual.GetComponent<MeshRenderer>().sharedMaterial =
+            EchoesMaterialLibrary.GetOrCreateTransparentMaterial("Mat_GravityZone", new Color(0.6f, 0.2f, 0.8f, 0.15f), false);
+
+        return zone;
+    }
+
     static EchoKineticBody CreateKineticBlock(string name, Vector3 anchorPosition, Vector3 blockScale, Vector3 triggerLocalPosition, Vector3 triggerSize, Vector3 activeLocal, Transform parent, PuzzleSignal signal, bool requireEcho = true, bool holdToMove = true, float speed = 3f)
     {
         GameObject anchor = new GameObject(name + "_Anchor");
