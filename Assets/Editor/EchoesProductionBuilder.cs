@@ -1543,19 +1543,22 @@ public static partial class EchoesProductionBuilder
             {
                 ApplyMaterialOverride(visual, materialOverride);
             }
-            
-            MeshRenderer[] renderers = visual.GetComponentsInChildren<MeshRenderer>(true);
-            if (renderers.Length > 0)
-            {
-                Bounds bounds = renderers[0].bounds;
-                for (int i = 1; i < renderers.Length; i++)
-                {
-                    bounds.Encapsulate(renderers[i].bounds);
-                }
-                
-                Vector3 localCenter = container.transform.InverseTransformPoint(bounds.center);
-                visual.transform.localPosition = -localCenter;
-            }
+
+            // Normalizar el modelo a la caja unitaria del contenedor para que el
+            // 'scale' sea el footprint REAL en mundo (y coincida con el BoxCollider
+            // size 1), evitando que modelos de tamaño nativo grande se solapen.
+            // Ver EchoesModuleFactory.ComputeLocalBounds (robusto a rotación/escala).
+            Bounds nativeBounds = EchoesModuleFactory.ComputeLocalBounds(visual.transform);
+            Vector3 ns = nativeBounds.size;
+            Vector3 fit = new Vector3(
+                1f / Mathf.Max(1e-4f, ns.x),
+                1f / Mathf.Max(1e-4f, ns.y),
+                1f / Mathf.Max(1e-4f, ns.z));
+            visual.transform.localScale = fit;
+            visual.transform.localPosition = new Vector3(
+                -nativeBounds.center.x * fit.x,
+                -nativeBounds.center.y * fit.y,
+                -nativeBounds.center.z * fit.z);
         }
         else
         {
@@ -1957,7 +1960,7 @@ public static partial class EchoesProductionBuilder
             return;
         }
 
-        // Light colors to make the levels visible and visually rich with realistic PBR textures
+        // Materiales flat URP (sin texturas 2K/4K) — estética minimalista de DESIGN.md.
         _archMat = GetOrCreateMaterial("Mat_Architecture", HexColor("B0B5BC"));
         SetupMaterialTextures(_archMat, 
             "Assets/Materials/Metal054B_2K-JPG/Metal054B_2K-JPG_Color.jpg", 
@@ -2026,58 +2029,30 @@ public static partial class EchoesProductionBuilder
             _fluorescentMat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
     }
 
+    // Estética minimalista "void" (ver DESIGN.md): sin texturas PBR 2K/4K.
+    // Mantiene solo la respuesta de superficie flat (metallic/smoothness) y
+    // limpia cualquier mapa que un rebuild anterior hubiera dejado asignado.
+    // Los parámetros de rutas/tiling/bumpScale se ignoran a propósito para no
+    // tener que tocar todos los call sites.
     static void SetupMaterialTextures(
-        Material mat, 
-        string albedoPath, 
-        string normalPath, 
-        string aoPath, 
-        float bumpScale, 
-        float metallic, 
-        float smoothness, 
+        Material mat,
+        string albedoPath,
+        string normalPath,
+        string aoPath,
+        float bumpScale,
+        float metallic,
+        float smoothness,
         Vector2? tiling)
     {
         if (mat == null) return;
 
-        if (!string.IsNullOrEmpty(albedoPath))
-        {
-            Texture2D tex = AssetDatabase.LoadAssetAtPath<Texture2D>(albedoPath);
-            if (tex != null)
-            {
-                mat.SetTexture("_BaseMap", tex);
-            }
-        }
-
-        if (!string.IsNullOrEmpty(normalPath))
-        {
-            Texture2D norm = AssetDatabase.LoadAssetAtPath<Texture2D>(normalPath);
-            if (norm != null)
-            {
-                mat.EnableKeyword("_NORMALMAP");
-                mat.SetTexture("_BumpMap", norm);
-                mat.SetFloat("_BumpScale", bumpScale);
-            }
-        }
-
-        if (!string.IsNullOrEmpty(aoPath))
-        {
-            Texture2D ao = AssetDatabase.LoadAssetAtPath<Texture2D>(aoPath);
-            if (ao != null)
-            {
-                mat.SetTexture("_OcclusionMap", ao);
-            }
-        }
+        mat.SetTexture("_BaseMap", null);
+        mat.SetTexture("_BumpMap", null);
+        mat.SetTexture("_OcclusionMap", null);
+        mat.DisableKeyword("_NORMALMAP");
 
         mat.SetFloat("_Metallic", metallic);
         mat.SetFloat("_Smoothness", smoothness);
-
-        if (tiling.HasValue)
-        {
-            mat.SetTextureScale("_BaseMap", tiling.Value);
-            if (!string.IsNullOrEmpty(normalPath))
-                mat.SetTextureScale("_BumpMap", tiling.Value);
-            if (!string.IsNullOrEmpty(aoPath))
-                mat.SetTextureScale("_OcclusionMap", tiling.Value);
-        }
     }
 
     static Color HexColor(string hex, float alpha = 1f)

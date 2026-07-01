@@ -875,6 +875,43 @@ public static class EchoesModuleFactory
 
     // --- UTILITIES ---
 
+    /// <summary>
+    /// Bounds del conjunto de meshes expresados en el espacio local de <paramref name="root"/>,
+    /// independientes de la rotación y escala del contenedor (mesh -> mundo -> local de root).
+    /// Devuelve una caja unitaria si el modelo no tiene meshes.
+    /// </summary>
+    public static Bounds ComputeLocalBounds(Transform root)
+    {
+        MeshFilter[] filters = root.GetComponentsInChildren<MeshFilter>(true);
+        Vector3 min = Vector3.positiveInfinity;
+        Vector3 max = Vector3.negativeInfinity;
+        bool any = false;
+
+        foreach (MeshFilter mf in filters)
+        {
+            if (mf.sharedMesh == null) continue;
+            Bounds mb = mf.sharedMesh.bounds;
+            Vector3 c = mb.center;
+            Vector3 e = mb.extents;
+            for (int sx = -1; sx <= 1; sx += 2)
+            for (int sy = -1; sy <= 1; sy += 2)
+            for (int sz = -1; sz <= 1; sz += 2)
+            {
+                Vector3 corner = c + new Vector3(e.x * sx, e.y * sy, e.z * sz);
+                Vector3 local = root.InverseTransformPoint(mf.transform.TransformPoint(corner));
+                min = Vector3.Min(min, local);
+                max = Vector3.Max(max, local);
+                any = true;
+            }
+        }
+
+        if (!any) return new Bounds(Vector3.zero, Vector3.one);
+
+        Bounds b = new Bounds();
+        b.SetMinMax(min, max);
+        return b;
+    }
+
     private static GameObject Instantiate3DModel(string modelPath, string name, Vector3 pos, Vector3 scale, Quaternion rot, Transform parent, Material mat = null)
     {
         GameObject container = new GameObject(name);
@@ -917,18 +954,25 @@ public static class EchoesModuleFactory
             foreach (var col in childColliders) Object.DestroyImmediate(col);
 
             if (mat != null) ApplyMaterialOverride(visual, mat);
-            
-            MeshRenderer[] renderers = visual.GetComponentsInChildren<MeshRenderer>(true);
-            if (renderers.Length > 0)
-            {
-                Bounds bounds = renderers[0].bounds;
-                for (int i = 1; i < renderers.Length; i++)
-                {
-                    bounds.Encapsulate(renderers[i].bounds);
-                }
-                Vector3 localCenter = container.transform.InverseTransformPoint(bounds.center);
-                visual.transform.localPosition = -localCenter;
-            }
+
+            // Normalizar el modelo a la caja unitaria del contenedor: así el
+            // 'scale' que se pasa deja de ser un multiplicador del tamaño nativo
+            // (arbitrario, distinto por pieza) y pasa a ser el footprint REAL en
+            // mundo, que además coincide con el BoxCollider (center 0, size 1).
+            // Esto evita que modelos con tamaño nativo grande se solapen con sus
+            // vecinos. Se mide en el espacio local del propio visual para que la
+            // rotación/escala del contenedor no distorsionen el cálculo.
+            Bounds nativeBounds = ComputeLocalBounds(visual.transform);
+            Vector3 ns = nativeBounds.size;
+            Vector3 fit = new Vector3(
+                1f / Mathf.Max(1e-4f, ns.x),
+                1f / Mathf.Max(1e-4f, ns.y),
+                1f / Mathf.Max(1e-4f, ns.z));
+            visual.transform.localScale = fit;
+            visual.transform.localPosition = new Vector3(
+                -nativeBounds.center.x * fit.x,
+                -nativeBounds.center.y * fit.y,
+                -nativeBounds.center.z * fit.z);
         }
         else
         {

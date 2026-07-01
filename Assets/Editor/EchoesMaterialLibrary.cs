@@ -191,54 +191,6 @@ public static class EchoesMaterialLibrary
         material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent; // 3000
     }
 
-    private static void SetupMaterialTextures(
-        Material mat, 
-        string albedoPath, 
-        string normalPath, 
-        string aoPath, 
-        float bumpScale, 
-        float metallic, 
-        float smoothness, 
-        Vector2? tiling)
-    {
-        if (mat == null) return;
-
-        if (!string.IsNullOrEmpty(albedoPath))
-        {
-            Texture2D tex = AssetDatabase.LoadAssetAtPath<Texture2D>(albedoPath);
-            if (tex != null) mat.SetTexture("_BaseMap", tex);
-        }
-
-        if (!string.IsNullOrEmpty(normalPath))
-        {
-            Texture2D norm = AssetDatabase.LoadAssetAtPath<Texture2D>(normalPath);
-            if (norm != null)
-            {
-                mat.EnableKeyword("_NORMALMAP");
-                mat.SetTexture("_BumpMap", norm);
-                mat.SetFloat("_BumpScale", bumpScale);
-            }
-        }
-
-        if (!string.IsNullOrEmpty(aoPath))
-        {
-            Texture2D ao = AssetDatabase.LoadAssetAtPath<Texture2D>(aoPath);
-            if (ao != null) mat.SetTexture("_OcclusionMap", ao);
-        }
-
-        mat.SetFloat("_Metallic", metallic);
-        mat.SetFloat("_Smoothness", smoothness);
-
-        if (tiling.HasValue)
-        {
-            mat.SetTextureScale("_BaseMap", tiling.Value);
-            if (!string.IsNullOrEmpty(normalPath))
-                mat.SetTextureScale("_BumpMap", tiling.Value);
-            if (!string.IsNullOrEmpty(aoPath))
-                mat.SetTextureScale("_OcclusionMap", tiling.Value);
-        }
-    }
-
     private static Color HexColor(string hex, float alpha = 1f)
     {
         if (ColorUtility.TryParseHtmlString("#" + hex, out Color c))
