@@ -198,7 +198,6 @@ public class ThirdPersonCamera : MonoBehaviour
         _eventFocusPoint = worldPoint;
         _eventFocusWeight = Mathf.Clamp01(weight);
         _eventFocusUntil = Time.unscaledTime + Mathf.Max(0.05f, holdSeconds);
-        RequestFovPulse(pulseFov, holdSeconds);
     }
 
     public void PlayLandingTilt(float impactSpeed)

@@ -101,7 +101,6 @@ public class FixedPuzzleCameraController : MonoBehaviour
         _eventWorldPoint = worldPoint;
         _requestedEventWeight = Mathf.Clamp(weight, 0.15f, 1f);
         _eventFocusUntil = Time.unscaledTime + Mathf.Max(0.05f, holdSeconds);
-        RequestFovPulse(pulseFov, holdSeconds);
     }
 
     public void RequestFovPulse(float temporaryFov, float holdSeconds = 0.25f)

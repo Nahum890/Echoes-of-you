@@ -10,6 +10,8 @@ public class LevelGoal : MonoBehaviour, IResettableLevelObject
     [SerializeField] GoalTrigger[] triggers;
     [SerializeField] bool autoCollectChildTriggers = true;
     [SerializeField] int requiredTriggerCount;
+    [SerializeField] bool anyTriggerSatisfiesGoal = false;
+    [SerializeField] bool skipEscapeSequence = false;
 
     readonly HashSet<GoalTrigger> _satisfied = new HashSet<GoalTrigger>();
 
@@ -20,7 +22,31 @@ public class LevelGoal : MonoBehaviour, IResettableLevelObject
     public string ObjectiveText => objectiveText;
     public string CompletionToast => completionToast;
     public int SatisfiedCount => _satisfied.Count;
-    public int RequiredCount => Mathf.Max(1, requiredTriggerCount > 0 ? requiredTriggerCount : triggers != null ? triggers.Length : 1);
+    public bool SkipEscapeSequence => skipEscapeSequence;
+    public int RequiredCount => anyTriggerSatisfiesGoal ? 1 : Mathf.Max(1, requiredTriggerCount > 0 ? requiredTriggerCount : triggers != null ? triggers.Length : 1);
+
+    void Update()
+    {
+        // Cheat para debug: presiona U + L para resolver el nivel al instante
+        if (Input.GetKey(KeyCode.U) && Input.GetKeyDown(KeyCode.L))
+        {
+            Debug.Log("[QA LevelGoal] Cheat activado: Desbloqueando salidas del nivel.");
+            _ready = true;
+            if (linkedExits != null)
+            {
+                for (int i = 0; i < linkedExits.Length; i++)
+                {
+                    if (linkedExits[i] != null)
+                        linkedExits[i].SetUnlocked(true);
+                }
+            }
+            LevelEscapeSequence escape = FindAnyObjectByType<LevelEscapeSequence>();
+            if (escape != null)
+            {
+                escape.CompleteEscape();
+            }
+        }
+    }
 
     void Awake()
     {

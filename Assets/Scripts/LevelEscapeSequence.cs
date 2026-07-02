@@ -54,18 +54,33 @@ public class LevelEscapeSequence : MonoBehaviour
         if (_escapeTimer <= 0f)
             CompleteEscape();
 
-        if (escapeRouteEnd != null)
+        PlayerController player = FindAnyObjectByType<PlayerController>();
+        if (player != null)
         {
-            PlayerController player = FindAnyObjectByType<PlayerController>();
-            if (player != null && Vector3.Distance(player.transform.position, escapeRouteEnd.position) < 2.5f)
+            // Completar escape si está cerca del fin de ruta (con un radio más generoso)
+            if (escapeRouteEnd != null && Vector3.Distance(player.transform.position, escapeRouteEnd.position) < 6f)
+            {
                 CompleteEscape();
+            }
+            // O si está cerca de cualquiera de las salidas
+            else if (exits != null)
+            {
+                for (int i = 0; i < exits.Length; i++)
+                {
+                    if (exits[i] != null && Vector3.Distance(player.transform.position, exits[i].transform.position) < 6f)
+                    {
+                        CompleteEscape();
+                        break;
+                    }
+                }
+            }
         }
     }
 
     void BeginEscape()
     {
         LevelExperienceBlueprint blueprint = LevelExperienceBlueprint.Active;
-        if (blueprint != null && !blueprint.RequiresEscape)
+        if ((blueprint != null && !blueprint.RequiresEscape) || (goal != null && goal.SkipEscapeSequence))
         {
             CompleteEscape();
             return;
@@ -93,7 +108,7 @@ public class LevelEscapeSequence : MonoBehaviour
         GameFeelController.Instance?.PlaySoftError(transform.position);
     }
 
-    void CompleteEscape()
+    public void CompleteEscape()
     {
         if (!_exitsTemporarilyLocked)
             return;

@@ -254,19 +254,15 @@ public class GameFeelController : MonoBehaviour
         if (isRecording)
         {
             targetCA = Mathf.Max(targetCA, 0.42f + Mathf.PingPong(Time.unscaledTime * 5f, 0.1f));
-            targetLD = Mathf.Min(targetLD, -22f + Mathf.PingPong(Time.unscaledTime * 10f, 5f));
+            targetLD = 0f; // Disabled lens distortion to prevent disorienting fish-eye/FOV warping
             targetVignette = Mathf.Max(targetVignette, 0.52f);
             targetExposure = Mathf.Min(targetExposure, -0.22f);
         }
         else if (hasEchoes)
         {
-            // Aberración media y distorsión sutil que pulsa como un latido
+            // Aberración media sutil que pulsa como un latido (sin distorsión ni alteración del FOV)
             targetCA = Mathf.Max(targetCA, 0.22f + Mathf.Sin(Time.unscaledTime * 4.5f) * 0.04f);
-            targetLD = Mathf.Min(targetLD, -6f + Mathf.Sin(Time.unscaledTime * 3f) * 3f);
-
-            // Pulso/respiración de cámara durante la presencia de ecos
-            float breatheFov = baseFOV + Mathf.Sin(Time.unscaledTime * 3f) * 1.5f;
-            RequestCameraPulse(breatheFov, 0.05f);
+            targetLD = 0f; // Deshabilitar distorsión para evitar que el FOV se deforme al haber ecos activos
         }
 
         VolumeProfile profile = PostProcessingSetup.RuntimeProfile;
@@ -513,25 +509,7 @@ public class GameFeelController : MonoBehaviour
 
     void RequestCameraPulse(float targetFov, float holdSeconds)
     {
-        CinematicCameraDynamics cinematicCam = FindAnyObjectByType<CinematicCameraDynamics>();
-        if (cinematicCam != null)
-        {
-            cinematicCam.RequestFovPulse(targetFov, holdSeconds);
-            return;
-        }
-
-        if (gameplayCamera == null)
-            gameplayCamera = ThirdPersonCamera.ResolveActive();
-        if (fixedGameplayCamera == null)
-            fixedGameplayCamera = FixedPuzzleCameraController.ResolveActive();
-
-        if (gameplayCamera != null)
-        {
-            gameplayCamera.RequestFovPulse(targetFov, holdSeconds);
-            return;
-        }
-
-        fixedGameplayCamera?.RequestFovPulse(targetFov, holdSeconds);
+        return; // Deshabilitado para evitar deformaciones del FOV/cámara durante triggers del juego
     }
 
     // Partículas — spawn y auto-destroy
