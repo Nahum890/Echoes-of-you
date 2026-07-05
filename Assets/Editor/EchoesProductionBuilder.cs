@@ -2248,7 +2248,7 @@ public static partial class EchoesProductionBuilder
 
     static GameObject CreateCapsuleVisual(Transform parent, bool useEchoMaterial)
     {
-        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3D Models/lowpoly-character-freerigged-/source/LowPolyCharacterModel/FBX/LowPolyCharacter.fbx");
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/3D Models/Animated Woman/Casual.fbx");
         GameObject visual;
         
         if (prefab != null)
@@ -2376,7 +2376,7 @@ public static partial class EchoesProductionBuilder
 
     static Avatar LoadAvatarFromCharacterModel()
     {
-        const string modelPath = "Assets/3D Models/lowpoly-character-freerigged-/source/LowPolyCharacterModel/FBX/LowPolyCharacter.fbx";
+        const string modelPath = "Assets/3D Models/Animated Woman/Casual.fbx";
         Object[] assets = AssetDatabase.LoadAllAssetsAtPath(modelPath);
         for (int i = 0; i < assets.Length; i++)
         {

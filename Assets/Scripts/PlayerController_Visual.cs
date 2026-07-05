@@ -64,7 +64,7 @@ public partial class PlayerController
 
         if (animator.avatar == null || !animator.avatar.isValid || !animator.avatar.isHuman)
         {
-            Avatar avatar = AssetDatabase.LoadAssetAtPath<Avatar>("Assets/3D Models/lowpoly-character-freerigged-/source/LowPolyCharacterModel/FBX/LowPolyCharacter.fbx");
+            Avatar avatar = AssetDatabase.LoadAssetAtPath<Avatar>("Assets/3D Models/Animated Woman/Casual.fbx");
             if (avatar != null && avatar.isValid)
                 animator.avatar = avatar;
         }

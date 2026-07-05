@@ -34,9 +34,26 @@ public class PlayerCharacterVisualSetup : MonoBehaviour
         visualRoot.localScale = Vector3.one;
 
         Transform model = FindModelTransform(visualRoot);
+
+        // SpawnModel always renames the instance to ModelChildName ("Model").
+        // If the found model has any other name, it is a stale scene-baked asset
+        // (e.g. LowPolyCharacter) that should be replaced with the configured prefab.
+        if (model != null && HasSkinnedMesh(model))
+        {
+            EchoesLocomotionSettings s = Resources.Load<EchoesLocomotionSettings>("EchoesLocomotionSettings");
+            bool hasPrefab = s != null && s.characterModelPrefab != null;
+            if (hasPrefab && model.name != ModelChildName)
+            {
+                // Stale model detected – nuke all children of visualRoot.
+                ClearAllVisualChildren(visualRoot);
+                model = null;
+            }
+        }
+
         if (model == null || !HasSkinnedMesh(model))
         {
-            ClearFallbackMeshes(visualRoot);
+            // Clear any remnants before spawning fresh.
+            ClearAllVisualChildren(visualRoot);
             model = SpawnModel(visualRoot);
         }
 
@@ -118,6 +135,16 @@ public class PlayerCharacterVisualSetup : MonoBehaviour
             if (child.name.Contains("Capsule") || child.name.Contains("Fallback"))
                 DestroySafe(child.gameObject);
         }
+    }
+
+    /// <summary>
+    /// Removes ALL children of visualRoot unconditionally.
+    /// Used when the wrong character model is detected in the scene.
+    /// </summary>
+    static void ClearAllVisualChildren(Transform visualRoot)
+    {
+        for (int i = visualRoot.childCount - 1; i >= 0; i--)
+            DestroySafe(visualRoot.GetChild(i).gameObject);
     }
 
     static void RemoveOverlappingFallbacks(Transform visualRoot, Transform activeModel)

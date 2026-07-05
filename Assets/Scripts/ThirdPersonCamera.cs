@@ -50,7 +50,7 @@ public class ThirdPersonCamera : MonoBehaviour
 
     float _noInputTimer;
     Vector3 _lastFocusPoint;
-    float _pulseTargetFov;
+    float _pulseTargetFov = -1f;
     float _pulseUntil;
     Vector3 _eventFocusPoint;
     float _eventFocusWeight;
@@ -176,13 +176,23 @@ public class ThirdPersonCamera : MonoBehaviour
         {
             float dynamicFov = baseFov;
             PlayerController pc = target.GetComponentInParent<PlayerController>();
-            if (pc != null)
+            if (pc != null && pc.IsGrounded)
             {
-                // Dynamic FOV pulse during sprint to convey speed and momentum
+                // Dynamic FOV pulse during sprint — only when grounded to avoid jump spike
                 float sprintFactor = Mathf.InverseLerp(pc.moveSpeed, pc.moveSpeed * pc.sprintMultiplier, pc.PlanarSpeed);
                 dynamicFov += sprintFactor * 6.5f;
             }
-            float targetFov = Time.unscaledTime < _pulseUntil ? _pulseTargetFov : dynamicFov;
+            if (_pulseTargetFov > 0f)
+            {
+                if (Time.unscaledTime >= _pulseUntil)
+                {
+                    // Decay the landing pulse target FOV back to base/dynamic FOV smoothly over time instead of snapping instantly
+                    _pulseTargetFov = Mathf.MoveTowards(_pulseTargetFov, dynamicFov, Time.deltaTime * 65f);
+                    if (Mathf.Approximately(_pulseTargetFov, dynamicFov))
+                        _pulseTargetFov = -1f;
+                }
+            }
+            float targetFov = _pulseTargetFov > 0f ? _pulseTargetFov : dynamicFov;
             _camera.fieldOfView = Mathf.Lerp(_camera.fieldOfView, targetFov, DampingFactor(fovDamping, Time.deltaTime));
         }
     }

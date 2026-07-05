@@ -302,9 +302,21 @@ PrefabInstance:
       value: Model
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: c6f08cca9f00aa040ab00d410697e152, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: 0c223ee8d6ce16948803cf86a18c8d2a, type: 3}
+    - target: {fileID: 5866666021909216657, guid: c6f08cca9f00aa040ab00d410697e152, type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: eeab5e21720dedd48bb135f9df6cefa8, type: 2}
+    - target: {fileID: 5866666021909216657, guid: c6f08cca9f00aa040ab00d410697e152, type: 3}
+      propertyPath: m_CullingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: c6f08cca9f00aa040ab00d410697e152, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

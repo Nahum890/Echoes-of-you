@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EchoesLocomotionSettings
   m_EditorClassIdentifier: Assembly-CSharp::EchoesLocomotionSettings
   animatorController: {fileID: 9100000, guid: eeab5e21720dedd48bb135f9df6cefa8, type: 2}
-  humanoidAvatar: {fileID: 9000000, guid: c6f08cca9f00aa040ab00d410697e152, type: 3}
+  humanoidAvatar: {fileID: 9000000, guid: 0c223ee8d6ce16948803cf86a18c8d2a, type: 3}
   characterModelPrefab: {fileID: 5314399635535156987, guid: 600f6d0477dbf784487345955e041dfb, type: 3}
   sprintMomentumBuildRate: 0.35
   sprintMomentumDecayRate: 0.55

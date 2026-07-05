@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public static class PlayerAnimationRepair
 {
     const string ControllerPath = "Assets/Prefabs/PlayerAnimController.controller";
-    const string CharacterAvatarPath = "Assets/3D Models/lowpoly-character-freerigged-/source/LowPolyCharacterModel/FBX/LowPolyCharacter.fbx";
+    const string CharacterAvatarPath = "Assets/3D Models/Animated Woman/Casual.fbx";
 
     static readonly string[] RigPaths =
     {

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class EchoesLocomotionSettingsBuilder
 {
-    const string CharacterFbxPath = "Assets/3D Models/lowpoly-character-freerigged-/source/LowPolyCharacterModel/FBX/LowPolyCharacter.fbx";
+    const string CharacterFbxPath = "Assets/3D Models/Animated Woman/Casual.fbx";
     const string ControllerPath = "Assets/Prefabs/PlayerAnimController.controller";
     const string SettingsPath = "Assets/Resources/EchoesLocomotionSettings.asset";
 

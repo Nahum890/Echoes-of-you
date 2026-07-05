@@ -155,19 +155,28 @@ public class CinematicCameraDynamics : MonoBehaviour
             targetOffset + noise,
             Time.deltaTime * followLerpSpeed);
 
-        float targetFovBase = fovBase;
-        if (Time.unscaledTime < _pulseUntil && _pulseTargetFov > 0f)
+        if (_pulseTargetFov > 0f)
         {
-            targetFovBase = _pulseTargetFov;
+            if (Time.unscaledTime >= _pulseUntil)
+            {
+                // Decay the landing pulse target FOV back to base FOV smoothly over time instead of jumping instantly
+                _pulseTargetFov = Mathf.MoveTowards(_pulseTargetFov, fovBase, Time.deltaTime * 65f);
+                if (Mathf.Approximately(_pulseTargetFov, fovBase))
+                    _pulseTargetFov = -1f;
+            }
         }
+        float targetFovBase = _pulseTargetFov > 0f ? _pulseTargetFov : fovBase;
 
-        _currentFov = Mathf.Lerp(_currentFov, targetFovBase + speed01 * fovSpeedBoost, Time.deltaTime * 4f);
+        // Only apply speed FOV boost while grounded — avoids jarring FOV spike on jump.
+        bool isAirborne = _playerController != null && !_playerController.IsGrounded;
+        float fovBoost = isAirborne ? 0f : speed01 * fovSpeedBoost;
+        _currentFov = Mathf.Lerp(_currentFov, targetFovBase + fovBoost, Time.deltaTime * 4f);
         var lens = virtualCamera.m_Lens;
         lens.FieldOfView = _currentFov;
 
-        float dutch = speed01 * dutchMax;
+        float dutch = isAirborne ? 0f : speed01 * dutchMax;
         if (_playerController != null && !_playerController.IsGrounded)
-            dutch += _tiltOnJump * 0.15f;
+            dutch += _tiltOnJump * 0.05f;  // minimal tilt, was 0.15f
 
         lens.Dutch = Mathf.Lerp(lens.Dutch, dutch * Mathf.Sin(Time.time * 0.7f), Time.deltaTime * 2f);
         virtualCamera.m_Lens = lens;
