@@ -54,7 +54,6 @@ public static partial class EchoesProductionBuilder
 
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnGameOver(ui);
         SpawnLevelRuntime(mech, "Solidifica los puentes fantasmas usando tus ecos para alcanzar y abrir la compuerta de salida.", "El n├║cleo modular se alinea.", "Puente espectral cruzado.");
         SpawnAmbientLights(env, new Vector3(0f, 3f, 20f), 24f, 45f);
         SpawnExperienceSystems(mech, env, exit, LevelArchetype.Standard, 2f, 40f);
@@ -116,7 +115,6 @@ public static partial class EchoesProductionBuilder
 
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnGameOver(ui);
         SpawnLevelRuntime(mech, "Usa la inercia de tus ecos para abrir la c├ímara del bloque, y luego empujar el bloque sobre la placa del ascensor.", "La inercia cinem├ítica del bloque se registra.", "Ascenso completado.");
         SpawnAmbientLights(env, new Vector3(0f, 3f, 0f), 20f, 20f);
         SpawnExperienceSystems(mech, env, exit, LevelArchetype.Standard, -12f, 12f);
@@ -189,7 +187,6 @@ public static partial class EchoesProductionBuilder
 
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnGameOver(ui);
         SpawnLevelRuntime(mech, "Secuencia las coordenadas de la plataforma de memoria usando tus ecos.", "Alineaci├│n de coordenadas espectrales activada.", "Ruta de la plataforma guardada.");
         SpawnAmbientLights(env, new Vector3(0f, 3f, 12f), 24f, 30f);
         SpawnExperienceSystems(mech, env, exit, LevelArchetype.MovingCity, 2f, 24f);
@@ -260,7 +257,6 @@ public static partial class EchoesProductionBuilder
 
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnGameOver(ui);
         SpawnLevelRuntime(mech, "", "", "");
         SpawnAmbientLights(env, new Vector3(0f, 3f, 14f), 18f, 28f);
         SpawnExperienceSystems(mech, env, exit, LevelArchetype.Standard, 2f, 30f);
@@ -327,7 +323,6 @@ public static partial class EchoesProductionBuilder
 
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnGameOver(ui);
         SpawnLevelRuntime(mech, "┬íHuye! El n├║cleo se colapsa. Usa tus ecos en movimiento para escapar de la disoluci├│n.", "COLAPSO CR├ìTICO. EVACUACI├ôN DE MEMORIA INICIADA.", "Simulaci├│n finalizada. Conexi├│n cerrada.");
         SpawnAmbientLights(env, new Vector3(0f, 3f, 20f), 24f, 45f);
         SpawnExperienceSystems(mech, env, exit, LevelArchetype.Chase, 2f, 44f, enableChase: true);

@@ -32,6 +32,18 @@ public class TutorialHUD : MonoBehaviour
 
     public static TutorialHUD Instance { get; private set; }
 
+    // GameHUD cacheado. El getter revuelve a buscar si la referencia se destruyó
+    // (Unity devuelve == null para objetos destruidos), evitando refs stale entre escenas.
+    GameHUD _hud;
+    GameHUD Hud
+    {
+        get
+        {
+            if (_hud == null) _hud = FindAnyObjectByType<GameHUD>();
+            return _hud;
+        }
+    }
+
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -72,7 +84,7 @@ public class TutorialHUD : MonoBehaviour
     /// <summary>Mostrar un mensaje de tutorial (bottom-center).</summary>
     public void ShowMessage(string message, string hint = "", float duration = 5f)
     {
-        GameHUD hud = FindAnyObjectByType<GameHUD>();
+        GameHUD hud = Hud;
         if (hud != null)
         {
             string combined = string.IsNullOrEmpty(hint)
@@ -82,20 +94,30 @@ public class TutorialHUD : MonoBehaviour
         }
     }
 
-    /// <summary>Show objective strip at top-center.</summary>
+    /// <summary>Show objective strip at top-center. Con duration &gt; 0 se limpia solo.</summary>
     public void ShowObjective(string text, float duration = 5f)
     {
-        GameHUD hud = FindAnyObjectByType<GameHUD>();
-        if (hud != null)
-        {
-            hud.SetObjective(text);
-        }
+        GameHUD hud = Hud;
+        if (hud == null)
+            return;
+
+        hud.SetObjective(text);
+
+        CancelInvoke(nameof(ClearObjective));
+        if (duration > 0f)
+            Invoke(nameof(ClearObjective), duration);
+    }
+
+    void ClearObjective()
+    {
+        if (Hud != null)
+            Hud.SetObjective(string.Empty);
     }
 
     /// <summary>Ocultar el mensaje actual.</summary>
     public void HideMessage()
     {
-        GameHUD hud = FindAnyObjectByType<GameHUD>();
+        GameHUD hud = Hud;
         if (hud != null)
         {
             hud.ClearPrompt();

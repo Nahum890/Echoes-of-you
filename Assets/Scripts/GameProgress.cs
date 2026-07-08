@@ -23,7 +23,12 @@ public static class GameProgress
         "Level_07",
         "Level_08",
         "Level_09",
-        "Level_10"
+        "Level_10",
+        "Level_11",
+        "Level_12",
+        "Level_13",
+        "Level_14",
+        "Level_15"
     };
 
     static readonly string[] LevelDisplayNames =
@@ -37,7 +42,12 @@ public static class GameProgress
         "Sala de enlace",
         "Puente del vacío",
         "Muro de energía",
-        "Archivo dual"
+        "Archivo dual",
+        "Puente fantasma",
+        "Ascenso roto",
+        "Memoria viva",
+        "Umbral",
+        "Integración"
     };
 
     public static int TotalLevels => LevelScenes.Length;

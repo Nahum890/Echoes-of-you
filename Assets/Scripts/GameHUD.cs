@@ -85,6 +85,11 @@ public class GameHUD : MonoBehaviour
         // Apply saved UI scale immediately
         ApplySavedUIScale();
 
+        QueryElements();
+    }
+
+    void QueryElements()
+    {
         // Query all elements
         _recordPanel = _root.Q("hud-record-panel");
         _recordDot = _root.Q("hud-record-dot");
@@ -168,6 +173,18 @@ public class GameHUD : MonoBehaviour
 
     void Update()
     {
+        // Reintentar la inicialización si el árbol UI no estaba listo en OnEnable
+        if (_root == null)
+        {
+            if (_doc == null) _doc = GetComponent<UIDocument>();
+            if (_doc != null && _doc.rootVisualElement != null)
+            {
+                _root = _doc.rootVisualElement;
+                ApplySavedUIScale();
+                QueryElements();
+            }
+        }
+
         if (!showHUD || _root == null) return;
 
         // Expire prompt / toast
@@ -240,7 +257,7 @@ public class GameHUD : MonoBehaviour
             slot.AddToClassList("hud-echo-slot");
             if (i < _echoCurrent)
             {
-                slot.AddToClassList("hud-echo-slot--active");
+                slot.AddToClassList("hud-echo-slot--filled");
             }
             _echoSlotsContainer.Add(slot);
         }

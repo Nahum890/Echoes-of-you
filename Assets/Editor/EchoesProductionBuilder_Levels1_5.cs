@@ -64,7 +64,6 @@ public static partial class EchoesProductionBuilder
 
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnGameOver(ui);
         SpawnLevelRuntime(mech, "Usa tu eco para accionar la manivela y subir a la plataforma.", "La gravedad exige persistencia.", "Plataforma activada.");
 
         SpawnExperienceSystems(mech, env, exit, LevelArchetype.Standard, 1f, 24f);
@@ -124,7 +123,6 @@ public static partial class EchoesProductionBuilder
 
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnGameOver(ui);
         SpawnLevelRuntime(mech, "Sube usando los ascensores cruzados y abre el port├│n superior.", "Los ecos son tu contrapeso temporal.", "Camino superior habilitado.");
         SpawnAmbientLights(env, new Vector3(0f, 3f, 8f), 20f, 20f);
         SpawnExperienceSystems(mech, env, exit, LevelArchetype.MovingCity, 2f, 12f);
@@ -188,7 +186,6 @@ public static partial class EchoesProductionBuilder
 
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnGameOver(ui);
         SpawnLevelRuntime(mech, "Neutraliza la barrera de energ├¡a y evita la trampa de conflicto.", "El eco es tu llave y tu prisi├│n.", "Acceso libre.");
         SpawnAmbientLights(env, new Vector3(0f, 2f, 12f), 18f, 28f);
         SpawnExperienceSystems(mech, env, exit, LevelArchetype.Standard, 2f, 24f);
@@ -264,7 +261,6 @@ public static partial class EchoesProductionBuilder
 
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnGameOver(ui);
         SpawnLevelRuntime(mech, "Pisa las tres placas en la secuencia correcta (A -> B -> C).", "La m├íquina requiere un orden exacto.", "La secuencia ha sido grabada.");
         SpawnAmbientLights(env, new Vector3(0f, 3f, 15f), 24f, 36f);
         SpawnExperienceSystems(mech, env, exit, LevelArchetype.Standard, 2f, 32f);
@@ -329,7 +325,6 @@ public static partial class EchoesProductionBuilder
 
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnGameOver(ui);
         SpawnLevelRuntime(mech, "Cruza la barrera usando el eco para neutralizarla y ganar impulso.", "El eco es tu escudo y tu motor.", "Cruce exitoso.");
         SpawnAmbientLights(env, new Vector3(0f, 2f, 13f), 20f, 34f);
         SpawnExperienceSystems(mech, env, exit, LevelArchetype.Standard, 2f, 28f);

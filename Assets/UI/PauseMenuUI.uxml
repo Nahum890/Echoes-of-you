@@ -9,7 +9,16 @@
         <ui:VisualElement name="pause-nav" class="pause-notebook">
             <ui:VisualElement>
                 <ui:Label text="Recuerdo Pausado" class="font-serif-bold pause-title" />
-                <ui:Label text="sintonizaciÃ³n inestable en curso" class="font-mono text-body-sm" style="color: #8C847E; -unity-text-align: middle-center; margin-top: 4px; -unity-text-transform: uppercase; font-size: 10px;" />
+                <ui:Label text="sintonización inestable en curso" class="font-mono text-body-sm" style="color: #8C847E; -unity-text-align: middle-center; margin-top: 4px; -unity-text-transform: uppercase; font-size: 10px;" />
+            </ui:VisualElement>
+
+            <!-- Session stats (populadas por PauseMenu.RefreshPauseStats) -->
+            <ui:VisualElement name="pause-stats" style="margin-top: 20px; border-top-width: 1px; border-top-color: #C0BAB4; border-bottom-width: 1px; border-bottom-color: #C0BAB4; padding-top: 12px; padding-bottom: 12px;">
+                <ui:Label name="lbl-pause-fragment" text="Recuerdo:" class="font-mono text-body-sm" style="color: #C0BAB4; margin-bottom: 4px;" />
+                <ui:Label name="lbl-pause-time" text="Tiempo:" class="font-mono text-body-sm" style="color: #8C847E; margin-bottom: 2px; font-size: 11px;" />
+                <ui:Label name="lbl-pause-echoes" text="Ecos grabados:" class="font-mono text-body-sm" style="color: #8C847E; margin-bottom: 2px; font-size: 11px;" />
+                <ui:Label name="lbl-pause-deaths" text="Colapsos:" class="font-mono text-body-sm" style="color: #8C847E; margin-bottom: 2px; font-size: 11px;" />
+                <ui:Label name="lbl-pause-total" text="Expediente:" class="font-mono text-body-sm" style="color: #E8B262; margin-top: 6px; font-size: 11px;" />
             </ui:VisualElement>
 
             <!-- Navigation options -->

@@ -9,7 +9,6 @@ public static class EchoesLevelShell
 {
     private const string GameHUDUxmlPath = "Assets/UI/GameHUDUI.uxml";
     private const string PauseMenuUxmlPath = "Assets/UI/PauseMenuUI.uxml";
-    private const string GameOverUxmlPath = "Assets/UI/GameOverUI.uxml";
     private const string EchoesThemeUssPath = "Assets/UI/EchoesTheme.uss";
     private const string EchoPrefabPath = "Assets/Prefabs/EchoPrefab.prefab";
     private const string AnimatorControllerPath = "Assets/Prefabs/PlayerAnimController.controller";
@@ -118,15 +117,6 @@ public static class EchoesLevelShell
         pauseDoc.panelSettings = GetOrCreatePanelSettings();
         pauseDoc.sortingOrder = 10;
         pauseObj.AddComponent<PauseMenu>();
-
-        // GameOver UI
-        GameObject goObj = new GameObject("GameOverUI");
-        goObj.transform.SetParent(parent, false);
-        UIDocument goDoc = goObj.AddComponent<UIDocument>();
-        goDoc.visualTreeAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(GameOverUxmlPath);
-        goDoc.panelSettings = GetOrCreatePanelSettings();
-        goDoc.sortingOrder = 20;
-        goObj.AddComponent<GameOverController>();
 
         // Event System
         if (Object.FindAnyObjectByType<UnityEngine.EventSystems.EventSystem>() == null)

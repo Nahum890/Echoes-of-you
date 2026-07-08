@@ -44,7 +44,6 @@ public static partial class EchoesProductionBuilder
     // UI Toolkit asset paths
     const string MainMenuUxmlPath   = "Assets/UI/MainMenuUI.uxml";
     const string PauseMenuUxmlPath  = "Assets/UI/PauseMenuUI.uxml";
-    const string GameOverUxmlPath   = "Assets/UI/GameOverUI.uxml";
     const string GameHUDUxmlPath    = "Assets/UI/GameHUDUI.uxml";
     const string EchoesThemeUssPath = "Assets/UI/EchoesTheme.uss";
 
@@ -209,7 +208,6 @@ public static partial class EchoesProductionBuilder
 
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnGameOver(ui);
         SpawnLevelRuntime(mech, objectiveText, introLine, completionLine);
         SpawnAmbientLights(env, playerSpawn + new Vector3(0f, 4f, 8f), 20f, 24f);
 
@@ -824,17 +822,6 @@ public static partial class EchoesProductionBuilder
             esObj.AddComponent<UnityEngine.EventSystems.EventSystem>();
             esObj.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
         }
-    }
-
-    static void SpawnGameOver(Transform parent)
-    {
-        GameObject go = new GameObject("GameOverUI");
-        go.transform.SetParent(parent, false);
-        UIDocument goDoc = go.AddComponent<UIDocument>();
-        goDoc.visualTreeAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(GameOverUxmlPath);
-        goDoc.panelSettings = GetOrCreatePanelSettings();
-        goDoc.sortingOrder = 20; // Above pause menu
-        go.AddComponent<GameOverController>();
     }
 
     static PanelSettings GetOrCreatePanelSettings()

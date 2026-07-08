@@ -108,7 +108,7 @@ public class PauseMenu : MonoBehaviour
 
         System.Action hubAction = () =>
         {
-            Resume();
+            UnpauseForMenu();
             PostProcessingSetup.PrepareForSceneReload();
             SceneManager.LoadScene(hubSceneName);
         };
@@ -117,7 +117,7 @@ public class PauseMenu : MonoBehaviour
 
         System.Action menuAction = () =>
         {
-            Resume();
+            UnpauseForMenu();
             PostProcessingSetup.PrepareForSceneReload();
             SceneManager.LoadScene(mainMenuScene);
         };
@@ -236,6 +236,20 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 1f;
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         UnityEngine.Cursor.visible = false;
+
+        _pauseRoot?.AddToClassList("hidden");
+    }
+
+    /// <summary>
+    /// Sale de pausa para navegar a un menú (hub/menú principal): restaura el tiempo
+    /// pero mantiene el cursor visible, para no entregar un menú con el cursor bloqueado.
+    /// </summary>
+    void UnpauseForMenu()
+    {
+        _paused = false;
+        Time.timeScale = 1f;
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
+        UnityEngine.Cursor.visible = true;
 
         _pauseRoot?.AddToClassList("hidden");
     }

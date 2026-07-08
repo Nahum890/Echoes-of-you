@@ -37,6 +37,7 @@
                     <ui:VisualElement style="margin-bottom: 48px; border-bottom-width: 1px; border-bottom-color: #1C2430; padding-bottom: 12px;">
                         <ui:Label text="EXPEDIENTE NO. 9811" class="font-mono-bold text-headline-md" style="font-size: 14px; color: #E8B262;" />
                         <ui:Label text="Identidad: Aiden" class="font-serif text-body-sm" style="color: #6C788A; margin-top: 4px;" />
+                        <ui:Label name="hero-title" text="" class="font-serif text-body-sm" style="color: #C9D4B0; margin-top: 6px; -unity-font-style: italic; min-height: 14px;" />
                     </ui:VisualElement>
 
                     <!-- Navigation Tab Buttons — sistema de hover v2 -->
@@ -151,6 +152,11 @@
                             <ui:Button name="btn-level-08" text="8. Laboratorio â€” Puente del vacÃ­o" class="btn-classic level-card" style="margin-bottom: 8px;" />
                             <ui:Button name="btn-level-09" text="9. Gimnasio â€” Muro de energÃ­a" class="btn-classic level-card" style="margin-bottom: 8px;" />
                             <ui:Button name="btn-level-10" text="10. Aceptacion â€” Archivo dual" class="btn-classic level-card" style="margin-bottom: 8px;" />
+                            <ui:Button name="btn-level-11" text="11. Depresión — Puente fantasma" class="btn-classic level-card" style="margin-bottom: 8px;" />
+                            <ui:Button name="btn-level-12" text="12. Aceptación — Ascenso roto" class="btn-classic level-card" style="margin-bottom: 8px;" />
+                            <ui:Button name="btn-level-13" text="13. Verdad — Memoria viva" class="btn-classic level-card" style="margin-bottom: 8px;" />
+                            <ui:Button name="btn-level-14" text="14. Liberación — Umbral" class="btn-classic level-card" style="margin-bottom: 8px;" />
+                            <ui:Button name="btn-level-15" text="15. Integración — Final" class="btn-classic level-card" style="margin-bottom: 8px;" />
                         </ui:ScrollView>
 
                         <!-- Right: Selected tape stats -->

@@ -133,13 +133,13 @@ public class MenuHoverSystem : MonoBehaviour
 
         // Registrar cursor custom
         if (menuCursorTexture != null)
-            Cursor.SetCursor(menuCursorTexture, new Vector2(8, 8), CursorMode.Auto);
+            UnityEngine.Cursor.SetCursor(menuCursorTexture, new Vector2(8, 8), CursorMode.Auto);
     }
 
     void OnDisable()
     {
         // Restaurar cursor por defecto
-        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        UnityEngine.Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
 
         // Limpiar todos los estados
         foreach (var kvp in _buttonStates)

@@ -280,6 +280,33 @@
     background-color: rgba(28, 36, 48, 0.8);
 }
 
+/* Estado de botones de nivel en el mapa de estabilidad */
+.level-button--locked {
+    opacity: 0.35;
+    border-color: #2B4A4A;
+}
+
+.level-button--completed {
+    border-color: #E8B262;
+    background-color: rgba(232, 178, 98, 0.12);
+}
+
+/* Preset activo (sensibilidad / iluminación) */
+.preset-button--active {
+    border-color: #E8B262;
+    background-color: rgba(232, 178, 98, 0.16);
+    color: #E8B262;
+}
+
+/* Escala de UI / texto de menú (aplicada sobre el root) */
+.scale-large {
+    scale: 1.12 1.12;
+}
+
+.scale-xl {
+    scale: 1.25 1.25;
+}
+
 /* Polaroid image container */
 .polaroid-frame {
     background-color: #E6E8EA;
@@ -675,6 +702,10 @@
 
 .footer-item--active {
     opacity: 1;
+}
+
+.footer-item--inactive {
+    opacity: 0.2;
 }
 
 .footer-icon {

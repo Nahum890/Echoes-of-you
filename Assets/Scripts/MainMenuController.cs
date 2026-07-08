@@ -100,6 +100,9 @@ public class MainMenuController : MonoBehaviour
 
     List<Resolution> _filteredResolutions;
 
+    // Evita registrar callbacks (clicks/hover) más de una vez si el componente se re-activa.
+    bool _wired;
+
     void OnEnable()
     {
         _doc = GetComponent<UIDocument>();
@@ -138,14 +141,16 @@ public class MainMenuController : MonoBehaviour
         _btnSettings = _root.Q<Button>("nav-settings");
         _btnExit = _root.Q<Button>("nav-exit");
 
-        // Setup hover behaviors
-        SetupHoverCallbacks();
+        // Setup hover behaviors + acciones de nav (una sola vez)
+        if (!_wired)
+        {
+            SetupHoverCallbacks();
 
-        // Bind panel actions
-        RegisterButtonClick("nav-newgame", StartNewGame);
-        RegisterButtonClick("nav-levels", ShowStabilityMap);
-        RegisterButtonClick("nav-settings", ShowSettings);
-        RegisterButtonClick("nav-exit", QuitGame);
+            RegisterButtonClick("nav-newgame", StartNewGame);
+            RegisterButtonClick("nav-levels", ShowStabilityMap);
+            RegisterButtonClick("nav-settings", ShowSettings);
+            RegisterButtonClick("nav-exit", QuitGame);
+        }
 
         GameProgress.EnsureInitialized();
         GameProgress.RecordSessionStarted();
@@ -191,18 +196,24 @@ public class MainMenuController : MonoBehaviour
         _btnLightBruma = _root.Q<Button>("btn-light-bruma");
         _btnLightClaridad = _root.Q<Button>("btn-light-claridad");
         _btnLightPenumbra = _root.Q<Button>("btn-light-penumbra");
-        if (_btnLightLiminal != null) _btnLightLiminal.clicked += () => ApplyLightingPresetUi("liminal");
-        if (_btnLightBruma != null) _btnLightBruma.clicked += () => ApplyLightingPresetUi("bruma");
-        if (_btnLightClaridad != null) _btnLightClaridad.clicked += () => ApplyLightingPresetUi("claridad");
-        if (_btnLightPenumbra != null) _btnLightPenumbra.clicked += () => ApplyLightingPresetUi("penumbra");
 
-        // Bind settings buttons
-        RegisterButtonClick("btn-restore-defaults", RestoreFactoryDefaults);
-        RegisterButtonClick("btn-settings-back", DiscardSettings);
-        RegisterButtonClick("btn-settings-apply", ApplySettings);
-        RegisterButtonClick("btn-levels-back", ShowStabilityMap);
-        RegisterButtonClick("btn-reset-progress", OnResetProgressClicked);
-        RegisterButtonClick("btn-reset-progress-confirm", ConfirmResetProgress);
+        // Registro de callbacks de settings (una sola vez)
+        if (!_wired)
+        {
+            if (_btnLightLiminal != null) _btnLightLiminal.clicked += () => ApplyLightingPresetUi("liminal");
+            if (_btnLightBruma != null) _btnLightBruma.clicked += () => ApplyLightingPresetUi("bruma");
+            if (_btnLightClaridad != null) _btnLightClaridad.clicked += () => ApplyLightingPresetUi("claridad");
+            if (_btnLightPenumbra != null) _btnLightPenumbra.clicked += () => ApplyLightingPresetUi("penumbra");
+
+            RegisterButtonClick("btn-restore-defaults", RestoreFactoryDefaults);
+            RegisterButtonClick("btn-settings-back", DiscardSettings);
+            RegisterButtonClick("btn-settings-apply", ApplySettings);
+            RegisterButtonClick("btn-levels-back", ShowStabilityMap);
+            RegisterButtonClick("btn-reset-progress", OnResetProgressClicked);
+            RegisterButtonClick("btn-reset-progress-confirm", ConfirmResetProgress);
+
+            _wired = true;
+        }
 
         RefreshDashboard();
         RefreshNeuralArchives();

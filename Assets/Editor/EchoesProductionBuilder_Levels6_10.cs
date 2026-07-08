@@ -45,7 +45,6 @@ public static partial class EchoesProductionBuilder
 
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnGameOver(ui);
         SpawnLevelRuntime(mech, "Usa la gravedad de la pared para activar el elevador del suelo.", "La mente no tiene arriba ni abajo.", "Elevaci├n completada.");
         SpawnAmbientLights(env, new Vector3(0f, 3f, 11f), 20f, 34f);
         SpawnExperienceSystems(mech, env, exit, LevelArchetype.VerticalFall, 2f, 24f);
@@ -120,7 +119,6 @@ public static partial class EchoesProductionBuilder
 
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnGameOver(ui);
         SpawnLevelRuntime(mech, "", "", "");
         SpawnAmbientLights(env, new Vector3(0f, 3f, 18f), 24f, 36f);
         SpawnExperienceSystems(mech, env, exit, LevelArchetype.Standard, 2f, 36f);
@@ -192,7 +190,6 @@ public static partial class EchoesProductionBuilder
 
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnGameOver(ui);
         SpawnLevelRuntime(mech, "Corre a trav├®s de los puentes activados por tu eco.", "La disoluci├│n espectral se acerca.", "Puentes cruzados con ├®xito.");
         SpawnAmbientLights(env, new Vector3(0f, 3f, 18f), 20f, 36f);
         SpawnExperienceSystems(mech, env, exit, LevelArchetype.Chase, 2f, 38f, enableChase: true);
@@ -272,7 +269,6 @@ public static partial class EchoesProductionBuilder
 
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnGameOver(ui);
         SpawnLevelRuntime(mech, "Sigue los cables de energ├¡a y activa las compuertas con tus ecos.", "El espejo refleja tus acciones pasadas.", "Simetr├¡a restaurada.");
         SpawnAmbientLights(env, new Vector3(0f, 3f, 12f), 20f, 25f);
         SpawnExperienceSystems(mech, env, exit, LevelArchetype.MovingCity, 2f, 24f);
@@ -363,7 +359,6 @@ public static partial class EchoesProductionBuilder
 
         SpawnGameplayHud(ui);
         SpawnPauseMenu(ui);
-        SpawnGameOver(ui);
         SpawnLevelRuntime(mech, "Activa la placa final para abrir el porton de salida.", "El eco de Lyra te guia al final.", "Porton abierto.");
         SpawnAmbientLights(env, new Vector3(0f, 2f, 22f), 28f, 44f);
         SpawnExperienceSystems(mech, env, exit, LevelArchetype.MultiLayerTimeline, 2f, 44f);
