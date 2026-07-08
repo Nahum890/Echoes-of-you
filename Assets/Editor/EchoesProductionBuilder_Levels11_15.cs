@@ -1,3 +1,4 @@
+#if false // LEGACY sci-fi — ver EchoesNewProductionBuilder
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -334,3 +335,4 @@ public static partial class EchoesProductionBuilder
         SaveScene(scene, "Level_15");
     }
 }
+#endif // LEGACY Levels11_15

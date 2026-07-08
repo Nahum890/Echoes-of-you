@@ -7,8 +7,8 @@ using UnityEngine;
 public class PressurePlateAlignment : MonoBehaviour
 {
     public bool echoProjectionPlate = true;
-    [SerializeField] float surfaceOffset = 0.08f;
-    [SerializeField] float echoTriggerHeight = 1.65f;
+    public float surfaceOffset = 0.08f;
+    public float echoTriggerHeight = 1.65f;
     [SerializeField] LayerMask groundMask = 1 << 6;
 
     static readonly string[] EchoPlateNameHints = { "Eco", "eco", "Echo" };

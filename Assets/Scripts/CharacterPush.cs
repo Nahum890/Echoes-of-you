@@ -8,6 +8,14 @@ public class CharacterPush : MonoBehaviour
     [SerializeField] float pushPower = 2.0f;
     [SerializeField] float weightLimit = 50f;
 
+    Animator _anim;
+    bool _wasPushingThisFrame;
+
+    void Awake()
+    {
+        _anim = GetComponentInChildren<Animator>();
+    }
+
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
         Rigidbody body = hit.collider.attachedRigidbody;
@@ -29,5 +37,40 @@ public class CharacterPush : MonoBehaviour
 
         // Apply velocity based on push power and mass (heavier objects move slower)
         body.linearVelocity = pushDir * (pushPower / body.mass);
+
+        _wasPushingThisFrame = true;
+    }
+
+    void LateUpdate()
+    {
+        if (_anim == null)
+            _anim = GetComponentInChildren<Animator>();
+
+        if (_anim != null && _anim.runtimeAnimatorController != null)
+        {
+            // Verify if there is actual input or horizontal velocity
+            CharacterController cc = GetComponent<CharacterController>();
+            bool isMoving = cc != null && cc.velocity.sqrMagnitude > 0.05f;
+            
+            bool isPushing = _wasPushingThisFrame && isMoving;
+            
+            // Check if parameter exists in animator before setting it to avoid warnings
+            if (HasParameter(_anim, "IsPushing"))
+            {
+                _anim.SetBool("IsPushing", isPushing);
+            }
+        }
+        _wasPushingThisFrame = false;
+    }
+
+    bool HasParameter(Animator anim, string paramName)
+    {
+        AnimatorControllerParameter[] parameters = anim.parameters;
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            if (parameters[i].name == paramName)
+                return true;
+        }
+        return false;
     }
 }

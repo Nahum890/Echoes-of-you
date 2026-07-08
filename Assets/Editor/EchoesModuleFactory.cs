@@ -329,8 +329,8 @@ public static class EchoesModuleFactory
         skyBeam.GetComponent<MeshRenderer>().sharedMaterial = beamMat;
 
         // Beacons luminosos cálidos del final del nivel
-        EchoesLevelShell.SpawnPointLight("ExitBeacon", pos + new Vector3(0f, 5f, 0f), new Color(1.0f, 0.8f, 0.4f, 1f), 6f, 28f, exitRoot.transform);
-        EchoesLevelShell.SpawnPointLight("ExitGlow", pos + new Vector3(0f, 1.5f, 0f), new Color(1.0f, 0.75f, 0.35f, 1f), 4f, 14f, exitRoot.transform);
+        EchoesLevelShell.SpawnPointLight("ExitBeacon", pos + new Vector3(0f, 5f, 0f), new Color(1.0f, 0.8f, 0.4f, 1f), 6f, 28f, exitRoot.transform, LightmapBakeType.Baked, LightShadows.Soft);
+        EchoesLevelShell.SpawnPointLight("ExitGlow", pos + new Vector3(0f, 1.5f, 0f), new Color(1.0f, 0.75f, 0.35f, 1f), 4f, 14f, exitRoot.transform, LightmapBakeType.Baked, LightShadows.Soft);
 
         return exitRoot;
     }
@@ -377,7 +377,7 @@ public static class EchoesModuleFactory
             if (parts.Length > 2) float.TryParse(parts[2], out range);
         }
 
-        Light light = EchoesLevelShell.SpawnPointLight(name, pos, color, intensity, range, parent);
+        Light light = EchoesLevelShell.SpawnPointLight(name, pos, color, intensity, range, parent, LightmapBakeType.Baked, LightShadows.Soft);
         return light.gameObject;
     }
 
@@ -535,7 +535,15 @@ public static class EchoesModuleFactory
         }
 
         // Luz de techo parpadeante fluorescente
-        EchoesLevelShell.SpawnPointLight("ClassroomLight", new Vector3(0f, 3f, 0f), new Color(0.85f, 0.95f, 1f, 1f), 5f, 15f, root.transform);
+        float mult;
+        bool flicker;
+        Color capColor = GetChapterColor(out mult, out flicker);
+        Light classroomLight = EchoesLevelShell.SpawnPointLight("ClassroomLight", new Vector3(0f, 3f, 0f), capColor, 5f * mult, 15f, root.transform, LightmapBakeType.Baked, LightShadows.Soft);
+        if (flicker)
+        {
+            var flickerComponent = classroomLight.gameObject.AddComponent<LightFlicker>();
+            flickerComponent.baseIntensity = 5f * mult;
+        }
 
         return root;
     }
@@ -642,9 +650,17 @@ public static class EchoesModuleFactory
         }
 
         // Luces de techo fluorescentes espaciadas en el pasillo
+        float mult;
+        bool flicker;
+        Color capColor = GetChapterColor(out mult, out flicker);
         for (float z = -scale.z * 0.35f; z <= scale.z * 0.35f; z += 6f)
         {
-            EchoesLevelShell.SpawnPointLight($"CorridorLight_{z:0.0}", new Vector3(0f, 3f, z), new Color(0.8f, 0.9f, 0.95f, 1f), 4f, 10f, root.transform);
+            Light corridorLight = EchoesLevelShell.SpawnPointLight($"CorridorLight_{z:0.0}", new Vector3(0f, 3f, z), capColor, 4f * mult, 10f, root.transform, LightmapBakeType.Baked, LightShadows.Soft);
+            if (flicker)
+            {
+                var flickerComponent = corridorLight.gameObject.AddComponent<LightFlicker>();
+                flickerComponent.baseIntensity = 4f * mult;
+            }
         }
 
         return root;
@@ -782,8 +798,16 @@ public static class EchoesModuleFactory
         }
 
         // Iluminación cálida de oficina
-        EchoesLevelShell.SpawnPointLight("OfficeLightL", new Vector3(-scale.x * 0.3f, 2.5f, 0f), new Color(1.0f, 0.85f, 0.6f, 1f), 3f, 8f, root.transform);
-        EchoesLevelShell.SpawnPointLight("OfficeLightR", new Vector3(scale.x * 0.3f, 2.5f, 0f), new Color(1.0f, 0.85f, 0.6f, 1f), 3f, 8f, root.transform);
+        float mult;
+        bool flicker;
+        Color capColor = GetChapterColor(out mult, out flicker);
+        Light officeLightL = EchoesLevelShell.SpawnPointLight("OfficeLightL", new Vector3(-scale.x * 0.3f, 2.5f, 0f), capColor, 3f * mult, 8f, root.transform, LightmapBakeType.Baked, LightShadows.Soft);
+        Light officeLightR = EchoesLevelShell.SpawnPointLight("OfficeLightR", new Vector3(scale.x * 0.3f, 2.5f, 0f), capColor, 3f * mult, 8f, root.transform, LightmapBakeType.Baked, LightShadows.Soft);
+        if (flicker)
+        {
+            officeLightL.gameObject.AddComponent<LightFlicker>().baseIntensity = 3f * mult;
+            officeLightR.gameObject.AddComponent<LightFlicker>().baseIntensity = 3f * mult;
+        }
 
         return root;
     }
@@ -838,7 +862,14 @@ public static class EchoesModuleFactory
         MakePlatform("SpireTopFloor", new Vector3(0f, 6.5f, -scale.z * 0.25f), new Vector3(scale.x, 0.5f, scale.z * 0.5f), root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
 
         // Luz de pared en el descanso
-        EchoesLevelShell.SpawnPointLight("StaircaseLight", new Vector3(0f, 4.5f, scale.z * 0.25f), new Color(0.9f, 0.9f, 0.85f, 1f), 3f, 8f, root.transform);
+        float mult;
+        bool flicker;
+        Color capColor = GetChapterColor(out mult, out flicker);
+        Light stairLight = EchoesLevelShell.SpawnPointLight("StaircaseLight", new Vector3(0f, 4.5f, scale.z * 0.25f), capColor, 3f * mult, 8f, root.transform, LightmapBakeType.Baked, LightShadows.Soft);
+        if (flicker)
+        {
+            stairLight.gameObject.AddComponent<LightFlicker>().baseIntensity = 3f * mult;
+        }
 
         return root;
     }
@@ -867,10 +898,71 @@ public static class EchoesModuleFactory
         Instantiate3DModel(SchoolShelfModule, "LibraryShelf6", new Vector3(dX, 0.1f, dZ), new Vector3(0.6f, 2f, 1.8f), Quaternion.identity, root.transform, EchoesMaterialLibrary.WallMustardMat);
 
         // Luz cálida mortecina de biblioteca
-        EchoesLevelShell.SpawnPointLight("LibraryLight1", new Vector3(0f, 2.5f, -dZ * 0.5f), new Color(1.0f, 0.8f, 0.5f, 1f), 3.5f, 10f, root.transform);
-        EchoesLevelShell.SpawnPointLight("LibraryLight2", new Vector3(0f, 2.5f, dZ * 0.5f), new Color(1.0f, 0.8f, 0.5f, 1f), 3.5f, 10f, root.transform);
+        float mult;
+        bool flicker;
+        Color capColor = GetChapterColor(out mult, out flicker);
+        Light libLight1 = EchoesLevelShell.SpawnPointLight("LibraryLight1", new Vector3(0f, 2.5f, -dZ * 0.5f), capColor, 3.5f * mult, 10f, root.transform, LightmapBakeType.Baked, LightShadows.Soft);
+        Light libLight2 = EchoesLevelShell.SpawnPointLight("LibraryLight2", new Vector3(0f, 2.5f, dZ * 0.5f), capColor, 3.5f * mult, 10f, root.transform, LightmapBakeType.Baked, LightShadows.Soft);
+        if (flicker)
+        {
+            libLight1.gameObject.AddComponent<LightFlicker>().baseIntensity = 3.5f * mult;
+            libLight2.gameObject.AddComponent<LightFlicker>().baseIntensity = 3.5f * mult;
+        }
 
         return root;
+    }
+
+    private static Color GetChapterColor(out float intensityMultiplier, out bool addFlicker)
+    {
+        intensityMultiplier = 1f;
+        addFlicker = false;
+        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        
+        Color col = new Color(0.9f, 0.95f, 1.0f); // Default cold institution light
+
+        if (string.IsNullOrEmpty(sceneName)) return col;
+
+        int levelNum = 0;
+        if (sceneName.StartsWith("Level_"))
+        {
+            int.TryParse(sceneName.Substring(6), out levelNum);
+        }
+
+        if (levelNum >= 1 && levelNum <= 3) // Capítulo I: Persistencia
+        {
+            ColorUtility.TryParseHtmlString("#C9D4B0", out col); // Institutional yellow-green fluorescent
+            intensityMultiplier = 0.85f;
+            addFlicker = (levelNum == 1 || levelNum == 2);
+        }
+        else if (levelNum == 4 || levelNum == 5 || levelNum == 8) // Capítulo II: Coordinación
+        {
+            ColorUtility.TryParseHtmlString("#D8B262", out col); // Mustard yellow
+            intensityMultiplier = 0.9f;
+            addFlicker = (levelNum == 5);
+        }
+        else if (levelNum == 6 || levelNum == 7 || levelNum == 9) // Capítulo III: Confianza
+        {
+            ColorUtility.TryParseHtmlString("#A4C2E0", out col); // Cold grey-blue
+            intensityMultiplier = 0.75f;
+        }
+        else if (levelNum == 10 || levelNum == 11) // Capítulo IV: Optimización
+        {
+            ColorUtility.TryParseHtmlString("#E8B262", out col); // Sunset amber
+            intensityMultiplier = 1.1f;
+        }
+        else if (levelNum == 12 || levelNum == 13) // Capítulo V: Consecuencia
+        {
+            ColorUtility.TryParseHtmlString("#B23A3A", out col); // Warning red
+            intensityMultiplier = 1.0f;
+            addFlicker = (levelNum == 13);
+        }
+        else if (levelNum == 14 || levelNum == 15) // Capítulo VI: Aceptación
+        {
+            ColorUtility.TryParseHtmlString("#E8B262", out col); // Amber
+            intensityMultiplier = 0.6f;
+        }
+
+        return col;
     }
 
     // --- UTILITIES ---

@@ -12,14 +12,8 @@ public static class PlayerAnimationRepair
     static readonly string[] RigPaths =
     {
         CharacterAvatarPath,
-        "Assets/3D Models/Animaciones/Locomotion/idle.fbx",
-        "Assets/3D Models/Animaciones/Locomotion/walking.fbx",
-        "Assets/3D Models/Animaciones/Locomotion/running.fbx",
-        "Assets/3D Models/Animaciones/Locomotion/jump.fbx",
-        "Assets/3D Models/Animaciones/Locomotion/left turn 90.fbx",
-        "Assets/3D Models/Animaciones/Locomotion/right turn 90.fbx",
-        "Assets/3D Models/Animaciones/Locomotion/left strafe walking.fbx",
-        "Assets/3D Models/Animaciones/Locomotion/right strafe walking.fbx"
+        "Assets/3D Models/Animaciones/Universal Animation Library[Standard]/Universal Animation Library[Standard]/Unity/UAL1_Standard.fbx",
+        "Assets/3D Models/Animaciones/Universal Animation Library[Standard]/Universal Animation Library[Standard]/Unity/UAL1_Standard_RM.fbx"
     };
 
     [MenuItem("Echoes/Repair Player Animation Setup", false, 83)]

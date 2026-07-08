@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 /// <summary>
-/// Menú de pausa usando UI Toolkit.
+/// Menú de pausa — Diseño "Libreta de Recuerdo" + panel OSD.
 /// Requiere un UIDocument component en el mismo GameObject con PauseMenuUI.uxml asignado.
 /// </summary>
 [RequireComponent(typeof(UIDocument))]
@@ -264,7 +264,7 @@ public class PauseMenu : MonoBehaviour
         bool isLevel = levelIndex >= 0;
 
         string fragmentLine = isLevel
-            ? $"Fragmento: {GameProgress.GetLevelDisplayName(sceneName)}"
+            ? $"Recuerdo: {GameProgress.GetLevelDisplayName(sceneName)}"
             : $"Zona: {sceneName}";
 
         SetPauseLabel("lbl-pause-fragment", fragmentLine);
@@ -275,14 +275,14 @@ public class PauseMenu : MonoBehaviour
         int sessionDeaths = runtime != null ? runtime.SessionDeaths : 0;
 
         SetPauseLabel("lbl-pause-time", $"Tiempo: {GameProgress.FormatPlayTime(sessionTime)}");
-        SetPauseLabel("lbl-pause-echoes", $"Ecos (sesión): {sessionEchoes}");
+        SetPauseLabel("lbl-pause-echoes", $"Ecos grabados: {sessionEchoes}");
         SetPauseLabel("lbl-pause-deaths", isLevel
-            ? $"Colapsos (nivel): {GameProgress.GetSceneDeathCount(sceneName)} · sesión {sessionDeaths}"
+            ? $"Colapsos (aula): {GameProgress.GetSceneDeathCount(sceneName)} · sesión {sessionDeaths}"
             : $"Colapsos (sesión): {sessionDeaths}");
 
         int completed = GameProgress.GetCompletedCount();
         SetPauseLabel("lbl-pause-total",
-            $"Archivo: {completed}/{GameProgress.TotalLevels} · {GameProgress.GetTotalEchoesCreated()} ecos · {GameProgress.FormatPlayTime(GameProgress.GetTotalPlayTimeSeconds())}");
+            $"Expediente: {completed}/{GameProgress.TotalLevels} · {GameProgress.GetTotalEchoesCreated()} ecos · {GameProgress.FormatPlayTime(GameProgress.GetTotalPlayTimeSeconds())}");
     }
 
     void SetPauseLabel(string elementName, string text)

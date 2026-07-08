@@ -55,7 +55,7 @@ public static class EchoesQueuedProductionRebuild
         try
         {
             Debug.Log("[Echoes Production] Running queued rebuild in the open Unity Editor.");
-            EchoesProductionBuilder.RebuildAll();
+            EchoesNewProductionBuilder.BuildAllBlueprints();
         }
         catch (Exception ex)
         {

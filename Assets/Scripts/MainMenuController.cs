@@ -5,10 +5,13 @@ using UnityEngine.UIElements;
 
 /// <summary>
 /// Controlador del menú principal usando UI Toolkit.
-/// Diseño "ESTADO DEL SISTEMA COGNITIVO" con side nav.
+/// Diseño "EXPEDIENTE DE RECUERDOS" — Escuela Liminal 2.0.
 /// Requiere un UIDocument component en el mismo GameObject.
+/// El sistema de hover icónico (PS2/VHS/CRT) es gestionado por MenuHoverSystem.cs,
+/// que se añade automáticamente como componente requerido.
 /// </summary>
 [RequireComponent(typeof(UIDocument))]
+[RequireComponent(typeof(MenuHoverSystem))]
 public class MainMenuController : MonoBehaviour
 {
     [Header("Scenes")]
@@ -26,6 +29,9 @@ public class MainMenuController : MonoBehaviour
     Label _heroTitle;
     VisualElement _voidIntro;
     VisualElement _mainContent;
+
+    // Sistema de hover icónico (PS2/VHS/CRT) — gestionado por MenuHoverSystem.cs
+    MenuHoverSystem _hoverSystem;
 
     // Panels
     VisualElement _settingsPanel;
@@ -99,6 +105,12 @@ public class MainMenuController : MonoBehaviour
         _doc = GetComponent<UIDocument>();
         if (_doc == null || _doc.rootVisualElement == null) return;
         _root = _doc.rootVisualElement;
+
+        // Inicializar el sistema de hover icónico
+        // MenuHoverSystem se auto-configura desde su propio OnEnable,
+        // pero necesita el UIDocument que ya tenemos.
+        _hoverSystem = GetComponent<MenuHoverSystem>();
+        // (MenuHoverSystem.OnEnable() se llama automáticamente por Unity)
 
         ApplySavedUIScale();
         ApplySavedMenuTextScale();
@@ -243,22 +255,22 @@ public class MainMenuController : MonoBehaviour
     {
         if (_btnNewGame != null)
         {
-            _btnNewGame.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnNewGame, MainMenuCinematicWorld.MenuAmbience.Void, "NEURAL SYNC"));
+            _btnNewGame.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnNewGame, MainMenuCinematicWorld.MenuAmbience.Void, "Aula 104"));
             _btnNewGame.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnNewGame));
         }
         if (_btnLevels != null)
         {
-            _btnLevels.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnLevels, MainMenuCinematicWorld.MenuAmbience.Stability, "STABILITY"));
+            _btnLevels.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnLevels, MainMenuCinematicWorld.MenuAmbience.Stability, "Archivos Escolares"));
             _btnLevels.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnLevels));
         }
         if (_btnSettings != null)
         {
-            _btnSettings.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnSettings, MainMenuCinematicWorld.MenuAmbience.System, "CALIBRATION"));
+            _btnSettings.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnSettings, MainMenuCinematicWorld.MenuAmbience.System, "Ajustar Receptor"));
             _btnSettings.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnSettings));
         }
         if (_btnExit != null)
         {
-            _btnExit.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnExit, MainMenuCinematicWorld.MenuAmbience.Disconnect, "VOID MAP"));
+            _btnExit.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnExit, MainMenuCinematicWorld.MenuAmbience.Disconnect, "Salir del Recuerdo"));
             _btnExit.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnExit));
         }
     }
@@ -329,11 +341,11 @@ public class MainMenuController : MonoBehaviour
 
     string GetActiveHeroTitle()
     {
-        if (_activeNavButton == _btnNewGame) return "VOID";
-        if (_activeNavButton == _btnLevels) return "STABILITY";
-        if (_activeNavButton == _btnSettings) return "CALIBRATION";
-        if (_activeNavButton == _btnExit) return "VOID MAP";
-        return "ISOLATED";
+        if (_activeNavButton == _btnNewGame) return "Aula 104";
+        if (_activeNavButton == _btnLevels) return "Archivos Escolares";
+        if (_activeNavButton == _btnSettings) return "Ajustar Receptor";
+        if (_activeNavButton == _btnExit) return "Salir del Recuerdo";
+        return "Recuerdo Aislado";
     }
 
     string GetPanelNameForButton(Button btn)
@@ -396,7 +408,7 @@ public class MainMenuController : MonoBehaviour
         }
 
         if (_heroTitle != null)
-            _heroTitle.text = "VOID";
+            _heroTitle.text = "Aula 104";
 
         SetActiveNav(_btnNewGame);
         _activePreviewPanelName = "";
@@ -418,7 +430,7 @@ public class MainMenuController : MonoBehaviour
         }
 
         if (_heroTitle != null)
-            _heroTitle.text = "STABILITY";
+            _heroTitle.text = "Archivos Escolares";
 
         SetActiveNav(_btnLevels);
         _activePreviewPanelName = "";
@@ -908,23 +920,23 @@ public class MainMenuController : MonoBehaviour
 
     readonly string[] _diagnosticLines = new[]
     {
-        "[SYSTEM] Sync protocol loaded successfully.",
-        "[OK] Core cognitive links established.",
-        "[OK] Stability matrix synchronized.",
-        "[SCAN] Checking neural pathway integrity...",
-        "[OK] Pathway nodes responded: all clear.",
-        "[SYNC] Fragment resonance calibrating...",
-        "[OK] Echo anchor points registered.",
-        "[WARN] Memory fragment instability detected — sector 07.",
-        "[OK] Auto-repair protocol engaged.",
-        "[SYNC] Cognitive drift within tolerance: 0.003ms.",
-        "[OK] Archive integrity verified.",
-        "[SCAN] Deep memory nodes scanning...",
-        "[OK] No anomalous signals detected.",
-        "[SYSTEM] Heartbeat: 72 bpm — NOMINAL.",
-        "[OK] Session telemetry streaming.",
-        "[SYNC] Void resonance: STABLE.",
-        "Waiting for user sync command...",
+        "[RECUERDO] Sintonización de expediente completada.",
+        "[OK] Vínculos de recuerdo establecidos.",
+        "[OK] Estabilidad del aula sincronizada.",
+        "[BÚSQUEDA] Comprobando integridad de pasillos...",
+        "[OK] Nodos de pasillo respondieron: despejado.",
+        "[SINC] Resonancia de fragmento calibrando...",
+        "[OK] Puntos de anclaje de eco registrados.",
+        "[AVISO] Inestabilidad en fragmento — sector 07.",
+        "[OK] Protocolo de reparación iniciado.",
+        "[SINC] Deriva temporal dentro del margen: 0.003ms.",
+        "[OK] Integridad del expediente verificada.",
+        "[BÚSQUEDA] Escaneando nodos de memoria profunda...",
+        "[OK] Sin señales anómalas detectadas.",
+        "[SISTEMA] Latido: 72 ppm — NOMINAL.",
+        "[OK] Telemetría de sesión activa.",
+        "[SINC] Resonancia del vacío: ESTABLE.",
+        "Esperando comando de sintonización...",
     };
 
     IEnumerator AnimateTerminalLogs()
@@ -1101,9 +1113,9 @@ public class MainMenuController : MonoBehaviour
     {
         _resetArmed = false;
         GameProgress.ResetProgress();
-        SetLabelText("lbl-reset-hint", "Archivo reiniciado. Solo el fragmento 01 está activo.");
+        SetLabelText("lbl-reset-hint", "Expediente borrado. Solo el primer recuerdo está disponible.");
         if (_heroTitle != null)
-            _heroTitle.text = "ISOLATED";
+            _heroTitle.text = "Recuerdo Aislado";
         RefreshDashboard();
         BindLevelMapButtons();
     }

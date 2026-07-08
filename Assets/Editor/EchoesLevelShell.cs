@@ -41,7 +41,7 @@ public static class EchoesLevelShell
         // bajo y uniforme, deja que las luces puntuales hagan el contraste.
         RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
         RenderSettings.ambientLight = blueprint.ambientColor;
-        RenderSettings.ambientIntensity = 0.55f;
+        RenderSettings.ambientIntensity = 0.25f; // Reducido para mayor contraste y claroscuro
 
         RenderSettings.skybox = null;
         RenderSettings.reflectionIntensity = 0f; // Sin reflejos de entorno. Nunca.
@@ -70,28 +70,19 @@ public static class EchoesLevelShell
         lightRef.type = LightType.Directional;
         lightRef.color = blueprint.directionalLightColor;
         lightRef.intensity = blueprint.directionalLightIntensity;
-        lightRef.shadows = LightShadows.Hard;
-        lightRef.shadowStrength = 0.92f;
+        lightRef.shadows = LightShadows.Soft; // Sombras suaves
+        lightRef.shadowStrength = 0.85f;
+        lightRef.lightmapBakeType = LightmapBakeType.Mixed; // Modo mixto para personajes dinámicos y geometría estática
         lightObject.transform.rotation = Quaternion.Euler(blueprint.directionalLightRotation);
     }
 
     public static void SpawnAmbientLights(Transform parent, Vector3 center, float width, float depth)
     {
-        Color warmDim = new Color(0.95f, 0.82f, 0.65f, 1f);
-        Color coolDim = new Color(0.65f, 0.78f, 1f, 1f);
-        float intensity = 5.5f;
-        float range = 22f;
-        float halfW = width * 0.4f;
-        float halfD = depth * 0.4f;
-
-        SpawnPointLight("Amb_FL", center + new Vector3(-halfW, 3f, -halfD), warmDim, intensity, range, parent);
-        SpawnPointLight("Amb_FR", center + new Vector3(halfW, 3f, -halfD), coolDim, intensity, range, parent);
-        SpawnPointLight("Amb_BL", center + new Vector3(-halfW, 3f, halfD), coolDim, intensity, range, parent);
-        SpawnPointLight("Amb_BR", center + new Vector3(halfW, 3f, halfD), warmDim, intensity, range, parent);
-        SpawnPointLight("Amb_Center", center + new Vector3(0f, 8f, 0f), new Color(0.9f, 0.94f, 1f, 1f), 7f, 28f, parent);
+        // Se desactivan las luces redundantes dinámicas que lavaban el contraste de los niveles.
+        // La iluminación ahora la definen las fuentes locales de los módulos y el ambiente tenue.
     }
 
-    public static Light SpawnPointLight(string name, Vector3 position, Color color, float intensity, float range, Transform parent)
+    public static Light SpawnPointLight(string name, Vector3 position, Color color, float intensity, float range, Transform parent, LightmapBakeType bakeType = LightmapBakeType.Realtime, LightShadows shadows = LightShadows.None)
     {
         GameObject lightObject = new GameObject(name);
         if (parent != null)
@@ -103,7 +94,8 @@ public static class EchoesLevelShell
         lightRef.color = color;
         lightRef.intensity = intensity;
         lightRef.range = range;
-        lightRef.shadows = LightShadows.None;
+        lightRef.shadows = shadows;
+        lightRef.lightmapBakeType = bakeType;
         return lightRef;
     }
 

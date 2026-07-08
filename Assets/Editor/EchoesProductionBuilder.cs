@@ -1,3 +1,4 @@
+#if false // LEGACY — Builder sci-fi desactivado. Usar EchoesNewProductionBuilder. Ver PROJECT_CONTEXT.md.
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -2412,3 +2413,4 @@ public static partial class EchoesProductionBuilder
         }
     }
 }
+#endif // LEGACY — EchoesProductionBuilder sci-fi

@@ -1,153 +1,137 @@
 ---
-name: Echoes of the Mind Design System
+name: Echoes of You 2.0
 colors:
-  surface: '#0c1324'
-  surface-dim: '#0c1324'
-  surface-bright: '#33394c'
-  surface-container-lowest: '#070d1f'
-  surface-container-low: '#151b2d'
-  surface-container: '#191f31'
-  surface-container-high: '#23293c'
-  surface-container-highest: '#2e3447'
-  on-surface: '#dce1fb'
-  on-surface-variant: '#c7c4d6'
-  inverse-surface: '#dce1fb'
-  inverse-on-surface: '#2a3043'
-  outline: '#918fa0'
-  outline-variant: '#464554'
-  surface-tint: '#c2c1ff'
-  primary: '#c2c1ff'
-  on-primary: '#1a09a1'
-  primary-container: '#5d5cde'
-  on-primary-container: '#f1eeff'
-  inverse-primary: '#4e4cce'
-  secondary: '#c4c1fb'
-  on-secondary: '#2d2a5b'
-  secondary-container: '#444173'
-  on-secondary-container: '#b3afe9'
-  tertiary: '#bec6e0'
-  on-tertiary: '#283044'
-  tertiary-container: '#656d84'
-  on-tertiary-container: '#edf0ff'
+  surface: '#131314'
+  surface-dim: '#131314'
+  surface-bright: '#3a393a'
+  surface-container-lowest: '#0e0e0f'
+  surface-container-low: '#1c1b1d'
+  surface-container: '#201f21'
+  surface-container-high: '#2a2a2b'
+  surface-container-highest: '#353436'
+  on-surface: '#e5e1e3'
+  on-surface-variant: '#c7c5cd'
+  inverse-surface: '#e5e1e3'
+  inverse-on-surface: '#313031'
+  outline: '#919097'
+  outline-variant: '#46464c'
+  surface-tint: '#c4c5db'
+  primary: '#c4c5db'
+  on-primary: '#2d2f40'
+  primary-container: '#1a1c2c'
+  on-primary-container: '#828498'
+  inverse-primary: '#5c5d70'
+  secondary: '#c9c99e'
+  on-secondary: '#313213'
+  secondary-container: '#484927'
+  on-secondary-container: '#b7b88d'
+  tertiary: '#f6be3d'
+  on-tertiary: '#402d00'
+  tertiary-container: '#281b00'
+  on-tertiary-container: '#ab7e00'
   error: '#ffb4ab'
   on-error: '#690005'
   error-container: '#93000a'
   on-error-container: '#ffdad6'
-  primary-fixed: '#e2dfff'
-  primary-fixed-dim: '#c2c1ff'
-  on-primary-fixed: '#0b006b'
-  on-primary-fixed-variant: '#3530b6'
-  secondary-fixed: '#e3dfff'
-  secondary-fixed-dim: '#c4c1fb'
-  on-secondary-fixed: '#181445'
-  on-secondary-fixed-variant: '#444173'
-  tertiary-fixed: '#dae2fd'
-  tertiary-fixed-dim: '#bec6e0'
-  on-tertiary-fixed: '#131b2e'
-  on-tertiary-fixed-variant: '#3f465c'
-  background: '#0c1324'
-  on-background: '#dce1fb'
-  surface-variant: '#2e3447'
+  primary-fixed: '#e1e1f7'
+  primary-fixed-dim: '#c4c5db'
+  on-primary-fixed: '#181a2a'
+  on-primary-fixed-variant: '#444657'
+  secondary-fixed: '#e5e5b8'
+  secondary-fixed-dim: '#c9c99e'
+  on-secondary-fixed: '#1c1d02'
+  on-secondary-fixed-variant: '#484927'
+  tertiary-fixed: '#ffdea2'
+  tertiary-fixed-dim: '#f6be3d'
+  on-tertiary-fixed: '#261900'
+  on-tertiary-fixed-variant: '#5c4200'
+  background: '#131314'
+  on-background: '#e5e1e3'
+  surface-variant: '#353436'
 typography:
-  headline-xl:
+  headline-lg:
     fontFamily: Space Grotesk
     fontSize: 48px
-    fontWeight: '300'
-    lineHeight: '1.2'
-    letterSpacing: 0.15em
+    fontWeight: '700'
+    lineHeight: '1.1'
+    letterSpacing: -0.05em
   headline-md:
     fontFamily: Space Grotesk
-    fontSize: 24px
-    fontWeight: '400'
-    lineHeight: '1.4'
-    letterSpacing: 0.1em
+    fontSize: 32px
+    fontWeight: '600'
+    lineHeight: '1.2'
   body-lg:
-    fontFamily: Manrope
+    fontFamily: Courier Prime
     fontSize: 18px
     fontWeight: '400'
     lineHeight: '1.6'
-    letterSpacing: 0.05em
-  body-sm:
-    fontFamily: Manrope
-    fontSize: 14px
+  body-md:
+    fontFamily: Courier Prime
+    fontSize: 16px
     fontWeight: '400'
-    lineHeight: '1.6'
-    letterSpacing: 0.02em
+    lineHeight: '1.5'
   label-caps:
     fontFamily: Space Grotesk
     fontSize: 12px
-    fontWeight: '600'
-    lineHeight: '1'
-    letterSpacing: 0.25em
+    fontWeight: '700'
+    lineHeight: '1.0'
+    letterSpacing: 0.1em
+  headline-lg-mobile:
+    fontFamily: Space Grotesk
+    fontSize: 32px
+    fontWeight: '700'
+    lineHeight: '1.1'
 spacing:
   unit: 4px
-  xs: 4px
-  sm: 12px
-  md: 24px
-  lg: 48px
-  xl: 96px
-  safe-area: 64px
+  gutter: 16px
+  margin: 24px
+  container-max: 1200px
 ---
 
 ## Brand & Style
+The design system is built upon the aesthetic of **Liminal Nostalgia**. It evokes the unsettling calm of an abandoned institutional space—specifically a school at dusk. The emotional response is one of "broken memory": a mixture of comfort from familiar forms and the subtle dread of isolation.
 
-The design system is centered on the concept of cognitive isolation and the beauty of the unknown. It evokes a cerebral and melancholic atmosphere, designed to make the player feel small yet focused within a vast, abstract void. The aesthetic direction leverages a hybrid of **Minimalism** and **Glassmorphism**. 
-
-The UI does not compete with the environment; instead, it acts as a fragile, translucent overlay—much like a flickering memory. High-contrast geometric structures represent the "logic" of the puzzles, while organic, ethereal glows and fog represent the "emotion" and "mystery" of the mind. Every interaction should feel intentional, quiet, and slightly haunting.
+The style is a blend of **Low-Poly Retro** and **Industrial Minimalism**. It mimics the technical constraints of the PS1/PS2 era, utilizing flat shading, dithering patterns, and hard edges. It avoids all modern "slickness," opting instead for a tactile, slightly "crusty" interface that feels like an old computer terminal found in a basement office. Use harsh localized lighting metaphors rather than global ambient light.
 
 ## Colors
+The palette is dominated by **Corridor Navy**, serving as the void or the shadow. **Fluorescent Sick** acts as the primary light source, mimicking the unnatural hum of overhead tubes. 
 
-This design system utilizes a "Void Palette." The foundation is built on absolute blacks and near-black indigos to create infinite depth. 
-
-- **Foundation:** Deep blacks (#020617) provide the canvas of the "Mind."
-- **Ethereal Layers:** Purples and blues are used primarily in gradients and blurs to simulate fog and "echo" silhouettes.
-- **Interactive Accents:** Pure white or high-brightness cyan is reserved for critical path elements, interactive nodes, and puzzle feedback, ensuring immediate visual hierarchy against the dark background.
-- **State Colors:** Use low-opacity versions of the secondary blue for inactive states to maintain a ghostly, receding appearance.
+- **Backgrounds:** Use `#1a1c2c` for the base. Secondary surfaces use a slightly lifted navy or a dithered pattern.
+- **Primary UI Elements:** `#d1d1a5` (Fluorescent Sick) is used for the most important text and borders.
+- **Accents:** `#e6af2e` (Memory Amber) highlights interactive "memories" or archival data. `#4bb3b1` (Echo Cyan) is used for systemic feedback.
+- **Critical Errors:** `#8b0000` (Wrongness Red) must be used sparingly to indicate a break in the simulation or a forbidden action.
 
 ## Typography
+The typography system balances institutional authority with the intimacy of a typewriter. 
 
-Typography in this design system is used as a spatial element. By utilizing **Space Grotesk** for headlines and labels, the UI adopts a technical, cerebral tone. The generous letter spacing is mandatory; it creates a sense of "emptiness" between characters that mirrors the game's atmospheric themes.
+**Space Grotesk** is used for headlines and UI labels, providing a cold, technical feel. **Courier Prime** is used for all long-form text, dialogue, and "recovered documents" to ground the experience in a physical, analog past. 
 
-**Manrope** is used for longer descriptions or instructional text to ensure legibility while maintaining a modern, refined feel. Text should rarely be 100% opaque unless it is a primary heading; use 70-80% opacity to help type bleed into the atmospheric fog of the background.
+Avoid anti-aliasing effects where possible to maintain the low-resolution aesthetic. Headlines should feel slightly "squashed" or tight, while body text requires generous line height to maintain readability against dark, textured backgrounds.
 
 ## Layout & Spacing
+The layout follows a **Fixed Grid** model, reminiscent of early 4:3 aspect ratio displays. Layouts should feel intentional and somewhat rigid, as if constrained by a physical monitor.
 
-The layout philosophy follows a **Fixed Grid** approach with significant safe-area margins to emphasize the feeling of being "centered" in a void. 
-
-- **Negative Space:** Elements should be pushed toward the periphery of the screen or centered with extreme padding to evoke isolation.
-- **Rhythm:** A 4px base unit is used, but spacing should typically jump in large increments (md to lg) to avoid visual clutter.
-- **Alignment:** UI elements should align to a strict 12-column grid for menus, while the HUD remains detached, floating at the corners with at least 64px of padding from the display edge.
+- **Grid:** A 12-column system for desktop, collapsing to 4 columns for mobile.
+- **Margins:** Large, uneven margins are encouraged to create a sense of isolation (e.g., centering a small content block in a large empty field).
+- **Rhythm:** Use a 4px baseline. All spacing should be multiples of 4 or 8 to maintain a "pixel-perfect" but chunky alignment.
 
 ## Elevation & Depth
+Depth is created through **Tonal Layering** and **Harsh Shadows**, not soft blurs. 
 
-Depth is not communicated through shadows, but through **Glassmorphism** and light filtration. 
-
-- **Backdrop Blurs:** Use high-radius background blurs (20px-40px) on any container to simulate the UI existing within the "fog."
-- **Tonal Layers:** Higher-level elements (like active modals) are not lighter in color; they are simply more translucent with a sharper, thin white border (0.5px).
-- **Glows:** Instead of drop shadows, use "Outer Glows" using the primary blue color. This suggests the UI is an emission of light rather than a physical object.
-- **Parallax:** In-game menus should have a slight parallax effect relative to the background fog to create a sense of floating layers.
+- **Layers:** Use subtle shifts in the Navy palette to define surfaces. Higher elevation elements are "lit" by the Fluorescent Sick color.
+- **Hard Shadows:** Use 1px or 2px offset shadows with 100% opacity to create a "sticker" or "low-poly" effect. 
+- **The "Vignette":** Screen edges should fade into deep black, simulating a localized light source that fails to reach the corners of the room.
+- **Texture:** Apply a grain or noise overlay to all surfaces to simulate film grain or an old CRT monitor.
 
 ## Shapes
+The shape language is strictly **Sharp (0px)**. In this design system, curves are an unnecessary luxury that the hardware cannot afford. 
 
-The design system employs a **Sharp (0)** roundedness strategy. The UI is constructed of precise, geometric lines to contrast against the soft, organic nature of the environmental fog.
-
-- **Geometric Contrast:** All buttons, containers, and HUD elements must have 90-degree corners. This reinforces the "Logic/Cerebral" aspect of the brand personality.
-- **Lines:** Use thin, 1px lines for borders and separators. Avoid solid fills where a stroke can suffice. 
-- **Icons:** Use monolinear, geometric icons with open paths to maintain the minimalist, airy aesthetic.
+All containers, buttons, and input fields must have hard 90-degree corners. To add visual interest, use "clipped corners" (45-degree chamfers) on prominent containers to reinforce the low-poly, geometric aesthetic.
 
 ## Components
-
-### Buttons
-Buttons are "Ghost" style by default. They consist of a 1px white border with 10% white fill. On hover, the fill opacity increases to 20%, and the border gains a soft, ethereal blue outer glow. There is no "click" animation—only a subtle fade in light intensity.
-
-### The 'Echo' HUD
-The HUD elements (energy, memory fragments) are represented by thin, vertical or horizontal lines that deplete by fading into 0% opacity rather than moving. They should appear translucent and flicker slightly, as if they are unstable data.
-
-### Cards & Modals
-Containers use a dark, semi-transparent background with a heavy backdrop blur. They do not have headers; titles are placed above the container with wide letter spacing.
-
-### Interactive Nodes
-Puzzle elements that can be interacted with should be the only elements using the high-contrast Cyan accent. They should "pulse" with a soft glow to draw the eye without breaking the melancholic stillness of the scene.
-
-### Lists
-Lists are unstyled by default, using only indentation and increased vertical spacing (md) to separate items. A thin vertical line to the left of the active item is the only selection indicator.
+- **Buttons:** Rectangular with a 1px solid border of `Fluorescent Sick`. On hover, the background fills with the border color and the text flips to `Corridor Navy`.
+- **Lists:** Items separated by a thin, dotted horizontal line. Use a chevron `>` (Courier Prime) as a cursor for the active selection.
+- **Cards:** Use a "Folder" metaphor—sharp rectangles with a small tab at the top left containing a `label-caps` category.
+- **Input Fields:** A simple underscore `_` for the cursor. The field is a dark box with a `Fluorescent Sick` bottom border only.
+- **Dithering:** Use 50% dither patterns (checkerboard pixels) for disabled states or secondary backgrounds instead of transparency/opacity shifts.
+- **The "Wrongness" Indicator:** A rare component consisting of a vibrating, high-contrast red border around a critical piece of information.

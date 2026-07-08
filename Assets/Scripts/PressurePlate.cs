@@ -11,19 +11,19 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
     [SerializeField] string playerTag = "Player";
     [SerializeField] string echoTag = "Echo";
     [SerializeField] string echoProjectionTag = "EchoProjection";
-    [SerializeField] bool acceptPlayer = true;
-    [SerializeField] bool acceptEcho = true;
-    [SerializeField] bool acceptEchoProjection = true;
+    public bool acceptPlayer = true;
+    public bool acceptEcho = true;
+    public bool acceptEchoProjection = true;
 
     [Header("Visual Feedback")]
-    [SerializeField] Color inactiveColor = new Color(0.16f, 0.21f, 0.31f, 1f);    // Indigo-ceniza elegante
-    [SerializeField] Color activeColor = new Color(0f, 0.9f, 1f, 1f);            // Cyan cyber-brillante
-    [SerializeField] Color emissionInactive = new Color(0f, 0.1f, 0.17f, 1f);     // Aura cyan sutil
-    [SerializeField] Color emissionActive = new Color(0f, 1.33f, 1.6f, 1f);       // Destello cyan radiante
-    [SerializeField] float pulseSpeed = 2.0f;
-    [SerializeField] bool createIndicatorLight = true;
-    [SerializeField] float lightIntensity = 0.85f;
-    [SerializeField] float lightRange = 4.5f;
+    public Color inactiveColor = new Color(0.16f, 0.21f, 0.31f, 1f);
+    public Color activeColor = new Color(0f, 0.9f, 1f, 1f);
+    public Color emissionInactive = new Color(0f, 0.1f, 0.17f, 1f);
+    public Color emissionActive = new Color(0f, 1.33f, 1.6f, 1f);
+    public float pulseSpeed = 2.0f;
+    public bool createIndicatorLight = true;
+    public float lightIntensity = 0.85f;
+    public float lightRange = 4.5f;
 
     [Header("Behavior")]
     public float autoReleaseTimer = 0f;

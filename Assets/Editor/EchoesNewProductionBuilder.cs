@@ -13,6 +13,9 @@ public static class EchoesNewProductionBuilder
     [MenuItem("Echoes of You/Production/Build All Blueprint Levels", false, 201)]
     public static void BuildAllBlueprints()
     {
+        // 0. Export prefabs to ensure no missing dependencies exist
+        EchoesLevelKitExporter.ExportLevelKitPrefabs();
+
         // 1. Ensure setup
         EchoesMaterialLibrary.EnsureMaterials();
         
