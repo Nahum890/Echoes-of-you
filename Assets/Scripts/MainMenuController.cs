@@ -240,6 +240,27 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        // Descartar la intro ("presionar cualquier tecla para sintonizar") y mostrar el menú.
+        // Sin esto el menú queda atascado en void-intro con main-content oculto.
+        if (_voidIntro != null && !_voidIntro.ClassListContains("hidden") && Input.anyKeyDown)
+        {
+            DismissIntro();
+        }
+    }
+
+    /// <summary>Oculta la intro y revela el menú principal (main-content).</summary>
+    void DismissIntro()
+    {
+        _voidIntro?.AddToClassList("hidden");
+        _mainContent?.RemoveFromClassList("hidden");
+        _rightContentContainer?.RemoveFromClassList("hidden");
+
+        SetActiveNav(_btnNewGame);
+        ShowPreviewPanel("panel-neural-archives");
+    }
+
     void AutoStart()
     {
         LoadLevel(firstLevelScene);
