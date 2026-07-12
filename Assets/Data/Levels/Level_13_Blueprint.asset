@@ -1,4 +1,4 @@
-%YAML 1.1
+﻿%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -14,83 +14,140 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
   levelName: Level_13
   nextLevel: Level_14
-  actNumber: 4
-  archetype: 3
+  actNumber: 5
+  archetype: 1
+  echoEnabled: 1
   maxEchoes: 1
-  maxRecordSeconds: 15
-  activeParadoxes: 
-  fogColor: {r: 0.1, g: 0.1, b: 0.1, a: 1}
-  fogDensity: 0.03
-  skyColor: {r: 0.08, g: 0.08, b: 0.08, a: 1}
-  directionalLightRotation: {x: 50, y: -30, z: 0}
-  directionalLightColor: {r: 1.0, g: 0.85, b: 0.65, a: 1}
-  directionalLightIntensity: 0.8
+  maxRecordSeconds: 12
+  activeParadoxes:
+  fogColor: {r: 0.110, g: 0.102, b: 0.125, a: 1}
+  fogDensity: 0.022
+  skyColor: {r: 0.07, g: 0.06, b: 0.08, a: 1}
+  ambientColor: {r: 0.04, g: 0.04, b: 0.05, a: 1}
+  directionalLightRotation: {x: 52, y: -32, z: 0}
+  directionalLightColor: {r: 0.62, g: 0.60, b: 0.70, a: 1}
+  directionalLightIntensity: 0.45
   narrativeIntroTitle: "Nivel 13 \u2014 Verdad"
-  narrativeIntroDesc: "El aula de Lyra suspendida en el abismo. Coloca tres ecos en posiciones de recuerdo simultáneamente para reconstruir la verdad."
+  narrativeIntroDesc: "Trabajo con la grabaci\u00f3n que hay, aunque no sea la que habr\u00eda elegido."
   narrativeIntroDuration: 8
-  puzzleObjectiveText: Pisa los tres puntos del Aula de Lyra para desvelar el diálogo y abrir la esclusa de salida.
-  puzzleActiveText: "Flashback de verdad activo."
-  puzzleCompleteText: "La verdad ha sido aceptada."
+  puzzleObjectiveText: "Solo hay una grabaci\u00f3n posible. Trabaja con ella."
+  puzzleActiveText: "El eco ya decidi\u00f3."
+  puzzleCompleteText: ""
   pathHints:
-  - {x: 0, y: 1.1, z: -12}
-  - {x: 0, y: 1.1, z: 10}
+  - {x: 0, y: 1.1, z: -4}
+  - {x: 0, y: 1.1, z: 8}
+  - {x: 0, y: 1.1, z: 18}
   modules:
   - name: PlayerStart
     type: 7
-    position: {x: 0, y: 1.1, z: -12}
+    position: {x: 0, y: 0.1, z: -6}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
+    scale: {x: 1, y: 1, z: 1}
+    customData:
     targetSignals:
-  - name: AulaLyra
+  - name: ZonaA_UmbralRoto
+    type: 28
+    position: {x: 0, y: 0, z: -4}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 3, y: 3, z: 2}
+    customData: tilted
+    targetSignals:
+  - name: LuzUmbralRoto
+    type: 10
+    position: {x: 0, y: 2.5, z: -4}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.55,0.52,0.62|1.5|6.0
+    targetSignals:
+  - name: ZonaB_AulaFragmentada
     type: 21
-    position: {x: 0, y: 0, z: 0}
+    position: {x: 0, y: 0, z: 8}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 12, y: 0.5, z: 12}
-    customData: 
+    scale: {x: 12, y: 3, z: 10}
+    customData: WallRose
     targetSignals:
-  - name: PlateVerdad1
-    type: 4
-    position: {x: -4, y: 0.33, z: 4}
+  - name: PupitresFlotantes
+    type: 22
+    position: {x: 0, y: 0.3, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 10, y: 0.15, z: 8}
+    customData:
+    targetSignals:
+  - name: LuzAulaFragmentada
+    type: 10
+    position: {x: 0, y: 2.8, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: 
+    customData: 0.60,0.58,0.68|2.5|14.0
     targetSignals:
-  - name: PlateVerdad2
-    type: 4
-    position: {x: 4, y: 0.33, z: 4}
+  - name: VentanaOscura
+    type: 3
+    position: {x: 6, y: 0, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0.2, y: 3, z: 10}
+    customData:
+    targetSignals:
+  - name: ZonaC_EspacioConversacion
+    type: 0
+    position: {x: 0, y: 0, z: 14}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 6, y: 0.2, z: 4}
+    customData:
+    targetSignals:
+  - name: VozLyraFinal
+    type: 27
+    position: {x: 0, y: 0, z: 14}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 4, y: 3, z: 4}
+    customData:
+    targetSignals:
+  - name: LuzConversacion
+    type: 10
+    position: {x: 0, y: 2.8, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: 
+    customData: 0.78,0.75,0.80|3.0|8.0
     targetSignals:
-  - name: PlateVerdad3
+  - name: PlacaVerdad
     type: 4
-    position: {x: 0, y: 0.33, z: 0}
+    position: {x: 0, y: 0.1, z: 16}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: 
+    customData:
+    targetSignals:
+  - name: ZonaD_SalidaImposible
+    type: 28
+    position: {x: 0, y: 0, z: 20}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 4, y: 3, z: 2}
+    customData: impossible
+    targetSignals:
+  - name: LuzSalidaImposible
+    type: 10
+    position: {x: 0, y: 2.8, z: 20}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.55,0.52,0.62|1.8|8.0
     targetSignals:
   - name: LevelExit_Area
     type: 6
-    position: {x: 0, y: 1.1, z: 10}
+    position: {x: 0, y: 1.1, z: 22}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: Level_14
     targetSignals:
   - name: LevelGoal
     type: 13
-    position: {x: 0, y: 1.1, z: 10}
+    position: {x: 0, y: 1.1, z: 22}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: Pisa las tres áreas del flashback escolar.|El diálogo se completa.|Verdad revelada.
+    scale: {x: 1, y: 1, z: 1}
+    customData: "Solo hay una grabaci\u00f3n posible. Trabaja con ella.|El eco ya decidi\u00f3.|."
     targetSignals:
-    - PlateVerdad1
-    - PlateVerdad2
-    - PlateVerdad3
+    - PlacaVerdad
   - name: LevelRuntime
     type: 14
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: Busca los puntos del recuerdo.|Reconstruye la escena del aula.|Salida abierta.
+    scale: {x: 1, y: 1, z: 1}
+    customData: "Solo hay una grabaci\u00f3n posible. Trabaja con ella.|El eco ya decidi\u00f3.|."
     targetSignals:

@@ -185,9 +185,12 @@ public class MenuButtonHoverState
         _currentState = State.HoverLeave;
         StopAllLoops();
 
-        // Ghost layers salen primero
+        // Ghost layers salen primero — removemos clase USS y reseteamos color inline (StyleKeyword.Null)
+        // para permitir que la transición USS de opacidad a 0 funcione correctamente.
         _ghostA.RemoveFromClassList("nav-item-ghost-a--visible");
         _ghostB.RemoveFromClassList("nav-item-ghost-b--visible");
+        _ghostA.style.color = StyleKeyword.Null;
+        _ghostB.style.color = StyleKeyword.Null;
 
         // Chroma ligeramente después
         _system.RunCoroutine(DeactivateWithDelay(_chromaR, "nav-item-chroma-r--visible", 0.01f));
@@ -295,11 +298,11 @@ public class MenuButtonHoverState
 
             if (_currentState != State.HoverHeld) break;
 
-            // Aplicar micro-impulso — 1 frame
+            // Aplicar micro-impulso — 1 frame.
+            // Omitimos sobreescribir _button.style.translate en C# porque los inline styles
+            // tienen prioridad máxima en UI Toolkit y romperían la transición CSS/USS del hover.
+            // En su lugar, aplicamos un jitter usando marginLeft.
             float jitter = Random.Range(-0.5f, 0.5f);
-            _button.style.translate = new StyleTranslate(new Translate(Length.Percent(0), Length.Percent(0)));
-            // Nota: el translate real viene de la clase :hover en USS.
-            // Este jitter se aplica como marginLeft temporal:
             _button.style.marginLeft = jitter;
             yield return null;
             _button.style.marginLeft = 0f;
@@ -463,7 +466,7 @@ public class MenuButtonHoverState
             _noiseOverlay.style.opacity = Mathf.Lerp(start, 0f, elapsed / duration);
             yield return null;
         }
-        _noiseOverlay.style.opacity = 0f;
+        _noiseOverlay.style.opacity = StyleKeyword.Null;
     }
 
     /// <summary>

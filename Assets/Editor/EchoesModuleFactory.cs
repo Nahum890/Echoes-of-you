@@ -506,8 +506,9 @@ public static class EchoesModuleFactory
         root.transform.SetParent(parent, false);
         root.transform.position = pos;
 
-        // Suelo del Aula
-        MakePlatform("ClassroomFloor", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
+        // Suelo del Aula — slab fino para que muebles no queden enterrados
+        Vector3 floorScale = new Vector3(scale.x, 0.3f, scale.z);
+        MakePlatform("ClassroomFloor", new Vector3(0f, -0.15f, 0f), floorScale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
 
         // Paredes del aula con ventanas (dejan pasar la niebla/luz)
         float wX = scale.x * 0.5f;
@@ -534,15 +535,20 @@ public static class EchoesModuleFactory
             }
         }
 
-        // Luz de techo parpadeante fluorescente
+        // Luces de techo fluorescentes espaciadas (más puntos lumínicos)
         float mult;
         bool flicker;
         Color capColor = GetChapterColor(out mult, out flicker);
-        Light classroomLight = EchoesLevelShell.SpawnPointLight("ClassroomLight", new Vector3(0f, 3f, 0f), capColor, 5f * mult, 15f, root.transform, LightmapBakeType.Baked, LightShadows.Soft);
-        if (flicker)
+        float zSpacing = scale.z * 0.25f;
+        for (float zOffset = -scale.z * 0.25f; zOffset <= scale.z * 0.25f + 0.1f; zOffset += Mathf.Max(3f, zSpacing * 2f))
         {
-            var flickerComponent = classroomLight.gameObject.AddComponent<LightFlicker>();
-            flickerComponent.baseIntensity = 5f * mult;
+            Vector3 lightPos = new Vector3(0f, 3.2f, zOffset);
+            Light classroomLight = EchoesLevelShell.SpawnPointLight($"ClassroomLight_{zOffset:0.0}", lightPos, capColor, 6f * mult, 16f, root.transform, LightmapBakeType.Baked, LightShadows.Soft);
+            if (flicker && Mathf.Abs(zOffset) < 0.1f)
+            {
+                var flickerComponent = classroomLight.gameObject.AddComponent<LightFlicker>();
+                flickerComponent.baseIntensity = 6f * mult;
+            }
         }
 
         return root;
@@ -630,8 +636,9 @@ public static class EchoesModuleFactory
         root.transform.SetParent(parent, false);
         root.transform.position = pos;
 
-        // Suelo del pasillo
-        MakePlatform("CorridorFloor", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
+        // Suelo del pasillo — slab fino para que casilleros no queden enterrados
+        Vector3 corridorFloorScale = new Vector3(scale.x, 0.3f, scale.z);
+        MakePlatform("CorridorFloor", new Vector3(0f, -0.15f, 0f), corridorFloorScale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
 
         // Paredes laterales
         float halfWidth = scale.x * 0.5f;
@@ -653,13 +660,13 @@ public static class EchoesModuleFactory
         float mult;
         bool flicker;
         Color capColor = GetChapterColor(out mult, out flicker);
-        for (float z = -scale.z * 0.35f; z <= scale.z * 0.35f; z += 6f)
+        for (float z = -scale.z * 0.35f; z <= scale.z * 0.35f; z += 4f)
         {
-            Light corridorLight = EchoesLevelShell.SpawnPointLight($"CorridorLight_{z:0.0}", new Vector3(0f, 3f, z), capColor, 4f * mult, 10f, root.transform, LightmapBakeType.Baked, LightShadows.Soft);
+            Light corridorLight = EchoesLevelShell.SpawnPointLight($"CorridorLight_{z:0.0}", new Vector3(0f, 3f, z), capColor, 5.5f * mult, 12f, root.transform, LightmapBakeType.Baked, LightShadows.Soft);
             if (flicker)
             {
                 var flickerComponent = corridorLight.gameObject.AddComponent<LightFlicker>();
-                flickerComponent.baseIntensity = 4f * mult;
+                flickerComponent.baseIntensity = 5.5f * mult;
             }
         }
 
@@ -672,8 +679,9 @@ public static class EchoesModuleFactory
         root.transform.SetParent(parent, false);
         root.transform.position = pos;
 
-        // Suelo gigante del patio
-        MakePlatform("PatioFloor", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
+        // Suelo gigante del patio — slab fino
+        Vector3 patioFloorScale = new Vector3(scale.x, 0.3f, scale.z);
+        MakePlatform("PatioFloor", new Vector3(0f, -0.15f, 0f), patioFloorScale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
 
         // Vallas perimetrales en los bordes para encerrar el patio (City Pack)
         float halfX = scale.x * 0.5f;
@@ -912,21 +920,22 @@ public static class EchoesModuleFactory
         return root;
     }
 
+    public static int CurrentBuildingLevel = 0;
+
     private static Color GetChapterColor(out float intensityMultiplier, out bool addFlicker)
     {
         intensityMultiplier = 1f;
         addFlicker = false;
-        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         
-        Color col = new Color(0.9f, 0.95f, 1.0f); // Default cold institution light
-
-        if (string.IsNullOrEmpty(sceneName)) return col;
-
-        int levelNum = 0;
-        if (sceneName.StartsWith("Level_"))
+        int levelNum = CurrentBuildingLevel;
+        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        if (levelNum <= 0 && !string.IsNullOrEmpty(sceneName) && sceneName.StartsWith("Level_"))
         {
             int.TryParse(sceneName.Substring(6), out levelNum);
         }
+
+        Color col = new Color(0.9f, 0.95f, 1.0f); // Default cold institution light
+        if (levelNum <= 0) return col;
 
         if (levelNum >= 1 && levelNum <= 3) // Capítulo I: Persistencia
         {
@@ -1108,10 +1117,18 @@ public static class EchoesModuleFactory
     private static void ApplyMaterialOverride(GameObject obj, Material mat)
     {
         if (obj == null || mat == null) return;
-        MeshRenderer[] renderers = obj.GetComponentsInChildren<MeshRenderer>(true);
+        Renderer[] renderers = obj.GetComponentsInChildren<Renderer>(true);
         for (int i = 0; i < renderers.Length; i++)
         {
-            if (renderers[i] != null) renderers[i].sharedMaterial = mat;
+            if (renderers[i] != null)
+            {
+                Material[] mats = new Material[renderers[i].sharedMaterials.Length];
+                for (int j = 0; j < mats.Length; j++)
+                {
+                    mats[j] = mat;
+                }
+                renderers[i].sharedMaterials = mats;
+            }
         }
     }
 

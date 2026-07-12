@@ -1,4 +1,4 @@
-%YAML 1.1
+﻿%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -14,74 +14,127 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
   levelName: Level_07
   nextLevel: Level_08
-  actNumber: 2
+  actNumber: 3
   archetype: 1
+  echoEnabled: 1
   maxEchoes: 1
   maxRecordSeconds: 14
-  activeParadoxes: 
-  fogColor: {r: 0.08, g: 0.12, b: 0.1, a: 1}
-  fogDensity: 0.026
-  skyColor: {r: 0.1, g: 0.15, b: 0.12, a: 1}
-  directionalLightRotation: {x: 40, y: -30, z: 0}
-  directionalLightColor: {r: 0.5, g: 0.8, b: 0.6, a: 1}
-  directionalLightIntensity: 0.4
-  narrativeIntroTitle: "Nivel 7 \u2014 Evasión"
-  narrativeIntroDesc: "Las duchas y vestuarios están custodiados por sombras de culpa. Graba un eco que corra ruidosamente hacia el rincón para distraerlas."
+  activeParadoxes:
+  fogColor: {r: 0.078, g: 0.102, b: 0.141, a: 1}
+  fogDensity: 0.018
+  skyColor: {r: 0.06, g: 0.07, b: 0.09, a: 1}
+  ambientColor: {r: 0.04, g: 0.05, b: 0.07, a: 1}
+  directionalLightRotation: {x: 42, y: -28, z: 0}
+  directionalLightColor: {r: 0.60, g: 0.64, b: 0.72, a: 1}
+  directionalLightIntensity: 0.50
+  narrativeIntroTitle: "Nivel 7 \u2014 Evasi\u00F3n"
+  narrativeIntroDesc: "No grabo lo que hice. Grabo lo que voy a necesitar que mi pasado haya hecho."
   narrativeIntroDuration: 8
-  puzzleObjectiveText: Desvía la atención de las sombras de niebla usando el eco como señuelo.
-  puzzleActiveText: "Eco atrayendo a las sombras."
-  puzzleCompleteText: "Sombras de la memoria burladas."
+  puzzleObjectiveText: "Graba antes de que el ciclo comience."
+  puzzleActiveText: "El eco est\u00E1 en posici\u00F3n."
+  puzzleCompleteText: ""
   pathHints:
-  - {x: 0, y: 1.1, z: -15}
-  - {x: -4, y: 1.1, z: -2}
-  - {x: 0, y: 1.1, z: 14}
+  - {x: 0, y: 1.1, z: -8}
+  - {x: 0, y: 1.1, z: 8}
+  - {x: 0, y: 1.1, z: 24}
   modules:
   - name: PlayerStart
     type: 7
-    position: {x: 0, y: 1.1, z: -15}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
-    targetSignals:
-  - name: DuchasGym
-    type: 26
-    position: {x: 0, y: 0, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 12, y: 0.5, z: 24}
-    customData: 
-    targetSignals:
-  - name: TrampaSombra
-    type: 18
-    position: {x: 0, y: 0.5, z: 2}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 10, y: 3, z: 8}
-    customData: 
-    targetSignals:
-  - name: PlateRuido
-    type: 4
-    position: {x: -4, y: 0.33, z: -2}
+    position: {x: 0, y: 0.1, z: -8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: 
+    customData:
+    targetSignals:
+  - name: ZonaA_CorredorEmergencia
+    type: 27
+    position: {x: 0, y: 0, z: -2}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 3, y: 3, z: 12}
+    customData: WallTeal
+    targetSignals:
+  - name: LuzEmergenciaRoja
+    type: 10
+    position: {x: 0, y: 2.5, z: -2}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.7,0.1,0.1|1.8|6.0
+    targetSignals:
+  - name: ZonaB_PatioTrasero_Suelo
+    type: 0
+    position: {x: 0, y: 0, z: 10}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 12, y: 0.2, z: 12}
+    customData:
+    targetSignals:
+  - name: ZonaB_ParedIzq
+    type: 3
+    position: {x: -6, y: 0, z: 10}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0.3, y: 4, z: 12}
+    customData:
+    targetSignals:
+  - name: ZonaB_ParedDer
+    type: 3
+    position: {x: 6, y: 0, z: 10}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0.3, y: 4, z: 12}
+    customData:
+    targetSignals:
+  - name: ZonaB_ParedFondo
+    type: 3
+    position: {x: 0, y: 0, z: 16}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 12, y: 4, z: 0.3}
+    customData:
+    targetSignals:
+  - name: ElementoTemporal_Persiana
+    type: 8
+    position: {x: 0, y: 0.2, z: 16}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 4, y: 0.15, z: 2}
+    customData: 0,0,0|0,3.5,0|5
+    targetSignals:
+  - name: PlacaActivacion
+    type: 4
+    position: {x: 0, y: 0.1, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData:
+    targetSignals:
+  - name: ZonaC_Almacen
+    type: 24
+    position: {x: 0, y: 0, z: 24}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 8, y: 3, z: 6}
+    customData: WallMustard
+    targetSignals:
+  - name: LuzAmberSalida
+    type: 10
+    position: {x: 0, y: 2.5, z: 26}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.65,0.52,0.25|1.8|8.0
     targetSignals:
   - name: LevelExit_Area
     type: 6
-    position: {x: 0, y: 1.1, z: 14}
+    position: {x: 0, y: 1.1, z: 28}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: Level_08
     targetSignals:
   - name: LevelGoal
     type: 13
-    position: {x: 0, y: 1.1, z: 14}
+    position: {x: 0, y: 1.1, z: 28}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: Usa tu eco como señuelo para las sombras.|Las sombras siguen el ruido.|Vestuarios superados.
+    scale: {x: 1, y: 1, z: 1}
+    customData: "Graba antes de que el ciclo comience.|El eco est\u00E1 en posici\u00F3n.|."
     targetSignals:
+    - PlacaActivacion
   - name: LevelRuntime
     type: 14
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: Crea ruido con tu eco.|Las sombras persiguen el eco.|Camino despejado.
+    scale: {x: 1, y: 1, z: 1}
+    customData: "Graba antes de que el ciclo comience.|El eco est\u00E1 en posici\u00F3n.|."
     targetSignals:
+

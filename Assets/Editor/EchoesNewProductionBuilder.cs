@@ -14,7 +14,7 @@ public static class EchoesNewProductionBuilder
     public static void BuildAllBlueprints()
     {
         // 0. Export prefabs to ensure no missing dependencies exist
-        EchoesLevelKitExporter.ExportLevelKitPrefabs();
+        // EchoesLevelKitExporter.ExportLevelKitPrefabs();
 
         // 1. Ensure setup
         EchoesMaterialLibrary.EnsureMaterials();
@@ -47,6 +47,8 @@ public static class EchoesNewProductionBuilder
     public static void BuildLevelFromBlueprint(LevelBlueprint blueprint)
     {
         Debug.Log($"[Echoes Blueprint Builder] Building scene for: {blueprint.levelName}");
+        int.TryParse(blueprint.levelName.Replace("Level_", ""), out int levelNum);
+        EchoesModuleFactory.CurrentBuildingLevel = levelNum;
 
         Transform envRoot, mechRoot, uiRoot;
         Scene scene = EchoesLevelShell.CreateNewScene(blueprint.levelName, out envRoot, out mechRoot, out uiRoot);
@@ -104,6 +106,9 @@ public static class EchoesNewProductionBuilder
         if (exit != null) routeEndZ = exit.transform.position.z;
         EchoesLevelShell.SpawnExperienceSystems(mechRoot, envRoot, exit, blueprint, routeStartZ, routeEndZ);
 
+        // Spawn path hint lights from blueprint.pathHints
+        SpawnPathHintLights(envRoot, blueprint, levelNum);
+
         // Save Scene
         EditorSceneManager.SaveScene(scene, $"{SceneRoot}/{blueprint.levelName}.unity");
         Debug.Log($"[Echoes Blueprint Builder] Scene saved: {blueprint.levelName}");
@@ -113,6 +118,67 @@ public static class EchoesNewProductionBuilder
     {
         return EchoesModuleFactory.BuildModule(placement, envRoot, mechRoot);
     }
+
+    private static void SpawnPathHintLights(Transform envRoot, LevelBlueprint blueprint, int levelNum)
+    {
+        if (blueprint.pathHints == null || blueprint.pathHints.Length == 0) return;
+
+        // Lights fade out as levels progress — early levels need explicit guidance
+        float intensity;
+        float range;
+        Color hintColor;
+
+        if (levelNum <= 3)
+        {
+            // Niveles 1-3: luz cálida ámbar visible — el jugador aprende el espacio
+            intensity = 2.2f;
+            range = 8f;
+            hintColor = new Color(1.0f, 0.80f, 0.45f); // Ámbar fluorescente cálido
+        }
+        else if (levelNum <= 5)
+        {
+            // Niveles 4-5: más tenue, el jugador ya conoce el sistema del eco
+            intensity = 1.2f;
+            range = 5f;
+            hintColor = new Color(0.85f, 0.72f, 0.50f); // Ámbar más frío
+        }
+        else if (levelNum <= 9)
+        {
+            // Niveles 6-9: apenas perceptible, susurro de luz
+            intensity = 0.6f;
+            range = 4f;
+            hintColor = new Color(0.70f, 0.70f, 0.78f); // Gris azulado tenue
+        }
+        else
+        {
+            // Niveles 10+: sin guía luminosa — el jugador debe orientarse solo
+            return;
+        }
+
+        GameObject hintRoot = new GameObject("PathHintLights");
+        hintRoot.transform.SetParent(envRoot, false);
+
+        for (int i = 0; i < blueprint.pathHints.Length; i++)
+        {
+            Vector3 pos = blueprint.pathHints[i] + new Vector3(0f, 0.6f, 0f); // Just above floor
+            Light hint = EchoesLevelShell.SpawnPointLight(
+                $"PathHint_{i:00}",
+                pos,
+                hintColor,
+                intensity,
+                range,
+                hintRoot.transform,
+                LightmapBakeType.Baked,
+                LightShadows.None
+            );
+            // Marcar sin sombras para que el hint no compita con las luces del nivel
+            hint.shadows = LightShadows.None;
+            hint.lightmapBakeType = LightmapBakeType.Baked;
+        }
+
+        Debug.Log($"[Echoes Path Hints] Spawned {blueprint.pathHints.Length} hint lights for {blueprint.levelName} (level {levelNum})");
+    }
+
 
     private static void WireSignals(List<InstantiatedModule> instantiated, Transform mechRoot)
     {

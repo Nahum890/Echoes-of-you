@@ -50,13 +50,13 @@ colors:
   surface-variant: '#353436'
 typography:
   headline-lg:
-    fontFamily: Space Grotesk
+    fontFamily: EB Garamond
     fontSize: 48px
     fontWeight: '700'
     lineHeight: '1.1'
-    letterSpacing: -0.05em
+    letterSpacing: -0.02em
   headline-md:
-    fontFamily: Space Grotesk
+    fontFamily: EB Garamond
     fontSize: 32px
     fontWeight: '600'
     lineHeight: '1.2'
@@ -71,13 +71,13 @@ typography:
     fontWeight: '400'
     lineHeight: '1.5'
   label-caps:
-    fontFamily: Space Grotesk
+    fontFamily: Courier Prime
     fontSize: 12px
     fontWeight: '700'
     lineHeight: '1.0'
     letterSpacing: 0.1em
   headline-lg-mobile:
-    fontFamily: Space Grotesk
+    fontFamily: EB Garamond
     fontSize: 32px
     fontWeight: '700'
     lineHeight: '1.1'
@@ -102,11 +102,13 @@ The palette is dominated by **Corridor Navy**, serving as the void or the shadow
 - **Critical Errors:** `#8b0000` (Wrongness Red) must be used sparingly to indicate a break in the simulation or a forbidden action.
 
 ## Typography
-The typography system balances institutional authority with the intimacy of a typewriter. 
+The typography system balances institutional authority with the intimacy of a typewriter.
 
-**Space Grotesk** is used for headlines and UI labels, providing a cold, technical feel. **Courier Prime** is used for all long-form text, dialogue, and "recovered documents" to ground the experience in a physical, analog past. 
+**EB Garamond** is used for all headlines and UI labels. It carries the weight of an official document — archival, cold, and slightly worn. It reads institutional without being technological. **Courier Prime** is used for all long-form text, dialogue, recovered documents, and HUD readouts, grounding the experience in a physical, analog past.
 
-Avoid anti-aliasing effects where possible to maintain the low-resolution aesthetic. Headlines should feel slightly "squashed" or tight, while body text requires generous line height to maintain readability against dark, textured backgrounds.
+**PROHIBIDO:** Space Grotesk, Inter, Roboto, o cualquier sans-serif moderno. La fuente nunca debe sentirse diseñada — debe sentirse encontrada.
+
+Avoid anti-aliasing effects where possible to maintain the low-resolution aesthetic. Headlines should feel slightly tight, while body text requires generous line height to maintain readability against dark, textured backgrounds.
 
 ## Layout & Spacing
 The layout follows a **Fixed Grid** model, reminiscent of early 4:3 aspect ratio displays. Layouts should feel intentional and somewhat rigid, as if constrained by a physical monitor.

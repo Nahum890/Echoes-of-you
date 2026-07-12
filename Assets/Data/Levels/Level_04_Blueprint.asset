@@ -1,4 +1,4 @@
-%YAML 1.1
+﻿%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -14,83 +14,134 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
   levelName: Level_04
   nextLevel: Level_05
-  actNumber: 1
+  actNumber: 2
   archetype: 0
+  echoEnabled: 1
   maxEchoes: 1
-  maxRecordSeconds: 15
-  activeParadoxes: 
-  fogColor: {r: 0.08, g: 0.08, b: 0.12, a: 1}
-  fogDensity: 0.03
-  skyColor: {r: 0.1, g: 0.1, b: 0.15, a: 1}
-  directionalLightRotation: {x: 40, y: -60, z: 0}
-  directionalLightColor: {r: 0.9, g: 0.75, b: 0.5, a: 1}
-  directionalLightIntensity: 0.5
+  maxRecordSeconds: 12
+  activeParadoxes:
+  fogColor: {r: 0.125, g: 0.110, b: 0.133, a: 1}
+  fogDensity: 0.020
+  skyColor: {r: 0.07, g: 0.06, b: 0.08, a: 1}
+  ambientColor: {r: 0.04, g: 0.04, b: 0.05, a: 1}
+  directionalLightRotation: {x: 50, y: -30, z: 0}
+  directionalLightColor: {r: 0.68, g: 0.72, b: 0.80, a: 1}
+  directionalLightIntensity: 0.50
   narrativeIntroTitle: "Nivel 4 \u2014 Espera"
-  narrativeIntroDesc: "La oficina de archivos requiere paciencia. Mantén presionado el interruptor con tu eco durante 10 segundos enteros mientras Aiden cruza el túnel."
+  narrativeIntroDesc: "El momento de inicio de la grabaci\u00f3n importa tanto como lo que grabo."
   narrativeIntroDuration: 8
-  puzzleObjectiveText: Graba un eco parado en la placa de la dirección para abrir la compuerta del sótano.
-  puzzleActiveText: "Eco esperando en la oficina."
-  puzzleCompleteText: "Acceso a los túneles abierto."
+  puzzleObjectiveText: "Lee el ritmo. Luego act\u00faa."
+  puzzleActiveText: "El eco sigue el ritmo."
+  puzzleCompleteText: ""
   pathHints:
-  - {x: 0, y: 1.1, z: -10}
-  - {x: -5, y: 1.1, z: 0}
-  - {x: 5, y: -1.9, z: 14}
+  - {x: 0, y: 1.1, z: -4}
+  - {x: 0, y: 1.1, z: 6}
+  - {x: 8, y: 1.1, z: 14}
   modules:
   - name: PlayerStart
     type: 7
-    position: {x: 0, y: 1.1, z: -10}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
-    targetSignals:
-  - name: Oficina
-    type: 27
-    position: {x: -5, y: 0, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 8, y: 0.5, z: 8}
-    customData: 
-    targetSignals:
-  - name: OfficePlate
-    type: 4
-    position: {x: -5, y: 0.33, z: 0}
+    position: {x: 0, y: 0.1, z: -6}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: 
+    customData:
     targetSignals:
-  - name: TunelSotano
-    type: 24
-    position: {x: 5, y: -3, z: 4}
+  - name: ZonaA_Observacion
+    type: 0
+    position: {x: 0, y: 0, z: -4}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 4, y: 0.5, z: 16}
-    customData: 
+    scale: {x: 6, y: 0.2, z: 6}
+    customData:
     targetSignals:
-  - name: DoorSotano
+  - name: ParedCartelera
+    type: 3
+    position: {x: 0, y: 0, z: -7}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 6, y: 3, z: 0.3}
+    customData:
+    targetSignals:
+  - name: LuzObservacion
+    type: 10
+    position: {x: 0, y: 2.8, z: -4}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.75,0.78,0.82|2.5|12.0
+    targetSignals:
+  - name: ZonaB_AulaElevada
+    type: 21
+    position: {x: 0, y: 0, z: 6}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 12, y: 3, z: 10}
+    customData: WallMustard
+    targetSignals:
+  - name: PlataformaTarima
+    type: 8
+    position: {x: 0, y: 1, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 4, y: 0.3, z: 3}
+    customData: 0,0,0|0,2.5,0|3
+    targetSignals:
+  - name: PlataformaEstante
+    type: 8
+    position: {x: 4, y: 1, z: 6}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 3, y: 0.3, z: 2}
+    customData: 0,0,0|0,2.5,0|3
+    targetSignals:
+  - name: PlacaTarima
+    type: 4
+    position: {x: 0, y: 3.3, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData:
+    targetSignals:
+  - name: PuertaEscape
     type: 5
-    position: {x: 5, y: -1.5, z: 10}
+    position: {x: 5, y: 0.1, z: 9}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 3, y: 3, z: 0.5}
-    customData: 
+    scale: {x: 1, y: 2.4, z: 0.2}
+    customData:
     targetSignals:
-    - OfficePlate
+    - PlacaTarima
+  - name: LuzAula
+    type: 10
+    position: {x: 0, y: 2.8, z: 6}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.72,0.75,0.80|2.8|14.0
+    targetSignals:
+  - name: ZonaC_CorredorSalida
+    type: 24
+    position: {x: 8, y: 0, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 3, y: 3, z: 8}
+    customData: WallMustard
+    targetSignals:
+  - name: LuzSalida
+    type: 10
+    position: {x: 8, y: 2.8, z: 12}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.68,0.72,0.78|2.2|10.0
+    targetSignals:
   - name: LevelExit_Area
     type: 6
-    position: {x: 5, y: -1.9, z: 14}
+    position: {x: 8, y: 1.1, z: 18}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: Level_05
     targetSignals:
   - name: LevelGoal
     type: 13
-    position: {x: 5, y: -1.9, z: 14}
+    position: {x: 8, y: 1.1, z: 18}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: Graba un eco quieto en la oficina por 10 segundos.|El sótano permanece abierto.|Sótano superado.
+    scale: {x: 1, y: 1, z: 1}
+    customData: "Lee el ritmo. Luego act\u00faa.|El eco sigue el ritmo.|."
     targetSignals:
-    - OfficePlate
+    - PlacaTarima
   - name: LevelRuntime
     type: 14
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: Para el eco en la oficina.|Espera a que el temporizador corra.|Paso libre.
+    scale: {x: 1, y: 1, z: 1}
+    customData: "Lee el ritmo. Luego act\u00faa.|El eco sigue el ritmo.|."
     targetSignals:

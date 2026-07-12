@@ -1,4 +1,4 @@
-%YAML 1.1
+﻿%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -14,73 +14,141 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
   levelName: Level_14
   nextLevel: Level_15
-  actNumber: 4
-  archetype: 3
+  actNumber: 6
+  archetype: 1
+  echoEnabled: 1
   maxEchoes: 1
-  maxRecordSeconds: 12
-  activeParadoxes: 
-  fogColor: {r: 0.2, g: 0.2, b: 0.25, a: 1}
-  fogDensity: 0.035
-  skyColor: {r: 0.22, g: 0.22, b: 0.28, a: 1}
-  directionalLightRotation: {x: 45, y: -45, z: 0}
-  directionalLightColor: {r: 1.0, g: 1.0, b: 1.0, a: 1}
-  directionalLightIntensity: 0.9
-  narrativeIntroTitle: "Nivel 14 \u2014 Aceptación"
-  narrativeIntroDesc: "El camino del no retorno. Tu eco camina sobre el abismo construyendo un puente de pupitres invisibles. Sigue su trayectoria exacta."
+  maxRecordSeconds: 20
+  activeParadoxes:
+  fogColor: {r: 0.039, g: 0.039, b: 0.051, a: 1}
+  fogDensity: 0.014
+  skyColor: {r: 0.02, g: 0.02, b: 0.03, a: 1}
+  ambientColor: {r: 0.01, g: 0.01, b: 0.02, a: 1}
+  directionalLightRotation: {x: 55, y: -35, z: 0}
+  directionalLightColor: {r: 0.50, g: 0.50, b: 0.60, a: 1}
+  directionalLightIntensity: 0.35
+  narrativeIntroTitle: "Nivel 14 \u2014 Aceptaci\u00f3n"
+  narrativeIntroDesc: "El eco lidera. Yo sigo."
   narrativeIntroDuration: 8
-  puzzleObjectiveText: Cruza el puente flotante de pupitres siguiendo la trayectoria de tu eco.
-  puzzleActiveText: "Puente de pupitres materializado."
-  puzzleCompleteText: "Fractura del abismo cruzada."
+  puzzleObjectiveText: "Sigue al eco. No lideres."
+  puzzleActiveText: "El eco est\u00e1 en movimiento."
+  puzzleCompleteText: ""
   pathHints:
-  - {x: 0, y: 1.1, z: -14}
-  - {x: 0, y: 1.1, z: 12}
+  - {x: 8, y: 1.1, z: 4}
+  - {x: 0, y: 1.1, z: 10}
+  - {x: 0, y: 1.1, z: 14}
   modules:
   - name: PlayerStart
     type: 7
-    position: {x: 0, y: 1.1, z: -14}
+    position: {x: 8, y: 0.1, z: 4}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
+    scale: {x: 1, y: 1, z: 1}
+    customData:
     targetSignals:
-  - name: PlatInicio
+  - name: ZonaA_CorredorVoid
+    type: 24
+    position: {x: 0, y: 0, z: -6}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 4, y: 3, z: 6}
+    customData: WallTeal
+    targetSignals:
+  - name: LuzCorredor
+    type: 10
+    position: {x: 0, y: 2.8, z: -6}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.55,0.58,0.68|2.0|8.0
+    targetSignals:
+  - name: ZonaB_FragmentoIzq
     type: 0
-    position: {x: 0, y: 0, z: -10}
+    position: {x: -8, y: 0, z: 4}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 4, y: 0.5, z: 4}
-    customData: 
+    scale: {x: 8, y: 0.2, z: 3}
+    customData:
     targetSignals:
-  - name: PuentePupitresaccept
-    type: 22
-    position: {x: 0, y: 0, z: 0}
+  - name: LockerIzq
+    type: 3
+    position: {x: -10, y: 0.1, z: 4}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 4, y: 0.5, z: 16}
-    customData: 
+    scale: {x: 0.4, y: 1.8, z: 0.8}
+    customData:
     targetSignals:
-  - name: PlatFinal
+  - name: LuzFragmentoIzq
+    type: 10
+    position: {x: -8, y: 2.8, z: 4}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.38,0.62,0.78|2.0|8.0
+    targetSignals:
+  - name: ZonaC_FragmentoDer
+    type: 0
+    position: {x: 8, y: 0, z: 4}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 8, y: 0.2, z: 3}
+    customData:
+    targetSignals:
+  - name: LockerDer
+    type: 3
+    position: {x: 10, y: 0.1, z: 4}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0.4, y: 1.8, z: 0.8}
+    customData:
+    targetSignals:
+  - name: LuzFragmentoDer
+    type: 10
+    position: {x: 8, y: 2.8, z: 4}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.38,0.62,0.78|2.0|8.0
+    targetSignals:
+  - name: ZonaD_ConfluenciaCentral
     type: 0
     position: {x: 0, y: 0, z: 10}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 4, y: 0.5, z: 4}
-    customData: 
+    scale: {x: 6, y: 0.2, z: 4}
+    customData:
+    targetSignals:
+  - name: InterruptorIzq
+    type: 4
+    position: {x: -1, y: 0.1, z: 10}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData:
+    targetSignals:
+  - name: InterruptorDer
+    type: 4
+    position: {x: 1, y: 0.1, z: 10}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData:
+    targetSignals:
+  - name: LuzConfluencia
+    type: 10
+    position: {x: 0, y: 2.8, z: 10}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.25,0.38,0.55|2.5|10.0
     targetSignals:
   - name: LevelExit_Area
     type: 6
-    position: {x: 0, y: 1.1, z: 12}
+    position: {x: 0, y: 1.1, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: Level_15
     targetSignals:
   - name: LevelGoal
     type: 13
-    position: {x: 0, y: 1.1, z: 12}
+    position: {x: 0, y: 1.1, z: 14}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: Sigue los pasos de tu eco sobre la nada.|El eco materializa los pupitres.|Camino cruzado.
+    scale: {x: 1, y: 1, z: 1}
+    customData: "Sigue al eco. No lideres.|El eco est\u00e1 en movimiento.|."
     targetSignals:
+    - InterruptorIzq
+    - InterruptorDer
   - name: LevelRuntime
     type: 14
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: Proyecta al eco sobre el vacío.|Camina sobre sus huellas del pasado.|Meta alcanzada.
+    scale: {x: 1, y: 1, z: 1}
+    customData: "Sigue al eco. No lideres.|El eco est\u00e1 en movimiento.|."
     targetSignals:

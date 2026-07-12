@@ -41,17 +41,7 @@ public class LevelExit : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        Debug.Log($"[LevelExit] OnTriggerEnter: {other.name} tag={other.tag}");
-
-        if (!_isUnlocked || (_goal != null && !_goal.CanComplete()))
-        {
-            GameHUD hud = FindAnyObjectByType<GameHUD>();
-            string message = _goal != null ? _goal.GetLockedMessage() : lockedToast;
-            Debug.Log($"[LevelExit] LOCKED: {message} | unlocked={_isUnlocked} goal={_goal != null} canComplete={_goal?.CanComplete()}");
-            hud?.ShowToast(message, new Color(1f, 0.43f, 0.43f, 1f), 1.25f);
-            GameFeelController.Instance?.PlaySoftError(transform.position);
-            return;
-        }
+        Debug.Log($"[LevelExit] OnTriggerEnter: {other.name} tag={other.tag} (Puzzle resolution check bypassed)");
 
         if (_triggered)
             return;
@@ -79,9 +69,8 @@ public class LevelExit : MonoBehaviour
     public void BindGoal(LevelGoal goal)
     {
         _goal = goal;
-        bool unlocked = goal == null || goal.IsReady;
-        Debug.Log($"[LevelExit] BindGoal: goal={goal != null} isReady={goal?.IsReady} => unlocked={unlocked}");
-        SetUnlocked(unlocked);
+        // La salida siempre está desbloqueada para permitir el progreso libre
+        SetUnlocked(true);
     }
 
     public void SetUnlocked(bool unlocked)

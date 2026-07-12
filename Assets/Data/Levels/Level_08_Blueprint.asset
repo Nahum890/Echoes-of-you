@@ -1,4 +1,4 @@
-%YAML 1.1
+﻿%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -14,67 +14,122 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
   levelName: Level_08
   nextLevel: Level_09
-  actNumber: 2
+  actNumber: 3
   archetype: 1
-  maxEchoes: 1
+  echoEnabled: 1
+  maxEchoes: 2
   maxRecordSeconds: 12
-  activeParadoxes: 
-  fogColor: {r: 0.05, g: 0.05, b: 0.05, a: 1}
-  fogDensity: 0.035
-  skyColor: {r: 0.02, g: 0.02, b: 0.02, a: 1}
-  directionalLightRotation: {x: 65, y: 0, z: 0}
-  directionalLightColor: {r: 0.9, g: 0.9, b: 0.95, a: 1}
-  directionalLightIntensity: 0.6
+  activeParadoxes:
+  fogColor: {r: 0.110, g: 0.118, b: 0.149, a: 1}
+  fogDensity: 0.026
+  skyColor: {r: 0.06, g: 0.06, b: 0.09, a: 1}
+  ambientColor: {r: 0.04, g: 0.04, b: 0.06, a: 1}
+  directionalLightRotation: {x: 48, y: -28, z: 0}
+  directionalLightColor: {r: 0.68, g: 0.70, b: 0.78, a: 1}
+  directionalLightIntensity: 0.50
   narrativeIntroTitle: "Nivel 8 \u2014 Autosabotaje"
-  narrativeIntroDesc: "El hueco de la escalera principal está destruido. No pises la misma plataforma que tu eco; colapsará. Coordina tus pasos con su pasado."
+  narrativeIntroDesc: "El tiempo vac\u00edo en una grabaci\u00f3n es una decisi\u00f3n, no un error."
   narrativeIntroDuration: 8
-  puzzleObjectiveText: Sube por las escaleras flotantes coordinándote temporalmente con tu eco.
-  puzzleActiveText: "Eco avanzando en las escaleras."
-  puzzleCompleteText: "Escalera colapsada superada."
+  puzzleObjectiveText: "Dos ecos, dos momentos, un objetivo."
+  puzzleActiveText: "Los ecos est\u00e1n en posici\u00f3n."
+  puzzleCompleteText: ""
   pathHints:
-  - {x: 0, y: 1.1, z: -12}
-  - {x: 0, y: 3.1, z: 0}
-  - {x: 0, y: 6.6, z: 14}
+  - {x: 0, y: 1.1, z: -4}
+  - {x: 0, y: 1.1, z: 8}
+  - {x: 0, y: 1.1, z: 18}
   modules:
   - name: PlayerStart
     type: 7
-    position: {x: 0, y: 1.1, z: -12}
+    position: {x: 0, y: 0.1, z: -8}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
+    scale: {x: 1, y: 1, z: 1}
+    customData:
     targetSignals:
-  - name: TorreEscalera
-    type: 29
-    position: {x: 0, y: 0, z: 0}
+  - name: ZonaA_Antesala
+    type: 24
+    position: {x: 0, y: 0, z: -4}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 10, y: 0.5, z: 10}
-    customData: 
+    scale: {x: 6, y: 3, z: 6}
+    customData: WallMustard
     targetSignals:
-  - name: PuentePupitres
-    type: 22
-    position: {x: 0, y: 3, z: 8}
+  - name: LuzAntesala
+    type: 10
+    position: {x: 0, y: 2.8, z: -4}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 4, y: 0.5, z: 12}
-    customData: 
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.72,0.72,0.78|2.5|10.0
+    targetSignals:
+  - name: ZonaB_SalaProfesores
+    type: 21
+    position: {x: 0, y: 0, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 14, y: 3, z: 10}
+    customData: WallMustard
+    targetSignals:
+  - name: PlacaEco1
+    type: 4
+    position: {x: -4, y: 0.1, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData:
+    targetSignals:
+  - name: PlacaEco2
+    type: 4
+    position: {x: 4, y: 0.1, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData:
+    targetSignals:
+  - name: PuertaSalaProf
+    type: 5
+    position: {x: 0, y: 0.1, z: 14}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 2, y: 2.4, z: 0.2}
+    customData:
+    targetSignals:
+    - PlacaEco1
+    - PlacaEco2
+  - name: LuzSalaProf
+    type: 10
+    position: {x: 0, y: 2.8, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.70,0.70,0.76|3.0|16.0
+    targetSignals:
+  - name: ZonaC_Fotocopiadora
+    type: 21
+    position: {x: -8, y: 0, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 5, y: 3, z: 5}
+    customData: WallMustard
+    targetSignals:
+  - name: LuzFotocopiadora
+    type: 10
+    position: {x: -8, y: 2.8, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.68,0.68,0.74|2.0|8.0
     targetSignals:
   - name: LevelExit_Area
     type: 6
-    position: {x: 0, y: 6.6, z: 14}
+    position: {x: 0, y: 1.1, z: 18}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: Level_09
     targetSignals:
   - name: LevelGoal
     type: 13
-    position: {x: 0, y: 6.6, z: 14}
+    position: {x: 0, y: 1.1, z: 18}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: Coordinación estricta de saltos con tu eco.|El puente responde al eco.|Escaleras superadas.
+    scale: {x: 1, y: 1, z: 1}
+    customData: "Dos ecos, dos momentos, un objetivo.|Los ecos est\u00e1n en posici\u00f3n.|."
     targetSignals:
+    - PlacaEco1
+    - PlacaEco2
   - name: LevelRuntime
     type: 14
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: Sigue el compás del eco.|El eco despeja el paso.|Paso superior desbloqueado.
+    scale: {x: 1, y: 1, z: 1}
+    customData: "Dos ecos, dos momentos, un objetivo.|Los ecos est\u00e1n en posici\u00f3n.|."
     targetSignals:

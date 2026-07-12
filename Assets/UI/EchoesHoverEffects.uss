@@ -23,7 +23,7 @@
 .nav-item-v2 {
     /* Layout */
     position: relative;
-    padding: 12px 16px 12px 18px;
+    padding: 16px 20px 16px 22px;
     overflow: visible;
 
     /* Apariencia base */
@@ -34,11 +34,11 @@
 
     /* Tipografía */
     -unity-text-align: middle-left;
-    font-size: 11px;
+    font-size: 20px;
     letter-spacing: 1.5px;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
     -unity-text-transform: uppercase;
-    color: rgba(140, 150, 165, 0.55);
+    color: rgba(225, 230, 240, 0.92);
 
     /* Transform — origen en borde izquierdo para que escale hacia la derecha */
     transform-origin: left center;
@@ -130,12 +130,12 @@
 
     /* Misma tipografía que el botón pero transparente en idle */
     -unity-text-align: middle-left;
-    font-size: 11px;
+    font-size: 20px;
     letter-spacing: 1.5px;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
     -unity-text-transform: uppercase;
     color: rgba(201, 212, 176, 0.0);
-    padding: 12px 16px 12px 22px;
+    padding: 16px 20px 16px 26px;
 
     /* No debe capturar eventos */
     pointer-events: none;
@@ -165,12 +165,12 @@
     bottom: -4px;
 
     -unity-text-align: middle-left;
-    font-size: 11px;
+    font-size: 20px;
     letter-spacing: 1.5px;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
     -unity-text-transform: uppercase;
     color: rgba(201, 212, 176, 0.0);
-    padding: 12px 16px 12px 26px;
+    padding: 16px 20px 16px 30px;
 
     pointer-events: none;
 
@@ -196,14 +196,14 @@
     bottom: 0;
 
     -unity-text-align: middle-left;
-    font-size: 11px;
+    font-size: 20px;
     letter-spacing: 1.5px;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
     -unity-text-transform: uppercase;
 
     /* Canal rojo desplazado a la izquierda */
     color: rgba(255, 68, 102, 0.0);
-    padding: 12px 18px 12px 16px;
+    padding: 16px 22px 16px 20px;
     translate: -2px 0px;
 
     pointer-events: none;
@@ -236,14 +236,14 @@
     bottom: 0;
 
     -unity-text-align: middle-left;
-    font-size: 11px;
+    font-size: 20px;
     letter-spacing: 1.5px;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
     -unity-text-transform: uppercase;
 
     /* Canal azul desplazado a la derecha */
     color: rgba(68, 102, 255, 0.0);
-    padding: 12px 14px 12px 20px;
+    padding: 16px 18px 16px 24px;
     translate: 2px 0px;
 
     pointer-events: none;
@@ -307,12 +307,12 @@
     bottom: 0;
 
     -unity-text-align: middle-left;
-    font-size: 11px;
+    font-size: 20px;
     letter-spacing: 1.5px;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
     -unity-text-transform: uppercase;
     color: rgba(201, 212, 176, 0.4);
-    padding: 12px 16px 12px 18px;
+    padding: 16px 20px 16px 22px;
 
     pointer-events: none;
     translate: 0px 0px;

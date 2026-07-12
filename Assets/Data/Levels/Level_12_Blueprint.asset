@@ -1,4 +1,4 @@
-%YAML 1.1
+﻿%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -14,83 +14,148 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
   levelName: Level_12
   nextLevel: Level_13
-  actNumber: 4
-  archetype: 3
-  maxEchoes: 1
-  maxRecordSeconds: 12
-  activeParadoxes: 
-  fogColor: {r: 0.14, g: 0.08, b: 0.12, a: 1}
-  fogDensity: 0.025
-  skyColor: {r: 0.16, g: 0.1, b: 0.14, a: 1}
-  directionalLightRotation: {x: 45, y: -30, z: 0}
-  directionalLightColor: {r: 0.9, g: 0.6, b: 0.8, a: 1}
-  directionalLightIntensity: 0.5
+  actNumber: 5
+  archetype: 1
+  echoEnabled: 1
+  maxEchoes: 2
+  maxRecordSeconds: 14
+  activeParadoxes:
+  fogColor: {r: 0.094, g: 0.102, b: 0.133, a: 1}
+  fogDensity: 0.028
+  skyColor: {r: 0.06, g: 0.06, b: 0.08, a: 1}
+  ambientColor: {r: 0.03, g: 0.03, b: 0.05, a: 1}
+  directionalLightRotation: {x: 50, y: -30, z: 0}
+  directionalLightColor: {r: 0.62, g: 0.64, b: 0.72, a: 1}
+  directionalLightIntensity: 0.45
   narrativeIntroTitle: "Nivel 12 \u2014 Conflicto"
-  narrativeIntroDesc: "El gimnasio escolar alberga recuerdos rotos. Tu propio eco se corrompe y te persigue. Evita cruzarte con tu trayectoria pasada."
+  narrativeIntroDesc: "Dos versiones del pasado no pueden coexistir. Decido cu\u00e1l costo pago."
   narrativeIntroDuration: 8
-  puzzleObjectiveText: Esquiva a tu eco corrupto que persigue tus pasos para alcanzar la puerta final.
-  puzzleActiveText: "Eco corrupto en persecución."
-  puzzleCompleteText: "Gimnasio superado a salvo."
+  puzzleObjectiveText: "Un eco abre. El otro te bloquea. Decide."
+  puzzleActiveText: "Un camino solo puede existir si el otro cede."
+  puzzleCompleteText: ""
   pathHints:
-  - {x: 0, y: 1.1, z: -16}
-  - {x: 0, y: 1.1, z: 12}
-  - {x: 0, y: 1.1, z: 18}
+  - {x: 0, y: 1.1, z: -4}
+  - {x: 0, y: 1.1, z: 8}
+  - {x: 0, y: 3.1, z: 20}
   modules:
   - name: PlayerStart
     type: 7
-    position: {x: 0, y: 1.1, z: -16}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
-    targetSignals:
-  - name: Gimnasio
-    type: 25
-    position: {x: 0, y: 0, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 20, y: 0.5, z: 32}
-    customData: 
-    targetSignals:
-  - name: TrapConflicto
-    type: 18
-    position: {x: 0, y: 0.5, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 18, y: 3, z: 10}
-    customData: 
-    targetSignals:
-  - name: PlateGym
-    type: 4
-    position: {x: 0, y: 0.33, z: 12}
+    position: {x: 0, y: 0.1, z: -8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: 
+    customData:
     targetSignals:
-  - name: DoorGym
-    type: 5
-    position: {x: 0, y: 1.5, z: 15}
+  - name: ZonaA_AccesoGimnasio
+    type: 28
+    position: {x: 0, y: 0, z: -4}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 3, y: 3, z: 0.5}
-    customData: 
+    scale: {x: 5, y: 4, z: 2}
+    customData: open
     targetSignals:
-    - PlateGym
+  - name: LuzAcceso
+    type: 10
+    position: {x: 0, y: 3.5, z: -4}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.65,0.65,0.72|2.0|8.0
+    targetSignals:
+  - name: ZonaB_GimnasioSuelo
+    type: 25
+    position: {x: 0, y: 0, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 20, y: 0.2, z: 16}
+    customData:
+    targetSignals:
+  - name: ZonaB_TrampaConflicto
+    type: 18
+    position: {x: 0, y: 1, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 18, y: 6, z: 14}
+    customData:
+    targetSignals:
+  - name: PlacaEcoA
+    type: 4
+    position: {x: -6, y: 0.1, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData:
+    targetSignals:
+  - name: PlacaEcoB
+    type: 4
+    position: {x: 6, y: 0.1, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData:
+    targetSignals:
+  - name: PuertaGym
+    type: 5
+    position: {x: 0, y: 0.1, z: 4}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 2, y: 3.5, z: 0.2}
+    customData:
+    targetSignals:
+    - PlacaEcoA
+  - name: LuzGimnasio
+    type: 10
+    position: {x: 0, y: 5.5, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.65,0.65,0.72|4.5|24.0
+    targetSignals:
+  - name: ZonaC_Almacen
+    type: 21
+    position: {x: -10, y: 0, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 6, y: 4, z: 6}
+    customData: Arch
+    targetSignals:
+  - name: LuzAlmacen
+    type: 10
+    position: {x: -10, y: 3.5, z: 8}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.60,0.60,0.68|2.0|10.0
+    targetSignals:
+  - name: ZonaD_PlataformaElevada
+    type: 1
+    position: {x: 0, y: 3, z: 18}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 6, y: 0.2, z: 4}
+    customData:
+    targetSignals:
+  - name: EscaleraSubida
+    type: 3
+    position: {x: 0, y: 0, z: 16}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 3, y: 3.2, z: 0.3}
+    customData:
+    targetSignals:
+  - name: LuzElevada
+    type: 10
+    position: {x: 0, y: 4.5, z: 18}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: 0.62,0.62,0.70|2.2|10.0
+    targetSignals:
   - name: LevelExit_Area
     type: 6
-    position: {x: 0, y: 1.1, z: 18}
+    position: {x: 0, y: 3.1, z: 22}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: Level_13
     targetSignals:
   - name: LevelGoal
     type: 13
-    position: {x: 0, y: 1.1, z: 18}
+    position: {x: 0, y: 3.1, z: 22}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: Pisa el pedal evadiendo tu propio eco.|El eco corrupto te persigue.|Gimnasio superado.
+    scale: {x: 1, y: 1, z: 1}
+    customData: "Un eco abre. El otro te bloquea. Decide.|Un camino solo puede existir si el otro cede.|."
     targetSignals:
-    - PlateGym
+    - PlacaEcoA
   - name: LevelRuntime
     type: 14
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: Corre hacia el pedal.|Huye de tu propio eco pasado.|Puerta abierta.
+    scale: {x: 1, y: 1, z: 1}
+    customData: "Un eco abre. El otro te bloquea. Decide.|Un camino solo puede existir si el otro cede.|."
     targetSignals:

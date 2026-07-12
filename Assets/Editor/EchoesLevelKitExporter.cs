@@ -37,12 +37,19 @@ public static class EchoesLevelKitExporter
     {
         GameObject root = new GameObject("EchoPathHint");
         EchoPathHint hint = root.AddComponent<EchoPathHint>();
-        hint.SetWaypoints(new[]
+        if (hint != null)
         {
-            new Vector3(0f, 0.5f, 0f),
-            new Vector3(2f, 0.5f, 2f),
-            new Vector3(4f, 0.5f, 4f)
-        });
+            hint.SetWaypoints(new[]
+            {
+                new Vector3(0f, 0.5f, 0f),
+                new Vector3(2f, 0.5f, 2f),
+                new Vector3(4f, 0.5f, 4f)
+            });
+        }
+        else
+        {
+            Debug.LogWarning("[Echoes Exporter] Could not add EchoPathHint component during Editor prefab export. It will be wired at runtime.");
+        }
         return root;
     }
 

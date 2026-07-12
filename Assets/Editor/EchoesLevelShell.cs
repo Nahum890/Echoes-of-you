@@ -375,16 +375,13 @@ public static class EchoesLevelShell
             Collider[] colliders = visual.GetComponentsInChildren<Collider>();
             foreach (var col in colliders) Object.DestroyImmediate(col);
 
-            SkinnedMeshRenderer[] renderers = visual.GetComponentsInChildren<SkinnedMeshRenderer>();
+            Renderer[] renderers = visual.GetComponentsInChildren<Renderer>(true);
             foreach (var r in renderers)
             {
-                if (useEchoMaterial)
-                {
-                    Material[] mats = new Material[r.sharedMaterials.Length];
-                    for (int i = 0; i < mats.Length; i++)
-                        mats[i] = EchoesMaterialLibrary.EchoMat;
-                    r.sharedMaterials = mats;
-                }
+                Material[] mats = new Material[r.sharedMaterials.Length];
+                for (int i = 0; i < mats.Length; i++)
+                    mats[i] = useEchoMaterial ? EchoesMaterialLibrary.EchoMat : EchoesMaterialLibrary.PlayerMat;
+                r.sharedMaterials = mats;
             }
 
             Animator anim = visual.GetComponent<Animator>();

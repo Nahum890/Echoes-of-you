@@ -436,7 +436,7 @@ public class MainMenuController : MonoBehaviour
 
         if (_menuBg != null)
         {
-            _menuBg.style.opacity = 0f;
+            _menuBg.style.opacity = 1f;
         }
 
         if (_heroTitle != null)
@@ -457,37 +457,30 @@ public class MainMenuController : MonoBehaviour
         _rightContentContainer?.RemoveFromClassList("hidden");
 
         if (_menuBg != null)
-        {
-            _menuBg.style.opacity = 0f;
-        }
+            _menuBg.style.opacity = 1f;
 
         if (_heroTitle != null)
             _heroTitle.text = "Archivos Escolares";
 
         SetActiveNav(_btnLevels);
-        _activePreviewPanelName = "";
+        _activePreviewPanelName = ""; // reset para forzar refresco
         ShowPreviewPanel("panel-stability-map");
         RefreshDashboard();
     }
 
     void ShowSettings()
     {
+        _settingsPanel?.AddToClassList("hidden");
         _levelSelectPanel?.AddToClassList("hidden");
         _voidIntro?.AddToClassList("hidden");
+        _mainContent?.RemoveFromClassList("hidden");
         _rightContentContainer?.RemoveFromClassList("hidden");
 
-        if (_settingsPanel != null)
-        {
-            _mainContent?.AddToClassList("hidden");
-            _settingsPanel.RemoveFromClassList("hidden");
-        }
-        else
-        {
-            _mainContent?.RemoveFromClassList("hidden");
-        }
+        if (_heroTitle != null)
+            _heroTitle.text = "Configuración";
 
         SetActiveNav(_btnSettings);
-        _activePreviewPanelName = "";
+        _activePreviewPanelName = ""; // reset para forzar refresco
         ShowPreviewPanel("panel-calibration-preview");
         LoadCurrentSettingsIntoUI();
     }
@@ -771,10 +764,8 @@ public class MainMenuController : MonoBehaviour
 
     void DiscardSettings()
     {
-        if (_mainContent != null && !_mainContent.ClassListContains("hidden"))
-            ShowStabilityMap();
-        else
-            ShowVoidIntro();
+        // Regresa al panel principal (Neural Archives / "Acceder a Memoria")
+        ShowVoidIntro();
     }
 
     void ApplyLightingPresetUi(string presetId)
@@ -995,11 +986,11 @@ public class MainMenuController : MonoBehaviour
 
             // Color the new line based on prefix
             if (nextLine.StartsWith("[WARN]"))
-                log3.style.color = new StyleColor(new Color(1f, 0.76f, 0.36f, 0.9f)); // amber
+                log3.style.color = new StyleColor(new Color(1f, 0.76f, 0.36f, 1f)); // amber
             else if (nextLine.StartsWith("Waiting"))
                 log3.style.color = new StyleColor(new Color(0.48f, 0.94f, 0.78f, 1f)); // #7af0c8
             else
-                log3.style.color = new StyleColor(new Color(0.86f, 0.88f, 0.98f, 0.6f)); // default
+                log3.style.color = new StyleColor(new Color(0.86f, 0.88f, 0.98f, 1f)); // default
 
             log3.text = nextLine;
         }

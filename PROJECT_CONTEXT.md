@@ -12,8 +12,8 @@ Para dirección de diseño, reglas visuales, y filosofía del gameplay, leer
 
 ## 1 — QUÉ ES EL JUEGO
 
-**Echoes of You** — puzzle 3D narrativo en tercera persona, Built-in Render
-Pipeline, Unity 2022+.
+**Echoes of You** — puzzle 3D narrativo en tercera persona, Universal Render
+Pipeline (URP), Unity 2022+.
 
 El jugador graba sus propios movimientos (hasta 20 segundos, tecla configurable)
 y los reproduce como un "eco" — un cuerpo fantasma que repite exactamente lo
@@ -70,10 +70,12 @@ No son puzzles completos por sí solas:
 
 ### Render pipeline
 
-**Built-in Render Pipeline.** No URP. `Shader.Find("Standard")` funciona.
-Si se asigna un URP asset, todo se vuelve magenta. No asignar URP assets.
-El post-processing usa Post-Processing v2 legacy — bloom y vignette no
-se renderizan actualmente.
+**Universal Render Pipeline (URP).** Pipeline activo confirmado (Julio 2026).
+`EchoesMaterialLibrary.cs` usa `"Universal Render Pipeline/Lit"` como shader base.
+No usar `Shader.Find("Standard")` — resulta en shaders magenta en URP.
+El post-processing usa URP Volume system. `EchoesURPConfigurator.cs` gestiona
+la configuración de URP. `Metallic = 0`, `Smoothness = 0.05` son válidos en URP Lit.
+No crear materiales fuera de `EchoesMaterialLibrary` — nunca materiales raw con shader Standard.
 
 ### Cámara
 
@@ -143,8 +145,9 @@ cualquier archivo de progreso.
   deshizo. Hay razones concretas documentadas en `ECHOES_BIBLE.md`.
 - **No crear builders adicionales.** Solo `EchoesNewProductionBuilder.cs`.
 - **No ejecutar scripts Python sobre archivos `.cs`.** El pipeline es solo C#.
-- **No usar `SetupMaterialTextures` con rutas a Concrete047A o Metal054B.**
-  Esas texturas PBR contradicen la dirección visual.
+- **No usar `Shader.Find("Standard")` ni materiales Built-in.** El pipeline
+  es URP — los materiales deben usar `"Universal Render Pipeline/Lit"`.
+  Todos los materiales se crean exclusivamente vía `EchoesMaterialLibrary`.
 - **No usar constantes `SciFi*` en ningún script de producción.**
 - **No activar `EchoesQueuedProductionRebuild` sin ser consciente de que
   borra ediciones manuales de las 15 escenas sin aviso.**
