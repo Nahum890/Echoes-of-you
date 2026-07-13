@@ -10,6 +10,23 @@ public partial class PlayerController
         if (_anim == null || _anim.runtimeAnimatorController == null)
             return;
 
+        // Safety: if physics probe says not-grounded but the CharacterController itself
+        // reports grounded, the probe is giving a false negative (e.g. near a wall).
+        // After a short grace period we trust the CC to avoid the stuck-jump animation.
+        if (!_grounded && _controller != null && _controller.isGrounded)
+        {
+            _notGroundedTimer += Time.deltaTime;
+            if (_notGroundedTimer > 0.3f)
+            {
+                _grounded = true;
+                _notGroundedTimer = 0f;
+            }
+        }
+        else
+        {
+            _notGroundedTimer = 0f;
+        }
+
         Vector3 flatVelocity = Vector3.ProjectOnPlane(_controller.velocity, _currentUp);
         bool isRecording = _echoRecorder != null && _echoRecorder.IsRecording && !_echoRecorder.IsProjectionRecording;
         CurrentAnimationState = ResolveAnimationState(flatVelocity.magnitude, isRecording);

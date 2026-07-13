@@ -1,4 +1,4 @@
-using Cinemachine;
+using Unity.Cinemachine;
 using UnityEngine;
 
 /// <summary>
@@ -7,7 +7,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class CinematicCameraDynamics : MonoBehaviour
 {
-    [SerializeField] CinemachineVirtualCamera virtualCamera;
+    [SerializeField] CinemachineCamera virtualCamera;
     [SerializeField] Transform followTarget;
     [SerializeField] Vector3 baseOffset = new Vector3(-5.5f, 3.2f, -9.5f);
     [SerializeField] float movementInfluence = 0.22f;
@@ -18,7 +18,7 @@ public class CinematicCameraDynamics : MonoBehaviour
     [SerializeField] float dutchMax = 2.2f;
     [SerializeField] float followLerpSpeed = 3.5f;
 
-    CinemachineTransposer _transposer;
+    CinemachineFollow _transposer;
     PlayerController _playerController;
     EchoesCameraIdentity _identity = EchoesCameraIdentity.DynamicFollow;
     Vector3 _noiseSeed;
@@ -50,6 +50,18 @@ public class CinematicCameraDynamics : MonoBehaviour
         if (cameraRef == null || cameraRef.GetComponent<CinematicCameraDynamics>() != null)
             return;
 
+        // No inyectar si ThirdPersonCamera ya controla la cámara.
+        ThirdPersonCamera tpc = cameraRef.GetComponent<ThirdPersonCamera>();
+        if (tpc != null && tpc.enabled)
+            return;
+
+        // No inyectar si CinemachineBrain ya controla la cámara (el usuario usa Cinemachine directamente).
+        // CinematicCameraDynamics modifica el VirtualCamera cada frame; si Cinemachine ya gestiona
+        // el transform de la cámara, ambos sistemas luchan entre sí causando jitter.
+        Unity.Cinemachine.CinemachineBrain brain = cameraRef.GetComponent<Unity.Cinemachine.CinemachineBrain>();
+        if (brain != null)
+            return;
+
         cameraRef.gameObject.AddComponent<CinematicCameraDynamics>();
     }
 
@@ -78,7 +90,7 @@ public class CinematicCameraDynamics : MonoBehaviour
 
         CacheReferences();
         if (_transposer != null)
-            _transposer.m_FollowOffset = baseOffset;
+            _transposer.FollowOffset = baseOffset;
     }
 
     void ApplyIdentityDefaults(EchoesCameraIdentity identity)
@@ -116,10 +128,10 @@ public class CinematicCameraDynamics : MonoBehaviour
     void CacheReferences()
     {
         if (virtualCamera == null)
-            virtualCamera = FindAnyObjectByType<CinemachineVirtualCamera>();
+            virtualCamera = FindAnyObjectByType<CinemachineCamera>();
 
         if (virtualCamera != null && _transposer == null)
-            _transposer = virtualCamera.GetCinemachineComponent<CinemachineTransposer>();
+            _transposer = virtualCamera.GetComponent<CinemachineFollow>();
 
         if (followTarget == null)
         {
@@ -134,7 +146,8 @@ public class CinematicCameraDynamics : MonoBehaviour
 
     void LateUpdate()
     {
-        CacheReferences();
+        // Do NOT call CacheReferences() here every frame — FindAnyObjectByType is expensive
+        // and may find the wrong camera if multiple VCams exist (e.g. echo's camera).
         if (_transposer == null || followTarget == null)
             return;
 
@@ -150,8 +163,8 @@ public class CinematicCameraDynamics : MonoBehaviour
         _landingOffsetDip = Mathf.MoveTowards(_landingOffsetDip, 0f, Time.deltaTime * 5f);
         targetOffset.y -= _landingOffsetDip;
 
-        _transposer.m_FollowOffset = Vector3.Lerp(
-            _transposer.m_FollowOffset,
+        _transposer.FollowOffset = Vector3.Lerp(
+            _transposer.FollowOffset,
             targetOffset + noise,
             Time.deltaTime * followLerpSpeed);
 
@@ -171,7 +184,7 @@ public class CinematicCameraDynamics : MonoBehaviour
         bool isAirborne = _playerController != null && !_playerController.IsGrounded;
         float fovBoost = isAirborne ? 0f : speed01 * fovSpeedBoost;
         _currentFov = Mathf.Lerp(_currentFov, targetFovBase + fovBoost, Time.deltaTime * 4f);
-        var lens = virtualCamera.m_Lens;
+        var lens = virtualCamera.Lens;
         lens.FieldOfView = _currentFov;
 
         float dutch = isAirborne ? 0f : speed01 * dutchMax;
@@ -179,7 +192,7 @@ public class CinematicCameraDynamics : MonoBehaviour
             dutch += _tiltOnJump * 0.05f;  // minimal tilt, was 0.15f
 
         lens.Dutch = Mathf.Lerp(lens.Dutch, dutch * Mathf.Sin(Time.time * 0.7f), Time.deltaTime * 2f);
-        virtualCamera.m_Lens = lens;
+        virtualCamera.Lens = lens;
 
         ApplyMemoryDrift();
     }
@@ -222,6 +235,6 @@ public class CinematicCameraDynamics : MonoBehaviour
         float delay = Mathf.Max(0.05f, _driftDelay);
         _delayedFollowPoint = Vector3.Lerp(_delayedFollowPoint, followTarget.position, Time.deltaTime / delay);
         Vector3 drift = (_delayedFollowPoint - followTarget.position) * 0.15f;
-        _transposer.m_FollowOffset += drift;
+        _transposer.FollowOffset += drift;
     }
 }

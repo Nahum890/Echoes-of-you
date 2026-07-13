@@ -158,7 +158,7 @@ public class LevelRuntimeController : MonoBehaviour
 
         _recorder?.ClearAllEchoes(false);
 
-        MonoBehaviour[] behaviours = FindObjectsOfType<MonoBehaviour>();
+        MonoBehaviour[] behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude);
         for (int i = 0; i < behaviours.Length; i++)
         {
             if (behaviours[i] is IResettableLevelObject resettable)
@@ -233,7 +233,7 @@ public class LevelRuntimeController : MonoBehaviour
         _recorder ??= FindAnyObjectByType<EchoRecorder>();
         _recorder?.ClearAllEchoes(false);
 
-        MonoBehaviour[] behaviours = FindObjectsOfType<MonoBehaviour>();
+        MonoBehaviour[] behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude);
         for (int i = 0; i < behaviours.Length; i++)
         {
             if (behaviours[i] is IResettableLevelObject resettable)

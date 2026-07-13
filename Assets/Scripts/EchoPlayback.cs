@@ -374,12 +374,22 @@ public class EchoPlayback : MonoBehaviour
 
     Transform SpawnEchoModel(Transform visualRoot)
     {
+        // Priority 1: use the prefab configured in EchoesLocomotionSettings
+        GameObject source = null;
         EchoesLocomotionSettings settings = EchoesLocomotionSettings.Instance;
-        GameObject source = settings != null ? settings.characterModelPrefab : null;
-        if (source == null)
-            source = Resources.Load<GameObject>(ResourcesPrefabPath);
+        if (settings == null)
+            settings = Resources.Load<EchoesLocomotionSettings>("EchoesLocomotionSettings");
+
+        if (settings != null && settings.characterModelPrefab != null)
+            source = settings.characterModelPrefab;
+
+        // Priority 2: clone from live player hierarchy
         if (source == null)
             source = FindLivePlayerModelSource();
+
+        // Priority 3: generic prefab from Resources (last resort — may be LowPolyCharacter)
+        if (source == null)
+            source = Resources.Load<GameObject>(ResourcesPrefabPath);
 
         if (source == null)
             return null;
@@ -412,16 +422,28 @@ public class EchoPlayback : MonoBehaviour
         if (visual == null)
             return null;
 
-        Transform model = visual.Find("PlayerScaler/Model") ?? visual.Find("Model");
+        // Intentar primero el path canónico generado por PlayerCharacterVisualSetup:
+        // PlayerVisual → PlayerScaler → Model (el Casual FBX configurado en LocomotionSettings)
+        Transform model = visual.Find("PlayerScaler/Model");
+        if (model == null)
+            model = visual.Find("Model");
+
+        // Si el path canónico falla (jerarquía inesperada), buscar por SkinnedMeshRenderer.
+        // Esto evita el fallback previo al Animator, que devolvía el LowPolyCharacter
+        // bakeado en el prefab del eco en lugar del modelo del jugador vivo.
+        if (model == null || model.GetComponentInChildren<SkinnedMeshRenderer>(true) == null)
+        {
+            SkinnedMeshRenderer smr = visual.GetComponentInChildren<SkinnedMeshRenderer>(true);
+            if (smr != null)
+                model = smr.transform.parent != null ? smr.transform.parent : smr.transform;
+        }
+
         if (model != null && model.GetComponentInChildren<Renderer>(true) != null)
             return model.gameObject;
 
-        Animator animator = visual.GetComponentInChildren<Animator>(true);
-        if (animator != null && animator.GetComponentInChildren<Renderer>(true) != null)
-            return animator.gameObject;
-
         return null;
     }
+
 
     void ConfigureEchoModel(Transform model)
     {

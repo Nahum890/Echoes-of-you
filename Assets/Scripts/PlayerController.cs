@@ -90,6 +90,7 @@ public partial class PlayerController : MonoBehaviour
     float _sprintMomentumBonus;
     float _gravityScale = 1f;
     Vector3 _platformVelocity;
+    float _notGroundedTimer;
 
     public enum PlayerAnimationState
     {
@@ -182,7 +183,11 @@ public partial class PlayerController : MonoBehaviour
 
         _wasGrounded = _grounded;
         GroundProbe preMoveProbe = ProbeGround(_currentUp);
-        _grounded = preMoveProbe.isGrounded || _controller.isGrounded;
+        // Usar sólo el SphereCast probe como fuente de verdad para grounding.
+        // _controller.isGrounded (Unity built-in) da falsos positivos en esquinas/paredes
+        // y cancela el salto en el frame siguiente (softlock). El probe incluye
+        // validación de ángulo de normal (BUG 5), por lo que es más confiable.
+        _grounded = preMoveProbe.isGrounded;
 
         // Coyote time: start timer when leaving ground (not from jumping)
         if (_wasGrounded && !_grounded && !_jumpedThisFrame)
@@ -210,7 +215,7 @@ public partial class PlayerController : MonoBehaviour
 
             _controller.Move(_verticalVelocity * Time.deltaTime);
             GroundProbe lockedProbe = ProbeGround(movementUp);
-            _grounded = lockedProbe.isGrounded || _controller.isGrounded;
+            _grounded = lockedProbe.isGrounded;
             UpdateOrientation(lockedProbe, Time.deltaTime);
             UpdateMovementFeedback(movementUp, Time.deltaTime);
             UpdateAnimator();
@@ -233,6 +238,8 @@ public partial class PlayerController : MonoBehaviour
         _gravityScale = 1f;
         _isFalling = !_grounded && Vector3.Dot(_verticalVelocity, GravityDirection) > 0.5f;
 
+
+
         Vector3 motion = (_planarVelocity + _verticalVelocity + _platformVelocity) * Time.deltaTime;
         _platformVelocity = Vector3.zero;
         _controller.Move(motion);
@@ -244,7 +251,7 @@ public partial class PlayerController : MonoBehaviour
             bool movingUp = Vector3.Dot(_verticalVelocity, GravityDirection) < -0.1f;
             if (!movingUp)
             {
-                _grounded = postMoveProbe.isGrounded || _controller.isGrounded;
+                _grounded = postMoveProbe.isGrounded;
                 if (_grounded)
                     _verticalVelocity = GravityDirection * groundedStickForce;
             }
@@ -423,7 +430,7 @@ public partial class PlayerController : MonoBehaviour
     void UpdateOrientation(GroundProbe probe, float deltaTime)
     {
         Vector3 desiredUp = -GravityDirection;
-        if (alignToGroundNormal && probe.hit.collider != null)
+        if (alignToGroundNormal && probe.isGrounded && probe.hit.collider != null)
             desiredUp = probe.hit.normal;
 
         float upBlend = DampingFactor(gravityBlendSpeed, deltaTime);
@@ -478,6 +485,20 @@ public partial class PlayerController : MonoBehaviour
     static Vector3 DampVector(Vector3 current, Vector3 target, float sharpness, float deltaTime)
     {
         return Vector3.Lerp(current, target, DampingFactor(sharpness, deltaTime));
+    }
+
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        // Cancel velocity component directed into walls / steep slopes (>45 deg) to enable smooth sliding
+        float dotUp = Vector3.Dot(hit.normal, _currentUp);
+        if (dotUp < 0.7071f) // steeper than 45 degrees
+        {
+            float normalDot = Vector3.Dot(_planarVelocity, hit.normal);
+            if (normalDot < 0f) // moving into the wall
+            {
+                _planarVelocity -= hit.normal * normalDot;
+            }
+        }
     }
 
     struct GroundProbe

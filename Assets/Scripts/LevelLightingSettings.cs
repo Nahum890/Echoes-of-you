@@ -52,7 +52,7 @@ public class LevelLightingSettings : MonoBehaviour
 
         if (overrideDirectional)
         {
-            Light[] lights = FindObjectsByType<Light>(FindObjectsSortMode.None);
+            Light[] lights = FindObjectsByType<Light>(FindObjectsInactive.Exclude);
             for (int i = 0; i < lights.Length; i++)
             {
                 Light light = lights[i];

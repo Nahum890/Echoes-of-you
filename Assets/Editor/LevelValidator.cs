@@ -24,8 +24,8 @@ public static class LevelValidator
             return true;
         }
 
-        PressurePlate[] plates = Object.FindObjectsOfType<PressurePlate>();
-        PuzzleSignal[] signals = Object.FindObjectsOfType<PuzzleSignal>();
+        PressurePlate[] plates = Object.FindObjectsByType<PressurePlate>(FindObjectsInactive.Exclude);
+        PuzzleSignal[] signals = Object.FindObjectsByType<PuzzleSignal>(FindObjectsInactive.Exclude);
         if (plates.Length < 1 && signals.Length < 1)
         {
             Debug.LogWarning($"[LevelValidator] {name}: Missing puzzle objectives.");
@@ -33,21 +33,21 @@ public static class LevelValidator
         }
 
         int dynamicSystemCount =
-            Object.FindObjectsOfType<EchoKineticBody>().Length +
-            Object.FindObjectsOfType<EchoShieldField>().Length +
-            Object.FindObjectsOfType<EchoConflictTrap>().Length +
-            Object.FindObjectsOfType<DynamicTransformMotor>().Length +
-            Object.FindObjectsOfType<TimedMovingPlatform>().Length +
-            Object.FindObjectsOfType<GhostBridge>().Length +
-            Object.FindObjectsOfType<MemoryPlatform>().Length +
-            Object.FindObjectsOfType<DoorController>().Length;
+            Object.FindObjectsByType<EchoKineticBody>(FindObjectsInactive.Exclude).Length +
+            Object.FindObjectsByType<EchoShieldField>(FindObjectsInactive.Exclude).Length +
+            Object.FindObjectsByType<EchoConflictTrap>(FindObjectsInactive.Exclude).Length +
+            Object.FindObjectsByType<DynamicTransformMotor>(FindObjectsInactive.Exclude).Length +
+            Object.FindObjectsByType<TimedMovingPlatform>(FindObjectsInactive.Exclude).Length +
+            Object.FindObjectsByType<GhostBridge>(FindObjectsInactive.Exclude).Length +
+            Object.FindObjectsByType<MemoryPlatform>(FindObjectsInactive.Exclude).Length +
+            Object.FindObjectsByType<DoorController>(FindObjectsInactive.Exclude).Length;
         if (dynamicSystemCount < 1)
         {
             Debug.LogWarning($"[LevelValidator] {name}: Missing dynamic echo systems.");
             passed = false;
         }
 
-        PuzzleIntent intent = Object.FindObjectOfType<PuzzleIntent>();
+        PuzzleIntent intent = Object.FindAnyObjectByType<PuzzleIntent>();
         if (intent == null)
         {
             Debug.LogWarning($"[LevelValidator] {name}: Missing PuzzleIntent.");
@@ -67,21 +67,21 @@ public static class LevelValidator
             }
         }
 
-        LevelGoal goal = Object.FindObjectOfType<LevelGoal>();
+        LevelGoal goal = Object.FindAnyObjectByType<LevelGoal>();
         if (goal == null)
         {
             Debug.LogWarning($"[LevelValidator] {name}: Missing LevelGoal.");
             passed = false;
         }
 
-        LevelExit[] exits = Object.FindObjectsOfType<LevelExit>();
+        LevelExit[] exits = Object.FindObjectsByType<LevelExit>(FindObjectsInactive.Exclude);
         if (exits.Length == 0)
         {
             Debug.LogWarning($"[LevelValidator] {name}: No LevelExit found.");
             passed = false;
         }
 
-        Light[] lights = Object.FindObjectsOfType<Light>();
+        Light[] lights = Object.FindObjectsByType<Light>(FindObjectsInactive.Exclude);
         int pointLights = 0;
         for (int i = 0; i < lights.Length; i++)
         {
@@ -105,17 +105,17 @@ public static class LevelValidator
             passed = false;
         }
 
-        EchoPathHint pathHint = Object.FindObjectOfType<EchoPathHint>();
+        EchoPathHint pathHint = Object.FindAnyObjectByType<EchoPathHint>();
         if (pathHint == null)
             Debug.LogWarning($"[LevelValidator] {name}: No EchoPathHint.");
 
-        if (Object.FindObjectOfType<LevelExperienceBlueprint>() == null)
+        if (Object.FindAnyObjectByType<LevelExperienceBlueprint>() == null)
         {
             Debug.LogWarning($"[LevelValidator] {name}: Missing LevelExperienceBlueprint (run Production rebuild).");
             passed = false;
         }
 
-        if (Object.FindObjectOfType<LevelEscapeSequence>() == null)
+        if (Object.FindAnyObjectByType<LevelEscapeSequence>() == null)
             Debug.LogWarning($"[LevelValidator] {name}: No LevelEscapeSequence.");
 
         if (!ValidateCameraSightline(name))
@@ -138,7 +138,7 @@ public static class LevelValidator
     static float[] CollectPlatformHeights()
     {
         List<float> heights = new List<float>();
-        GameObject[] allObjects = Object.FindObjectsOfType<GameObject>();
+        GameObject[] allObjects = Object.FindObjectsByType<GameObject>(FindObjectsInactive.Exclude);
         for (int i = 0; i < allObjects.Length; i++)
         {
             GameObject go = allObjects[i];
@@ -155,8 +155,8 @@ public static class LevelValidator
     static bool ValidateCameraSightline(string sceneName)
     {
         Camera cameraRef = Camera.main;
-        PlayerController player = Object.FindObjectOfType<PlayerController>();
-        LevelExit exit = Object.FindObjectOfType<LevelExit>();
+        PlayerController player = Object.FindAnyObjectByType<PlayerController>();
+        LevelExit exit = Object.FindAnyObjectByType<LevelExit>();
         if (cameraRef == null || player == null)
         {
             Debug.LogWarning($"[LevelValidator] {sceneName}: Missing camera or player for sightline validation.");
@@ -173,7 +173,7 @@ public static class LevelValidator
     static bool ValidatePlayableKitIntegrity(string sceneName)
     {
         bool passed = true;
-        LevelKitPiece[] pieces = Object.FindObjectsOfType<LevelKitPiece>();
+        LevelKitPiece[] pieces = Object.FindObjectsByType<LevelKitPiece>(FindObjectsInactive.Exclude);
         int walkableCount = 0;
 
         for (int i = 0; i < pieces.Length; i++)
@@ -210,7 +210,7 @@ public static class LevelValidator
     {
         bool passed = true;
         List<Collider> colliders = new List<Collider>();
-        LevelKitPiece[] pieces = Object.FindObjectsOfType<LevelKitPiece>();
+        LevelKitPiece[] pieces = Object.FindObjectsByType<LevelKitPiece>(FindObjectsInactive.Exclude);
 
         for (int i = 0; i < pieces.Length; i++)
         {

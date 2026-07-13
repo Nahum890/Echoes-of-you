@@ -75,7 +75,14 @@ public partial class PlayerController
     Vector3 ResolveMovementUp(GroundProbe probe)
     {
         if (alignToGroundNormal && probe.hit.collider != null)
-            return probe.hit.normal;
+        {
+            // Sólo usar la normal del suelo si apunta suficientemente hacia arriba.
+            // Normales de paredes (>45° desde _currentUp) causan que el jugador
+            // se oriente horizontalmente y "camine" sobre superficies verticales.
+            float angle = Vector3.Angle(_currentUp, probe.hit.normal);
+            if (angle <= 45f)
+                return probe.hit.normal;
+        }
 
         return _currentUp;
     }
@@ -87,27 +94,65 @@ public partial class PlayerController
             ? groundCheck.position + normalizedUp * groundProbeRadius
             : transform.position + normalizedUp * groundProbeRadius;
 
-        RaycastHit hit;
-        bool grounded = Physics.SphereCast(
+        // Usar DefaultRaycastLayers (~0 excluyendo la capa Ignore Raycast)
+        // para detectar el suelo sin importar en qué capa esté configurado (e.g. Default, Ground, etc.)
+        // ya que el CharacterController.isGrounded (que quitamos por el softblock) detectaba cualquier capa.
+        int mask = Physics.DefaultRaycastLayers;
+
+        RaycastHit[] hits = Physics.SphereCastAll(
             origin,
             groundProbeRadius,
             -normalizedUp,
-            out hit,
             groundProbeDistance + groundProbeRadius,
-            groundMask,
+            mask,
             QueryTriggerInteraction.Ignore);
 
-        if (grounded)
-            grounded = hit.distance <= groundProbeDistance + 0.02f;
+        bool grounded = false;
+        RaycastHit bestHit = default;
+        float bestDistance = float.MaxValue;
 
-        // Excluir colisiones con el propio jugador (failsafe si groundMask incluye Default)
-        if (grounded && hit.collider != null && hit.collider.transform.IsChildOf(transform))
-            grounded = false;
+        for (int i = 0; i < hits.Length; i++)
+        {
+            RaycastHit hitInfo = hits[i];
+            if (hitInfo.collider == null)
+                continue;
+
+            // Ignorar colisiones con el propio jugador (ya que empezamos el cast dentro de su propia jerarquía)
+            if (hitInfo.collider.transform.IsChildOf(transform))
+                continue;
+
+            // Ignorar triggers
+            if (hitInfo.collider.isTrigger)
+                continue;
+
+            // Quedarse con el impacto más cercano por debajo del jugador
+            if (hitInfo.distance < bestDistance)
+            {
+                bestDistance = hitInfo.distance;
+                bestHit = hitInfo;
+                grounded = true;
+            }
+        }
+
+        if (grounded)
+        {
+            // Validar que la distancia de colisión esté dentro del rango de pisada
+            grounded = bestHit.distance <= groundProbeDistance + 0.02f;
+
+            // Excluir superficies cuya normal no sea suficientemente vertical (paredes).
+            // Un ángulo >45° desde normalizedUp indica una pared, no suelo.
+            if (grounded)
+            {
+                float slopeAngle = Vector3.Angle(normalizedUp, bestHit.normal);
+                if (slopeAngle > 45f)
+                    grounded = false;
+            }
+        }
 
         return new GroundProbe
         {
             isGrounded = grounded,
-            hit = hit
+            hit = bestHit
         };
     }
 
@@ -120,7 +165,9 @@ public partial class PlayerController
             groundCheck = gc.transform;
         }
 
-        float localYOffset = -((_controller.height * 0.5f) - _controller.radius + 0.02f);
+        // Place groundCheck at the center of the capsule's bottom sphere.
+        // Works correctly regardless of whether the pivot is at the feet or the center.
+        float localYOffset = _controller.center.y - (_controller.height * 0.5f) + _controller.radius;
         groundCheck.localPosition = new Vector3(0f, localYOffset, 0f);
         groundCheck.localRotation = Quaternion.identity;
     }

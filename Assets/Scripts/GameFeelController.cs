@@ -68,12 +68,18 @@ public class GameFeelController : MonoBehaviour
 
     [Header("Slow Motion")]
     [SerializeField] float slowMotionScale = 0.3f;
+#pragma warning disable CS0414
     [SerializeField] float slowMotionDuration = 0.15f;
+#pragma warning restore CS0414
     float _slowMotionTimer;
+#pragma warning disable CS0414
     float _slowMotionTarget = 1f;
+#pragma warning restore CS0414
 
     [Header("FOV Pulse")]
+#pragma warning disable CS0414
     [SerializeField] float baseFOV = 50f;
+#pragma warning restore CS0414
     float _fovPulseTarget;
     float _fovPulseTimer;
     float _fovPulseDuration;

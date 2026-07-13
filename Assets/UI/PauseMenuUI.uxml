@@ -46,7 +46,7 @@
              ========================================== -->
         <ui:VisualElement name="pause-settings-panel" class="hidden">
             <ui:Label text="Ajustes del Receptor" class="font-serif-bold" style="font-size: 32px; color: #E8B262; margin-bottom: 4px;" />
-            <ui:Label text="calibracion de frecuencia en tiempo real" class="font-mono" style="font-size: 13px; letter-spacing: 2px; color: #7A8A6A; -unity-text-transform: uppercase; margin-bottom: 20px;" />
+            <ui:Label text="calibracion de frecuencia en tiempo real" class="font-mono" style="font-size: 13px; letter-spacing: 2px; color: #A8B4A0; -unity-text-transform: uppercase; margin-bottom: 20px;" />
             <ui:VisualElement class="accent-line" />
 
             <ui:VisualElement style="flex-direction: row; flex-grow: 1;">

@@ -86,7 +86,7 @@ public static class EchoesLightingBakePipeline
 
     private static Bounds GetLevelBounds()
     {
-        var renderers = Object.FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None);
+        var renderers = Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Exclude);
         if (renderers.Length == 0)
         {
             return new Bounds(Vector3.zero, new Vector3(20f, 10f, 20f));
@@ -119,7 +119,7 @@ public static class EchoesLightingBakePipeline
     private static void SetupLightProbes(Bounds bounds)
     {
         // Eliminar probes anteriores para no duplicar
-        var existing = Object.FindObjectsByType<LightProbeGroup>(FindObjectsSortMode.None);
+        var existing = Object.FindObjectsByType<LightProbeGroup>(FindObjectsInactive.Exclude);
         foreach (var lpg in existing)
         {
             Object.DestroyImmediate(lpg.gameObject);
@@ -155,7 +155,7 @@ public static class EchoesLightingBakePipeline
 
     private static void SetupReflectionProbe(Bounds bounds)
     {
-        var existing = Object.FindObjectsByType<ReflectionProbe>(FindObjectsSortMode.None);
+        var existing = Object.FindObjectsByType<ReflectionProbe>(FindObjectsInactive.Exclude);
         foreach (var rp in existing)
         {
             Object.DestroyImmediate(rp.gameObject);

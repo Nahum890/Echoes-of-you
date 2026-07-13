@@ -209,6 +209,13 @@ public class PlayerAdvancedLocomotion : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.Space))
         {
+            // Wall jump sólo es válido cuando el jugador está genuinamente en el aire.
+            // Si el jugador está grounded, PlayerController.HandleJumpInput maneja el salto
+            // normal. Disparar ambos en el mismo frame genera doble impulso de velocidad
+            // (BUG 3 — impulso excesivo al correr y saltar).
+            if (_player.IsGrounded)
+                return;
+
             Vector3 jumpDir = (_wallNormal + up).normalized;
             _player.AddVerticalImpulse(up, _cfg.wallJumpImpulse);
             _player.SetPlanarVelocity(jumpDir * _cfg.wallJumpAwayForce);

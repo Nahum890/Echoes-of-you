@@ -24,7 +24,9 @@ public class TutorialHUD : MonoBehaviour
     [SerializeField] Color textColor = new Color(0f, 0.851f, 1f, 1f);           // #00D9FF
     [SerializeField] Color hintColor = new Color(0.6f, 0.6f, 0.7f, 1f);
     [SerializeField] Color objectiveColor = new Color(0.945f, 0.965f, 0.98f, 1f); // #F1F6FA
+#pragma warning disable CS0414
     [SerializeField] float fadeSpeed = 3f;
+#pragma warning restore CS0414
 
     [Header("Objetivo del nivel")]
     [SerializeField] float objectiveShowDuration = 3f;

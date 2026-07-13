@@ -89,8 +89,12 @@ public class MenuHoverSystem : MonoBehaviour
     // Cursor anterior (para restaurar al salir del menú)
     Texture2D _previousCursor;
 
+#pragma warning disable CS0414
     bool _isControllerNavigation = false;
+#pragma warning restore CS0414
+#pragma warning disable CS0414
     bool _wasPreviouslyHovering = false;
+#pragma warning restore CS0414
     float _lastHoverExitTime = -1f;
 
     // ═══════════════════════════════════════════════════════════════

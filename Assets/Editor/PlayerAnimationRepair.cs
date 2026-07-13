@@ -91,11 +91,11 @@ public static class PlayerAnimationRepair
 
             Scene scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
             bool changed = false;
-            PlayerController[] players = Object.FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            PlayerController[] players = Object.FindObjectsByType<PlayerController>(FindObjectsInactive.Include);
             for (int p = 0; p < players.Length; p++)
                 changed |= PatchAnimatorInHierarchy(players[p].gameObject);
 
-            EchoPlayback[] echoes = Object.FindObjectsByType<EchoPlayback>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            EchoPlayback[] echoes = Object.FindObjectsByType<EchoPlayback>(FindObjectsInactive.Include);
             for (int e = 0; e < echoes.Length; e++)
                 changed |= PatchAnimatorInHierarchy(echoes[e].gameObject);
 

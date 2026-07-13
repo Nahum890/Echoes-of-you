@@ -609,8 +609,8 @@ public static class EchoesModuleFactory
         root.transform.SetParent(parent, false);
         root.transform.position = pos;
 
-        // Plataforma de base pequeña
-        MakePlatform("AnchorBase", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
+        // Plataforma de base pequeña — slab fino
+        MakePlatform("AnchorBase", new Vector3(0f, -0.15f, 0f), new Vector3(scale.x, 0.3f, scale.z), root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
 
         // El pupitre de memoria
         GameObject memoryDesk = Instantiate3DModel(SchoolDeskModule, "MemoryDesk", new Vector3(0f, 0.1f, 0f), new Vector3(1.4f, 1.1f, 0.9f), Quaternion.identity, root.transform, EchoesMaterialLibrary.MemoryMat);
@@ -740,8 +740,8 @@ public static class EchoesModuleFactory
         root.transform.SetParent(parent, false);
         root.transform.position = pos;
 
-        // Suelo de la Oficina / Sala de Profesores
-        MakePlatform("ResonanceBase", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
+        // Suelo de la Oficina / Sala de Profesores — slab fino
+        MakePlatform("ResonanceBase", new Vector3(0f, -0.15f, 0f), new Vector3(scale.x, 0.3f, scale.z), root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
 
         // Dos mesas/alfombras de resonancia temáticas
         GameObject pad1 = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
@@ -832,8 +832,9 @@ public static class EchoesModuleFactory
         trigger.isTrigger = true;
         trigger.size = scale;
 
-        // Geometría física de la esquina del pasillo
-        MakePlatform("CornerFloor", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
+        // Geometría física de la esquina del pasillo — slab fino
+        Vector3 cornerFloorScale = new Vector3(scale.x, 0.3f, scale.z);
+        MakePlatform("CornerFloor", new Vector3(0f, -0.15f, 0f), cornerFloorScale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
         
         // Paredes formando una L
         float halfX = scale.x * 0.5f;
@@ -889,8 +890,9 @@ public static class EchoesModuleFactory
         root.transform.SetParent(parent, false);
         root.transform.position = pos;
 
-        // Suelo de la Galería
-        MakePlatform("GalleryFloor", Vector3.zero, scale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
+        // Suelo de la Galería — slab fino
+        Vector3 galleryFloorScale = new Vector3(scale.x, 0.3f, scale.z);
+        MakePlatform("GalleryFloor", new Vector3(0f, -0.15f, 0f), galleryFloorScale, root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
 
         // Instanciar filas de estanterías de libros (bookcaseOpen) llenas de libros (City Pack / Furniture Kit)
         float dX = scale.x * 0.35f;

@@ -3,7 +3,8 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
-using Cinemachine;
+using Unity.Cinemachine;
+using System.Collections.Generic;
 
 public static class EchoesLevelShell
 {
@@ -207,27 +208,26 @@ public static class EchoesLevelShell
         FixedPuzzleCameraController fixedCamera = cameraObject.AddComponent<FixedPuzzleCameraController>();
 
         CinemachineBrain brain = cameraObject.AddComponent<CinemachineBrain>();
-        brain.m_DefaultBlend.m_Style = CinemachineBlendDefinition.Style.EaseInOut;
-        brain.m_DefaultBlend.m_Time = 0.35f;
+        brain.DefaultBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.EaseInOut, 0.35f);
 
         Transform playerFocus = player.Find("CameraFocus");
 
         GameObject targetGroupObject = new GameObject("GameplayCameraTargets");
         targetGroupObject.transform.SetParent(cameraRoot, false);
         CinemachineTargetGroup targetGroup = targetGroupObject.AddComponent<CinemachineTargetGroup>();
-        targetGroup.m_Targets = new[]
+        targetGroup.Targets = new List<CinemachineTargetGroup.Target>
         {
             new CinemachineTargetGroup.Target
             {
-                target = playerFocus != null ? playerFocus : player,
-                weight = 1.35f,
-                radius = 0.6f
+                Object = playerFocus != null ? playerFocus : player,
+                Weight = 1.35f,
+                Radius = 0.6f
             },
             new CinemachineTargetGroup.Target
             {
-                target = goalFocus != null ? goalFocus : player,
-                weight = goalFocus != null ? 0.52f : 0f,
-                radius = 1.4f
+                Object = goalFocus != null ? goalFocus : player,
+                Weight = goalFocus != null ? 0.52f : 0f,
+                Radius = 1.4f
             }
         };
 
@@ -237,29 +237,29 @@ public static class EchoesLevelShell
 
         GameObject vcamObj = new GameObject("PlayerVCam");
         vcamObj.transform.SetParent(cameraRoot, false);
-        CinemachineVirtualCamera vcam = vcamObj.AddComponent<CinemachineVirtualCamera>();
-        vcam.Priority = 20;
+        CinemachineCamera vcam = vcamObj.AddComponent<CinemachineCamera>();
+        vcam.Priority = new PrioritySettings { Value = 20 };
         vcam.Follow = player;
         vcam.LookAt = targetGroup.transform;
-        vcam.m_Lens.FieldOfView = 52f;
+        var lens = vcam.Lens;
+        lens.FieldOfView = 52f;
+        vcam.Lens = lens;
 
-        CinemachineTransposer transposer = vcam.AddCinemachineComponent<CinemachineTransposer>();
-        transposer.m_FollowOffset = offset;
-        transposer.m_XDamping = 0.55f;
-        transposer.m_YDamping = 0.65f;
-        transposer.m_ZDamping = 0.5f;
-        transposer.m_BindingMode = CinemachineTransposer.BindingMode.WorldSpace;
+        CinemachineFollow transposer = vcamObj.AddComponent<CinemachineFollow>();
+        transposer.FollowOffset = offset;
+        transposer.TrackerSettings = new Unity.Cinemachine.TargetTracking.TrackerSettings
+        {
+            BindingMode = Unity.Cinemachine.TargetTracking.BindingMode.WorldSpace,
+            PositionDamping = new Vector3(0.55f, 0.65f, 0.5f)
+        };
 
-        CinemachineComposer composer = vcam.AddCinemachineComponent<CinemachineComposer>();
-        composer.m_TrackedObjectOffset = new Vector3(0f, 0.35f, 0f);
-        composer.m_HorizontalDamping = 0.45f;
-        composer.m_VerticalDamping = 0.55f;
-        composer.m_DeadZoneWidth = 0.12f;
-        composer.m_DeadZoneHeight = 0.1f;
-        composer.m_SoftZoneWidth = 0.55f;
-        composer.m_SoftZoneHeight = 0.48f;
-        composer.m_ScreenX = 0.48f;
-        composer.m_ScreenY = 0.42f;
+        CinemachineRotationComposer composer = vcamObj.AddComponent<CinemachineRotationComposer>();
+        composer.TargetOffset = new Vector3(0f, 0.35f, 0f);
+        composer.Damping = new Vector2(0.45f, 0.55f);
+        composer.Composition = new ScreenComposerSettings
+        {
+            ScreenPosition = new Vector2(0.48f, 0.42f)
+        };
 
         fixedCamera.virtualCamera = vcam;
         fixedCamera.targetGroup = targetGroup;

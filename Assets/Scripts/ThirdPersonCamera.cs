@@ -72,6 +72,22 @@ public class ThirdPersonCamera : MonoBehaviour
         _cameraShake = GetComponent<CameraShake>();
         _camera = GetComponent<Camera>();
 
+        // If a CinemachineBrain is controlling this camera, ThirdPersonCamera should
+        // not run — both would write the camera transform simultaneously.
+        if (GetComponent<Unity.Cinemachine.CinemachineBrain>() != null)
+        {
+            enabled = false;
+            return;
+        }
+
+        // Auto-resolve target if not assigned in inspector
+        if (target == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+                target = playerObj.transform;
+        }
+
         if (target != null)
         {
             Vector3 targetUp = target.up;
@@ -93,10 +109,21 @@ public class ThirdPersonCamera : MonoBehaviour
 
     void LateUpdate()
     {
+        // Re-resolve target if lost (destroyed, scene change, etc.)
+        if (target == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+            {
+                target = playerObj.transform;
+                _framedTargetId = int.MinValue;
+            }
+        }
+
         if (target == null)
             return;
 
-        if (autoFrameTarget && target.GetInstanceID() != _framedTargetId)
+        if (autoFrameTarget && target.GetHashCode() != _framedTargetId)
             AutoFrameCurrentTarget();
 
         Vector3 targetUp = target.up;
@@ -159,7 +186,18 @@ public class ThirdPersonCamera : MonoBehaviour
         if (Time.unscaledTime < _eventFocusUntil)
             desiredFocusPoint = Vector3.Lerp(desiredFocusPoint, _eventFocusPoint, _eventFocusWeight);
 
-        _smoothedFocusPoint = Vector3.Lerp(_smoothedFocusPoint, desiredFocusPoint, DampingFactor(followDamping, Time.deltaTime));
+        // Failsafe / Teleport snap: si el personaje se mueve muy rápido (más de 5.0m en un frame)
+        // significa que hubo teleport, respawn o transición brusca. Snappear el foco para evitar
+        // que la cámara atraviese todo el mapa volando (jitter / teletransporte).
+        if (Vector3.Distance(_smoothedFocusPoint, desiredFocusPoint) > 5f)
+        {
+            _smoothedFocusPoint = desiredFocusPoint;
+            _lastFocusPoint = desiredFocusPoint;
+        }
+        else
+        {
+            _smoothedFocusPoint = Vector3.Lerp(_smoothedFocusPoint, desiredFocusPoint, DampingFactor(followDamping, Time.deltaTime));
+        }
         _lastFocusPoint = desiredFocusPoint;
 
         Vector3 desiredPosition = _smoothedFocusPoint - lookDirection * distance;
@@ -169,7 +207,10 @@ public class ThirdPersonCamera : MonoBehaviour
             desiredRotation *= _cameraShake.RotationOffset;
         }
 
-        transform.position = Vector3.Lerp(transform.position, desiredPosition, DampingFactor(followDamping, Time.deltaTime));
+        // Asignar posición directamente. Dado que _smoothedFocusPoint ya está amortiguado (lerp),
+        // aplicar un segundo Lerp sobre transform.position genera doble retraso y oscilación elástica,
+        // lo que produce jitter e inestabilidad visual al saltar, correr o aterrizar (BUG 1).
+        transform.position = desiredPosition;
         transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, DampingFactor(rotationDamping, Time.deltaTime));
 
         if (_camera != null)
@@ -238,7 +279,7 @@ public class ThirdPersonCamera : MonoBehaviour
         focusOffset = Quaternion.Inverse(target.rotation) * (desiredFocus - target.position);
         distance = Mathf.Clamp(height * 2.2f, minDistance, maxDistance);
         baseFov = Mathf.Clamp(baseFov, 52f, 58f);
-        _framedTargetId = target.GetInstanceID();
+        _framedTargetId = target.GetHashCode();
     }
 
     Transform ResolveFramingRoot()
@@ -262,6 +303,10 @@ public class ThirdPersonCamera : MonoBehaviour
         {
             Renderer rendererRef = renderers[i];
             if (rendererRef == null)
+                continue;
+
+            // Exclude echo renderers so AutoFrame doesn't mis-size the camera to include echo ghosts
+            if (rendererRef.GetComponentInParent<EchoPlayback>() != null)
                 continue;
 
             if (!found)

@@ -35,13 +35,13 @@
                     <ui:VisualElement style="margin-bottom: 40px; padding-bottom: 24px; border-bottom-width: 1px; border-bottom-color: rgba(232,178,98,0.4);">
                         <!-- Juego Title -->
                         <ui:Label text="ECHOES OF YOU" class="font-mono-bold" style="font-size: 22px; letter-spacing: 2px; color: #E8B262;" />
-                        <ui:Label text="registro de una ausencia" class="font-mono" style="font-size: 13px; letter-spacing: 1px; color: #8C9680; margin-top: 6px;" />
+                        <ui:Label text="registro de una ausencia" class="font-mono" style="font-size: 13px; letter-spacing: 1px; color: #A8B4A0; margin-top: 6px;" />
                         <!-- Separator -->
                         <ui:VisualElement style="height: 1px; background-color: rgba(232,178,98,0.3); margin-top: 18px; margin-bottom: 14px;" />
                         <!-- User info -->
-                        <ui:Label text="EXPEDIENTE  9811" class="font-mono" style="font-size: 12px; letter-spacing: 2px; color: #6C788A;" />
+                        <ui:Label text="EXPEDIENTE  9811" class="font-mono" style="font-size: 12px; letter-spacing: 2px; color: #8C96A5;" />
                         <ui:Label text="Identidad: Aiden" class="font-serif" style="font-size: 17px; color: #C9D4B0; margin-top: 6px;" />
-                        <ui:Label name="hero-title" text="" class="font-mono" style="font-size: 13px; color: #8C9680; margin-top: 4px; -unity-font-style: italic; min-height: 18px;" />
+                        <ui:Label name="hero-title" text="" class="font-mono" style="font-size: 14px; color: #A8B4A0; margin-top: 4px; -unity-font-style: italic; min-height: 18px;" />
                     </ui:VisualElement>
 
                     <!-- Navigation Tab Buttons — sistema de hover v2 -->
@@ -62,8 +62,8 @@
                 <!-- File metadata bottom label -->
                 <ui:VisualElement style="border-top-width: 1px; border-top-color: rgba(232,178,98,0.15); padding-top: 14px;">
                     <ui:Label name="lbl-user-rank" text="ESTADO: INCOMPLETO" class="font-mono-bold" style="font-size: 13px; letter-spacing: 1px; color: #B23A3A; -unity-text-transform: uppercase;" />
-                    <ui:Label name="lbl-user-integrity" text="Integridad: 12%" class="font-mono" style="font-size: 13px; color: #6C788A; margin-top: 4px;" />
-                    <ui:Label name="lbl-user-sessions" text="Sintonizaciones: 1" class="font-mono" style="font-size: 13px; color: #6C788A; margin-top: 2px;" />
+                    <ui:Label name="lbl-user-integrity" text="Integridad: 12%" class="font-mono" style="font-size: 13px; color: #8C96A5; margin-top: 4px;" />
+                    <ui:Label name="lbl-user-sessions" text="Sintonizaciones: 1" class="font-mono" style="font-size: 13px; color: #8C96A5; margin-top: 2px;" />
                 </ui:VisualElement>
             </ui:VisualElement>
 
@@ -73,11 +73,11 @@
                 <ui:VisualElement name="right-panel-crt-blink" class="right-panel-crt-blink" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; pointer-events: none;" picking-mode="Ignore" />
                 
                 <!-- ==========================================
-                     PANEL 1: NEURAL ARCHIVES (EXPEDIENTE INFO)
+                     PANEL 1: EXPEDIENTE DE AUSENCIA (INFORMACION)
                      ========================================== -->
                 <ui:VisualElement name="panel-neural-archives" class="preview-panel preview-panel--visible">
                     <ui:Label text="Expediente de Ausencia" class="font-serif-bold text-headline-xl" style="-unity-text-align: middle-left; margin-bottom: 4px;" />
-                    <ui:Label text="registro y telemetria residual del eco" class="font-mono text-label-caps" style="color: #6C788A; margin-bottom: 20px;" />
+                    <ui:Label text="registro y telemetria residual del eco" class="font-mono text-label-caps" style="color: #8C96A5; margin-bottom: 20px;" />
                     <ui:VisualElement class="accent-line" />
 
                     <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
@@ -138,7 +138,7 @@
                 <ui:VisualElement name="panel-stability-map" class="preview-panel">
                     <!-- Panel header -->
                     <ui:Label text="Archivo de Memorias" class="font-serif-bold" style="font-size: 32px; color: #E8B262; margin-bottom: 4px;" />
-                    <ui:Label text="seleccionar un recuerdo registrado" class="font-mono" style="font-size: 13px; letter-spacing: 2px; color: #7A8A6A; -unity-text-transform: uppercase; margin-bottom: 20px;" />
+                    <ui:Label text="seleccionar un recuerdo registrado" class="font-mono" style="font-size: 13px; letter-spacing: 2px; color: #A8B4A0; -unity-text-transform: uppercase; margin-bottom: 20px;" />
                     <ui:VisualElement class="accent-line" />
 
                     <ui:VisualElement style="flex-direction: row; flex-grow: 1; min-height: 0;">
@@ -168,21 +168,21 @@
                                 <ui:Label text="ESTADISTICAS" class="font-mono-bold" style="font-size: 12px; letter-spacing: 3px; color: #E8B262; margin-bottom: 16px; -unity-text-transform: uppercase;" />
 
                                 <ui:VisualElement style="flex-direction: row; justify-content: space-between; margin-bottom: 10px;">
-                                    <ui:Label text="Objetos" class="font-mono" style="font-size: 14px; color: #8C96A5;" />
-                                    <ui:Label name="lbl-telemetry-fragments" text="0/0" class="font-mono-bold" style="font-size: 14px; color: #C9D4B0;" />
+                                    <ui:Label text="Objetos" class="font-mono" style="font-size: 14px; color: #A8B4B8;" />
+                                    <ui:Label name="lbl-telemetry-fragments" text="0/0" class="font-mono-bold" style="font-size: 14px; color: #DCE4D0;" />
                                 </ui:VisualElement>
                                 <ui:VisualElement style="flex-direction: row; justify-content: space-between; margin-bottom: 10px;">
-                                    <ui:Label text="Ecos" class="font-mono" style="font-size: 14px; color: #8C96A5;" />
-                                    <ui:Label name="lbl-telemetry-echoes" text="0" class="font-mono-bold" style="font-size: 14px; color: #C9D4B0;" />
+                                    <ui:Label text="Ecos" class="font-mono" style="font-size: 14px; color: #A8B4B8;" />
+                                    <ui:Label name="lbl-telemetry-echoes" text="0" class="font-mono-bold" style="font-size: 14px; color: #DCE4D0;" />
                                 </ui:VisualElement>
                                 <ui:VisualElement style="flex-direction: row; justify-content: space-between; margin-bottom: 10px;">
-                                    <ui:Label text="Colapsos" class="font-mono" style="font-size: 14px; color: #8C96A5;" />
+                                    <ui:Label text="Colapsos" class="font-mono" style="font-size: 14px; color: #A8B4B8;" />
                                     <ui:Label name="lbl-telemetry-deaths" text="0" class="font-mono-bold" style="font-size: 14px; color: #B23A3A;" />
                                 </ui:VisualElement>
                                 <ui:VisualElement style="height: 1px; background-color: rgba(201,212,176,0.15); margin-bottom: 10px;" />
                                 <ui:VisualElement style="flex-direction: row; justify-content: space-between;">
-                                    <ui:Label text="Tiempo total" class="font-mono" style="font-size: 14px; color: #8C96A5;" />
-                                    <ui:Label name="lbl-telemetry-time" text="0s" class="font-mono-bold" style="font-size: 14px; color: #C9D4B0;" />
+                                    <ui:Label text="Tiempo total" class="font-mono" style="font-size: 14px; color: #A8B4B8;" />
+                                    <ui:Label name="lbl-telemetry-time" text="0s" class="font-mono-bold" style="font-size: 14px; color: #DCE4D0;" />
                                 </ui:VisualElement>
                             </ui:VisualElement>
 
@@ -210,7 +210,7 @@
                      ========================================== -->
                 <ui:VisualElement name="panel-calibration-preview" class="preview-panel">
                     <ui:Label text="Ajustes de Sintonia" class="font-serif-bold" style="font-size: 32px; color: #E8B262; margin-bottom: 4px;" />
-                    <ui:Label text="calibrar la recepcion de la memoria" class="font-mono" style="font-size: 13px; letter-spacing: 2px; color: #7A8A6A; -unity-text-transform: uppercase; margin-bottom: 20px;" />
+                    <ui:Label text="calibrar la recepcion de la memoria" class="font-mono" style="font-size: 13px; letter-spacing: 2px; color: #A8B4A0; -unity-text-transform: uppercase; margin-bottom: 20px;" />
                     <ui:VisualElement class="accent-line" />
 
                     <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
@@ -292,7 +292,7 @@
                      ========================================== -->
                 <ui:VisualElement name="panel-disconnect-offline" class="preview-panel" style="justify-content: center; align-items: center; background-color: #0A0A0D;">
                     <ui:Label text="CLAUSURAR EXPEDIENTE" class="font-serif-bold text-headline-xl" style="color: #B23A3A; margin-bottom: 12px;" />
-                    <ui:Label text="Â¿Deseas cerrar el expediente y abandonar la sintonÃ­a?" class="font-serif text-body-lg" style="margin-bottom: 32px; -unity-text-align: middle-center; max-width: 400px;" />
+                    <ui:Label text="¿Deseas cerrar el expediente y abandonar la sintonía?" class="font-serif text-body-lg" style="margin-bottom: 32px; -unity-text-align: middle-center; max-width: 400px;" />
                     
                     <ui:VisualElement style="flex-direction: row; justify-content: center; width: 100%;">
                         <ui:Button name="btn-exit-cancel" text="Permanecer" class="btn-classic" style="margin-right: 16px; padding: 12px 24px;" />
@@ -307,10 +307,10 @@
         <ui:VisualElement name="settings-panel" class="hidden" style="display: none;" />
 
         <!-- Reset progress confirmation overlay popup -->
-        <ui:VisualElement name="reset-progress-panel" class="hidden" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgba(10,10,13,0.95); justify-content: center; align-items: center;">
+        <ui:VisualElement name="reset-progress-panel" class="hidden" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgba(10,10,13,0.88); justify-content: center; align-items: center;">
             <ui:VisualElement style="background-color: #0A0A0D; border-width: 2px; border-color: #B23A3A; padding: 32px; width: 400px;">
                 <ui:Label text="BORRAR HISTORIAL" class="font-mono-bold text-headline-md" style="color: #B23A3A; margin-bottom: 12px;" />
-                <ui:Label text="Esta acciÃ³n borrarÃ¡ todas las memorias sintonizadas de forma permanente. No se puede deshacer." class="font-serif text-body-lg" style="color: #E2E4E8; margin-bottom: 24px;" />
+                <ui:Label text="Esta acción borrará todas las memorias sintonizadas de forma permanente. No se puede deshacer." class="font-serif text-body-lg" style="color: #E2E4E8; margin-bottom: 24px;" />
                 
                 <ui:VisualElement style="flex-direction: row; justify-content: flex-end;">
                     <ui:Button name="btn-reset-progress-cancel" text="Cancelar" class="btn-classic" style="margin-right: 12px;" />

@@ -14,7 +14,9 @@ public class LevelExit : MonoBehaviour
 
     [Header("Completion Copy")]
     [SerializeField] string completionToast = "";
+#pragma warning disable CS0414
     [SerializeField] string lockedToast = "Completa el puzzle antes de salir.";
+#pragma warning restore CS0414
 
     bool _triggered;
     bool _isUnlocked = true;

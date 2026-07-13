@@ -14,7 +14,9 @@ public class EchoRecorder : MonoBehaviour
     [SerializeField] Transform echoSpawnRoot;
     [SerializeField] int maxEchoes = 2;
     [SerializeField] float maxRecordSeconds = 6f;
+#pragma warning disable CS0414
     [SerializeField] float minRecordSeconds = 0.1f;
+#pragma warning restore CS0414
 
     [Header("Proyeccion")]
     [SerializeField] KeyCode projectionKey = KeyCode.F;

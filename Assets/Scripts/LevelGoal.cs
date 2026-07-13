@@ -62,7 +62,7 @@ public class LevelGoal : MonoBehaviour, IResettableLevelObject
             triggers = GetComponentsInChildren<GoalTrigger>(true);
 
         if (linkedExits == null || linkedExits.Length == 0)
-            linkedExits = FindObjectsOfType<LevelExit>(true);
+            linkedExits = FindObjectsByType<LevelExit>(FindObjectsInactive.Include);
 
         for (int i = 0; i < linkedExits.Length; i++)
         {

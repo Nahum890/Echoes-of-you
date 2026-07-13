@@ -26,7 +26,7 @@ public class LevelEscapeSequence : MonoBehaviour
         if (goal == null)
             goal = LevelGoal.Instance;
         if (exits == null || exits.Length == 0)
-            exits = FindObjectsByType<LevelExit>(FindObjectsSortMode.None);
+            exits = FindObjectsByType<LevelExit>(FindObjectsInactive.Exclude);
 
         LockExits(true);
     }

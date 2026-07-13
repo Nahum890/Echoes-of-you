@@ -341,19 +341,19 @@ public class GameHUD : MonoBehaviour
             _modePanel.RemoveFromClassList("hidden");
             if (_recording)
             {
-                if (_modeTitle != null) _modeTitle.text = "GRABACIÓN COGNITIVA";
-                if (_modeDesc != null) _modeDesc.text = "Registrando línea de tiempo...";
+                if (_modeTitle != null) _modeTitle.text = "GRABANDO";
+                if (_modeDesc != null) _modeDesc.text = "Registrando linea de tiempo...";
                 if (_modeKey != null) _modeKey.text = "R";
             }
             else if (_echoCurrent > 0)
             {
-                if (_modeTitle != null) _modeTitle.text = "SINCRONIZACIÓN ECO";
+                if (_modeTitle != null) _modeTitle.text = "REPRODUCIENDO ECO";
                 if (_modeDesc != null) _modeDesc.text = "Reproduciendo secuencia temporal.";
                 if (_modeKey != null) _modeKey.text = "E";
             }
             else
             {
-                if (_modeTitle != null) _modeTitle.text = "NEURAL LISTO";
+                if (_modeTitle != null) _modeTitle.text = "LISTO";
                 if (_modeDesc != null) _modeDesc.text = "Buscando anclas de memoria.";
                 if (_modeKey != null) _modeKey.text = "R";
             }

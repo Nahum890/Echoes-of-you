@@ -709,7 +709,7 @@ public class MainMenuController : MonoBehaviour
             {
                 ApplySavedUIScale();
                 // Broadcast live UI Scale update to any other open UI document
-                var allDocs = FindObjectsByType<UIDocument>(FindObjectsSortMode.None);
+                var allDocs = FindObjectsByType<UIDocument>(FindObjectsInactive.Exclude);
                 foreach (var doc in allDocs)
                 {
                     if (doc != _doc && doc.gameObject != gameObject)
@@ -739,7 +739,7 @@ public class MainMenuController : MonoBehaviour
         PlayerPrefs.SetFloat("EchoOpacity", echoOpacity);
 
         // Broadcast echo opacity
-        var allRecorders = FindObjectsByType<EchoPlayback>(FindObjectsSortMode.None);
+        var allRecorders = FindObjectsByType<EchoPlayback>(FindObjectsInactive.Exclude);
         foreach (var playback in allRecorders)
         {
             playback.SendMessage("ApplySavedEchoOpacity", SendMessageOptions.DontRequireReceiver);
@@ -951,7 +951,7 @@ public class MainMenuController : MonoBehaviour
         "[SINC] Resonancia de fragmento calibrando...",
         "[OK] Puntos de anclaje de eco registrados.",
         "[AVISO] Inestabilidad en fragmento — sector 07.",
-        "[OK] Protocolo de reparación iniciado.",
+        "[OK] Memoria en recuperación.",
         "[SINC] Deriva temporal dentro del margen: 0.003ms.",
         "[OK] Integridad del expediente verificada.",
         "[BÚSQUEDA] Escaneando nodos de memoria profunda...",
@@ -1011,15 +1011,15 @@ public class MainMenuController : MonoBehaviour
 
         SetBarStat("lbl-stat-stability-val", "bar-stat-stability-fill", "lbl-stat-stability-desc",
             stability, completedLevels, totalLevels,
-            "Neural cohesion initializing...",
-            "Neural alignment in progress...",
-            "Neural cohesion fully synchronized.");
+            "Sincronización de recuerdos iniciando...",
+            "Sincronización de recuerdos en curso...",
+            "Sincronización de recuerdos completada.");
 
         SetBarStat("lbl-stat-coherence-val", "bar-stat-coherence-fill", "lbl-stat-coherence-desc",
             coherence, completedLevels, totalLevels,
-            "Fragment resonance is currently unstable.",
-            "Intermittent signal synchronization.",
-            "Fragment resonance stable.");
+            "Coherencia de memoria inestable.",
+            "Señal de memoria intermitente.",
+            "Coherencia de memoria estable.");
 
         SetBarStat("lbl-stat-progress-val", "bar-stat-progress-fill", "lbl-stat-progress-desc",
             progress, completedLevels, totalLevels,

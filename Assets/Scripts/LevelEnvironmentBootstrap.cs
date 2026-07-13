@@ -158,7 +158,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
 
     static void ApplyHazardScales()
     {
-        EchoShieldField[] fields = Object.FindObjectsByType<EchoShieldField>(FindObjectsSortMode.None);
+        EchoShieldField[] fields = Object.FindObjectsByType<EchoShieldField>(FindObjectsInactive.Exclude);
         for (int i = 0; i < fields.Length; i++)
         {
             BoxCollider box = fields[i].GetComponent<BoxCollider>();
@@ -197,7 +197,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
 
     static void ApplyObstacleHeights()
     {
-        DoorController[] doors = Object.FindObjectsByType<DoorController>(FindObjectsSortMode.None);
+        DoorController[] doors = Object.FindObjectsByType<DoorController>(FindObjectsInactive.Exclude);
         for (int i = 0; i < doors.Length; i++)
         {
             Transform doorTransform = doors[i].transform;
@@ -210,7 +210,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
             }
         }
 
-        KillVolume[] killVolumes = Object.FindObjectsByType<KillVolume>(FindObjectsSortMode.None);
+        KillVolume[] killVolumes = Object.FindObjectsByType<KillVolume>(FindObjectsInactive.Exclude);
         for (int i = 0; i < killVolumes.Length; i++)
         {
             BoxCollider box = killVolumes[i].GetComponent<BoxCollider>();
@@ -225,7 +225,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
 
     static void AlignPressurePlates()
     {
-        PressurePlate[] plates = Object.FindObjectsByType<PressurePlate>(FindObjectsSortMode.None);
+        PressurePlate[] plates = Object.FindObjectsByType<PressurePlate>(FindObjectsInactive.Exclude);
         for (int i = 0; i < plates.Length; i++)
         {
             if (plates[i] == null)
@@ -243,7 +243,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
 
     static void ApplyEchoPlateVisuals()
     {
-        PressurePlate[] plates = Object.FindObjectsByType<PressurePlate>(FindObjectsSortMode.None);
+        PressurePlate[] plates = Object.FindObjectsByType<PressurePlate>(FindObjectsInactive.Exclude);
         for (int i = 0; i < plates.Length; i++)
         {
             PressurePlate plate = plates[i];
@@ -304,7 +304,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
 
     static void CullLegacyOverlappingDressing()
     {
-        Transform[] transforms = Object.FindObjectsByType<Transform>(FindObjectsSortMode.None);
+        Transform[] transforms = Object.FindObjectsByType<Transform>(FindObjectsInactive.Exclude);
         for (int i = 0; i < transforms.Length; i++)
         {
             Transform item = transforms[i];
@@ -354,7 +354,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
             if (custom.disableRuntimeFillLights)
             {
                 // Clean up any stray fill lights if fill lights are disabled
-                Light[] strayFills = Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
+                Light[] strayFills = Object.FindObjectsByType<Light>(FindObjectsInactive.Exclude);
                 for (int i = 0; i < strayFills.Length; i++)
                 {
                     if (strayFills[i] != null && strayFills[i].name.StartsWith("EchoesFill_"))
@@ -377,7 +377,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         RenderSettings.fogColor = new Color(0.018f, 0.024f, 0.038f);
         RenderSettings.fogDensity = fogDensity;
 
-        Light[] lights = Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
+        Light[] lights = Object.FindObjectsByType<Light>(FindObjectsInactive.Exclude);
         for (int i = 0; i < lights.Length; i++)
         {
             Light light = lights[i];
@@ -399,7 +399,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         }
 
         // Remove existing fill lights to ensure live updates work instantly
-        Light[] allLights = Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
+        Light[] allLights = Object.FindObjectsByType<Light>(FindObjectsInactive.Exclude);
         for (int i = 0; i < allLights.Length; i++)
         {
             if (allLights[i] != null && allLights[i].name.StartsWith("EchoesFill_"))
@@ -419,7 +419,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
 
     static bool HasEchoesFillLights()
     {
-        Light[] lights = Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
+        Light[] lights = Object.FindObjectsByType<Light>(FindObjectsInactive.Exclude);
         for (int i = 0; i < lights.Length; i++)
         {
             if (lights[i] != null && lights[i].name.StartsWith("EchoesFill_"))

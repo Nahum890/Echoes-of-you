@@ -1,12 +1,12 @@
 using System;
-using Cinemachine;
+using Unity.Cinemachine;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
 public class FixedPuzzleCameraController : MonoBehaviour
 {
     [Header("Scene References")]
-    public CinemachineVirtualCamera virtualCamera;
+    public CinemachineCamera virtualCamera;
     public CinemachineTargetGroup targetGroup;
     public Transform followTarget;
     public Transform playerFocus;
@@ -44,20 +44,25 @@ public class FixedPuzzleCameraController : MonoBehaviour
 
         if (virtualCamera != null)
         {
-            var lens = virtualCamera.m_Lens;
+            var lens = virtualCamera.Lens;
             if (baseFov <= 0f)
                 baseFov = lens.FieldOfView;
 
             lens.FieldOfView = baseFov;
-            virtualCamera.m_Lens = lens;
+            virtualCamera.Lens = lens;
         }
 
         _pulseTargetFov = baseFov;
     }
 
+    void Start()
+    {
+        // Second-pass cache in Start in case scene objects weren't ready in Awake
+        CacheSceneReferences();
+    }
+
     void LateUpdate()
     {
-        CacheSceneReferences();
         if (virtualCamera == null || targetGroup == null)
             return;
 
@@ -90,9 +95,9 @@ public class FixedPuzzleCameraController : MonoBehaviour
         if (cinematicDynamics == null || !cinematicDynamics.enabled)
         {
             float desiredFov = Time.unscaledTime < _pulseUntil ? _pulseTargetFov : baseFov;
-            var lens = virtualCamera.m_Lens;
+            var lens = virtualCamera.Lens;
             lens.FieldOfView = Mathf.Lerp(lens.FieldOfView, desiredFov, DampingFactor(fovDamping, Time.unscaledDeltaTime));
-            virtualCamera.m_Lens = lens;
+            virtualCamera.Lens = lens;
         }
     }
 
@@ -112,7 +117,7 @@ public class FixedPuzzleCameraController : MonoBehaviour
     void CacheSceneReferences()
     {
         if (virtualCamera == null)
-            virtualCamera = FindAnyObjectByType<CinemachineVirtualCamera>();
+            virtualCamera = FindAnyObjectByType<CinemachineCamera>();
 
         if (targetGroup == null)
             targetGroup = FindAnyObjectByType<CinemachineTargetGroup>();
@@ -162,13 +167,12 @@ public class FixedPuzzleCameraController : MonoBehaviour
         if (index < 0)
             return;
 
-        CinemachineTargetGroup.Target[] members = targetGroup.m_Targets;
-        CinemachineTargetGroup.Target entry = members[index];
-        entry.target = member;
-        entry.radius = radius;
-        entry.weight = Mathf.Max(0f, weight);
-        members[index] = entry;
-        targetGroup.m_Targets = members;
+        // Cinemachine v3: Targets es List<Target> con campos Object/Weight/Radius (PascalCase)
+        CinemachineTargetGroup.Target entry = targetGroup.Targets[index];
+        entry.Object = member;
+        entry.Radius = radius;
+        entry.Weight = Mathf.Max(0f, weight);
+        targetGroup.Targets[index] = entry;
     }
 
     int EnsureMember(Transform member, float radius)
@@ -176,22 +180,21 @@ public class FixedPuzzleCameraController : MonoBehaviour
         if (targetGroup == null || member == null)
             return -1;
 
-        CinemachineTargetGroup.Target[] members = targetGroup.m_Targets ?? Array.Empty<CinemachineTargetGroup.Target>();
-        for (int i = 0; i < members.Length; i++)
+        // Cinemachine v3: Targets es List<Target>
+        var list = targetGroup.Targets;
+        for (int i = 0; i < list.Count; i++)
         {
-            if (members[i].target == member)
+            if (list[i].Object == member)
                 return i;
         }
 
-        Array.Resize(ref members, members.Length + 1);
-        members[members.Length - 1] = new CinemachineTargetGroup.Target
+        list.Add(new CinemachineTargetGroup.Target
         {
-            target = member,
-            weight = 0f,
-            radius = radius
-        };
-        targetGroup.m_Targets = members;
-        return members.Length - 1;
+            Object = member,
+            Weight = 0f,
+            Radius = radius
+        });
+        return list.Count - 1;
     }
 
     static float DampingFactor(float sharpness, float deltaTime)

@@ -492,7 +492,7 @@ public class PauseMenu : MonoBehaviour
             if (oldScale != newScale)
             {
                 ApplySavedUIScale();
-                var allDocs = FindObjectsByType<UIDocument>(FindObjectsSortMode.None);
+                var allDocs = FindObjectsByType<UIDocument>(FindObjectsInactive.Exclude);
                 foreach (var doc in allDocs)
                 {
                     if (doc != _doc && doc.gameObject != gameObject)
@@ -521,7 +521,7 @@ public class PauseMenu : MonoBehaviour
         PlayerPrefs.SetFloat("EchoOpacity", echoOpacity);
 
         // Broadcast echo opacity
-        var allRecorders = FindObjectsByType<EchoPlayback>(FindObjectsSortMode.None);
+        var allRecorders = FindObjectsByType<EchoPlayback>(FindObjectsInactive.Exclude);
         foreach (var playback in allRecorders)
         {
             playback.SendMessage("ApplySavedEchoOpacity", SendMessageOptions.DontRequireReceiver);

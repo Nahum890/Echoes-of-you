@@ -100,7 +100,7 @@ graph TD
 
 ## 4 — MATERIALES MAESTROS Y SHADERS
 
-El Built-in Render Pipeline se utilizará con shaders personalizados para forzar la estética PS1/PS2. Queda prohibido el sombreado estándar moderno.
+The Universal Render Pipeline (URP) will be utilized with custom or URP Lit shaders configured to force the retro aesthetic. Queda prohibido el sombreado estándar moderno.
 
 ```
 +-----------------------------------------------------------+
