@@ -1,0 +1,32 @@
+# Blender 4.1.1 MTL File: 'wall_clock.blend'
+# www.blender.org
+
+newmtl Black.Metal
+Ns 467.980408
+Ka 0.520455 0.520455 0.520455
+Kd 0.044942 0.044942 0.044942
+Ks 0.177273 0.177273 0.177273
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+
+newmtl Clock
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd textures/clock_yanagi-1.jpg
+map_d textures/clock_yanagi-1.jpg
+
+newmtl Metal.Silver
+Ns 1000.000000
+Ka 0.811544 0.811544 0.811544
+Kd 0.256249 0.256249 0.256249
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3

@@ -1,164 +1,259 @@
-# ASSETS FALTANTES
-## Inventario de assets requeridos por los documentos de diseño que NO existen en el proyecto
-### Fuente: ECHOES_BIBLE.md · VISUAL_TARGET.md · BRIEF_ESPACIAL.md
-### Generado: Julio 2026
+# ASSETS FALTANTES — Echoes of You
+
+Inventario de todo lo que los documentos de diseño (ECHOES_BIBLE.md, VISUAL_TARGET.md, BRIEF_ESPACIAL.md) especifican pero no existe en el proyecto.
+
+Organizado por tipo de creación: **IA generativa** (modelos, texturas, sonidos), **Código** (sistemas de juego), **Shader** (GLSL/HLSL), **Prefab** (montaje en Unity).
 
 ---
 
-## SHADERS (VISUAL_TARGET.md §4, §19)
+# PARTE 1 — MODELOS 3D (IA generativa)
 
-| Asset | Documento | Prioridad |
-|-------|-----------|-----------|
-| `RetroFlatLit.shader` | VISUAL_TARGET §4 — Shader maestro para geometría arquitectónica | 🔴 Alta |
-| `AnalogGhost.shader` | VISUAL_TARGET §4 — Shader del eco con dither transparency, 15 FPS, scanlines | 🔴 Alta |
-| `LiminalFog.shader` | VISUAL_TARGET §4 — Niebla lineal agresiva que corta geometría a 15-20m | 🔴 Alta |
+Se pueden generar con herramientas como **Meshy.ai**, **Rodin**, **Trellis**, o modelado rápido en **Blender + IA**.
 
----
+## Props escolares core
 
-## TEXTURAS LO-FI (VISUAL_TARGET.md §5, §19)
+### Pupitre Doble Escolar
+```
+Prompt IA (Meshy/Rodin):
+"Low-poly 3D model of a vintage school double desk, wooden tabletop with scratches, green metal tubular legs, no textures, solid colors, PS1/PS2 aesthetic, 300-500 triangles, suitable for Unity"
+```
+- Archivo destino: `Assets/3D Models/Props/PupitreDoble.fbx`
+- Material: `WallMustardMat` (madera) + `WallTealMat` (patas)
 
-| Asset | Resolución | Uso | Prioridad |
-|-------|-----------|-----|-----------|
-| `tex_school_wood_128.png` | 128×128 | Madera escolar para pupitres, sillas, estanterías | 🟠 Media |
-| `tex_linoleum_floor_128.png` | 128×128 | Baldosas de linóleo gris con juntas marcadas | 🟠 Media |
-| `tex_chalkboard_256.png` | 256×256 | Pizarra verde desgastada con restos de tiza | 🟠 Media |
-| `tex_plaster_wall_128.png` | 128×128 | Yeso rugoso pintado con patrón de suciedad | 🟡 Baja |
-| `tex_cork_board_128.png` | 128×128 | Corcho para carteleras | 🟡 Baja |
+### Silla Escolar Modular
+```
+Prompt IA:
+"Low-poly 3D model of a school chair, hard dark blue plastic seat and backrest, thin bent metal legs, late 90s style, no textures, flat colors, PS1 aesthetic, 200-400 triangles"
+```
+- Archivo destino: `Assets/3D Models/Props/SillaEscolar.fbx`
 
----
+### Radiador de Fundición
+```
+Prompt IA:
+"Low-poly 3D model of a cast iron radiator, vintage school heater, vertical segments, mounted on wall, rust marks as vertex color, industrial style, 200-300 triangles"
+```
+- Archivo destino: `Assets/3D Models/Props/Radiador.fbx`
 
-## DECALS (VISUAL_TARGET.md §6, §19)
+### Estantería de Biblioteca
+```
+Prompt IA:
+"Low-poly 3D model of a tall wooden library bookshelf, 6 shelves, filled with books with plain spines, dark wood color, school library style, PS1 era, 400-600 triangles"
+```
+- Archivo destino: `Assets/3D Models/Props/Estanteria.fbx`
 
-| Prefab | Descripción | Uso | Prioridad |
-|--------|-------------|-----|-----------|
-| `dec_moisture_lines.prefab` | Humedad analógica en esquinas de techos | Capítulos I-VI | 🟠 Media |
-| `dec_lyra_notes.prefab` | Dibujos/palabras de Lyra en pizarras | Capítulo IV (Niveles 10, 13) | 🟠 Media |
-| `dec_floor_drag.prefab` | Marcas de arrastre de sillas en linóleo | Guía visual sutil en aulas | 🟡 Baja |
-| `dec_crack_liminal.prefab` | Grietas poligonales en paredes | Capítulo III+ (fragmentación) | 🟡 Baja |
+### Pizarra de Aula
+```
+Prompt IA:
+"Low-poly 3D model of a green chalkboard on wall, wooden frame, slightly worn surface with chalk dust marks, school classroom style, 100-200 triangles"
+```
+- Archivo destino: `Assets/3D Models/Props/Pizarra.fbx`
 
----
+### Cartelera Escolar
+```
+Prompt IA:
+"Low-poly 3D model of a school cork bulletin board, wooden frame, pinned papers and notices, some peeling off, corridor wall style, 150-300 triangles"
+```
+- Archivo destino: `Assets/3D Models/Props/Cartelera.fbx`
 
-## PROPS ESCOLARES (VISUAL_TARGET.md §7, §19)
+### Perchero de Pasillo
+```
+Prompt IA:
+"Low-poly 3D model of a school hallway coat rack, metal bar with individual hooks mounted on wall, one forgotten coat hanging, memory-amber color coat, 200-400 triangles"
+```
+- Archivo destino: `Assets/3D Models/Props/Perchero.fbx`
 
-| Prefab | Descripción | Prioridad |
-|--------|-------------|-----------|
-| `PupitreDobleEscolar.prefab` | Madera contrachapada rayada + patas metálicas verdes | 🔴 Alta |
-| `SillaEscolarModular.prefab` | Plástico duro azul/verde + patas metal doblado | 🔴 Alta |
-| `RadiadorFundicion.prefab` | Radiador de calefacción antiguo con óxido | 🟠 Media |
-| `EstanteriaBiblioteca.prefab` | Estantes de madera oscura con libros sin lomos | 🟠 Media |
-| `PizarraAula.prefab` | Pizarra de tiza con marco de madera | 🟠 Media |
-| `CarteleraEscolar.prefab` | Marco de madera + fondo de corcho + avisos | 🟡 Baja |
-| `PercheroPasillo.prefab` | Barra metálica con ganchos, un abrigo `memory-amber` olvidado | 🟡 Baja |
+## Props decorativos
 
----
-
-## SYSTEMAS DE JUEGO (ECHOES_BIBLE.md §5-7)
-
-| Sistema | Descripción | Capítulo | Prioridad |
-|---------|-------------|----------|-----------|
-| `EchoAmbientalLyra` | Eco no controlable de Lyra que revela caminos invisibles | IV (Nivel 10) | 🔴 Alta |
-| `DegradacionEco` | Eco pierde fidelidad visual con uso repetido (desincronización 0.1-0.3s) | III (Nivel 6) | 🔴 Alta |
-| `EstadoResidual` | Eco permanece 2.5s después de reproducción (hoy: 0.55s) | Todos | 🔴 Alta |
-| `LatenciaInicio` | Eco tiene demora fija de 0.8s al activarse (hoy: no existe) | Todos | 🔴 Alta |
-| `GrabacionLimitada` | maxRecordSeconds configurable por nivel (hoy: 6s fijo, debería ser 20s) | IV (Nivel 11) | 🔴 Alta |
-| `EcoPregrabado` | Grabación que existe sin que el jugador la hiciera | V (Nivel 13) | 🟠 Media |
-| `InversionEco` | Aiden sigue al eco en lugar de grabarlo | VI (Nivel 14) | 🟠 Media |
-| `SistemaCapitulos` | Reglas de mecánicas permitidas/prohibidas por capítulo | Todos | 🟠 Media |
-
----
-
-## AUDIO (VISUAL_TARGET.md §12, §19)
-
-| Asset | Descripción | Prioridad |
-|-------|-------------|-----------|
-| `audio_tape_hiss_loop.wav` | Ruido de cinta magnética para grabaciones de eco | 🟠 Media |
-| `FiltroBandpass_Eco` | Filtro DSP que distorsiona pasos del eco (bandpass + tape hiss) | 🟠 Media |
-| `SchoolRoom_Ambient.wav` | Ambiente de aula vacía con zumbido de fluorescentes | 🟠 Media |
-| `VozLyra_Fragmento*.wav` | Fragmentos de voz de Lyra (filtrados, incompletos) para Niveles 10 y 13 | 🟠 Media |
-| `VozAiden_Fragmento.wav` | Fragmento de voz de Aiden para Nivel 5 | 🟡 Baja |
-| `TimbreEscolar.wav` | Timbre de escuela para transiciones | 🟡 Baja |
-| `PisadasLinoleo.wav` | Pasos sobre linóleo escolar (presente y eco distorsionado) | 🟡 Baja |
+| Prop | Prompt IA | Archivo |
+|------|-----------|---------|
+| Reloj pared | "Low-poly 3D model of an analog wall clock, stopped at 3:40, school classroom style, PS1 aesthetic, 100-200 triangles" | `Props/RelojPared.fbx` |
+| Extintor | "Low-poly 3D model of a red fire extinguisher on floor, fallen on its side, school maintenance room, 150-250 triangles" | `Props/Extintor.fbx` |
+| Casco mantenimiento | "Low-poly 3D model of a yellow hard hat on the floor, construction worker helmet, 100-150 triangles" | `Props/Casco.fbx` |
+| Maceta planta seca | "Low-poly 3D model of a dried dead plant in a terracotta pot, school hallway decoration, 150-250 triangles" | `Props/Maceta.fbx` |
+| Taza café | "Low-poly 3D model of a ceramic coffee mug, teachers room style, half full with coffee, 100-200 triangles" | `Props/TazaCafe.fbx` |
+| Balón fútbol | "Low-poly 3D model of a classic black and white soccer ball, worn, on the ground, 100-200 triangles" | `Props/Balon.fbx` |
+| Mochila | "Low-poly 3D model of a school backpack, fabric, one strap hanging, on floor, nostalgic 90s style, 200-300 triangles" | `Props/Mochila.fbx` |
+| Paraguas | "Low-poly 3D model of a folded umbrella, forgotten at staircase base, dark blue, 100-200 triangles" | `Props/Paraguas.fbx` |
+| Flores secas | "Low-poly 3D model of dried flowers in a glass jar, on windowsill, faded colors, 150-250 triangles" | `Props/FloresSecas.fbx` |
+| Carrito conserje | "Low-poly 3D model of a janitor cart with cleaning supplies, bucket and mop, school style, 300-500 triangles" | `Props/CarritoConserje.fbx` |
+| Cronómetro | "Low-poly 3D model of a wall-mounted sports stopwatch, stopped, gymnasium style, 100-150 triangles" | `Props/Cronometro.fbx` |
 
 ---
 
-## SISTEMAS DE CÁMARA (ECHOES_BIBLE.md §8)
+# PARTE 2 — TEXTURAS (IA generativa)
 
-| Sistema | Descripción | Prioridad |
-|---------|-------------|-----------|
-| `FixedPuzzleCameraController` | Cámara fija para composiciones específicas de puzzle | 🟠 Media |
-| `ConfigCamaraPorNivel` | Sistema que aplique offsets y FOV según tabla de la Biblia (línea 283-290) | 🟠 Media |
+Se pueden generar en segundos con **Midjourney, DALL-E, Stable Diffusion, o Clipdrop**. Configurar siempre: salida 128×128 o 256×256, PNG sin compresión, Filter Mode = Point (no bilinear).
 
----
-
-## SISTEMAS NARRATIVOS (ECHOES_BIBLE.md §9)
-
-| Sistema | Descripción | Prioridad |
-|---------|-------------|-----------|
-| `EnvironmentalStorytelling` | Sistema para colocar props narrativos (cuaderno, abrigo, fotografía, tazas) por nivel | 🟠 Media |
-| `CreditosEnPared` | Sistema que proyecta créditos en geometría del Nivel 15 | 🟡 Baja |
+| Asset | Prompt | Resolución | Archivo destino |
+|-------|--------|-----------|-----------------|
+| Madera escolar | "Pixelated 128x128 tileable texture of old school pine wood desk, scratched surface, warm brown, PS1 flat low-res texture, no PBR, solid colors with subtle noise" | 128×128 | `Assets/Textures/tex_school_wood_128.png` |
+| Linóleo suelo | "Pixelated 128x128 tileable texture of gray institutional linoleum floor tiles, visible grout lines, slightly dirty, PS1 flat style" | 128×128 | `Assets/Textures/tex_linoleum_floor_128.png` |
+| Pizarra verde | "Pixelated 256x256 texture of green chalkboard, partially erased chalk marks, worn surface, school classroom, PS1 lo-fi" | 256×256 | `Assets/Textures/tex_chalkboard_256.png` |
+| Yeso pared | "Pixelated 128x128 tileable texture of painted plaster wall, slight rough surface, institutional color, subtle dirt noise, PS1 flat style" | 128×128 | `Assets/Textures/tex_plaster_wall_128.png` |
+| Corcho | "Pixelated 128x128 tileable texture of cork board, dense noise pattern with pin holes, warm brown, PS1 low-res" | 128×128 | `Assets/Textures/tex_cork_board_128.png` |
 
 ---
 
-## PIPELINE / HERRAMIENTAS (PROJECT_CONTEXT.md, VISUAL_TARGET.md)
+# PARTE 3 — SONIDOS (IA generativa + freesound)
 
-| Asset | Descripción | Prioridad |
-|-------|-------------|-----------|
-| `EchoesEditorUtility.cs` | Helper con SetSerializedValue centralizado (hoy duplicado en 4 archivos) | 🟡 Baja |
-| `SettingsManager` | ScriptableObject compartido para settings de UI (hoy duplicado en 3 lugares) | 🟡 Baja |
-| `AtlasTexturas` | Atlas de texturas para batching de materiales escolares | 🟡 Baja |
+Se pueden generar con **ElevenLabs** (voces), **AIVA/Suno** (música/ambientes), o descargar de **freesound.org** con atribución.
 
----
+### Voces narrativas (ElevenLabs / Voice AI)
 
-## PROPS NARRATIVOS POR NIVEL (BRIEF_ESPACIAL.md)
+| Fragmento | Texto sugerido | Voz | Archivo |
+|-----------|---------------|-----|---------|
+| Voz Aiden (Nivel 5) | "I should have said something. I just... stood there." | Hombre joven, 17-18 años, tono arrepentido | `Audio/Voz/VozAiden_Fragmento.wav` |
+| Voz Lyra (Nivel 10) | "...maybe tomorrow? Or... I don't know. Forget it." | Mujer joven, misma edad, tono inseguro | `Audio/Voz/VozLyra_Fragmento1.wav` |
+| Voz Lyra (Nivel 13) | "You never... you never actually listened, did you?" | Mujer, tono dolido pero no enojado | `Audio/Voz/VozLyra_Fragmento2.wav` |
 
-| Nivel | Objeto Narrativo | Estado |
-|-------|-----------------|--------|
-| 1 | Abrigo `memory-amber` en locker | ❌ No existe |
-| 1 | Cuaderno caído en pasillo | ❌ No existe |
-| 2 | Fotografía femenina en cartelera | ❌ No existe |
-| 2 | Cuaderno abierto en escritorio profesor | ❌ No existe |
-| 3 | Objeto `memory-amber` al fondo del pasillo Lyra | ❌ No existe |
-| 4 | Reloj de pared detenido a las 15:40 | ❌ No existe |
-| 4 | Nota adhesiva en escritorio | ❌ No existe |
-| 5 | Extintor caído | ❌ No existe |
-| 5 | Casco de mantenimiento en suelo | ❌ No existe |
-| 5 | Fotografía escolar parcialmente arrancada | ❌ No existe |
-| 6 | Libro abierto con páginas en blanco | ❌ No existe |
-| 6 | Sello de biblioteca en mostrador | ❌ No existe |
-| 7 | Letra caída en cartel "SALIDA DE EMERGENCIA" | ❌ No existe |
-| 7 | Balón de fútbol en rincón | ❌ No existe |
-| 8 | 2 tazas de café (una con café, una vacía) | ❌ No existe |
-| 8 | Lista de asistencia con nombres borrados | ❌ No existe |
-| 9 | Carrito de conserje abandonado | ❌ No existe |
-| 9 | Aro de baloncesto sin red | ❌ No existe |
-| 9 | Pintada de tiza en suelo | ❌ No existe |
-| 10 | Mochila debajo de pupitre `memory-amber` | ❌ No existe |
-| 10 | Dibujo en pizarra: dos siluetas | ❌ No existe |
-| 10 | Flores secas en vaso en repisa | ❌ No existe |
-| 11 | Fotografía clavada en rellano | ❌ No existe |
-| 11 | Paraguas olvidado en base escalera | ❌ No existe |
-| 12 | Cronómetro detenido en pared | ❌ No existe |
-| 12 | Listado récords: "Aiden — 2003" | ❌ No existe |
-| 13 | Pupitre `memory-amber` volcado | ❌ No existe |
-| 13 | Mochila del Nivel 10 en centro del aula | ❌ No existe |
-| 15 | Abrigo del Nivel 1 ya no está | ❌ No existe (estado cambiado) |
-| 15 | Cuaderno cerrado apoyado contra pared | ❌ No existe |
+### Efectos de sonido (freesound.org o IA)
 
-**Total props narrativos faltantes: 30**
+| Sonido | Descripción | Fuente sugerida | Archivo |
+|--------|-------------|-----------------|---------|
+| Tape hiss loop | Ruido de fondo de cinta de cassette magnética | freesound: "cassette hiss loop" | `Audio/SFX/audio_tape_hiss_loop.wav` |
+| Zumbido fluorescente | Zumbido eléctrico de tubo fluorescente de techo | freesound: "fluorescent light hum" | `Audio/SFX/fluorescent_hum.wav` |
+| Timbre escolar | Timbre de escuela旧, tono electromecánico | freesound: "school bell ring" | `Audio/SFX/school_bell.wav` |
+| Pisadas linóleo | Pasos sobre linóleo escolar | freesound: "footsteps on linoleum" | `Audio/SFX/footsteps_linoleum.wav` |
+| Pisadas eco distorsionadas | Misma pisada con filtro bandpass + hiss | Procesar pisada linóleo con audacity | `Audio/SFX/footsteps_echo_distorted.wav` |
+| VHS mecanismo | Clics de cassette, rebobinado, play | freesound: "vhs tape clicks mechanical" | `Audio/SFX/tape_mechanical.wav` |
+| Ambiente aula vacía | Silencio de aula sin nadie, leve resonancia | freesound: "empty classroom ambience" | `Audio/SFX/classroom_ambient.wav` |
+
+Para generar pisadas distorsionadas del eco, procesar el archivo base con:
+```
+Audacity: Efecto > Filtro de paso banda (300Hz-4000Hz)
+         + Pista > Generar > Ruido (tape hiss, mezclar al 15%)
+         + Efecto > Distorsión suave
+```
 
 ---
 
-## ARCHIVOS DE CÓDIGO ARCHIVADOS
+# PARTE 4 — DECALS (IA + Unity)
 
-Los siguientes archivos fueron movidos a `_ARCHIVE/DeadCode/` por ser código legacy que ya no pertenece al pipeline activo:
+Los decals deben ser **planos poligonales** (no projection system). Se crean como un quad con textura transparente.
 
-| Archivo | Razón |
-|---------|-------|
-| `EchoesProductionBuilder.cs` | 2403 líneas de dead code SciFi envuelto en `#if false` |
-| `MainMenu.cs` | Menú uGUI legacy reemplazado por `MainMenuController` (UITK) |
-| `Animated Woman/` | Modelo de personaje no utilizado en la escuela |
-| `freesound_community-sci-fi-charge-up-37395.mp3` | Efecto de sonido sci-fi prohibido por VISUAL_TARGET.md |
+| Decal | Textura prompt (128×128) | Archivo prefab |
+|-------|-------------------------|----------------|
+| Humedad | "Pixel art moisture stain on concrete wall corner, dark water damage shape, transparent PNG, 128x128" | `Prefabs/Decals/dec_moisture_lines.prefab` |
+| Notas Lyra | "Pixel art chalk drawing on green board, two stick figures one taller, heart shape, rough sketch style, 256x128" | `Prefabs/Decals/dec_lyra_notes.prefab` |
+| Arrastre sillas | "Pixel art black scuff marks on gray linoleum floor, chair leg drag trails, semi-transparent, 128x128" | `Prefabs/Decals/dec_floor_drag.prefab` |
+| Grietas | "Pixel art black crack lines on wall, polygonal jagged fracture shape, transparent PNG, PS1 style, 128x128" | `Prefabs/Decals/dec_crack_liminal.prefab` |
 
 ---
 
-*Documento generado por auditoría automática. Los assets listados aquí son los que los documentos de diseño especifican pero no existen en el proyecto actual.*
+# PARTE 5 — SHADERS (código HLSL/GLSL)
+
+No se generan con IA de imágenes — se escriben en código. Sin embargo, se puede usar **Claude/GPT-4 para escribir shaders URP** con prompts como:
+
+```
+Escribe un shader URP HLSL para Unity. 
+- Nombre: RetroFlatLit
+- Propiedades: Albedo color, sin texturas
+- Metallic = 0, Smoothness = 0.05
+- Sin normal maps, sin AO
+- Sombreado plano (flat shading via vertex snapping opcional)
+- Compatible con SRP Batcher
+```
+
+```
+Escribe un shader URP HLSL para Unity.
+- Nombre: AnalogGhost
+- Propósito: renderizar el eco del jugador
+- Alpha dithered (patron 4x4 Bayer), no alpha blending suave
+- Emisión cian (#4FC3E8)
+- Frame rate limitado a 15 FPS en animación de vértices
+- Scanlines overlay sutiles
+- Transparencia con dither, no blending
+```
+
+```
+Escribe un shader URP HLSL para Unity.
+- Nombre: LiminalFog
+- Propósito: niebla lineal agresiva que corta geometría
+- Sin niebla volumétrica
+- Color sólido, corte abrupto a 15-20 metros
+- Sin gradientes suaves
+```
+
+---
+
+# PARTE 6 — SISTEMAS DE JUEGO (solo código C#)
+
+| Sistema | Descripción | Archivo destino |
+|---------|-------------|-----------------|
+| Eco Ambiental Lyra | Script que controla un eco no interactivo con ruta fija, activa plataformas invisibles en radio 2m | `Assets/Scripts/LyraAmbientEcho.cs` |
+| Degradación Eco | Sistema que reduce fidelidad visual y añade desincronización 0.1-0.3s por uso repetido | Extension en `EchoPlayback.cs` |
+| Estado Residual 2.5s | Cambiar FadeOutAndDestroy de 0.55s → 2.5s con colisión activa y opacidad decreciente | `EchoPlayback.cs` |
+| Latencia 0.8s | Añadir delay fijo entre activación del eco y primer movimiento | `EchoPlayback.cs` |
+| Grabación Limitada | maxRecordSeconds configurable por nivel desde LevelBlueprint | `EchoRecorder.cs` + `LevelBlueprint.cs` |
+| Eco Pregrabado | Grabación que se reproduce sola, no se puede sobrescribir | `Assets/Scripts/EchoPregrabado.cs` |
+| Inversión | Nivel 14: Aiden sigue al eco. Sin grabación. Cámara frontal simétrica. | Modo en `EchoRecorder.cs` |
+| Sistema Capítulos | ScriptableObject que define qué mecánicas están permitidas en cada capítulo | `Assets/Scripts/CapituloRules.cs` |
+| FixedPuzzleCamera | Cámara fija con posición/FOV por puzzle según tabla de Biblia §8 | `Assets/Scripts/FixedPuzzleCameraController.cs` (existe? verificar) |
+
+---
+
+# PARTE 7 — PREFABS (montaje en Unity)
+
+Los prefabs se ensamblan en Unity a partir de los modelos 3D + materiales existentes.
+
+| Prefab | Modelo base | Materiales | Ubicación |
+|--------|-------------|------------|-----------|
+| PupitreDoble | `PupitreDoble.fbx` | `WallMustardMat` (madera), `WallTealMat` (metal) | `Assets/Prefabs/Props/PupitreDoble.prefab` |
+| SillaEscolar | `SillaEscolar.fbx` | `WallTealMat` (asiento), `WallSageMat` (patas) | `Assets/Prefabs/Props/SillaEscolar.prefab` |
+| Radiador | `Radiador.fbx` | `ArchMat` (metal) | `Assets/Prefabs/Props/Radiador.prefab` |
+| Estanteria | `Estanteria.fbx` | `WallSageMat` + `MemoryMat` (detalle) | `Assets/Prefabs/Props/Estanteria.prefab` |
+| Pizarra | `Pizarra.fbx` | `WallSageMat` (verde pizarra) | `Assets/Prefabs/Props/Pizarra.prefab` |
+| Cartelera | `Cartelera.fbx` | `WallMustardMat` (marco) | `Assets/Prefabs/Props/Cartelera.prefab` |
+| Perchero | `Perchero.fbx` | `ArchMat` (metal) | `Assets/Prefabs/Props/Perchero.prefab` |
+| MesaProfesor | Si se necesita: escritorio de profesor | `WallMustardMat` | `Assets/Prefabs/Props/MesaProfesor.prefab` |
+
+Cada decal es un prefab: Quad + Material con textura transparente + `FilterMode = Point`.
+
+---
+
+# RESUMEN: QUÉ PEDIR A LA IA
+
+## En orden de prioridad para la Vertical Slice:
+
+| # | Tipo | Cantidad | Herramienta IA recomendada |
+|---|------|----------|---------------------------|
+| 1 | **Modelos core** | 7 props (pupitre, silla, radiador, estantería, pizarra, cartelera, perchero) | Meshy.ai / Trellis / Rodin |
+| 2 | **Texturas** | 5 texturas 128×128 | Midjourney / DALL-E / Stable Diffusion |
+| 3 | **Sonidos** | 7 SFX + 3 voces | freesound.org + ElevenLabs |
+| 4 | **Decals** | 4 texturas + 4 prefabs Quad | DALL-E (texturas) + Unity (prefabs) |
+| 5 | **Props decorativos** | 11 props pequeños | Meshy.ai (batch) |
+| 6 | **Shaders** | 3 shaders URP | Claude o GPT-4 (código HLSL) |
+| 7 | **Sistemas código** | 9 sistemas C# | Claude o GPT-4 (código C#) |
+
+## Prompt general para Meshy.ai / Trellis (generar todos los props de una vez):
+
+```
+Generate low-poly 3D models in FBX format with the following specifications:
+- PS1 / early PS2 aesthetic
+- Under 500 triangles per model
+- No textures required (solid vertex colors or flat materials)
+- Pivot at base center
+- Scale: 1 unit = 1 meter
+- Compatible with Unity URP
+
+Models needed:
+1. School desk: double wooden tabletop, green metal legs, scratched surface
+2. School chair: blue plastic seat, thin metal legs
+3. Cast iron radiator: wall-mounted, vertical segments
+4. Library bookshelf: tall, 6 shelves, dark wood, books with plain spines
+5. Green chalkboard: wooden frame, chalk marks
+6. Cork bulletin board: wooden frame, pinned papers
+7. Hallway coat rack: wall bar with hooks, one coat hanging
+8. Analog wall clock: stopped at 3:40
+9. Fire extinguisher: red, fallen on side
+10. Yellow hard hat: on floor
+11. Ceramic coffee mug: half full
+12. Soccer ball: classic black and white, worn
+13. School backpack: fabric, one strap
+14. Folded umbrella: dark blue
+15. Janitor cart: bucket, mop, cleaning supplies
+16. Sports stopwatch: wall-mounted, stopped
+```
+---
+
+*Documento generado por auditoría — Julio 2026*
