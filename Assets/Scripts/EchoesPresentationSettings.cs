@@ -17,7 +17,7 @@ public static class EchoesPresentationSettings
     public const float DefaultGameFogDensity = 0.011f;
     public const float DefaultGameSunIntensity = 0.58f;
     public const float DefaultGamePointLightMul = 0.72f;
-    public const float DefaultGameAmbientMul = 0.56f;
+    public const float DefaultGameAmbientMul = 0.9f;
 
     public static float CharacterVisualScale =>
         Mathf.Clamp(PlayerPrefs.GetFloat(VisualScaleKey, DefaultVisualScale), 0.2f, 1.2f);
@@ -72,7 +72,7 @@ public static class EchoesPresentationSettings
                 fog = 0.011f;
                 sun = 0.58f;
                 point = 0.72f;
-                ambient = 0.56f;
+                ambient = 0.9f;
                 return true;
             case "bruma":
                 fog = 0.014f;

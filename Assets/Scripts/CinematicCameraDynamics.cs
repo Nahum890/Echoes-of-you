@@ -67,6 +67,12 @@ public class CinematicCameraDynamics : MonoBehaviour
 
     void Awake()
     {
+        if (GetComponent<Unity.Cinemachine.CinemachineBrain>() != null)
+        {
+            Destroy(this);
+            return;
+        }
+
         _noiseSeed = new Vector3(Random.value * 10f, Random.value * 10f, Random.value * 10f);
         _currentFov = fovBase;
         CacheReferences();

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcf37f80f3f09549945948f90da8d33, type: 3}
+  m_Name: RoomData_ZonaA_Bifurcacion
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.RoomDataSO
+  roomId: ZonaA_Bifurcacion
+  roomType: 0
+  placements:
+  - {fileID: 11400000, guid: 8d0f43d8c3b35f949b233741896a8b3a, type: 2}
+  - {fileID: 11400000, guid: c305ca2e542700640b519eaece0ea065, type: 2}
+  - {fileID: 11400000, guid: 8b8fc3cf55e84594c87af6404923745d, type: 2}
+  - {fileID: 11400000, guid: 829e3206f933e784dba9fcb44dec62ea, type: 2}
+  - {fileID: 11400000, guid: d7aad78bab690254f911e1d7ded53e78, type: 2}
+  - {fileID: 11400000, guid: 487407d9954ae9744aeb7c86caea3a63, type: 2}
+  - {fileID: 11400000, guid: 465f5fd4a7c85524488d5f4284eb8ef8, type: 2}
+  - {fileID: 11400000, guid: 45709e3a643f21846b338ab8d721ae27, type: 2}
+  - {fileID: 11400000, guid: 0f0366ee25634d146bdb62618f55feff, type: 2}
+  decals:
+  - {fileID: 11400000, guid: d810d015e2b6df241a4df7899e9af618, type: 2}
+  - {fileID: 11400000, guid: a51dcc92d969d404e8429a71d7bc7390, type: 2}
+  validateRequiredProps: 1

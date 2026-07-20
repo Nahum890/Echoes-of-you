@@ -39,11 +39,10 @@ public class LevelPacingMarker : MonoBehaviour
 
         if (adjustCameraOnEnter)
         {
-            CinematicCameraDynamics dynamics = FindAnyObjectByType<CinematicCameraDynamics>();
-            if (dynamics != null && LevelCameraProfiles.TryGet(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, out LevelCameraProfiles.Profile profile))
+            if (LevelCameraProfiles.TryGet(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, out LevelCameraProfiles.Profile profile))
             {
                 profile.identity = cameraHint;
-                dynamics.ApplyProfile(profile);
+                CameraProfileApplier.Apply(profile);
             }
         }
     }

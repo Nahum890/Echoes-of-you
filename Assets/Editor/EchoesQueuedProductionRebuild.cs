@@ -4,7 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-[InitializeOnLoad]
+// [InitializeOnLoad]
 public static class EchoesQueuedProductionRebuild
 {
     const string FlagAssetPath = "Assets/Editor/EchoesQueuedProductionRebuild.flag";

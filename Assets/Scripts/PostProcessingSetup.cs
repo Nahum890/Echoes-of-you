@@ -111,18 +111,19 @@ public class PostProcessingSetup : MonoBehaviour
     {
         CleanupRuntimeObjects();
 
-        for (int frame = 0; frame < 40; frame++)
+        Camera cameraRef = Camera.main;
+        if (cameraRef != null)
         {
-            Camera cameraRef = Camera.main;
-            if (cameraRef != null)
-            {
-                SetupPostProcessing(cameraRef);
-                _setupRoutine = null;
-                yield break;
-            }
-
-            yield return null;
+            SetupPostProcessing(cameraRef);
+            _setupRoutine = null;
+            yield break;
         }
+
+        yield return null;
+
+        cameraRef = Camera.main;
+        if (cameraRef != null)
+            SetupPostProcessing(cameraRef);
 
         _setupRoutine = null;
     }
@@ -148,22 +149,22 @@ public class PostProcessingSetup : MonoBehaviour
         bloom.scatter.Override(0.6f);
 
         Tonemapping tonemapping = _runtimeProfile.Add<Tonemapping>(true);
-        tonemapping.mode.Override(TonemappingMode.ACES);
+        tonemapping.mode.Override(TonemappingMode.None);
 
         ColorAdjustments grading = _runtimeProfile.Add<ColorAdjustments>(true);
-        grading.postExposure.Override(-0.08f);
-        grading.contrast.Override(22f);
-        grading.saturation.Override(-28f);
+        grading.postExposure.Override(1.0f);
+        grading.contrast.Override(5f);
+        grading.saturation.Override(-12f);
 
         Vignette vignette = _runtimeProfile.Add<Vignette>(true);
-        vignette.intensity.Override(0.33f);
-        vignette.smoothness.Override(0.92f);
+        vignette.intensity.Override(0.08f);
+        vignette.smoothness.Override(0.75f);
         vignette.color.Override(Color.black);
 
         ChromaticAberration ca = _runtimeProfile.Add<ChromaticAberration>(true);
         ca.intensity.Override(0.08f);
 
-        LensDistortion ld = _runtimeProfile.Add<LensDistortion>(true);
+        LensDistortion ld = _runtimeProfile.Add<LensDistortion>(false);
         ld.intensity.Override(0f);
 
         FilmGrain grain = _runtimeProfile.Add<FilmGrain>(true);

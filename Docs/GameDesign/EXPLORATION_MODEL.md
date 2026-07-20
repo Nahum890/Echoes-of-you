@@ -1,113 +1,350 @@
-# EXPLORATION_MODEL.md
-
-# Modelo de exploración
-
-Echoes of You no consiste únicamente en resolver puzzles.
-
-Consiste en recorrer un lugar.
+# ENVIRONMENT_GRAMMAR.md
+# Echoes of You 2.0
 
 ---
 
-# OBJETIVOS
+# Filosofía
 
-Reducir fatiga.
+El entorno NO existe para verse bonito.
 
-Construir narrativa.
+Existe para enseñar,
+guiar,
+ocultar,
+recordar,
+emocionar
+y reforzar el puzzle.
 
-Crear curiosidad.
+Cada metro recorrido debe comunicar algo.
 
-Permitir observación.
+Si un espacio no comunica nada,
+ese espacio sobra.
 
 ---
 
-# TIEMPOS
+# El jugador siempre debe sentir que está recorriendo un lugar real.
 
-Tutorial
+NO una serie de habitaciones.
 
-30%
+NO una greybox.
 
-Puzzle
+NO un mapa de Unity.
 
-40%
+Debe sentirse como una escuela abandonada.
+
+---
+
+# Regla fundamental
+
+Los puzzles nunca aparecen inmediatamente.
+
+Siempre existe una transición.
+
+Entrada
+
+↓
 
 Exploración
 
-30%
+↓
+
+Preparación
+
+↓
+
+Puzzle
+
+↓
+
+Resolución
+
+↓
+
+Respiración
+
+↓
+
+Nuevo espacio
+
+Nunca:
+
+Entrada
+
+↓
+
+Puzzle
+
+↓
+
+Puzzle
+
+↓
+
+Puzzle
 
 ---
 
-# DESPUÉS DE CADA PUZZLE
+# El espacio cuenta una historia.
 
-Siempre existe
+Antes del puzzle el jugador debe observar.
 
-Un espacio tranquilo.
-
-No hay temporizadores.
-
-No hay presión.
-
-No hay plataformas.
-
-Solo caminar.
+Nunca empieza resolviendo.
 
 ---
 
-# CURIOSIDAD
+# Cada sala responde una pregunta.
 
-Cada capítulo debe incluir
+¿Dónde estoy?
 
-Al menos
+¿Quién estuvo aquí?
 
-Un objeto inaccesible.
+¿Qué pasó?
 
-Un espacio visible.
-
-Una puerta cerrada.
-
-Una ventana hacia otra sala.
+¿Qué me espera?
 
 ---
 
-# NARRATIVA AMBIENTAL
+# El jugador debe poder detenerse.
 
-Nunca usar cinemáticas para todo.
+Debe haber zonas donde simplemente caminar.
 
-Usar
-
-Fotografías.
-
-Pizarras.
-
-Escritorios.
-
-Mochilas.
-
-Papeles.
-
-Objetos olvidados.
+No todo debe ser interacción.
 
 ---
 
-# VISTAS
+# Ritmo
 
-Cada cinco minutos
+Exploración
 
-Mostrar un espacio amplio.
+30-60 segundos
 
-Evitar sensación constante de túnel.
+↓
+
+Puzzle
+
+1-4 minutos
+
+↓
+
+Descanso
+
+20 segundos
+
+↓
+
+Nuevo espacio
 
 ---
 
-# RECOMPENSAS
+# Las puertas
 
-La exploración puede revelar
+Las puertas nunca son decoración.
 
-Lore.
+Siempre:
 
-Diálogos.
+conectan
 
-Recuerdos.
+anticipan
 
-Coleccionables.
+esconden
 
-Nunca bloquear la historia principal.
+o revelan.
+
+---
+
+# Pasillos
+
+Nunca rectos porque sí.
+
+Siempre tienen:
+
+cambio de luz
+
+curva
+
+ventana
+
+cartel
+
+locker
+
+o aula abierta.
+
+---
+
+# Aulas
+
+Nunca vacías.
+
+Siempre cuentan una historia.
+
+Ejemplos:
+
+sillas corridas
+
+mochilas
+
+cuadernos
+
+proyector
+
+pizarrón
+
+escritorio
+
+papeles
+
+cajas
+
+---
+
+# Biblioteca
+
+Debe sentirse silenciosa.
+
+Nunca enorme.
+
+Siempre comprimida.
+
+Muchos estantes.
+
+Pasillos angostos.
+
+Líneas de visión limitadas.
+
+---
+
+# Patio
+
+Debe sentirse liberador.
+
+Después de muchos espacios cerrados.
+
+Nunca el primer nivel.
+
+---
+
+# Exploración
+
+Debe recompensar mirar.
+
+No necesariamente con coleccionables.
+
+Puede ser:
+
+una vista
+
+un recuerdo
+
+una frase
+
+una sombra
+
+un eco
+
+---
+
+# Regla de composición
+
+Todo espacio debe tener:
+
+Foreground
+
+Midground
+
+Background
+
+Nunca una habitación completamente vacía.
+
+---
+
+# Color
+
+Cada capítulo tiene identidad.
+
+Persistencia
+
+Azules fríos
+
+Coordinación
+
+Grises
+
+Confianza
+
+Cyan
+
+Consecuencia
+
+Rojo apagado
+
+Aceptación
+
+Ámbar
+
+---
+
+# Escala
+
+Todo debe respetar escala humana.
+
+Puertas
+
+2 metros
+
+Pasillos
+
+2.5-3 metros
+
+Aulas
+
+6-10 metros
+
+Techos
+
+3 metros
+
+---
+
+# Nunca hacer
+
+❌ habitaciones cuadradas vacías
+
+❌ props repetidos
+
+❌ muebles pegados
+
+❌ pasillos infinitos
+
+❌ plataformas flotando
+
+❌ decoración aleatoria
+
+❌ muebles bloqueando el jugador
+
+❌ props atravesándose
+
+---
+
+# Checklist
+
+Antes de aprobar un nivel:
+
+□ parece una escuela
+
+□ tiene historia
+
+□ tiene transición
+
+□ enseña algo
+
+□ tiene respiración
+
+□ guía naturalmente
+
+□ tiene composición
+
+□ tiene narrativa ambiental
+
+□ tiene landmarks
+
+□ ningún espacio sobra

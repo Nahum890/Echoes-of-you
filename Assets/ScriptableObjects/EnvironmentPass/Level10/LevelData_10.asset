@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d35faf216c40c4408286bb9c5346792, type: 3}
+  m_Name: LevelData_10
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.LevelDataSO
+  levelNumber: 10
+  levelName: Level_10 -- Recuerdos
+  scenePath: Assets/Scenes/Level_10.unity
+  chapter: 3
+  rooms:
+  - {fileID: 11400000, guid: 4de10f4e1b2420941b60c7a401878978, type: 2}
+  - {fileID: 11400000, guid: e61dfb5011513d74999b90eb10ed57f5, type: 2}
+  - {fileID: 11400000, guid: e75fe0aeda036324c8efc73593c17e79, type: 2}
+  - {fileID: 11400000, guid: 158185905d5a9c344b05ef519ab47377, type: 2}
+  narrativeCluster: {fileID: 0}

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcf37f80f3f09549945948f90da8d33, type: 3}
+  m_Name: RoomData_ZonaC_LaberintoDer
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.RoomDataSO
+  roomId: ZonaC_LaberintoDer
+  roomType: 0
+  placements:
+  - {fileID: 11400000, guid: abb485ce2c8d474439c5854ee3f3e3e4, type: 2}
+  - {fileID: 11400000, guid: 9b5db76a2feafd042b0715ed6ce1f399, type: 2}
+  - {fileID: 11400000, guid: 89bd44e4991913f42a2ff8149d758b90, type: 2}
+  - {fileID: 11400000, guid: 1567710a3b60fb54cae8154bd32276dd, type: 2}
+  - {fileID: 11400000, guid: faaadf8930f235045bc68c4b2ddf11aa, type: 2}
+  - {fileID: 11400000, guid: a4bd1c12bd08c4744aadeb479ec6a5b9, type: 2}
+  - {fileID: 11400000, guid: 22077dca063b8654eb89c95cbceb8d39, type: 2}
+  - {fileID: 11400000, guid: a367c7ae126fe2c43be01149e4ed92db, type: 2}
+  - {fileID: 11400000, guid: 1e64a3d090888d943aed0cf316bff7a6, type: 2}
+  decals:
+  - {fileID: 11400000, guid: 558363db09c8cee4fbc31d4532ac8cc7, type: 2}
+  - {fileID: 11400000, guid: d5ea8fb87a587d94689dc83bb9b88827, type: 2}
+  validateRequiredProps: 1

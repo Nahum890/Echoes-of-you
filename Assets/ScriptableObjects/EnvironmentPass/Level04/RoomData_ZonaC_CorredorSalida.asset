@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcf37f80f3f09549945948f90da8d33, type: 3}
+  m_Name: RoomData_ZonaC_CorredorSalida
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.RoomDataSO
+  roomId: ZonaC_CorredorSalida
+  roomType: 0
+  placements:
+  - {fileID: 11400000, guid: 9c68c58f17a321844adafa6a4effa10c, type: 2}
+  - {fileID: 11400000, guid: 5ccaa07bce6e7dd46a4c7da334aca373, type: 2}
+  - {fileID: 11400000, guid: 8dfd2c59c7669144fbcfa2f45382edfa, type: 2}
+  - {fileID: 11400000, guid: 610d61c00626093438654ce6d4abf585, type: 2}
+  - {fileID: 11400000, guid: cc6b1e21beaea5947b3b54131dcb2791, type: 2}
+  - {fileID: 11400000, guid: 5d570e88c22b16944a215584be08c372, type: 2}
+  - {fileID: 11400000, guid: 8339039fe0be5a74fb2d0b05c42c8919, type: 2}
+  - {fileID: 11400000, guid: 4b23579a78443d5409508b07fc7834b6, type: 2}
+  - {fileID: 11400000, guid: 4e33194391503f14ba520bbd4d1b85d2, type: 2}
+  decals:
+  - {fileID: 11400000, guid: a1497b62a910a8a46b259ea1ac279bd1, type: 2}
+  - {fileID: 11400000, guid: 335fcc6acecbbce4ab34ef8222343538, type: 2}
+  validateRequiredProps: 1

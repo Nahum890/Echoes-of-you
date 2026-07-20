@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcf37f80f3f09549945948f90da8d33, type: 3}
+  m_Name: RoomData_ZonaB_PatioExterior
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.RoomDataSO
+  roomId: ZonaB_PatioExterior
+  roomType: 4
+  placements:
+  - {fileID: 11400000, guid: e1f5a247abaef3e4a96b9949ed6b7478, type: 2}
+  - {fileID: 11400000, guid: 2455acbb0818dc14f86da2c99a89bff5, type: 2}
+  - {fileID: 11400000, guid: 0eeebd40723429a45a3541e8873ecd79, type: 2}
+  - {fileID: 11400000, guid: a11f14bb3e60b8947a04f404d83759d4, type: 2}
+  - {fileID: 11400000, guid: 3992b6755da660b44b276d9fc50c5f92, type: 2}
+  - {fileID: 11400000, guid: eb4717e69d799b14ab22b95d1cfd3dc9, type: 2}
+  - {fileID: 11400000, guid: a7c65d0c2716d4a4990e8984137671f4, type: 2}
+  - {fileID: 11400000, guid: a339f7d8f7d33894ab72db4b5e888064, type: 2}
+  decals:
+  - {fileID: 11400000, guid: b52fee223df532843b0e730ff88d8c77, type: 2}
+  - {fileID: 11400000, guid: adac0f159e5d1f8499acacfc26ff2c44, type: 2}
+  validateRequiredProps: 1

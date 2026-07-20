@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcf37f80f3f09549945948f90da8d33, type: 3}
+  m_Name: RoomData_ZonaA_UmbralLyra
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.RoomDataSO
+  roomId: ZonaA_UmbralLyra
+  roomType: 6
+  placements:
+  - {fileID: 11400000, guid: 7bf8b964607cd2f49bc32222967f0ade, type: 2}
+  - {fileID: 11400000, guid: d8235f47e82078048840758b13f027c6, type: 2}
+  - {fileID: 11400000, guid: 8fef135d0f7f59841913286872b07758, type: 2}
+  - {fileID: 11400000, guid: a1cee8a3e38a30940b48778e7a902d73, type: 2}
+  - {fileID: 11400000, guid: 00a97ad5c3ff169408be46223ee2603e, type: 2}
+  - {fileID: 11400000, guid: e2eb328bc4834fa488cd586614a1d067, type: 2}
+  - {fileID: 11400000, guid: 7419c980a9689b5409b7a37fb79150f8, type: 2}
+  - {fileID: 11400000, guid: 9c770225df8a11f47b4067f583567f2c, type: 2}
+  decals:
+  - {fileID: 11400000, guid: 78eb1327c6ba22945b5a6a48cc744e1e, type: 2}
+  - {fileID: 11400000, guid: 5bbae8a63977b28438b075985ee19880, type: 2}
+  validateRequiredProps: 1

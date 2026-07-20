@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d35faf216c40c4408286bb9c5346792, type: 3}
+  m_Name: LevelData_07
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.LevelDataSO
+  levelNumber: 7
+  levelName: Level_07 -- Evasion
+  scenePath: Assets/Scenes/Level_07.unity
+  chapter: 2
+  rooms:
+  - {fileID: 11400000, guid: 86d9d954eba59764d8cfacf9b5102c34, type: 2}
+  - {fileID: 11400000, guid: 060521e4ca6bef541a104c85ae219a8a, type: 2}
+  - {fileID: 11400000, guid: 5892eb29330b7d44bbfa28d6cb4ed5bf, type: 2}
+  - {fileID: 11400000, guid: 87658ce4bf4de76448ecee832a50f8de, type: 2}
+  - {fileID: 11400000, guid: 21ef0e88b283fbf428d863c63a61bf6d, type: 2}
+  narrativeCluster: {fileID: 0}

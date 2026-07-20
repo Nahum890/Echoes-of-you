@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcf37f80f3f09549945948f90da8d33, type: 3}
+  m_Name: RoomData_ZonaC_AbismoPrincipal_Izq
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.RoomDataSO
+  roomId: ZonaC_AbismoPrincipal_Izq
+  roomType: 0
+  placements:
+  - {fileID: 11400000, guid: 27ee1ab2bd522c041ac6585fbf440343, type: 2}
+  - {fileID: 11400000, guid: 1eb9445370e9baf40bcce71e2e089e68, type: 2}
+  - {fileID: 11400000, guid: 2d2c690e76fb0444c8c4adfae4a85ff3, type: 2}
+  - {fileID: 11400000, guid: 79cd1edf6762383459fa5bbbe7cd7943, type: 2}
+  - {fileID: 11400000, guid: 980719330c7e31041b2eab7387d73f42, type: 2}
+  - {fileID: 11400000, guid: b55471e0ea360714698a1bab3097b522, type: 2}
+  - {fileID: 11400000, guid: 7b99f934c92eb304596d42d1431a80fb, type: 2}
+  - {fileID: 11400000, guid: ec98967ae3acb27418c90189e3588ee6, type: 2}
+  - {fileID: 11400000, guid: 52f9b767b26a23d49aa9b7493d914186, type: 2}
+  decals:
+  - {fileID: 11400000, guid: a288d50a780532a468a2c33472e26f39, type: 2}
+  - {fileID: 11400000, guid: 00ef063d3845ab34c87ccd090caa6197, type: 2}
+  validateRequiredProps: 1

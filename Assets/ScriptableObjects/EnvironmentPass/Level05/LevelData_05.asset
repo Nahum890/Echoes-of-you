@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d35faf216c40c4408286bb9c5346792, type: 3}
+  m_Name: LevelData_05
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.LevelDataSO
+  levelNumber: 5
+  levelName: Level_05 -- Culpa
+  scenePath: Assets/Scenes/Level_05.unity
+  chapter: 1
+  rooms:
+  - {fileID: 11400000, guid: ec20627df08fc0345aabb0d70515505e, type: 2}
+  - {fileID: 11400000, guid: 7c61da60415cbb8468c9a0eca0d2d924, type: 2}
+  - {fileID: 11400000, guid: 00e76127994ddb74f9bf01e012aef54b, type: 2}
+  - {fileID: 11400000, guid: 938c6a3c3f218d9478a2e8703dfa79b4, type: 2}
+  - {fileID: 11400000, guid: 08762d701c90ca847975883979c90b90, type: 2}
+  - {fileID: 11400000, guid: 658ccc7269ab6d7498e8636eda59e680, type: 2}
+  narrativeCluster: {fileID: 0}

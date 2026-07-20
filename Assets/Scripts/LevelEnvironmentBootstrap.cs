@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 public class LevelEnvironmentBootstrap : MonoBehaviour
 {
     static readonly HashSet<string> ScaledScenes = new HashSet<string>();
+    static bool _lightingApplied;
     static Material _runtimeEchoPlateMaterial;
 
     static readonly string[] LegacyDressingPrefixes =
@@ -48,6 +49,11 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         AlignPressurePlates();
         ApplyEchoPlateVisuals();
         ApplyCameraProfile();
+        if (!_lightingApplied)
+        {
+            EchoesPresentationSettings.ApplyLightingPreset("liminal");
+            _lightingApplied = true;
+        }
         ApplyLighting();
         ApplyEchoPlateVisuals();
         EnsureExperienceSystems();
@@ -179,20 +185,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         if (!LevelCameraProfiles.TryGet(sceneName, out LevelCameraProfiles.Profile profile))
             return;
 
-        float world = EchoesWorldMetrics.LevelGeometryScale;
-        profile.followOffset *= world;
-
-        FixedPuzzleCameraController fixedCam = FixedPuzzleCameraController.ResolveActive();
-        if (fixedCam != null)
-        {
-            fixedCam.baseFov = profile.fov;
-            fixedCam.playerWeight = profile.playerWeight;
-            fixedCam.goalWeight = profile.goalWeight;
-        }
-
-        CinematicCameraDynamics dynamics = Object.FindAnyObjectByType<CinematicCameraDynamics>();
-        if (dynamics != null)
-            dynamics.ApplyProfile(profile);
+        CameraProfileApplier.Apply(profile);
     }
 
     static void ApplyObstacleHeights()
@@ -333,7 +326,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         float sunIntensity = EchoesPresentationSettings.GameSunIntensity;
         float pointMul = EchoesPresentationSettings.GamePointLightMultiplier;
         float ambientMul = EchoesPresentationSettings.GameAmbientMultiplier;
-        const float globalLightScale = 0.72f;
+        const float globalLightScale = 0.95f;
         sunIntensity *= globalLightScale;
         pointMul *= globalLightScale;
         ambientMul *= globalLightScale;
@@ -345,9 +338,10 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
             custom.directionalIntensity = sunIntensity;
             custom.pointLightIntensityMultiplier = pointMul;
             custom.directionalColor = new Color(0.44f, 0.54f, 0.7f, 1f);
-            custom.ambientSky = new Color(0.035f, 0.05f, 0.09f, 1f) * ambientMul;
-            custom.ambientEquator = new Color(0.018f, 0.026f, 0.048f, 1f) * ambientMul;
-            custom.ambientGround = new Color(0.006f, 0.008f, 0.014f, 1f) * ambientMul;
+            float ambientBoost = ambientMul * 2.5f;
+            custom.ambientSky = new Color(0.035f * ambientBoost, 0.05f * ambientBoost, 0.09f * ambientBoost, 1f);
+            custom.ambientEquator = new Color(0.018f * ambientBoost, 0.026f * ambientBoost, 0.048f * ambientBoost, 1f);
+            custom.ambientGround = new Color(0.006f * ambientBoost, 0.008f * ambientBoost, 0.014f * ambientBoost, 1f);
             custom.fogColor = new Color(0.018f, 0.024f, 0.038f, 1f);
             custom.reflectionIntensity = 0.18f;
             custom.ApplyNow();
@@ -368,9 +362,10 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         }
 
         RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
-        RenderSettings.ambientSkyColor = new Color(0.035f, 0.05f, 0.09f) * ambientMul;
-        RenderSettings.ambientEquatorColor = new Color(0.018f, 0.026f, 0.048f) * ambientMul;
-        RenderSettings.ambientGroundColor = new Color(0.006f, 0.008f, 0.014f) * ambientMul;
+        float ambientBoost2 = ambientMul * 2.5f;
+        RenderSettings.ambientSkyColor = new Color(0.035f * ambientBoost2, 0.05f * ambientBoost2, 0.09f * ambientBoost2);
+        RenderSettings.ambientEquatorColor = new Color(0.018f * ambientBoost2, 0.026f * ambientBoost2, 0.048f * ambientBoost2);
+        RenderSettings.ambientGroundColor = new Color(0.006f * ambientBoost2, 0.008f * ambientBoost2, 0.014f * ambientBoost2);
         RenderSettings.reflectionIntensity = 0.18f;
         RenderSettings.fog = fogDensity > 0.0001f;
         RenderSettings.fogMode = FogMode.ExponentialSquared;

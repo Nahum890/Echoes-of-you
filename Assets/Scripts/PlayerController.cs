@@ -7,6 +7,8 @@ using UnityEditor;
 [RequireComponent(typeof(CharacterController))]
 public partial class PlayerController : MonoBehaviour
 {
+    public System.Action<float> OnLanded;
+    public System.Action OnJumped;
     const string AnimatorParamSpeed = "Speed";
     const string AnimatorParamIsGrounded = "IsGrounded";
     const string AnimatorParamIsRecording = "IsRecording";
@@ -53,7 +55,7 @@ public partial class PlayerController : MonoBehaviour
     [Header("Deteccion de suelo")]
     public Transform groundCheck;
     public float groundProbeRadius = 0.24f;
-    public float groundProbeDistance = 0.38f;
+    public float groundProbeDistance = 0.6f;
     public LayerMask groundMask = (1 << 6); // Solo layer Ground — incluir Default causa que el SphereCast detecte al propio jugador
 
     [Header("Failsafe")]
@@ -265,20 +267,10 @@ public partial class PlayerController : MonoBehaviour
         {
             _lastHardLanding = downwardSpeed >= hardLandingSpeed;
             _landingLockTimer = _lastHardLanding ? hardLandingPause : softLandingPause;
+            OnLanded?.Invoke(downwardSpeed);
             GameFeelController.Instance?.PlayLanding(transform.position, movementUp, downwardSpeed);
             if (_lastHardLanding)
                 TriggerAnimatorIfExists(AnimatorParamHardLanding);
-
-            // Trigger visual and physical landing tilt on the active third-person camera or cinematic camera dynamics
-            ThirdPersonCamera activeCam = ThirdPersonCamera.ResolveActive();
-            if (activeCam != null)
-                activeCam.PlayLandingTilt(downwardSpeed);
-            else
-            {
-                CinematicCameraDynamics cinematicCam = FindAnyObjectByType<CinematicCameraDynamics>();
-                if (cinematicCam != null)
-                    cinematicCam.PlayLandingTilt(downwardSpeed);
-            }
         }
 
         UpdateOrientation(postMoveProbe, Time.deltaTime);
@@ -419,6 +411,7 @@ public partial class PlayerController : MonoBehaviour
         _verticalVelocity = movementUp * jumpSpeed;
         _grounded = false;
         _jumpedThisFrame = true;
+        OnJumped?.Invoke();
 
         if (HasAnimatorParameter(AnimatorLegacyJump, AnimatorControllerParameterType.Trigger))
             _anim.SetTrigger(AnimatorLegacyJump);

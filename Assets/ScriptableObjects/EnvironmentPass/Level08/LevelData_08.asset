@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d35faf216c40c4408286bb9c5346792, type: 3}
+  m_Name: LevelData_08
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.LevelDataSO
+  levelNumber: 8
+  levelName: Level_08 -- Autosabotaje
+  scenePath: Assets/Scenes/Level_08.unity
+  chapter: 1
+  rooms:
+  - {fileID: 11400000, guid: 3b07d5fffd6254e4ea05e4f69cfe1541, type: 2}
+  - {fileID: 11400000, guid: d27a1ea08c3344643976d7d3b8df815c, type: 2}
+  - {fileID: 11400000, guid: 0147a5d090cd45348817483025445d5c, type: 2}
+  narrativeCluster: {fileID: 0}

@@ -99,15 +99,8 @@ public class GameStateController : MonoBehaviour
 
     void FocusCameraEvent(Vector3 focusPoint, float weight, float holdSeconds, float pulseFov)
     {
-        ThirdPersonCamera legacyCamera = ThirdPersonCamera.ResolveActive();
-        if (legacyCamera != null)
-        {
-            legacyCamera.RequestEventFocus(focusPoint, weight, holdSeconds, pulseFov);
-            return;
-        }
-
-        FixedPuzzleCameraController fixedCamera = FixedPuzzleCameraController.ResolveActive();
-        fixedCamera?.RequestEventFocus(focusPoint, weight, holdSeconds, pulseFov);
+        if (CinemachineEventFocus.Instance != null)
+            CinemachineEventFocus.Instance.RequestEventFocus(focusPoint, weight, holdSeconds, pulseFov);
     }
 
     void SetState(GameFlowState nextState, Vector3 focusPoint, Vector3 up, bool react)

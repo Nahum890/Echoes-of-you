@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -191,7 +192,7 @@ public static class EchoesMaterialLibrary
         material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent; // 3000
     }
 
-    private static Color HexColor(string hex, float alpha = 1f)
+    public static Color HexColor(string hex, float alpha = 1f)
     {
         if (ColorUtility.TryParseHtmlString("#" + hex, out Color c))
         {
@@ -201,7 +202,7 @@ public static class EchoesMaterialLibrary
         return new Color(1, 0, 1, alpha);
     }
 
-    private static void EnsureFolderExists(string assetPath)
+    public static void EnsureFolderExists(string assetPath)
     {
         string[] parts = assetPath.Split('/');
         string current = parts[0];
@@ -212,5 +213,43 @@ public static class EchoesMaterialLibrary
                 AssetDatabase.CreateFolder(current, parts[i]);
             current = next;
         }
+    }
+
+    // ─── SAFE ACCESS FOR ENVIRONMENT PASS ───
+
+    private static readonly Dictionary<string, Material> s_materialCache = new();
+
+    public static bool TryGetMaterial(string canonicalName, out Material mat)
+    {
+        mat = GetMaterialByName(canonicalName);
+        return mat != null;
+    }
+
+    private static Material GetMaterialByName(string canonicalName)
+    {
+        if (s_materialCache.TryGetValue(canonicalName, out Material cached))
+            return cached;
+
+        Material mat = canonicalName switch
+        {
+            "Mat_Memory"      => MemoryMat,
+            "Mat_WallTeal"    => WallTealMat,
+            "Mat_WallMustard" => WallMustardMat,
+            "Mat_WallSage"    => WallSageMat,
+            "Mat_WallRose"    => WallRoseMat,
+            "Mat_Floor"       => FloorMat,
+            "Mat_Architecture"=> ArchMat,
+            "Mat_Plate"       => PlateMat,
+            "Mat_Bridge"      => BridgeMat,
+            "Mat_Door"        => DoorMat,
+            "Mat_Exit"        => GoalMat,
+            "Mat_Echo"        => EchoMat,
+            _ => null
+        };
+
+        if (mat != null)
+            s_materialCache[canonicalName] = mat;
+
+        return mat;
     }
 }

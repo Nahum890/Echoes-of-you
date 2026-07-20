@@ -254,8 +254,8 @@ public class GameFeelController : MonoBehaviour
 
         float targetCA = 0.08f + _postProcessImpulse * 0.42f;
         float targetLD = -_postProcessImpulse * 22f;
-        float targetVignette = 0.33f + _vignetteImpulse * 0.28f;
-        float targetExposure = -0.08f + _exposureImpulse * 0.32f;
+        float targetVignette = 0.08f + _vignetteImpulse * 0.28f;
+        float targetExposure = 1.0f + _exposureImpulse * 0.32f;
 
         if (isRecording)
         {
@@ -280,7 +280,7 @@ public class GameFeelController : MonoBehaviour
             }
             if (profile.TryGet<LensDistortion>(out var ld))
             {
-                ld.intensity.value = Mathf.MoveTowards(ld.intensity.value, targetLD, Time.unscaledDeltaTime * 60f);
+                ld.active = false;
             }
             if (profile.TryGet<Vignette>(out var vignette))
             {
@@ -289,7 +289,7 @@ public class GameFeelController : MonoBehaviour
             if (profile.TryGet<ColorAdjustments>(out var grading))
             {
                 grading.postExposure.value = Mathf.MoveTowards(grading.postExposure.value, targetExposure, Time.unscaledDeltaTime * 1.5f);
-                float targetSaturation = isRecording ? -42f : -28f;
+                float targetSaturation = isRecording ? -28f : -12f;
                 grading.saturation.value = Mathf.MoveTowards(grading.saturation.value, targetSaturation, Time.unscaledDeltaTime * (isRecording ? 28f : 8f));
             }
             if (profile.TryGet<FilmGrain>(out var grain))

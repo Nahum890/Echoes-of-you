@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "skills": {
+    "apology-action-protocol": {
+      "source": "open-hax/opencode-skills",
+      "sourceType": "github",
+      "skillPath": ".opencode/skills/apology-action-protocol/SKILL.md",
+      "computedHash": "0aabde019b07593c3520ac1e1ba12eed05ca9a3a4a3b0f7faa03fbc7d2f316af"
+    },
+    "break-edit-loop": {
+      "source": "open-hax/opencode-skills",
+      "sourceType": "github",
+      "skillPath": ".opencode/skills/break-edit-loop/SKILL.md",
+      "computedHash": "2d7626637700b7631e4e65213989ff7de48705af40d14d0a97fed4f9ee5ef3b6"
+    },
+    "emergency-confusion-reset": {
+      "source": "open-hax/opencode-skills",
+      "sourceType": "github",
+      "skillPath": ".opencode/skills/emergency-confusion-reset/SKILL.md",
+      "computedHash": "1ef6c85b02e7ac3ec613f82a45ddc9ff25c19f8da2fe928084c6b036e6e51724"
+    },
+    "git-safety-check": {
+      "source": "open-hax/opencode-skills",
+      "sourceType": "github",
+      "skillPath": ".opencode/skills/git-safety-check/SKILL.md",
+      "computedHash": "2ddd5a8a9a061b14afc0f6a29d1d48fda0b3c14edf6cac837c0979f818560ac3"
+    },
+    "lint-gate": {
+      "source": "open-hax/opencode-skills",
+      "sourceType": "github",
+      "skillPath": ".opencode/skills/lint-gate/SKILL.md",
+      "computedHash": "f56bb971e9908dc9085783447ea6f7d818c8255e3fb648b3c71a0bba51907a21"
+    },
+    "opencode-skill-creation": {
+      "source": "open-hax/opencode-skills",
+      "sourceType": "github",
+      "skillPath": ".opencode/skills/opencode-skill-creation/SKILL.md",
+      "computedHash": "522bfa5dee51fabf6ef00893fff2b864b02308394cbff53ae52d5cc1084a3d58"
+    },
+    "task-atomicity-guard": {
+      "source": "open-hax/opencode-skills",
+      "sourceType": "github",
+      "skillPath": ".opencode/skills/task-atomicity-guard/SKILL.md",
+      "computedHash": "a595f9ee6c4d547a3cb0197cef672b2decd0ffe6d3d088611b891884508a032a"
+    },
+    "testing-general": {
+      "source": "open-hax/opencode-skills",
+      "sourceType": "github",
+      "skillPath": ".opencode/skills/testing-general/SKILL.md",
+      "computedHash": "cb2b6c8e146e470c67186484cce34d1b9d6ff4f47d768a0881ecb06fc78cd968"
+    }
+  }
+}

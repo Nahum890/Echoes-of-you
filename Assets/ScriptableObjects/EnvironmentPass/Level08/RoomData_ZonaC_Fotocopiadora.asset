@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcf37f80f3f09549945948f90da8d33, type: 3}
+  m_Name: RoomData_ZonaC_Fotocopiadora
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.RoomDataSO
+  roomId: ZonaC_Fotocopiadora
+  roomType: 8
+  placements:
+  - {fileID: 11400000, guid: 17d65fe913e912b439eb8da5fb4b8164, type: 2}
+  - {fileID: 11400000, guid: b9c0888236e056247ba3579f36fd26c2, type: 2}
+  - {fileID: 11400000, guid: 3b44d6d9ef4d66541978a3507f637024, type: 2}
+  - {fileID: 11400000, guid: a8faefe5e20ddfd49a48f0a167647173, type: 2}
+  - {fileID: 11400000, guid: 03b04222de0e11a4ea02c16a94ff4ceb, type: 2}
+  - {fileID: 11400000, guid: 6c56769c215692b4ba6785699fbca3cb, type: 2}
+  - {fileID: 11400000, guid: c35adc0f3f0c0ff4ca1b0d916f8db3a3, type: 2}
+  - {fileID: 11400000, guid: 1d42ce7edda7c834e8148674f2c40920, type: 2}
+  decals:
+  - {fileID: 11400000, guid: 8d37e4b3c92cfb748893cd42a9ff1d9d, type: 2}
+  - {fileID: 11400000, guid: 078afb8e1dd736145995e4b7e491df4b, type: 2}
+  validateRequiredProps: 1

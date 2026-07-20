@@ -9,6 +9,7 @@ TagManager:
   - EchoProjection
   - KineticBlock
   - PlayerOnlyBarrier
+  - EnvironmentPassProp
   layers:
   - Default
   - TransparentFX

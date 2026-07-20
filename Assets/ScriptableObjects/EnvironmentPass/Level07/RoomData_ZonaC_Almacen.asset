@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcf37f80f3f09549945948f90da8d33, type: 3}
+  m_Name: RoomData_ZonaC_Almacen
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.RoomDataSO
+  roomId: ZonaC_Almacen
+  roomType: 8
+  placements:
+  - {fileID: 11400000, guid: 12ba2a73497ea0449ab4389ff6f8f5a2, type: 2}
+  - {fileID: 11400000, guid: a618d1238f682d146b7aa9b4efd87a54, type: 2}
+  - {fileID: 11400000, guid: 6b78afbf7e01aea48a5cf1fee48daaaa, type: 2}
+  - {fileID: 11400000, guid: f78b6b6e427568241bffb00a53dc6160, type: 2}
+  - {fileID: 11400000, guid: 3fe6ff14998a5d146ac82815c18d4096, type: 2}
+  - {fileID: 11400000, guid: c73dad0981ddc2443884fbd79643d866, type: 2}
+  - {fileID: 11400000, guid: 3969982ade97e8a48ada243ab5850a46, type: 2}
+  - {fileID: 11400000, guid: 2ba5b43f3c1a1464484694927b95ab02, type: 2}
+  decals:
+  - {fileID: 11400000, guid: 9382efc517441354497ddaa088d2b472, type: 2}
+  - {fileID: 11400000, guid: c72ca762237274a439960de14a1ef4c1, type: 2}
+  validateRequiredProps: 1

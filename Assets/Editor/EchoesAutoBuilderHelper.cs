@@ -1,7 +1,8 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 
-[InitializeOnLoad]
+// [InitializeOnLoad]  // DISABLED for Environment Pass - manual prop placement
+// [InitializeOnLoad]  // DISABLED - line 5 - Environment Pass 2.0 (2026-07-17)
 public static class EchoesAutoBuilderHelper
 {
     static EchoesAutoBuilderHelper()

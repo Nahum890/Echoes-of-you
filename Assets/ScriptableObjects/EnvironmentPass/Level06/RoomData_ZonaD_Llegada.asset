@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcf37f80f3f09549945948f90da8d33, type: 3}
+  m_Name: RoomData_ZonaD_Llegada
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.RoomDataSO
+  roomId: ZonaD_Llegada
+  roomType: 0
+  placements:
+  - {fileID: 11400000, guid: 6d2a9451c0e69dc4fbd27c70ce6f4ae4, type: 2}
+  - {fileID: 11400000, guid: dfe7129be8a46f6428c99fdb760e710c, type: 2}
+  - {fileID: 11400000, guid: b972d36de4d4d014eba427130b162fbb, type: 2}
+  - {fileID: 11400000, guid: 5b437d394506cb846a78aa57c31619a3, type: 2}
+  - {fileID: 11400000, guid: 473969b0237b1a34ebc8c084d10daf17, type: 2}
+  - {fileID: 11400000, guid: ab02c8d176bdc1f4ea6654dc18a6ae4b, type: 2}
+  - {fileID: 11400000, guid: 04e2d045e87c4d64799b8689aaf86015, type: 2}
+  - {fileID: 11400000, guid: 26f7170158c4e724f8ab7c7b763cba65, type: 2}
+  - {fileID: 11400000, guid: bee345633e0ad1040b216dbaa98cc99c, type: 2}
+  decals:
+  - {fileID: 11400000, guid: 2fb5936a351a0e648a49236b82e6a9f2, type: 2}
+  - {fileID: 11400000, guid: f7470abcbe6644c49b4cd7b910dfc833, type: 2}
+  validateRequiredProps: 1
