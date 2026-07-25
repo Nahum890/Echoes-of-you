@@ -1,0 +1,45 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-AUD-DUCK-001"
+# AUDIO_DSP_DUCKING_MATRIX.yaml
+# Sidechain compression thresholds in dB, attack/release, and attenuation curves.
+
+dsp_ducking_rules:
+  - id: DUCK-001
+    source_bus: "Master/SFX/Echo"
+    target_bus: "Master/Music"
+    threshold_db: -18.0
+    ratio: 4.0               # 4:1 compression ratio
+    attack_ms: 50.0
+    release_ms: 300.0
+    attenuation_db: -6.0     # Music ducks by -6dB during Echo playback
+
+  - id: DUCK-002
+    source_bus: "Master/SFX/Player"
+    target_bus: "Master/Ambient"
+    threshold_db: -12.0
+    ratio: 2.0
+    attack_ms: 20.0
+    release_ms: 150.0
+    attenuation_db: -3.0
+
+  - id: DUCK-003
+    source_bus: "Master/UI"
+    target_bus: "Master/SFX"
+    threshold_db: -24.0
+    ratio: 8.0               # Hard ducking on UI triggers
+    attack_ms: 5.0
+    release_ms: 100.0
+    attenuation_db: -12.0
+
+attenuation_curves:
+  Footstep:
+    min_distance_m: 1.0
+    max_distance_m: 12.0
+    curve_type: "Logarithmic"
+    volume_db_at_max: -30.0
+
+  PuzzleMechanic:
+    min_distance_m: 1.0
+    max_distance_m: 20.0
+    curve_type: "Logarithmic"
+    volume_db_at_max: -24.0

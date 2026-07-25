@@ -1,0 +1,26 @@
+schema_version: "1.0"
+schema_type: ai_task_report
+required: [task_id, status, documents_read, files_inspected, files_modified, validations, evidence, blockers]
+
+fields:
+  task_id: {type: string}
+  status: {type: enum, values: [approved, rejected, blocked, needs_review, not_run]}
+  documents_read: {type: array, items: string}
+  files_inspected: {type: array, items: string}
+  files_modified: {type: array, items: string}
+  assumptions: {type: array, items: string}
+  decisions_used: {type: array, items: string}
+  validations:
+    type: array
+    item_fields:
+      rule_id: {type: string}
+      status: {type: enum, values: [passed, failed, skipped, blocked]}
+      report: {type: string}
+  evidence:
+    type: array
+    item_fields:
+      type: {type: enum, values: [file, console, test, screenshot, runtime, diff]}
+      path: {type: string}
+      description: {type: string}
+  blockers: {type: array, items: string}
+  next_actions: {type: array, items: string}

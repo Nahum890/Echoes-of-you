@@ -1,0 +1,72 @@
+# UI_NAVIGATION_GRAPH.yaml
+# Spec ID: SPEC-136
+# Version: 1.0
+spec_id: SPEC-136
+version: "1.0"
+authority: "Docs/ExecutableSpecs/registry/decisions.yaml"
+
+# UI Navigation Graph & State Machine Specification — Echoes of You
+# Defines all UI state transitions, animations, and timeScale behaviors.
+
+initial_state: "None"    # No UI visible during active gameplay
+
+states:
+  None:           # Active gameplay, UI hidden
+  HUD:            # Minimal gameplay HUD (echo timer, slots indicator)
+  MainMenu:       # Title screen / Main menu
+  OptionsMenu:    # Settings menu (overlay on MainMenu or PauseMenu)
+  PauseMenu:      # In-game pause menu
+  LevelTransition: # Black screen / fade between levels
+  NarrativeProp:  # Narrative prop detail popup (e.g. Prop_Coat)
+
+transitions:
+  None→HUD:
+    trigger: "OnSceneLoaded"
+    animation: "FadeIn"
+    duration_s: 0.3
+
+  HUD→PauseMenu:
+    trigger: "OnEscapePressed"
+    action: "Time.timeScale = 0.0f"   # Pauses gameplay completely
+    animation: "SlideUp"
+    duration_s: 0.2
+    execution_note: "If an echo recording is active, StopRecording() is called first."
+
+  PauseMenu→HUD:
+    trigger: "OnResumePressed OR OnEscapePressed"
+    action: "Time.timeScale = 1.0f"
+    animation: "SlideDown"
+    duration_s: 0.2
+
+  PauseMenu→OptionsMenu:
+    trigger: "OnOptionsPressed"
+    action: "Push OptionsMenu on top of PauseMenu"  # PauseMenu remains in background
+    animation: "FadeIn"
+    duration_s: 0.2
+
+  OptionsMenu→PauseMenu:
+    trigger: "OnBackPressed OR OnEscapePressed"
+    action: "Pop OptionsMenu"
+    animation: "FadeOut"
+    duration_s: 0.2
+
+  HUD→NarrativeProp:
+    trigger: "OnNarrativePropInteract"
+    action: "Time.timeScale = 0.5f"   # Slow motion, NOT full pause
+    animation: "FadeIn"
+    duration_s: 0.3
+
+  NarrativeProp→HUD:
+    trigger: "OnInteractPressed OR OnEscapePressed"
+    action: "Time.timeScale = 1.0f"
+    animation: "FadeOut"
+    duration_s: 0.3
+
+  HUD→LevelTransition:
+    trigger: "OnLevelExitReached"
+    action: "Time.timeScale = 1.0f, ScreenFader.FadeToBlack(0.5f)"
+    duration_s: 0.5
+
+# Stack model: UI uses a stack of states (Push/Pop)
+# Only PauseMenu→OptionsMenu uses Push — all others are direct state transitions.
+ui_stack_model: "Single + Push for OptionsMenu only"

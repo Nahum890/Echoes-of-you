@@ -1,0 +1,52 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-PROP-MAT-001"
+# PROP_LAYOUT_MATRIX.yaml
+# Explicit relative 3D local coordinate maps [X, Y, Z, RX, RY, RZ] for room interiors.
+
+room_prop_layouts:
+  SchoolClassroom:
+    module_type: 33
+    grid_bounds_m: {width: 10.0, depth: 10.0, height: 3.8}
+    props:
+      # Teacher Desk & Chalkboard
+      - {alias: "Prop_TeacherDesk", local_pos: [0.0, 0.0, 3.8], local_rot: [0.0, 180.0, 0.0]}
+      - {alias: "Prop_Chalkboard", local_pos: [0.0, 1.5, 4.8], local_rot: [0.0, 0.0, 0.0]}
+      # Student Desks 3x3 Array (9 Desks + 9 Chairs)
+      - {alias: "Prop_Desk", local_pos: [-2.5, 0.0, 1.5], local_rot: [0.0, 0.0, 0.0]}
+      - {alias: "Prop_Chair", local_pos: [-2.5, 0.0, 1.0], local_rot: [0.0, 0.0, 0.0]}
+      - {alias: "Prop_Desk", local_pos: [0.0, 0.0, 1.5], local_rot: [0.0, 0.0, 0.0]}
+      - {alias: "Prop_Chair", local_pos: [0.0, 0.0, 1.0], local_rot: [0.0, 0.0, 0.0]}
+      - {alias: "Prop_Desk", local_pos: [2.5, 0.0, 1.5], local_rot: [0.0, 0.0, 0.0]}
+      - {alias: "Prop_Chair", local_pos: [2.5, 0.0, 1.0], local_rot: [0.0, 0.0, 0.0]}
+
+      - {alias: "Prop_Desk", local_pos: [-2.5, 0.0, -0.5], local_rot: [0.0, 0.0, 0.0]}
+      - {alias: "Prop_Chair", local_pos: [-2.5, 0.0, -1.0], local_rot: [0.0, 0.0, 0.0]}
+      - {alias: "Prop_Desk", local_pos: [0.0, 0.0, -0.5], local_rot: [0.0, 0.0, 0.0]}
+      - {alias: "Prop_Chair", local_pos: [0.0, 0.0, -1.0], local_rot: [0.0, 0.0, 0.0]}
+      - {alias: "Prop_Desk", local_pos: [2.5, 0.0, -0.5], local_rot: [0.0, 0.0, 0.0]}
+      - {alias: "Prop_Chair", local_pos: [2.5, 0.0, -1.0], local_rot: [0.0, 0.0, 0.0]}
+
+      - {alias: "Prop_Desk", local_pos: [-2.5, 0.0, -2.5], local_rot: [0.0, 0.0, 0.0]}
+      - {alias: "Prop_Chair", local_pos: [-2.5, 0.0, -3.0], local_rot: [0.0, 0.0, 0.0]}
+      - {alias: "Prop_Desk", local_pos: [0.0, 0.0, -2.5], local_rot: [0.0, 0.0, 0.0]}
+      - {alias: "Prop_Chair", local_pos: [0.0, 0.0, -3.0], local_rot: [0.0, 0.0, 0.0]}
+      - {alias: "Prop_Desk", local_pos: [2.5, 0.0, -2.5], local_rot: [0.0, 0.0, 0.0]}
+      - {alias: "Prop_Chair", local_pos: [2.5, 0.0, -3.0], local_rot: [0.0, 0.0, 0.0]}
+
+      # Bookshelf and Clock on walls
+      - {alias: "Prop_Bookshelf", local_pos: [-4.2, 0.0, 0.0], local_rot: [0.0, 90.0, 0.0]}
+      - {alias: "Prop_Clock", local_pos: [4.2, 2.5, 0.0], local_rot: [0.0, -90.0, 0.0]}
+
+  SchoolCorridor:
+    module_type: 32
+    grid_bounds_m: {width: 4.5, depth: 24.0, height: 3.2}
+    props:
+      - {alias: "Prop_Locker", local_pos: [-1.9, 0.0, -9.0], local_rot: [0.0, 90.0, 0.0]}
+      - {alias: "Prop_Locker", local_pos: [-1.9, 0.0, -6.0], local_rot: [0.0, 90.0, 0.0]}
+      - {alias: "Prop_Locker", local_pos: [-1.9, 0.0, -3.0], local_rot: [0.0, 90.0, 0.0]}
+      - {alias: "Prop_Locker", local_pos: [-1.9, 0.0, 0.0], local_rot: [0.0, 90.0, 0.0]}
+      - {alias: "Prop_Locker", local_pos: [-1.9, 0.0, 3.0], local_rot: [0.0, 90.0, 0.0]}
+      - {alias: "Prop_Locker", local_pos: [-1.9, 0.0, 6.0], local_rot: [0.0, 90.0, 0.0]}
+      - {alias: "Prop_Locker", local_pos: [-1.9, 0.0, 9.0], local_rot: [0.0, 90.0, 0.0]}
+      - {alias: "Prop_TrashCan", local_pos: [1.8, 0.0, 10.0], local_rot: [0.0, -90.0, 0.0]}
+      - {alias: "Prop_NoticeBoard", local_pos: [1.9, 1.6, 0.0], local_rot: [0.0, -90.0, 0.0]}

@@ -1,0 +1,23 @@
+# Docs/Specs/SAVE_MIGRATION_SPEC.yaml (SPEC-130)
+current_schema_version: 1
+
+versioning_rule:
+  - If loaded save_version < current_schema_version: apply migrations in order
+  - If loaded save_version > current_schema_version: FAIL-SAVE-01 (downgrade no soportado)
+
+migrations:
+  v0_to_v1:
+    description: "Formato inicial — añade campo totalPlaytimeSeconds"
+    transform: "if (!data.totalPlaytimeSeconds) data.totalPlaytimeSeconds = 0.0;"
+
+corruption_recovery:
+  checksum_algorithm: "CRC32"
+  checksum_field: "checksum"
+  on_mismatch: "LoadFromBackup"
+  backup_path: "Application.persistentDataPath/save_v1.backup.json"
+  on_backup_missing: "ResetToNewGame"
+
+file_paths:
+  primary: "Application.persistentDataPath/save_v1.json"
+  backup: "Application.persistentDataPath/save_v1.backup.json"
+  encoding: "UTF-8"

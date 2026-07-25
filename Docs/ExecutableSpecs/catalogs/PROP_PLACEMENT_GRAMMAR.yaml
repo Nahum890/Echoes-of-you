@@ -1,0 +1,47 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-PROP-001"
+# PROP_PLACEMENT_GRAMMAR.yaml
+# Procedural prop scatter rules, collision bounds alignment, density limits per room type.
+
+placement_rules:
+  global:
+    collision_check: true               # All props must clear NavMesh areas by min_clearance_m
+    min_clearance_m: 0.6                # Minimum clearance from walkable NavMesh
+    max_density_per_m2: 0.4            # Maximum props per square meter (global cap)
+    random_seed_source: "LevelBlueprintSeed"  # Seeded random for determinism
+
+  room_type_overrides:
+    SchoolCorridor:
+      max_density_per_m2: 0.2
+      allowed_prefab_aliases: ["Prop_Locker", "Prop_Chair_Fallen", "Prop_Backpack", "Prop_Notice"]
+      wall_offset_m: 0.1
+      cluster_mode: false
+
+    SchoolClassroom:
+      max_density_per_m2: 0.6
+      allowed_prefab_aliases: ["Prop_Desk", "Prop_Chair", "Prop_Book", "Prop_Notebook"]
+      cluster_mode: true               # Group desks in 2x2 or 3x3 grids
+      cluster_spacing_m: 1.2
+      row_column_layout: "Grid"
+
+    SchoolGym:
+      max_density_per_m2: 0.15
+      allowed_prefab_aliases: ["Prop_Bench_Gym", "Prop_Ball", "Prop_Cone"]
+      cluster_mode: false
+
+    SchoolLibrary:
+      max_density_per_m2: 0.5
+      allowed_prefab_aliases: ["Prop_Bookshelf", "Prop_Book", "Prop_Table_Library", "Prop_Chair"]
+      cluster_mode: false
+
+    SchoolEntrance:
+      max_density_per_m2: 0.1
+      allowed_prefab_aliases: ["Prop_Coat", "Prop_Bulletin", "Prop_Poster"]
+      cluster_mode: false
+
+scatter_algorithm:
+  method: "PoissonDiskSampling"       # Min-distance Poisson disc for even distribution
+  min_separation_m: 0.8               # Minimum distance between any two props
+  orientation: "SnapToFloorNormal"    # Props orient to floor surface normal
+  rotation_jitter_deg: 15.0          # Random yaw rotation jitter ±15°
+  scale_jitter_percent: 5.0          # Random scale variance ±5%

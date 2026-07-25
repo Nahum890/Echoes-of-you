@@ -1,0 +1,81 @@
+schema_version: "1.0"
+catalog_type: module_library
+enum_source: Assets/Scripts/LevelBlueprint.cs
+factory_source: Assets/Editor/EchoesModuleFactory.cs
+verification_status: enum_and_factory_mapped
+
+modules:
+  - {enum: StandardPlatform, value: 0, category: geometry, factory_case: StandardPlatform}
+  - {enum: BridgePlatform, value: 1, category: geometry, factory_case: BridgePlatform}
+  - {enum: RampPlatform, value: 2, category: geometry, factory_case: RampPlatform}
+  - {enum: BarrierWall, value: 3, category: geometry, factory_case: BarrierWall}
+  - {enum: PressurePlate, value: 4, category: puzzle, factory_case: PressurePlate, component: PressurePlate}
+  - {enum: Door, value: 5, category: puzzle, factory_case: Door, component: DoorController}
+  - {enum: LevelExit, value: 6, category: progression, factory_case: LevelExit}
+  - {enum: PlayerStart, value: 7, category: spawn, factory_case: PlayerStart}
+  - {enum: MovingPlatform, value: 8, category: puzzle, factory_case: MovingPlatform, component: TimedMovingPlatform}
+  - {enum: TutorialTrigger, value: 9, category: ui, factory_case: TutorialTrigger}
+  - {enum: PointLight, value: 10, category: lighting, factory_case: PointLight}
+  - {enum: AmbientParticles, value: 11, category: vfx, factory_case: AmbientParticles}
+  - {enum: DistantArchitecture, value: 12, category: background, factory_case: DistantArchitecture}
+  - {enum: LevelGoal, value: 13, category: progression, factory_case: LevelGoal}
+  - {enum: LevelRuntime, value: 14, category: runtime, factory_case: LevelRuntime}
+  - {enum: PuzzleSignal, value: 15, category: puzzle, factory_case: PuzzleSignal, component: PuzzleSignal}
+  - {enum: PuzzleCondition, value: 16, category: puzzle, factory_case: PuzzleCondition, component: PuzzleCondition}
+  - {enum: HazardField, value: 17, category: puzzle, factory_case: HazardField}
+  - {enum: ConflictTrap, value: 18, category: puzzle, factory_case: ConflictTrap}
+  - {enum: MomentumRelay, value: 19, category: puzzle, factory_case: MomentumRelay}
+  - {enum: MotorPlatform, value: 20, category: puzzle, factory_case: MotorPlatform}
+  - {enum: ObservationChamber, value: 21, category: paradox, factory_case: ObservationChamber}
+  - {enum: TemporalBridge, value: 22, category: echo, factory_case: TemporalBridge, component: TemporalBridge}
+  - {enum: PerspectiveAnchor, value: 23, category: paradox, factory_case: PerspectiveAnchor}
+  - {enum: MemoryCorridor, value: 24, category: paradox, factory_case: MemoryCorridor}
+  - {enum: ParadoxArena, value: 25, category: paradox, factory_case: ParadoxArena}
+  - {enum: ErosionVault, value: 26, category: paradox, factory_case: ErosionVault}
+  - {enum: ResonanceChamber, value: 27, category: paradox, factory_case: ResonanceChamber}
+  - {enum: LiminalThreshold, value: 28, category: transition, factory_case: LiminalThreshold}
+  - {enum: ChronologicalSpire, value: 29, category: paradox, factory_case: ChronologicalSpire}
+  - {enum: VoidGallery, value: 30, category: liminal, factory_case: VoidGallery}
+  - {enum: SchoolHall, value: 31, category: room, factory_case: SchoolHall, template: ROOM-TMPL-001}
+  - {enum: SchoolCorridor, value: 32, category: room, factory_case: SchoolCorridor, template: ROOM-TMPL-002}
+  - {enum: SchoolClassroom, value: 33, category: room, factory_case: SchoolClassroom, template: ROOM-TMPL-003}
+  - {enum: SchoolStairwell, value: 34, category: room, factory_case: SchoolStairwell, template: ROOM-TMPL-004}
+  - {enum: SchoolBathroom, value: 35, category: room, factory_case: SchoolBathroom, template: ROOM-TMPL-005}
+  - {enum: SchoolStaffRoom, value: 36, category: room, factory_case: SchoolStaffRoom, template: ROOM-TMPL-006}
+  - {enum: SchoolLibrary, value: 37, category: room, factory_case: SchoolLibrary, template: ROOM-TMPL-007}
+  - {enum: SchoolCourtyard, value: 38, category: room, factory_case: SchoolCourtyard, template: ROOM-TMPL-008}
+  - {enum: SchoolGym, value: 39, category: room, factory_case: SchoolGym, template: ROOM-TMPL-009}
+  - {enum: SchoolLab, value: 40, category: room, factory_case: SchoolLab, template: ROOM-TMPL-010}
+  - {enum: SchoolMaintenanceCorridor, value: 41, category: room, factory_case: SchoolMaintenanceCorridor, template: ROOM-TMPL-011}
+  - {enum: SchoolEmergencyCorridor, value: 42, category: room, factory_case: SchoolEmergencyCorridor, template: ROOM-TMPL-012}
+  - {enum: SchoolLyraClassroom, value: 43, category: room, factory_case: SchoolLyraClassroom, template: ROOM-TMPL-013}
+  - {enum: SchoolOffice, value: 44, category: room, factory_case: SchoolOffice, template: ROOM-TMPL-014}
+  - {enum: SchoolLiminalClassroom, value: 45, category: room, factory_case: SchoolLiminalClassroom, template: ROOM-TMPL-015}
+  - {enum: TransitionSpace, value: 46, category: transition, factory_case: TransitionSpace, template: ROOM-TMPL-016}
+
+custom_data_contract:
+  syntax: "key=value;key=value"
+  status: partial
+  limitation: "Current ModulePlacement.customData is a free-form string; supported keys must be verified per factory method"
+  unknown_key_behavior: warning
+  malformed_value_behavior: error
+
+validation:
+  - id: MODULE-VAL-001
+    type: mapping
+    status: active
+    severity: fatal
+    scope: [module, blueprint]
+    rule: "Every catalog module value must match exactly one LevelBlueprint.ModuleType enum value"
+  - id: MODULE-VAL-002
+    type: mapping
+    status: active
+    severity: error
+    scope: [module]
+    rule: "Every module must have a matching factory case or be explicitly marked unsupported"
+  - id: MODULE-VAL-003
+    type: validation
+    status: blocked
+    severity: error
+    scope: [module]
+    rule: "Every customData key must be verified against the factory parser"

@@ -1,0 +1,120 @@
+schema_version: "1.0"
+catalog_type: material_catalog
+runtime_authority: Assets/Editor/EchoesMaterialLibrary.cs
+shader_directory: Assets/Shaders
+
+shader_contract:
+  RetroFlatLit: {asset: Assets/Shaders/RetroFlatLit.shader, status: present}
+  AnalogGhost: {asset: Assets/Shaders/AnalogGhost.shader, status: present}
+  LiminalFog: {asset: Assets/Shaders/LiminalFog.shader, status: present}
+  LiminalSurface: {asset: Assets/Shaders/LiminalSurface.shader, status: present}
+  LiminalFogVolume: {asset: Assets/Shaders/LiminalFogVolume.shader, status: present}
+  EchoLiminal: {asset: Assets/Shaders/EchoLiminal.shader, status: present}
+
+color_tokens:
+  echo-cyan: {hex: "#4FC3E8", usage: echo_and_temporal_geometry}
+  memory-amber: {hex: "#E8B262", usage: narrative_memory_and_lyra}
+  corridor-navy: {hex: "#1C2430", usage: corridor_base}
+  institutional-teal: {hex: "#2D4D4D", usage: lockers_and_doors}
+  faded-mustard: {hex: "#8A7A4E", usage: desks_and_wood}
+  fluorescent-sick: {hex: "#C8E6C9", usage: fluorescent_lights}
+  wrongness-red: {hex: "#B23A3A", usage: danger}
+  void-black: {hex: "#0A0A0F", usage: void}
+  sage-green: {hex: "#4A5D4E", usage: staff_room}
+  dusty-rose: {hex: "#7A4E5C", usage: narrative_time_details}
+  warm-cement: {hex: "#6B6B6B", usage: floor_and_stairs}
+  white-linen: {hex: "#EFEFEF", usage: final_integration}
+
+materials:
+  - {id: MAT-001, asset: Assets/Materials/Echoes/Mat_Floor.mat, token: corridor-navy, shader_expected: LiminalSurface}
+  - {id: MAT-002, asset: Assets/Materials/Echoes/Mat_WallTeal.mat, token: institutional-teal, shader_expected: LiminalSurface}
+  - {id: MAT-003, asset: Assets/Materials/Echoes/Mat_WallMustard.mat, token: faded-mustard, shader_expected: LiminalSurface}
+  - {id: MAT-004, asset: Assets/Materials/Echoes/Mat_WallSage.mat, token: sage-green, shader_expected: LiminalSurface}
+  - {id: MAT-005, asset: Assets/Materials/Echoes/Mat_WallRose.mat, token: dusty-rose, shader_expected: LiminalSurface}
+  - {id: MAT-006, asset: Assets/Materials/Echoes/Mat_Echo.mat, token: echo-cyan, shader_expected: EchoLiminal}
+  - {id: MAT-007, asset: Assets/Materials/Echoes/Mat_EchoSuit.mat, token: echo-cyan, shader_expected: EchoLiminal}
+  - {id: MAT-008, asset: Assets/Materials/Echoes/Mat_Bridge.mat, token: echo-cyan, shader_expected: LiminalSurface}
+  - {id: MAT-009, asset: Assets/Materials/Echoes/Mat_Door.mat, token: institutional-teal, shader_expected: LiminalSurface}
+  - {id: MAT-010, asset: Assets/Materials/Echoes/Mat_GravityZone.mat, token: void-black, shader_expected: LiminalSurface}
+  - {id: MAT-011, asset: Assets/Materials/Echoes/Mat_LiminalFog.mat, token: void-black, shader_expected: LiminalFogVolume}
+  - {id: MAT-012, asset: Assets/Materials/Echoes/Mat_Chalkboard.mat, token: corridor-navy, shader_expected: LiminalSurface}
+  - {id: MAT-013, asset: Assets/Materials/Echoes/Mat_Crack.mat, token: void-black, shader_expected: LiminalSurface}
+  - {id: MAT-014, asset: Assets/Materials/Echoes/Mat_Fluorescent.mat, token: fluorescent-sick, shader_expected: LiminalSurface}
+  - {id: MAT-015, asset: Assets/Materials/Echoes/Mat_Exit.mat, token: memory-amber, shader_expected: LiminalSurface}
+
+global_properties:
+  metallic_architecture: 0.0
+  smoothness_architecture: 0.05
+  normal_maps_allowed: false
+  ao_maps_allowed: false
+  built_in_standard_shader_allowed: false
+
+rules:
+  - id: MAT-VAL-001
+    type: prohibition
+    status: active
+    severity: fatal
+    scope: [material, level]
+    rule: "Shader.Find(\"Standard\") and Built-in Standard materials are forbidden"
+    validator: validators/static_validator.yaml#urp_only
+  - id: MAT-VAL-002
+    type: mapping
+    status: active
+    severity: error
+    scope: [material]
+    rule: "Every production material must resolve to an asset or EchoesMaterialLibrary token"
+    validator: validators/static_validator.yaml#material_paths
+  - id: MAT-VAL-003
+    type: constraint
+    status: active
+    severity: warning
+    scope: [material]
+    rule: "Architecture materials should use metallic 0 and smoothness 0.05"
+    validator: validators/static_validator.yaml#material_properties
+
+shader_property_contracts:
+  # LiminalSurface (custom shader) — exposed properties and their defaults
+  LiminalSurface:
+    _BaseColor:       {type: Color,  default: "#1C2430FF"}
+    _Metallic:        {type: float, default: 0.0,  range: [0.0, 1.0]}
+    _Smoothness:      {type: float, default: 0.05, range: [0.0, 1.0]}
+    _BumpScale:       {type: float, default: 0.0}   # No normal maps — PS1 flat
+    _CullMode:        {type: float, default: 2.0}   # 2.0 = Back culling
+    _EmissionEnabled: {type: float, default: 0.0}   # 0 = off, 1 = on
+    _EmissionColor:   {type: Color,  default: "#000000FF"}
+
+  EchoLiminal:
+    _BaseColor:       {type: Color,  default: "#4FC3E8FF"}
+    _GhostAlpha:      {type: float, default: 0.6,  range: [0.0, 1.0]}
+    _ScrollSpeed:     {type: float, default: 0.3,  range: [0.0, 5.0]}  # UV scroll for ghost effect
+    _CullMode:        {type: float, default: 0.0}   # 0.0 = Off (double-sided for ghost)
+
+  AnalogGhost:
+    _BaseColor:       {type: Color,  default: "#4FC3E8FF"}
+    _NoiseIntensity:  {type: float, default: 0.15, range: [0.0, 1.0]}
+    _ScanlineFreq:    {type: float, default: 80.0}  # TV scan lines per screen
+    _DistortionAmt:   {type: float, default: 0.02}
+
+  LiminalFogVolume:
+    _FogColor:        {type: Color,  default: "#1F2633FF"}
+    _FogDensity:      {type: float, default: 0.008, range: [0.0, 0.1]}
+    _FogStart:        {type: float, default: 8.0}   # meters from camera
+    _FogEnd:          {type: float, default: 40.0}
+
+  RetroFlatLit:
+    _BaseColor:       {type: Color,  default: "#1C2430FF"}
+    _Metallic:        {type: float, default: 0.0}
+    _Smoothness:      {type: float, default: 0.0}   # Flat = 0 smoothness
+    _BumpScale:       {type: float, default: 0.0}
+    _CullMode:        {type: float, default: 2.0}
+
+# Material creation protocol — enforced by EchoesMaterialLibrary.cs
+material_creation_protocol:
+  method: "EchoesMaterialLibrary.GetMaterial(string tokenId)"
+  correct_usage: "EchoesMaterialLibrary.GetMaterial(\"corridor-navy\")"
+  prohibited_usage: "new Material(Shader.Find(...))"
+  rationale: >
+    EchoesMaterialLibrary applies all shader_property_contracts automatically.
+    Raw Material constructors bypass property contracts and produce incorrect defaults.
+  error_code: "FAIL-MAT-001"
+

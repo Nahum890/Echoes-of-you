@@ -1,0 +1,56 @@
+# PHYSICS COLLISION LAYER MATRIX EXECUTABLE SPECIFICATION — Echoes of You 2.0
+spec_id: SPEC-EXEC-LYR-001
+version: "1.0"
+authority: "Docs/Authority/SOURCE_OF_TRUTH.md"
+
+layer_definitions:
+  0: "Default"
+  8: "Player"
+  9: "Echo"
+  10: "PuzzleWire"
+  11: "Hazard"
+  12: "GhostPlatform"
+
+collision_matrix:
+  Default:
+    Default: true
+    Player: true
+    Echo: true
+    PuzzleWire: true
+    Hazard: true
+    GhostPlatform: true
+  Player:
+    Default: true
+    Player: false
+    Echo: false
+    PuzzleWire: false
+    Hazard: true
+    GhostPlatform: true
+  Echo:
+    Default: true
+    Player: true
+    Echo: false
+    PuzzleWire: false
+    Hazard: true
+    GhostPlatform: true
+  PuzzleWire:
+    Default: true
+    Player: false
+    Echo: false
+    PuzzleWire: false
+    Hazard: false
+    GhostPlatform: false
+  Hazard:
+    Default: true
+    Player: true
+    Echo: true
+    PuzzleWire: false
+    Hazard: false
+    GhostPlatform: false
+  GhostPlatform:
+    Default: true
+    Player: true
+    Echo: true
+    PuzzleWire: false
+    Hazard: false
+    GhostPlatform: false

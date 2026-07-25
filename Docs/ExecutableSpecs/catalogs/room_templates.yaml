@@ -1,0 +1,228 @@
+schema_version: "1.0"
+catalog_type: room_template_catalog
+source: Docs/Specs/ROOM_TEMPLATES.md
+module_enum_source: Assets/Scripts/LevelBlueprint.cs
+
+room_templates:
+  - id: ROOM-TMPL-001
+    name: SchoolHall
+    module_type: SchoolHall
+    dimensions: {width: 12.0, depth: 12.0, height: 5.0}
+    clearance: {primary: 2.0, secondary: 1.2}
+    entrances: {minimum: 1, maximum: 4}
+    exits: {minimum: 1, maximum: 4}
+    required_landmarks: [MainStairs, DirectoryBoard]
+    required_props: [Arch_Stairs, Cartelera]
+    allowed_puzzles: [observation, navigation, echo_reveal]
+    camera_profile: Exploration
+    lighting_profile: Hall
+
+  - id: ROOM-TMPL-002
+    name: SchoolCorridor
+    module_type: SchoolCorridor
+    dimensions: {width: 4.5, depth_min: 18.0, depth_target: 24.0, depth_max: 36.0, height: 4.0}
+    clearance: {primary: 3.2, secondary: 1.2}
+    entrances: {minimum: 1, maximum: 4}
+    exits: {minimum: 1, maximum: 4}
+    required_landmarks: [one_per_18m]
+    required_props: [Arch_Locker, Arch_Trashcan]
+    optional_props: [Arch_Bench, Cartelera, RelojPared, Prop_RecordsBoard]
+    allowed_puzzles: [navigation, pressure_plate, timing, echo_reveal]
+    camera_profile: Exploration
+    lighting_profile: Corridor
+
+  - id: ROOM-TMPL-003
+    name: SchoolClassroom
+    module_type: SchoolClassroom
+    dimensions: {width: 10.0, depth: 10.0, height: 3.8}
+    clearance: {central_aisle: 1.8, perimeter: 1.2}
+    entrances: {minimum: 1, maximum: 2}
+    exits: {minimum: 1, maximum: 2}
+    layout:
+      desk_grid: {rows: 4, columns: 4, spacing_x: 1.8, spacing_z: 1.6}
+      teacher_desk: front_center
+      blackboard: front_wall
+      windows: left_wall
+    required_props: [PupitreDoble, SillaEscolar, Pizarra, MesaProfesor]
+    allowed_puzzles: [teaching, pressure_plate, timing, echo_coordination]
+    camera_profile: Learning
+    lighting_profile: Classroom
+
+  - id: ROOM-TMPL-004
+    name: SchoolStairwell
+    module_type: SchoolStairwell
+    dimensions: {width: 8.0, depth: 8.0, height: 7.6}
+    clearance: {stair_flight: 2.2, landing: 2.0}
+    entrances: {minimum: 2, maximum: 4}
+    exits: {minimum: 2, maximum: 4}
+    required_props: [Arch_Stairs]
+    allowed_puzzles: [vertical_timing, echo_coordination, traversal]
+    camera_profile: ElevatedTracking
+    lighting_profile: Stairwell
+
+  - id: ROOM-TMPL-005
+    name: SchoolBathroom
+    module_type: SchoolBathroom
+    dimensions: {width: 6.0, depth: 8.0, height: 3.5}
+    clearance: {primary: 1.5, secondary: 1.0}
+    entrances: {minimum: 1, maximum: 2}
+    exits: {minimum: 1, maximum: 2}
+    required_props: [VentanaMarco]
+    allowed_puzzles: [exploration, narrative_reveal]
+    camera_profile: Learning
+    lighting_profile: Bathroom
+
+  - id: ROOM-TMPL-006
+    name: SchoolStaffRoom
+    module_type: SchoolStaffRoom
+    dimensions: {width: 10.0, depth: 8.0, height: 3.8}
+    clearance: {primary: 1.8, secondary: 1.2}
+    entrances: {minimum: 1, maximum: 2}
+    exits: {minimum: 1, maximum: 2}
+    required_props: [MesaRedonda, TazaCafe, Perchero]
+    allowed_puzzles: [multi_echo, signal_order, narrative_reveal]
+    camera_profile: Learning
+    lighting_profile: StaffRoom
+
+  - id: ROOM-TMPL-007
+    name: SchoolLibrary
+    module_type: SchoolLibrary
+    dimensions: {width: 14.0, depth: 16.0, height: 4.5}
+    clearance: {main_aisle: 2.2, shelf_gap: 1.8}
+    entrances: {minimum: 1, maximum: 3}
+    exits: {minimum: 1, maximum: 3}
+    required_props: [Estanteria, MesaRedonda, Prop_LibraryStamp]
+    required_landmarks: [LibraryDesk, TemporalBridge]
+    allowed_puzzles: [echo_reveal, temporal_bridge, exploration]
+    camera_profile: Exploration
+    lighting_profile: Library
+
+  - id: ROOM-TMPL-008
+    name: SchoolCourtyard
+    module_type: SchoolCourtyard
+    dimensions: {width: 24.0, depth: 24.0, height: 8.0}
+    clearance: {open_space_ratio: 0.7, primary: 3.0}
+    entrances: {minimum: 1, maximum: 4}
+    exits: {minimum: 1, maximum: 4}
+    required_props: [Arch_Tree, Arch_Bench, Arch_Fence]
+    required_landmarks: [CourtyardTree]
+    allowed_puzzles: [future_recording, traversal, exploration]
+    camera_profile: WideAtmospheric
+    lighting_profile: Courtyard
+
+  - id: ROOM-TMPL-009
+    name: SchoolGym
+    module_type: SchoolGym
+    dimensions: {width: 16.0, depth: 20.0, height: 6.0}
+    clearance: {primary: 3.0, open_space_ratio: 0.65}
+    entrances: {minimum: 1, maximum: 3}
+    exits: {minimum: 1, maximum: 3}
+    required_props: [Prop_SoccerBall, Arch_Bench]
+    allowed_puzzles: [timing, conflict, movement]
+    camera_profile: WideAtmospheric
+    lighting_profile: Gym
+
+  - id: ROOM-TMPL-010
+    name: SchoolLab
+    module_type: SchoolLab
+    dimensions: {width: 12.0, depth: 10.0, height: 3.8}
+    clearance: {primary: 1.8, secondary: 1.2}
+    entrances: {minimum: 1, maximum: 2}
+    exits: {minimum: 1, maximum: 2}
+    required_props: [MesaProfesor, Extintor]
+    allowed_puzzles: [conflict, timing, signal_order]
+    camera_profile: Learning
+    lighting_profile: Lab
+
+  - id: ROOM-TMPL-011
+    name: SchoolMaintenanceCorridor
+    module_type: SchoolMaintenanceCorridor
+    dimensions: {width: 3.5, depth: 18.0, height: 3.2}
+    clearance: {primary: 1.5, secondary: 1.0}
+    entrances: {minimum: 1, maximum: 2}
+    exits: {minimum: 1, maximum: 2}
+    required_props: [CarritoConserje, Radiador]
+    allowed_puzzles: [timing, traversal, narrative_reveal]
+    camera_profile: Exploration
+    lighting_profile: Maintenance
+
+  - id: ROOM-TMPL-012
+    name: SchoolEmergencyCorridor
+    module_type: SchoolEmergencyCorridor
+    dimensions: {width: 3.5, depth: 18.0, height: 3.2}
+    clearance: {primary: 1.5, secondary: 1.0}
+    entrances: {minimum: 1, maximum: 2}
+    exits: {minimum: 1, maximum: 2}
+    required_props: [Extintor, CarritoConserje]
+    allowed_puzzles: [hazard, escape, timing]
+    camera_profile: Suspense
+    lighting_profile: Emergency
+
+  - id: ROOM-TMPL-013
+    name: SchoolLyraClassroom
+    module_type: SchoolLyraClassroom
+    dimensions: {width: 12.0, depth: 12.0, height: 4.2}
+    clearance: {focus_path: 2.0, primary: 1.5}
+    entrances: {minimum: 1, maximum: 2}
+    exits: {minimum: 1, maximum: 2}
+    required_props: [MochilaLyra, Pizarra, Prop_StoppedClock]
+    required_landmarks: [LyraDesk]
+    allowed_puzzles: [ambient_echo, memory_reveal, mastery]
+    camera_profile: FocusCinematic
+    lighting_profile: LyraClassroom
+
+  - id: ROOM-TMPL-014
+    name: SchoolOffice
+    module_type: SchoolOffice
+    dimensions: {width: 8.0, depth: 8.0, height: 3.8}
+    clearance: {primary: 1.5, secondary: 1.2}
+    entrances: {minimum: 1, maximum: 2}
+    exits: {minimum: 1, maximum: 2}
+    required_props: [Arch_Desk, Arch_Chair, Prop_StoppedClock]
+    allowed_puzzles: [narrative_reveal, signal_order]
+    camera_profile: Learning
+    lighting_profile: Office
+
+  - id: ROOM-TMPL-015
+    name: SchoolLiminalClassroom
+    module_type: SchoolLiminalClassroom
+    dimensions: {width: 12.0, depth: 12.0, height: 5.0}
+    clearance: {primary: 2.0, open_void_margin: 2.0}
+    entrances: {minimum: 1, maximum: 2}
+    exits: {minimum: 1, maximum: 2}
+    required_props: [Pizarra, Prop_ChalkGraffiti, LockerPuertaAbierta]
+    allowed_puzzles: [degradation, perspective, mastery]
+    camera_profile: VoidOverview
+    lighting_profile: Liminal
+
+  - id: ROOM-TMPL-016
+    name: TransitionSpace
+    module_type: TransitionSpace
+    dimensions: {width: 4.5, depth: 6.0, height: 3.8}
+    clearance: {primary: 2.0}
+    entrances: {minimum: 2, maximum: 2}
+    exits: {minimum: 2, maximum: 2}
+    required_props: []
+    allowed_puzzles: [none, transition_reveal]
+    camera_profile: Transition
+    lighting_profile: Transition
+
+validation:
+  - id: ROOM-VAL-001
+    type: mapping
+    status: active
+    severity: fatal
+    scope: [room, blueprint]
+    rule: "Every room template must map to a valid ModuleType enum value"
+  - id: ROOM-VAL-002
+    type: constraint
+    status: active
+    severity: error
+    scope: [room]
+    rule: "Every room must define at least one entrance and one exit"
+  - id: ROOM-VAL-003
+    type: validation
+    status: active
+    severity: warning
+    scope: [room]
+    rule: "Every room should define camera and lighting profiles"

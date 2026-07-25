@@ -1,0 +1,17 @@
+example_type: valid
+schema: gameplay/puzzle_archetypes.yaml
+puzzle_id: PUZ-EXAMPLE-001
+level_id: N02
+archetype: experimentation
+core_idea: "A past action remains active while the present performs another task"
+echo_required: true
+button_test: pass_required
+stages:
+  teaching: single_plate_teaching
+  discovery: two_plate_variation
+  execution: parallel_route
+  payoff: door_open_and_exit
+required_components: [EchoRecorder, EchoPlayback, PressurePlate, PuzzleSignal, DoorController]
+failure_states: [wrong_echo_timing]
+recovery_states: [re_record, scene_reload]
+expected_failure: []

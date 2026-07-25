@@ -42,8 +42,8 @@ public partial class PlayerController : MonoBehaviour
     public bool alignToGroundNormal = true;
 
     [Header("Jump Assist")]
-    public float jumpBufferTime = 0.2f;
-    public float coyoteTime = 0.2f;
+    public float jumpBufferTime = 0.25f;
+    public float coyoteTime = 0.25f;
 
     [Header("Peso / Game Feel")]
     [SerializeField] float hardLandingSpeed = 13f;
@@ -57,6 +57,10 @@ public partial class PlayerController : MonoBehaviour
     public float groundProbeRadius = 0.24f;
     public float groundProbeDistance = 0.6f;
     public LayerMask groundMask = (1 << 6); // Solo layer Ground — incluir Default causa que el SphereCast detecte al propio jugador
+
+    [Header("Spawn Safety")]
+    public float spawnValidationRadius = 1f;
+    public LayerMask groundCheckMask = 1 << 6;
 
     [Header("Failsafe")]
     public float voidHeight = -15f;
@@ -163,7 +167,86 @@ public partial class PlayerController : MonoBehaviour
 
     void OnEnable() => ForceUnlockAndReset();
 
-    void Start() => ForceUnlockAndReset();
+    void Start()
+    {
+        ForceUnlockAndReset();
+        StartCoroutine(ValidateAndFixSpawn());
+    }
+
+    System.Collections.IEnumerator ValidateAndFixSpawn()
+    {
+        yield return new WaitForEndOfFrame(); // Esperar a que la geometría se genere
+        
+        LayerMask maskToUse = groundMask != 0 ? groundMask : groundCheckMask;
+
+        // 1. Buscar suelo bajo el player
+        if (Physics.Raycast(transform.position + Vector3.up * 2f, Vector3.down, out RaycastHit hit, 10f, maskToUse))
+        {
+            float dist = hit.distance;
+            if (dist > 0.5f && dist < 5f)
+            {
+                // Spawn en el suelo
+                _controller.enabled = false;
+                transform.position = hit.point + Vector3.up * 1f;
+                _controller.enabled = true;
+                _planarVelocity = Vector3.zero;
+                _verticalVelocity = Vector3.zero;
+                yield break;
+            }
+        }
+        
+        // 2. Buscar posición segura en radio
+        for (float r = 1f; r < 15f; r += 1f)
+        {
+            for (int i = 0; i < 12; i++)
+            {
+                float angle = i * Mathf.PI * 2f / 12f;
+                Vector3 testPos = transform.position + new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * r;
+                if (Physics.Raycast(testPos + Vector3.up * 3f, Vector3.down, out RaycastHit sphereHit, 10f, maskToUse))
+                {
+                    if (sphereHit.distance > 0.5f && sphereHit.distance < 4f && !Physics.CheckSphere(sphereHit.point + Vector3.up, 0.6f))
+                    {
+                        _controller.enabled = false;
+                        transform.position = sphereHit.point + Vector3.up * 1f;
+                        _controller.enabled = true;
+                        _planarVelocity = Vector3.zero;
+                        _verticalVelocity = Vector3.zero;
+                        yield break;
+                    }
+                }
+            }
+        }
+        
+        // 3. Fallback: buscar LevelExit
+        var exit = FindAnyObjectByType<LevelExit>();
+        if (exit != null)
+        {
+            _controller.enabled = false;
+            transform.position = exit.transform.position + Vector3.up * 2f;
+            _controller.enabled = true;
+            _planarVelocity = Vector3.zero;
+            _verticalVelocity = Vector3.zero;
+        }
+    }
+
+    public void ValidateSpawnPosition()
+    {
+        StartCoroutine(ValidateAndFixSpawn());
+    }
+
+    public bool IsInsideWall()
+    {
+        return IsInsideWall(transform.position);
+    }
+
+    public bool IsInsideWall(Vector3 checkPos)
+    {
+        bool wasEnabled = _controller != null && _controller.enabled;
+        if (_controller != null) _controller.enabled = false;
+        bool inside = Physics.CheckSphere(checkPos, 0.5f, ~0, QueryTriggerInteraction.Ignore);
+        if (_controller != null) _controller.enabled = wasEnabled;
+        return inside;
+    }
 
     void Update()
     {
@@ -374,6 +457,15 @@ public partial class PlayerController : MonoBehaviour
             desiredVelocity = Vector3.Lerp(desiredVelocity * penaltyFactor, _planarVelocity, retention);
         }
         _planarVelocity = DampVector(_planarVelocity, desiredVelocity, sharpness, Time.deltaTime);
+
+        // Anti-stuck: Si player intenta moverse pero no se mueve, pequeño push
+        if (_planarVelocity.sqrMagnitude < 0.01f && _grounded)
+        {
+            if (input.sqrMagnitude > 0.1f)
+            {
+                _planarVelocity += desiredDirection * 0.5f;
+            }
+        }
     }
 
     void HandleJumpInput(Vector3 movementUp)
@@ -482,15 +574,19 @@ public partial class PlayerController : MonoBehaviour
 
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        // Cancel velocity component directed into walls / steep slopes (>45 deg) to enable smooth sliding
+        if (hit.normal.y < 0.5f)
+        { // Pared vertical (inclinación > 60°)
+            Vector3 slideDir = Vector3.ProjectOnPlane(_planarVelocity, hit.normal);
+            _planarVelocity = slideDir; // Slide suave en lugar de parar
+        }
+
+        // Cancel velocity hacia paredes inclinadas > 45°
         float dotUp = Vector3.Dot(hit.normal, _currentUp);
-        if (dotUp < 0.7071f) // steeper than 45 degrees
-        {
+        if (dotUp < 0.7071f)
+        { // > 45°
             float normalDot = Vector3.Dot(_planarVelocity, hit.normal);
-            if (normalDot < 0f) // moving into the wall
-            {
+            if (normalDot < 0f)
                 _planarVelocity -= hit.normal * normalDot;
-            }
         }
     }
 

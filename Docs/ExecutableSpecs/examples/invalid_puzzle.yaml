@@ -1,0 +1,16 @@
+example_type: invalid
+schema: gameplay/puzzle_archetypes.yaml
+puzzle_id: PUZ-EXAMPLE-INVALID
+level_id: N02
+archetype: teaching
+core_idea: "Press a button to open a door"
+echo_required: false
+button_test: fail
+stages:
+  execution: press_button
+required_components: [PressurePlate, DoorController]
+expected_failure:
+  - rule_id: PUZ-001
+    code: GENERIC_BUTTON_PUZZLE
+  - rule_id: PUZ-002
+    code: MISSING_TEACHING_DISCOVERY_PAYOFF

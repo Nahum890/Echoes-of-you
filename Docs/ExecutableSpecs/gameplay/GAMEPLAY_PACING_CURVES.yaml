@@ -1,0 +1,35 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-PACE-001"
+# GAMEPLAY_PACING_CURVES.yaml
+# Cognitive load metrics, puzzle timing floors, and pacing curves per level.
+
+pacing_matrix:
+  Act_1:
+    cognitive_load_target: 2.0  # Scale 1..10
+    puzzle_timing_floor_s: 0.8
+    max_echo_slots: 1
+    hazard_present: false
+
+  Act_2:
+    cognitive_load_target: 4.0
+    puzzle_timing_floor_s: 0.6
+    max_echo_slots: 2
+    hazard_present: false
+
+  Act_3:
+    cognitive_load_target: 6.0
+    puzzle_timing_floor_s: 0.5
+    max_echo_slots: 2
+    hazard_present: true
+
+  Act_4:
+    cognitive_load_target: 8.0
+    puzzle_timing_floor_s: 0.4
+    max_echo_slots: 3
+    hazard_present: true
+
+  Act_5:
+    cognitive_load_target: 9.5
+    puzzle_timing_floor_s: 0.4
+    max_echo_slots: 3
+    hazard_present: true

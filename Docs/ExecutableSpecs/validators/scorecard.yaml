@@ -1,0 +1,30 @@
+schema_version: "1.0"
+validator_id: SCORECARD-SPEC-001
+type: weighted_scorecard
+
+categories:
+  gameplay_echo: {weight: 20}
+  puzzle_design: {weight: 15}
+  architecture_readability: {weight: 10}
+  camera_composition: {weight: 10}
+  lighting_atmosphere: {weight: 10}
+  props_materials: {weight: 8}
+  narrative_environment: {weight: 7}
+  emotional_flow: {weight: 5}
+  performance_stability: {weight: 5}
+  audio_atmosphere: {weight: 10}
+
+scoring:
+  total_weight: 100
+  category_score_range: [0, 10]
+  formula: "sum(category_score * weight) / 10"
+  approved: 80
+  excellent: 90
+  rejected_below: 65
+  fatal_override: "Any fatal validation failure rejects the level regardless of score"
+
+required_evidence:
+  - validator_report
+  - playtest_report
+  - gameplay_capture
+  - camera_capture

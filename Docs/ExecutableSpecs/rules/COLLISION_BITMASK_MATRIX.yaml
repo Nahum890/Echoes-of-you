@@ -1,0 +1,53 @@
+schema_version: "2.0"
+spec_id: "SPEC-EXEC-PHYS-001"
+# COLLISION_BITMASK_MATRIX.yaml
+# Full 32-layer Unity physics collision bitmask matrix.
+
+layers:
+  0: Default
+  1: TransparentFX
+  2: Ignore Raycast
+  3: Water
+  4: UI
+  5: Unused_5
+  6: Unused_6
+  7: Unused_7
+  8: Player
+  9: Echo
+  10: PuzzleWire
+  11: Hazard
+  12: GhostPlatform
+  13: UI_Toolkit
+  14: PuzzleInteractable
+  15: Environment
+  16: Architecture
+  17: Prop
+  18: Checkpoint
+  19: CameraCollider
+  20: Unused_20
+  21: Unused_21
+  22: Unused_22
+  23: Unused_23
+  24: Unused_24
+  25: Unused_25
+  26: Unused_26
+  27: Unused_27
+  28: Unused_28
+  29: Unused_29
+  30: Unused_30
+  31: Unused_31
+
+bitmask_matrix:
+  Default:            {layer_index: 0,  collides_with_mask: 0xFFFFFFFF}
+  Player:             {layer_index: 8,  collides_with_mask: 0x000E9D01} # Default, Echo, Hazard, GhostPlatform, PuzzleInteractable, Environment, Architecture
+  Echo:               {layer_index: 9,  collides_with_mask: 0x000E9D01} # Collides with same layers as Player
+  PuzzleWire:         {layer_index: 10, collides_with_mask: 0x00000001} # Default only
+  Hazard:             {layer_index: 11, collides_with_mask: 0x00000300} # Player (8) and Echo (9)
+  GhostPlatform:      {layer_index: 12, collides_with_mask: 0x00000300} # Player (8) and Echo (9)
+  UI_Toolkit:         {layer_index: 13, collides_with_mask: 0x00000000} # No physics collision
+  PuzzleInteractable: {layer_index: 14, collides_with_mask: 0x000E9D01} # Player, Echo, Default, Environment, Architecture
+  Environment:        {layer_index: 15, collides_with_mask: 0x000E5F01}
+  Architecture:       {layer_index: 16, collides_with_mask: 0x000E5F01}
+  Prop:               {layer_index: 17, collides_with_mask: 0x000E5F01}
+  Checkpoint:         {layer_index: 18, collides_with_mask: 0x00000100} # Player (8) only
+  CameraCollider:     {layer_index: 19, collides_with_mask: 0x00018001} # Default, Environment, Architecture

@@ -1,0 +1,101 @@
+# AUDIO ARCHITECTURE EXECUTABLE SPECIFICATION — Echoes of You 2.0
+spec_id: SPEC-EXEC-AUD-001
+version: "1.1"
+authority: "Docs/Authority/SOURCE_OF_TRUTH.md"
+
+mixer_buses:
+  - bus_path: "Master/BGM"
+    default_volume_db: -6.0
+  - bus_path: "Master/SFX"
+    default_volume_db: 0.0
+  - bus_path: "Master/SFX/SFX_Player"
+    default_volume_db: 0.0
+  - bus_path: "Master/SFX/SFX_Echo"
+    default_volume_db: -3.0
+  - bus_path: "Master/SFX/SFX_Puzzle"
+    default_volume_db: 0.0
+  - bus_path: "Master/TapeHiss"
+    default_volume_db: -12.0
+
+attenuation:
+  curve_type: "Logarithmic"
+  min_distance: 1.0   # meters
+  max_distance: 18.0  # meters
+
+dsp_filters:
+  tape_hiss_bandpass:
+    low_cutoff_hz: 300.0   # Hz
+    high_cutoff_hz: 3500.0 # Hz
+
+events:
+  # Player footsteps
+  SFX_Footstep_Tile:
+    clip_path: "Assets/Audio/SFX/Player/Footstep_Tile.wav"
+    bus: "Master/SFX/SFX_Player"
+    volume_db: -6.0
+    pitch_variance: 0.1     # ±10% random pitch variation
+    spatial: true
+    cooldown_s: 0.35        # minimum time between footsteps
+    trigger: "OnFootstepLand"  # Animation Event in PlayerController_Animation.cs
+
+  SFX_Echo_Record_Start:
+    clip_path: "Assets/Audio/SFX/Echo/EchoRecord_Start.wav"
+    bus: "Master/SFX/SFX_Echo"
+    volume_db: -3.0
+    pitch_variance: 0.0
+    spatial: false
+    trigger: "OnRecordingStart"
+
+  SFX_Echo_Record_Stop:
+    clip_path: "Assets/Audio/SFX/Echo/EchoRecord_Stop.wav"
+    bus: "Master/SFX/SFX_Echo"
+    volume_db: -3.0
+    pitch_variance: 0.0
+    spatial: false
+    trigger: "OnRecordingStop"
+
+  SFX_Echo_Playback_Loop:
+    clip_path: "Assets/Audio/SFX/Echo/EchoPlayback_Loop.wav"
+    bus: "Master/SFX/SFX_Echo"
+    volume_db: -9.0
+    spatial: true
+    loop: true
+    trigger: "OnEchoPlaybackActive"
+
+  SFX_Door_Open:
+    clip_path: "Assets/Audio/SFX/Environment/Door_Open.wav"
+    bus: "Master/SFX/SFX_Puzzle"
+    volume_db: -3.0
+    spatial: true
+    trigger: "OnDoorOpened"
+
+  SFX_PressurePlate_Activate:
+    clip_path: "Assets/Audio/SFX/Puzzle/PressurePlate_Click.wav"
+    bus: "Master/SFX/SFX_Puzzle"
+    volume_db: -6.0
+    spatial: true
+    trigger: "OnPressurePlateActivated"
+
+  BGM_Act1_Ambient:
+    clip_path: "Assets/Audio/BGM/Act1_Ambient.wav"
+    bus: "Master/BGM"
+    volume_db: -12.0
+    loop: true
+    fade_in_s: 2.0
+    fade_out_s: 2.0
+    trigger: "OnSceneLoad"
+
+  TapeHiss_Loop:
+    clip_path: "Assets/Audio/Ambience/TapeHiss.wav"
+    bus: "Master/TapeHiss"
+    volume_db: -18.0
+    loop: true
+    always_on: true
+    applies_dsp: "tape_hiss_bandpass"
+
+# IMPORTANT: clip_path entries are intended destination paths.
+# An agent generating audio MUST verify the file exists in Assets/Audio/ before referencing it.
+# If absent: emit FAIL-AUD-01 and request the asset from the human.
+audio_asset_creation_rule: "Do NOT generate audio procedurally. Only reference existing assets."
+# Full event registry with additional events: see AUDIO_EVENT_REGISTRY.yaml (SPEC-138)
+

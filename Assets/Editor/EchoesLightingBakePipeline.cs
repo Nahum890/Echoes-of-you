@@ -77,7 +77,7 @@ public static class EchoesLightingBakePipeline
 
         string reportPath = "Assets/Reports/Lighting_Optimization_Report.txt";
         Directory.CreateDirectory("Assets/Reports");
-        File.WriteAllText(reportPath, report.ToString());
+        File.WriteAllText(reportPath, report.ToString(), System.Text.Encoding.UTF8);
         AssetDatabase.Refresh();
 
         Debug.Log($"[Echoes Bake Pipeline] ¡Todos los niveles fueron horneados correctamente! Informe escrito en {reportPath}");

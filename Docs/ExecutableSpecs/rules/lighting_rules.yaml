@@ -1,0 +1,17 @@
+schema_version: "1.0"
+rule_set: lighting
+rules:
+  - id: LIGHT-001
+    type: mapping
+    status: active
+    severity: error
+    scope: [lighting, blueprint]
+    rule: "LightingProfile values must map to fields present in LightingProfile.cs"
+    validator: validators/static_validator.yaml#lighting_fields
+  - id: LIGHT-002
+    type: constraint
+    status: active
+    severity: warning
+    scope: [lighting, level]
+    rule: "Point and spot light count should not exceed 48 without a performance exception"
+    validator: validators/level_validator.yaml#light_count

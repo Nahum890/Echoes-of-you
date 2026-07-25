@@ -370,7 +370,7 @@ public class GameHUD : MonoBehaviour
                 _timelinePlayhead.style.left = Length.Percent(fillPct);
 
             // Display dynamic time stamps (seconds)
-            float totalSecs = 10f; // assuming 10 second maximum record length
+            float totalSecs = EchoRecorder.Instance?.MaxRecordSeconds ?? 10f;
             float currentSecs = _recordNorm * totalSecs;
             if (_timelineStart != null)
                 _timelineStart.text = $"00:00:{currentSecs:00.00}";

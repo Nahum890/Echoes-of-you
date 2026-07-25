@@ -19,7 +19,7 @@ public static class EchoesAutoBuilderHelper
         try
         {
             EchoesNewProductionBuilder.BuildAllBlueprints();
-            System.IO.File.WriteAllText(flagPath, "done");
+            System.IO.File.WriteAllText(flagPath, "done", System.Text.Encoding.UTF8);
         }
         catch (System.Exception e)
         {

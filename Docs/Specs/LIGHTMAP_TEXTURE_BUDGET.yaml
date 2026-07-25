@@ -1,0 +1,26 @@
+# Docs/Specs/LIGHTMAP_TEXTURE_BUDGET.yaml (SPEC-132)
+global_settings:
+  resolution_texels_per_unit: 10.0
+  max_lightmap_size_px: 1024       # máximo por escena para mantener VRAM < 512MB
+  compress_lightmaps: true
+  compression_format: "BC6H"       # HDR lightmaps
+  padding_texels: 2
+  directional_mode: "NonDirectional"  # PS1 aesthetic
+  ao_enabled: false
+
+per_level_budgets:
+  small_levels: {L01, L02, L03}:
+    max_lightmap_count: 2
+    max_lightmap_vram_mb: 16
+  medium_levels: {L04..L10}:
+    max_lightmap_count: 4
+    max_lightmap_vram_mb: 32
+  large_levels: {L11..L15}:
+    max_lightmap_count: 6
+    max_lightmap_vram_mb: 48
+
+light_probes:
+  placement: "Manual"
+  min_spacing_m: 3.0
+  bake_mode: "Subtractive"
+  reflection_probes: "None"

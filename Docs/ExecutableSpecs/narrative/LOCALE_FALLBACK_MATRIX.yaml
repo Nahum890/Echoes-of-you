@@ -1,0 +1,30 @@
+# LOCALE_FALLBACK_MATRIX.yaml
+# Spec ID: SPEC-141
+# Version: 1.0
+spec_id: SPEC-141
+version: "1.0"
+authority: "Docs/ExecutableSpecs/registry/decisions.yaml"
+
+# Localization Fallback Matrix & String Interpolation Rules
+
+supported_locales: ["es-MX", "en-US"]
+default_locale: "es-MX"
+
+fallback_chain:
+  "es-MX": ["es-MX", "en-US"]     # If missing in es-MX, search in en-US
+  "en-US": ["en-US", "es-MX"]
+
+missing_key_behavior:
+  strategy: "UseKeyAsText"   # If key is missing in ALL locales, show key string
+  prefix: "???"              # Display "???key.name???" to easily spot missing keys
+  log_level: "Warning"
+
+string_interpolation:
+  format: "{{variable_name}}"  # Double brace interpolation
+  example: "Nivel {{levelNumber}} de {{totalLevels}}"
+  available_variables: ["levelNumber", "totalLevels", "playerName", "echoCount"]
+
+string_overflow:
+  max_chars_ui_label: 64
+  max_chars_narrative_popup: 280
+  overflow_behavior: "Ellipsis"  # Appends "..." if max length is exceeded

@@ -1,0 +1,78 @@
+# Docs/ExecutableSpecs/catalogs/asset_guid_registry.yaml (SPEC-126)
+# REGLA: Todo agente que deba instanciar un GameObject DEBE consultar este archivo primero.
+registry:
+  # Personajes
+  PlayerPrefab:
+    path: "Assets/Prefabs/Player/Player.prefab"
+    addressable_key: "Player"
+    type: "GameObject"
+  EchoPrefab:
+    path: "Assets/Prefabs/Echo/EchoBody.prefab"
+    addressable_key: "EchoBody"
+    type: "GameObject"
+
+  # Arquitectura — Módulos de Sala (ModuleType enum -> prefab path)
+  SchoolHall:
+    path: "Assets/Prefabs/Rooms/SchoolHall.prefab"
+    addressable_key: "Room_SchoolHall"
+    enum_index: 31
+  SchoolCorridor:
+    path: "Assets/Prefabs/Rooms/SchoolCorridor.prefab"
+    addressable_key: "Room_SchoolCorridor"
+    enum_index: 32
+  SchoolClassroom:
+    path: "Assets/Prefabs/Rooms/SchoolClassroom.prefab"
+    addressable_key: "Room_SchoolClassroom"
+    enum_index: 33
+  SchoolLibrary:
+    path: "Assets/Prefabs/Rooms/SchoolLibrary.prefab"
+    addressable_key: "Room_SchoolLibrary"
+    enum_index: 34
+  SchoolCourtyard:
+    path: "Assets/Prefabs/Rooms/SchoolCourtyard.prefab"
+    addressable_key: "Room_SchoolCourtyard"
+    enum_index: 35
+  SchoolGym:
+    path: "Assets/Prefabs/Rooms/SchoolGym.prefab"
+    addressable_key: "Room_SchoolGym"
+    enum_index: 36
+  SchoolCafeteria:
+    path: "Assets/Prefabs/Rooms/SchoolCafeteria.prefab"
+    addressable_key: "Room_SchoolCafeteria"
+    enum_index: 37
+  SchoolAuditorium:
+    path: "Assets/Prefabs/Rooms/SchoolAuditorium.prefab"
+    addressable_key: "Room_SchoolAuditorium"
+    enum_index: 38
+  SchoolStairwell:
+    path: "Assets/Prefabs/Rooms/SchoolStairwell.prefab"
+    addressable_key: "Room_SchoolStairwell"
+    enum_index: 39
+  SchoolBathroom:
+    path: "Assets/Prefabs/Rooms/SchoolBathroom.prefab"
+    addressable_key: "Room_SchoolBathroom"
+    enum_index: 40
+
+  # Props narrativos
+  Prop_Coat:
+    path: "Assets/Prefabs/Narrative/Prop_Coat.prefab"
+    addressable_key: "Prop_Coat"
+  Prop_Desk_01:
+    path: "Assets/Prefabs/Props/Furniture/Prop_Desk_01.prefab"
+    addressable_key: "Prop_Desk_01"
+  Prop_Locker_01:
+    path: "Assets/Prefabs/Props/Furniture/Prop_Locker_01.prefab"
+    addressable_key: "Prop_Locker_01"
+    locker_spacing_m: 1.20
+    wall_offset_m: 0.10
+
+  # Puzzle
+  PuzzleWirePrefab:
+    path: "Assets/Prefabs/Puzzle/PuzzleWire.prefab"
+    addressable_key: "PuzzleWire"
+  PressurePlatePrefab:
+    path: "Assets/Prefabs/Puzzle/PressurePlate.prefab"
+    addressable_key: "PressurePlate"
+  DoorPrefab:
+    path: "Assets/Prefabs/Architecture/Door.prefab"
+    addressable_key: "Door"

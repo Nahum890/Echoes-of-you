@@ -1,0 +1,76 @@
+# Canonical authority rules for Echoes of You v3.0
+schema_version: "1.0"
+authority:
+  - id: AUTH-001
+    priority: 1
+    source: "Docs/ExecutableSpecs/registry/decisions.yaml"
+    role: "Resolved project decisions and known contradictions"
+  - id: AUTH-002
+    priority: 2
+    source: "Docs/GameDesign/ECHOES_BIBLE.md"
+    role: "Creative vision, pillars, narrative and non-negotiable design principles"
+  - id: AUTH-003
+    priority: 3
+    source: "Docs/Technical/PROJECT_CONTEXT.md"
+    role: "Verified technical architecture and active Unity pipeline"
+  - id: AUTH-004
+    priority: 4
+    source: "Docs/ExecutableSpecs/**/*.yaml"
+    role: "Machine-readable constraints, catalogs and procedures"
+  - id: AUTH-005
+    priority: 5
+    source: "Assets/Scripts/**/*.cs"
+    role: "Runtime behavior actually present in code"
+  - id: AUTH-006
+    priority: 6
+    source: "Assets/Data/Levels/*.asset"
+    role: "Current serialized level data; never overrides a rule"
+  - id: AUTH-007
+    priority: 7
+    source: "Docs/**/*.md"
+    role: "Human-readable context not already promoted to executable data"
+  - id: AUTH-008
+    priority: 8
+    source: "Docs/Archive/**/*"
+    role: "Historical reference only; never executable"
+
+conflict_protocol:
+  - id: AUTH-PROTOCOL-001
+    step: 1
+    action: "Collect every source that mentions the disputed value"
+  - id: AUTH-PROTOCOL-002
+    step: 2
+    action: "Use the highest-priority source with status active"
+  - id: AUTH-PROTOCOL-003
+    step: 3
+    action: "If runtime code contradicts an active design decision, mark implementation_status as violated or partial"
+  - id: AUTH-PROTOCOL-004
+    step: 4
+    action: "Do not silently change code or documentation to hide the conflict"
+  - id: AUTH-PROTOCOL-005
+    step: 5
+    action: "Create a decision entry with evidence and migration_required before autonomous changes"
+
+execution_rules:
+  - id: AUTH-EXEC-001
+    type: prohibition
+    status: active
+    severity: fatal
+    scope: [ai, documentation]
+    rule: "An IA must not use a deprecated or archived document as an execution source"
+    failure_code: AUTH_DEPRECATED_SOURCE
+  - id: AUTH-EXEC-002
+    type: invariant
+    status: active
+    severity: fatal
+    scope: [ai]
+    rule: "Every autonomous task must name its authority source and task-specific schemas"
+    failure_code: AUTH_MISSING_CONTEXT
+  - id: AUTH-EXEC-003
+    type: validation
+    status: active
+    severity: error
+    scope: [documentation]
+    rule: "Every active document must be registered in registry/documents.yaml"
+    validator_implementation: pending
+    failure_code: DOCUMENT_NOT_REGISTERED

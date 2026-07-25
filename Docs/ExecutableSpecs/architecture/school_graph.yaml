@@ -1,0 +1,73 @@
+schema_version: "1.0"
+graph_type: school_circulation
+source: Docs/Specs/SCHOOL_ARCHITECTURE.md
+
+zones:
+  - id: ZONE-CENTRAL
+    name: CentralCore
+    rooms: [SchoolHall, SchoolCorridor, SchoolStairwell]
+    required: true
+  - id: ZONE-ACADEMIC
+    name: AcademicWing
+    rooms: [SchoolClassroom, SchoolCorridor]
+    required: true
+  - id: ZONE-NARRATIVE
+    name: NarrativeWing
+    rooms: [SchoolLibrary, SchoolLyraClassroom, SchoolOffice]
+    required: true
+  - id: ZONE-SPECIAL
+    name: SpecialWing
+    rooms: [SchoolGym, SchoolLab]
+    required: false
+  - id: ZONE-SERVICE
+    name: ServiceWing
+    rooms: [SchoolCourtyard, SchoolMaintenanceCorridor, SchoolEmergencyCorridor]
+    required: false
+  - id: ZONE-LIMINAL
+    name: LiminalSpace
+    rooms: [SchoolLiminalClassroom, TransitionSpace]
+    required: false
+
+connections:
+  - {from: SchoolHall, to: SchoolCorridor, type: open_threshold, required: true}
+  - {from: SchoolHall, to: SchoolStairwell, type: visible_open_threshold, required: true}
+  - {from: SchoolCorridor, to: SchoolClassroom, type: single_door, required: true}
+  - {from: SchoolCorridor, to: SchoolLibrary, type: double_door_or_transition, required: false}
+  - {from: SchoolCorridor, to: SchoolStairwell, type: visible_open_threshold, required: false}
+  - {from: SchoolStairwell, to: SchoolLyraClassroom, type: upper_floor_threshold, required: false}
+  - {from: SchoolCourtyard, to: SchoolGym, type: double_door, required: false}
+  - {from: SchoolCourtyard, to: SchoolLab, type: double_door, required: false}
+  - {from: SchoolCorridor, to: SchoolClassroom, type: direct_room_to_room, required: false, forbidden: true}
+
+level_architecture:
+  N01: {primary_zone: CentralCore, primary_rooms: [SchoolHall, SchoolCorridor], graph_pattern: loop}
+  N02: {primary_zone: AcademicWing, primary_rooms: [SchoolCorridor, SchoolClassroom], graph_pattern: linear_sequence}
+  N03: {primary_zone: AcademicWing, primary_rooms: [SchoolCorridor, SchoolClassroom], graph_pattern: mirrored_branch}
+  N04: {primary_zone: AcademicWing, primary_rooms: [SchoolClassroom], graph_pattern: vertical_timing}
+  N05: {primary_zone: AcademicWing, primary_rooms: [SchoolCorridor], graph_pattern: timing_maze}
+  N06: {primary_zone: NarrativeWing, primary_rooms: [SchoolLibrary], graph_pattern: reveal_threshold}
+  N07: {primary_zone: ServiceWing, primary_rooms: [SchoolCourtyard], graph_pattern: open_route}
+  N08: {primary_zone: AcademicWing, primary_rooms: [SchoolStaffRoom], graph_pattern: multi_echo_room}
+  N09: {primary_zone: ServiceWing, primary_rooms: [SchoolCourtyard], graph_pattern: enclosed_open_space}
+  N10: {primary_zone: NarrativeWing, primary_rooms: [SchoolLyraClassroom], graph_pattern: memory_focus}
+  N11: {primary_zone: CentralCore, primary_rooms: [SchoolStairwell], graph_pattern: vertical_connection}
+  N12: {primary_zone: SpecialWing, primary_rooms: [SchoolGym, SchoolLab], graph_pattern: conflict_combo}
+  N13: {primary_zone: NarrativeWing, primary_rooms: [SchoolLyraClassroom, SchoolLiminalClassroom], graph_pattern: fragmentation}
+  N14: {primary_zone: LiminalSpace, primary_rooms: [SchoolLiminalClassroom], graph_pattern: void_fragments}
+  N15: {primary_zone: CentralCore, primary_rooms: [SchoolCorridor, SchoolHall], graph_pattern: return_and_exit}
+
+validation:
+  - id: ARCH-VAL-001
+    type: validation
+    status: active
+    severity: fatal
+    scope: [level, architecture]
+    rule: "PlayerStart and LevelExit must belong to one connected navigable graph"
+    validator: validators/level_validator.yaml#connectivity
+  - id: ARCH-VAL-002
+    type: prohibition
+    status: active
+    severity: error
+    scope: [transition, architecture]
+    rule: "Direct Classroom to Classroom connections are forbidden"
+    validator: validators/level_validator.yaml#forbidden_connections

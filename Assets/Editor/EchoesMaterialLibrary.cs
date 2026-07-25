@@ -7,189 +7,319 @@ public static class EchoesMaterialLibrary
 {
     public const string MaterialRoot = "Assets/Materials/Echoes";
 
-    // URP Lit shader. Reemplaza al "Standard" del Built-in pipeline.
-    public const string LitShaderName = "Universal Render Pipeline/Lit";
+    // NUEVOS SHADERS LIMINALES
+    public const string kLiminalSurface = "Echoes/LiminalSurface";
+    public const string kLiminalFogVolume = "Echoes/LiminalFogVolume";
+    public const string kEchoLiminal = "Echoes/EchoLiminal";
+    public const string kRetroFlatLit = "Echoes/RetroFlatLit"; // Legacy fallback
 
-    public static Material FloorMat => GetOrCreateFloorMat();
-    public static Material PlateMat => GetOrCreatePlateMat();
-    public static Material BridgeMat => GetOrCreateBridgeMat();
-    public static Material DoorMat => GetOrCreateDoorMat();
-    public static Material GoalMat => GetOrCreateGoalMat();
-    public static Material PlayerMat => GetOrCreatePlayerMat();
-    public static Material EchoMat => GetOrCreateEchoMat();
-    public static Material ArchMat => GetOrCreateArchMat();
-    public static Material LiminalFogMat => GetOrCreateLiminalFogMat();
+    private static readonly Dictionary<string, Material> _materials = new();
 
-    public static Material WallTealMat    => GetOrCreateMaterial("Mat_WallTeal",    HexColor("2B4A4A"));
-    public static Material WallMustardMat => GetOrCreateMaterial("Mat_WallMustard", HexColor("5A4A2E"));
-    public static Material WallSageMat    => GetOrCreateMaterial("Mat_WallSage",    HexColor("3A4A38"));
-    public static Material WallRoseMat    => GetOrCreateMaterial("Mat_WallRose",    HexColor("4A3438"));
-    public static Material MemoryMat      => GetOrCreateEmissiveMaterial("Mat_Memory", HexColor("8A5A2E"), HexColor("E8B262") * 0.9f);
+    // TOKENS DE PALETA (ECHOES_BIBLE.md)
+    public static Material VoidBlackMat        => GetMaterial("void-black");
+    public static Material CorridorNavyMat     => GetMaterial("corridor-navy");
+    public static Material FluorescentSickMat  => GetMaterial("fluorescent-sick");
+    public static Material MemoryAmberMat      => GetMaterial("memory-amber");
+    public static Material EchoCyanMat         => GetMaterial("echo-cyan");
+    public static Material WrongnessRedMat     => GetMaterial("wrongness-red");
+    public static Material InstitutionalTealMat=> GetMaterial("institutional-teal");
+    public static Material FadedMustardMat     => GetMaterial("faded-mustard");
+    public static Material SageGreenMat        => GetMaterial("sage-green");
+    public static Material DustyRoseMat        => GetMaterial("dusty-rose");
 
+    // MAPEO CANÓNICO A TOKENS
+    public static Material FloorMat            => CorridorNavyMat;
+    public static Material PlateMat            => FluorescentSickMat;
+    public static Material BridgeMat           => EchoCyanMat;
+    public static Material DoorMat             => WrongnessRedMat;
+    public static Material GoalMat             => MemoryAmberMat;
+    public static Material PlayerMat           => GetOrCreateMaterialInternal("Mat_Player", Color.white);
+    public static Material EchoMat             => EchoCyanMat;
+    public static Material ArchMat             => GetOrCreateMaterialInternal("Mat_Architecture", HexColor("3A3E47"));
+    public static Material LiminalFogMat       => GetOrCreateFogMaterial();
+
+    public static Material WallTealMat         => InstitutionalTealMat;
+    public static Material WallMustardMat      => FadedMustardMat;
+    public static Material WallSageMat         => SageGreenMat;
+    public static Material WallRoseMat         => DustyRoseMat;
+    public static Material MemoryMat           => MemoryAmberMat;
+    public static Material ChalkboardMat       => GetOrCreateMaterialInternal("Mat_Chalkboard", HexColor("2A3A2A", 0.9f));
+    public static Material BookMat             => GetOrCreateMaterialInternal("Mat_Book", HexColor("3A2A1A"));
+    public static Material CrackMat            => GetOrCreateMaterialInternal("Mat_Crack", HexColor("0A0A0D"));
+
+    [InitializeOnLoadMethod]
     public static void EnsureMaterials()
     {
-        Shader litShader = Shader.Find(LitShaderName);
-        if (litShader == null)
+        EnsureFolderExists(MaterialRoot);
+
+        // FORZAR creación de todos los materiales token
+        _ = VoidBlackMat; _ = CorridorNavyMat; _ = FluorescentSickMat; _ = MemoryAmberMat;
+        _ = EchoCyanMat; _ = WrongnessRedMat; _ = InstitutionalTealMat; _ = FadedMustardMat;
+        _ = SageGreenMat; _ = DustyRoseMat;
+        _ = FloorMat; _ = ArchMat; _ = BridgeMat; _ = PlateMat; _ = DoorMat; _ = GoalMat;
+        _ = PlayerMat; _ = EchoMat; _ = LiminalFogMat; _ = ChalkboardMat; _ = BookMat; _ = CrackMat;
+
+        AssetDatabase.SaveAssets();
+        Debug.Log("[EchoesMaterialLibrary] ✓ Materiales liminales asegurados");
+    }
+
+    public static Material GetMaterial(string tokenName)
+    {
+        if (string.IsNullOrEmpty(tokenName)) return CorridorNavyMat;
+        if (_materials.TryGetValue(tokenName, out var cached) && cached != null) return cached;
+        Material mat = CreateTokenMaterial(tokenName);
+        _materials[tokenName] = mat;
+        return mat;
+    }
+
+    private static Material CreateTokenMaterial(string token)
+    {
+        string matName = $"Mat_Token_{token}";
+        string path = Path.Combine(MaterialRoot, $"{matName}.mat").Replace("\\", "/");
+        
+        Material mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+        
+        // SELECCIÓN DE SHADER POR TOKEN
+        string shaderName = token switch
         {
-            Debug.LogError("[Echoes Material Library] Could not find URP Lit shader! ¿Está URP instalado y asignado?");
-            return;
+            "echo-cyan" => kEchoLiminal,
+            "liminal-fog" => kLiminalFogVolume,
+            _ => kLiminalSurface  // TODO usa LiminalSurface por defecto
+        };
+
+        Shader shader = Shader.Find(shaderName);
+        if (shader == null)
+        {
+            Debug.LogError($"[EchoesMaterialLibrary] Shader NO encontrado: {shaderName}. Usando fallback.");
+            shader = Shader.Find("Echoes/LiminalSurface") ?? Shader.Find("Universal Render Pipeline/Lit");
         }
 
-        // Trigger loading and creation of all materials
-        var floor = FloorMat;
-        var arch = ArchMat;
-        var bridge = BridgeMat;
-        var plate = PlateMat;
-        var door = DoorMat;
-        var goal = GoalMat;
-        var player = PlayerMat;
-        var echo = EchoMat;
-        var fog = LiminalFogMat;
-        var wallTeal    = WallTealMat;
-        var wallMustard = WallMustardMat;
-        var wallSage    = WallSageMat;
-        var wallRose    = WallRoseMat;
-        var memory      = MemoryMat;
-
-        if (goal != null)
+        if (mat == null)
         {
-            goal.EnableKeyword("_EMISSION");
-            goal.SetColor("_EmissionColor", new Color(1.0f, 0.7f, 0.35f) * 2.5f);
-            goal.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
+            mat = new Material(shader) { name = $"Mat_Token_{token}" };
+            EnsureFolderExists(MaterialRoot);
+            AssetDatabase.CreateAsset(mat, path);
+        }
+        else if (mat.shader != shader)
+        {
+            mat.shader = shader;
         }
 
-        if (echo != null)
+        Color color = TokenToColor(token);
+        mat.color = color;
+
+        // CONFIGURACIÓN LIMINAL POR TOKEN
+        ConfigureLiminalProperties(token, mat, color);
+
+        EditorUtility.SetDirty(mat);
+        return mat;
+    }
+
+    static void ConfigureLiminalProperties(string token, Material mat, Color baseColor)
+    {
+        if (mat.shader != null && mat.shader.name.Contains("LiminalSurface"))
         {
-            echo.EnableKeyword("_EMISSION");
-            echo.SetColor("_EmissionColor", new Color(0f, 0.5f, 0.65f) * 1.5f);
-            echo.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
+            // PROPIEDADES LIMINAL SURFACE
+            mat.SetFloat("_FresnelInvert", 0.3f);
+            mat.SetFloat("_FluorescentEdge", 0.1f);
+            mat.SetFloat("_StainNoiseScale", 4f);
+            mat.SetFloat("_StainThreshold", 0.7f);
+            mat.SetFloat("_WearNoiseScale", 8f);
+            mat.SetFloat("_WearHeight", 1.5f);
+            mat.SetFloat("_SpecularAnomaly", 0.15f);
+            mat.SetFloat("_DepthDistort", 0.005f);
+
+            // COLORES LIMINALES POR TOKEN
+            switch (token)
+            {
+                case "corridor-navy":
+                    mat.SetFloat("_FresnelInvert", 0.35f);
+                    mat.SetFloat("_FluorescentEdge", 0.12f);
+                    mat.SetFloat("_StainThreshold", 0.65f);
+                    mat.SetFloat("_WearHeight", 1.5f);
+                    mat.SetColor("_SubsurfaceTint", new Color(0, 0.08f, 0.12f));
+                    mat.SetColor("_StainColor", new Color(0.05f, 0.08f, 0.12f));
+                    mat.SetColor("_WearColor", new Color(0.08f, 0.1f, 0.14f));
+                    break;
+                case "faded-mustard":
+                    mat.SetFloat("_FresnelInvert", 0.25f);
+                    mat.SetFloat("_FluorescentEdge", 0.08f);
+                    mat.SetFloat("_StainThreshold", 0.7f);
+                    mat.SetFloat("_WearHeight", 1.2f);
+                    mat.SetColor("_SubsurfaceTint", new Color(0.08f, 0.06f, 0.02f));
+                    break;
+                case "sage-green":
+                    mat.SetFloat("_FresnelInvert", 0.3f);
+                    mat.SetFloat("_FluorescentEdge", 0.1f);
+                    mat.SetColor("_SubsurfaceTint", new Color(0.02f, 0.08f, 0.04f));
+                    break;
+                case "dusty-rose":
+                    mat.SetFloat("_FresnelInvert", 0.2f);
+                    mat.SetFloat("_FluorescentEdge", 0.05f);
+                    mat.SetColor("_SubsurfaceTint", new Color(0.08f, 0.04f, 0.05f));
+                    break;
+                case "void-black":
+                    mat.SetFloat("_FresnelInvert", 0.1f);
+                    mat.SetFloat("_FluorescentEdge", 0f);
+                    mat.SetColor("_SubsurfaceTint", Color.black);
+                    break;
+                case "memory-amber":
+                    mat.SetFloat("_FluorescentEdge", 0.15f);
+                    mat.EnableKeyword("_EMISSION");
+                    mat.SetColor("_EmissionColor", new Color(0.91f, 0.70f, 0.38f) * 1.5f);
+                    break;
+                case "fluorescent-sick":
+                    mat.EnableKeyword("_EMISSION");
+                    mat.SetColor("_EmissionColor", new Color(0.79f, 0.83f, 0.69f) * 1.2f);
+                    break;
+                case "wrongness-red":
+                    mat.EnableKeyword("_EMISSION");
+                    mat.SetColor("_EmissionColor", new Color(0.70f, 0.23f, 0.23f) * 1.5f);
+                    break;
+                case "echo-cyan":
+                    // Echo usa shader propio
+                    break;
+            }
+        }
+        else if (mat.shader != null && mat.shader.name.Contains("EchoLiminal"))
+        {
+            // ECHO LIMINAL PROPERTIES
+            mat.SetFloat("_DistortionStrength", 0.12f);
+            mat.SetFloat("_ChromaticAberration", 0.025f);
+            mat.SetFloat("_DepthOffset", -0.08f);
+            mat.SetFloat("_ScanlineFreq", 40f);
+            mat.SetFloat("_ScanlineSpeed", 2f);
+            mat.SetFloat("_TemporalJitter", 0.008f);
+            mat.SetFloat("_DitherStrength", 0.5f);
+            mat.SetFloat("_FifteenFPSCap", 1f);
+            mat.SetColor("_ResonanceGlow", new Color(0, 0.8f, 1f, 0.3f));
+            mat.SetColor("_BaseColor", new Color(0.31f, 0.765f, 0.91f, 0.45f));
+        }
+
+        // EMISSION PARA TOKENES BRILLANTES
+        if (token == "echo-cyan" || token == "memory-amber" || token == "fluorescent-sick" || token == "wrongness-red")
+        {
+            mat.EnableKeyword("_EMISSION");
+            Color emissionColor = TokenToColor(token);
+            if (token == "echo-cyan") emissionColor = new Color(0f, 0.5f, 0.65f) * 2f;
+            else if (token == "memory-amber") emissionColor = new Color(0.91f, 0.70f, 0.38f) * 1.5f;
+            else if (token == "fluorescent-sick") emissionColor = new Color(0.79f, 0.83f, 0.69f) * 1.2f;
+            else if (token == "wrongness-red") emissionColor = new Color(0.70f, 0.23f, 0.23f) * 1.5f;
+            mat.SetColor("_EmissionColor", emissionColor);
         }
     }
 
-    private static Material GetOrCreateFloorMat() => GetOrCreateMaterial("Mat_Floor", HexColor("30333D"));
-    private static Material GetOrCreatePlateMat() => GetOrCreateEmissiveMaterial("Mat_Plate", HexColor("141A29"), new Color(0f, 0.4f, 0.52f) * 1.5f);
-    private static Material GetOrCreateBridgeMat() => GetOrCreateMaterial("Mat_Bridge", HexColor("3B4454"));
-    private static Material GetOrCreateDoorMat() => GetOrCreateEmissiveMaterial("Mat_Door", HexColor("7E1E2F"), new Color(0.4f, 0.05f, 0.05f) * 0.8f);
-    private static Material GetOrCreateGoalMat() => GetOrCreateEmissiveMaterial("Mat_Exit", HexColor("FFEBB5"), new Color(1.0f, 0.7f, 0.35f) * 2.5f);
-    private static Material GetOrCreatePlayerMat() => GetOrCreateMaterial("Mat_Player", HexColor("FFFFFF"));
-    private static Material GetOrCreateEchoMat() => GetOrCreateTransparentMaterial("Mat_Echo", new Color(0f, 0.8f, 1f, 0.45f), true);
-    private static Material GetOrCreateArchMat() => GetOrCreateMaterial("Mat_Architecture", HexColor("3A3E47"));
+    public static Color TokenToColor(string token)
+    {
+        return token switch
+        {
+            "void-black"         => new Color(0.04f, 0.04f, 0.05f, 1f),
+            "corridor-navy"      => new Color(0.11f, 0.14f, 0.19f, 1f),
+            "fluorescent-sick"   => new Color(0.79f, 0.83f, 0.69f, 1f),
+            "memory-amber"       => new Color(0.91f, 0.70f, 0.38f, 1f),
+            "echo-cyan"          => new Color(0.31f, 0.765f, 0.91f, 0.45f),
+            "wrongness-red"      => new Color(0.70f, 0.23f, 0.23f, 1f),
+            "institutional-teal" => new Color(0.17f, 0.29f, 0.29f, 1f),
+            "faded-mustard"      => new Color(0.35f, 0.29f, 0.18f, 1f),
+            "sage-green"         => new Color(0.23f, 0.29f, 0.22f, 1f),
+            "dusty-rose"         => new Color(0.29f, 0.20f, 0.22f, 1f),
+            _                    => new Color(0.11f, 0.14f, 0.19f, 1f)
+        };
+    }
 
-    private static Material GetOrCreateLiminalFogMat()
+    private static Material GetOrCreateMaterialInternal(string name, Color color, bool emissive = false)
+    {
+        string path = Path.Combine(MaterialRoot, name + ".mat").Replace("\\", "/");
+        Material mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+        Shader shader = Shader.Find(kLiminalSurface) ?? Shader.Find(kRetroFlatLit);
+
+        if (mat == null)
+        {
+            mat = new Material(shader) { name = name };
+            EnsureFolderExists(MaterialRoot);
+            AssetDatabase.CreateAsset(mat, path);
+        }
+        else if (mat.shader != shader)
+        {
+            mat.shader = shader;
+        }
+
+        mat.color = color;
+        if (emissive)
+        {
+            mat.EnableKeyword("_EMISSION");
+            mat.SetColor("_EmissionColor", color * 0.8f);
+        }
+        EditorUtility.SetDirty(mat);
+        return mat;
+    }
+
+    private static Material GetOrCreateFogMaterial()
     {
         string path = Path.Combine(MaterialRoot, "Mat_LiminalFog.mat").Replace("\\", "/");
-        Material material = AssetDatabase.LoadAssetAtPath<Material>(path);
-        if (material != null) return material;
+        Material mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+        Shader shader = Shader.Find(kLiminalFogVolume) ?? Shader.Find("Echoes/LiminalFog") ?? Shader.Find(kRetroFlatLit);
 
-        material = new Material(Shader.Find(LitShaderName));
-        material.color = new Color(0.2f, 0.22f, 0.28f, 0.5f);
-        SetupTransparentMaterial(material);
-        
-        EnsureFolderExists(MaterialRoot);
-        AssetDatabase.CreateAsset(material, path);
-        return material;
+        if (mat == null)
+        {
+            mat = new Material(shader) { name = "Mat_LiminalFog" };
+            EnsureFolderExists(MaterialRoot);
+            AssetDatabase.CreateAsset(mat, path);
+        }
+        else if (mat.shader != shader)
+        {
+            mat.shader = shader;
+        }
+
+        mat.color = HexColor("1C2430");
+        if (mat.HasProperty("_FogColor")) mat.SetColor("_FogColor", HexColor("1C2430"));
+        if (mat.HasProperty("_FogDensity")) mat.SetFloat("_FogDensity", 0.02f);
+        EditorUtility.SetDirty(mat);
+        return mat;
     }
 
     public static Material GetOrCreateMaterial(string name, Color color, bool emissive = false)
-    {
-        string path = Path.Combine(MaterialRoot, name + ".mat").Replace("\\", "/");
-        Material material = AssetDatabase.LoadAssetAtPath<Material>(path);
-        if (material != null)
-        {
-            material.color = color;
-            material.SetFloat("_Metallic", 0f);
-            material.SetFloat("_Smoothness", 0.05f);
-            if (emissive)
-            {
-                material.EnableKeyword("_EMISSION");
-                material.SetColor("_EmissionColor", color * 0.8f);
-            }
-            return material;
-        }
-
-        material = new Material(Shader.Find(LitShaderName));
-        material.color = color;
-        material.SetFloat("_Metallic", 0f);
-        material.SetFloat("_Smoothness", 0.05f);
-        if (emissive)
-        {
-            material.EnableKeyword("_EMISSION");
-            material.SetColor("_EmissionColor", color * 0.8f);
-        }
-
-        EnsureFolderExists(MaterialRoot);
-        AssetDatabase.CreateAsset(material, path);
-        return material;
-    }
+        => GetOrCreateMaterialInternal(name, color, emissive);
 
     public static Material GetOrCreateEmissiveMaterial(string name, Color albedo, Color emission)
     {
-        string path = Path.Combine(MaterialRoot, name + ".mat").Replace("\\", "/");
-        Material material = AssetDatabase.LoadAssetAtPath<Material>(path);
-        if (material != null)
-        {
-            material.color = albedo;
-            material.SetFloat("_Metallic", 0f);
-            material.SetFloat("_Smoothness", 0.05f);
-            material.EnableKeyword("_EMISSION");
-            material.SetColor("_EmissionColor", emission);
-            return material;
-        }
-
-        material = new Material(Shader.Find(LitShaderName));
-        material.color = albedo;
-        material.SetFloat("_Metallic", 0f);
-        material.SetFloat("_Smoothness", 0.05f);
-        material.EnableKeyword("_EMISSION");
-        material.SetColor("_EmissionColor", emission);
-
-        EnsureFolderExists(MaterialRoot);
-        AssetDatabase.CreateAsset(material, path);
-        return material;
+        Material mat = GetOrCreateMaterialInternal(name, albedo, true);
+        mat.SetColor("_EmissionColor", emission);
+        EditorUtility.SetDirty(mat);
+        return mat;
     }
 
     public static Material GetOrCreateTransparentMaterial(string name, Color color, bool emissive)
     {
         string path = Path.Combine(MaterialRoot, name + ".mat").Replace("\\", "/");
-        Material material = AssetDatabase.LoadAssetAtPath<Material>(path);
-        if (material != null)
+        Material mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+        Shader shader = Shader.Find(kLiminalSurface) ?? Shader.Find(kRetroFlatLit);
+
+        if (mat == null)
         {
-            material.color = color;
-            if (emissive)
-            {
-                material.EnableKeyword("_EMISSION");
-                material.SetColor("_EmissionColor", color * 1.4f);
-            }
-            return material;
+            mat = new Material(shader) { name = name };
+            EnsureFolderExists(MaterialRoot);
+            AssetDatabase.CreateAsset(mat, path);
+        }
+        else if (mat.shader != shader)
+        {
+            mat.shader = shader;
         }
 
-        material = new Material(Shader.Find(LitShaderName));
-        material.color = color;
-        SetupTransparentMaterial(material);
+        mat.color = color;
+        mat.SetFloat("_Surface", 1f);
+        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        mat.SetInt("_ZWrite", 0);
+        mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
 
         if (emissive)
         {
-            material.EnableKeyword("_EMISSION");
-            material.SetColor("_EmissionColor", color * 1.4f);
+            mat.EnableKeyword("_EMISSION");
+            mat.SetColor("_EmissionColor", color * 1.4f);
         }
-
-        EnsureFolderExists(MaterialRoot);
-        AssetDatabase.CreateAsset(material, path);
-        return material;
-    }
-
-    // Configura transparencia para URP/Lit (modelo de "surface type", no el _Mode del Standard).
-    private static void SetupTransparentMaterial(Material material)
-    {
-        material.SetFloat("_Surface", 1f); // 0 = Opaque, 1 = Transparent
-        material.SetFloat("_Blend", 0f);   // 0 = Alpha
-        material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-        material.SetInt("_ZWrite", 0);
-        material.DisableKeyword("_ALPHATEST_ON");
-        material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-        material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-        material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent; // 3000
+        EditorUtility.SetDirty(mat);
+        return mat;
     }
 
     public static Color HexColor(string hex, float alpha = 1f)
@@ -215,10 +345,6 @@ public static class EchoesMaterialLibrary
         }
     }
 
-    // ─── SAFE ACCESS FOR ENVIRONMENT PASS ───
-
-    private static readonly Dictionary<string, Material> s_materialCache = new();
-
     public static bool TryGetMaterial(string canonicalName, out Material mat)
     {
         mat = GetMaterialByName(canonicalName);
@@ -227,16 +353,13 @@ public static class EchoesMaterialLibrary
 
     private static Material GetMaterialByName(string canonicalName)
     {
-        if (s_materialCache.TryGetValue(canonicalName, out Material cached))
-            return cached;
-
-        Material mat = canonicalName switch
+        return canonicalName switch
         {
-            "Mat_Memory"      => MemoryMat,
-            "Mat_WallTeal"    => WallTealMat,
-            "Mat_WallMustard" => WallMustardMat,
-            "Mat_WallSage"    => WallSageMat,
-            "Mat_WallRose"    => WallRoseMat,
+            "Mat_Memory"      => MemoryAmberMat,
+            "Mat_WallTeal"    => InstitutionalTealMat,
+            "Mat_WallMustard" => FadedMustardMat,
+            "Mat_WallSage"    => SageGreenMat,
+            "Mat_WallRose"    => DustyRoseMat,
             "Mat_Floor"       => FloorMat,
             "Mat_Architecture"=> ArchMat,
             "Mat_Plate"       => PlateMat,
@@ -244,12 +367,10 @@ public static class EchoesMaterialLibrary
             "Mat_Door"        => DoorMat,
             "Mat_Exit"        => GoalMat,
             "Mat_Echo"        => EchoMat,
-            _ => null
+            "Mat_Chalkboard"  => ChalkboardMat,
+            "Mat_Book"        => BookMat,
+            "Mat_Crack"       => CrackMat,
+            _                 => GetMaterial(canonicalName)
         };
-
-        if (mat != null)
-            s_materialCache[canonicalName] = mat;
-
-        return mat;
     }
 }

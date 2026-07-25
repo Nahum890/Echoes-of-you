@@ -1,0 +1,9 @@
+schema_version: "1.0"
+dialogue_nodes:
+  MEM-001_COAT:
+    node_id: "NAR_NODE_001"
+    speaker: "Lyra"
+    text_key: "dialogue.mem001.coat"
+    audio_event: "SFX_Voice_Mem001"
+    display_duration_s: 4.5
+    next_node: null

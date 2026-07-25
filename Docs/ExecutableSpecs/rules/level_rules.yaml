@@ -1,0 +1,24 @@
+schema_version: "1.0"
+rule_set: levels
+rules:
+  - id: LVL-001
+    type: constraint
+    status: active
+    severity: error
+    scope: [level]
+    rule: "Level must declare intent, emotion, puzzle and architecture"
+    validator: validators/blueprint_validator.yaml#level_contract
+  - id: LVL-002
+    type: validation
+    status: active
+    severity: fatal
+    scope: [level]
+    rule: "Level must have a navigable route from PlayerStart to LevelExit"
+    validator: validators/level_validator.yaml#connectivity
+  - id: LVL-003
+    type: constraint
+    status: active
+    severity: warning
+    scope: [level]
+    rule: "First-time target completion is 2 to 6 minutes unless an exception is documented"
+    validator: validators/level_validator.yaml#playtime_target

@@ -12,6 +12,7 @@ public class FixedPuzzleCameraController : MonoBehaviour
     public Transform playerFocus;
     public Transform goalFocus;
     public Transform eventFocus;
+    public Transform echoFocus;
 
     [Header("Weights")]
     public float playerWeight = 1.35f;

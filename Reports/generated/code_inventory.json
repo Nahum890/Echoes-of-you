@@ -1,0 +1,1535 @@
+{
+    "generated_at": "2026-07-23T21:05:25.8904731Z",
+    "files": [
+        {
+            "path": "Assets/Editor/AutoFixZoneAndPlace.cs",
+            "types": [
+                "AutoFixZoneAndPlace"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/BlueprintUpdater.cs",
+            "types": [
+                "BlueprintUpdater",
+                "LevelConfig"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/CameraPassQA.cs",
+            "types": [
+                "CameraPassQA"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/CreateBasePrefabs.cs",
+            "types": [
+                "CreateBasePrefabs"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/DecalPrefabGenerator.cs",
+            "types": [
+                "DecalPrefabGenerator"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/EchoesAudioMixerBuilder.cs",
+            "types": [
+                "EchoesAudioMixerBuilder"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/EchoesAutoBuilderHelper.cs",
+            "types": [
+                "EchoesAutoBuilderHelper"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/EchoesBlueprintExporter.cs",
+            "types": [
+                "EchoesBlueprintExporter"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/EchoesLevelShell.cs",
+            "types": [
+                "EchoesLevelShell"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/EchoesLightingBakePipeline.cs",
+            "types": [
+                "EchoesLightingBakePipeline"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/EchoesMaterialLibrary.cs",
+            "types": [
+                "EchoesMaterialLibrary"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/EchoesModuleFactory.cs",
+            "types": [
+                "EchoesModuleFactory"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/EchoesNewProductionBuilder.cs",
+            "types": [
+                "EchoesNewProductionBuilder",
+                "InstantiatedModule"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/EchoesQueuedProductionRebuild.cs",
+            "types": [
+                "EchoesQueuedProductionRebuild"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/EchoesURPConfigurator.cs",
+            "types": [
+                "EchoesURPConfigurator",
+                "de"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/EchoesUrpSetup.cs",
+            "types": [
+                "EchoesUrpSetup"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/EnvironmentPassDataGenerator.cs",
+            "types": [
+                "EnvironmentPassDataGenerator"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/EnvironmentPassDataLoader.cs",
+            "types": [
+                "EnvironmentPassDataLoader"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/EnvironmentPassPlacementEngine.cs",
+            "types": [
+                "EnvironmentPassPlacementEngine",
+                "PlacedPropInfo",
+                "PlacementResult",
+                "RoomPlacementResult",
+                "PropPlacementResult"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/EnvironmentPassPlacer.cs",
+            "types": [
+                "EnvironmentPassPlacer"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/EnvironmentPassValidator.cs",
+            "types": [
+                "EnvironmentPassValidator",
+                "ValidationReport",
+                "RoomValidationReport"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/ExecutableSpecInventoryGenerator.cs",
+            "types": [
+                "ExecutableSpecInventoryGenerator",
+                "CodeInventory",
+                "CodeEntry",
+                "AssetInventory",
+                "AssetEntry",
+                "BlueprintInventory",
+                "BlueprintEntry"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/ExecutableSpecValidator.cs",
+            "types": [
+                "ExecutableSpecValidator",
+                "Report",
+                "Summary",
+                "Check"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/FixAllLevels.cs",
+            "types": [
+                "FixAllLevels"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/FixAnimations.cs",
+            "types": [
+                "FixAnimations"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/LoFiTextureGenerator.cs",
+            "types": [
+                "LoFiTextureGenerator"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/PrefabBatchBuilder.cs",
+            "types": [
+                "PrefabBatchBuilder"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/PropPlacementRunner.cs",
+            "types": [
+                "PropPlacementRunner"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/PropScaleAndMaterialFixer.cs",
+            "types": [
+                "PropScaleAndMaterialFixer"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/RoomComposer.cs",
+            "types": [
+                "RoomComposer",
+                "Tab"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/TextureCategoryRules.cs",
+            "types": [
+                "TextureCategory",
+                "TextureTargetSettings",
+                "TextureCategoryRules"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Editor/TextureOptimizerTool.cs",
+            "types": [
+                "TextureAuditEntry",
+                "TextureDuplicateGroup",
+                "TextureOptimizerTool"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/AtmosphereController.cs",
+            "types": [
+                "AtmosphereController"
+            ],
+            "serialized_fields": [
+                "maxDustMotes",
+                "particleSize",
+                "spawnVolume",
+                "enableGroundFog",
+                "maxFogParticles",
+                "fogParticleSize",
+                "fogVolume"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/CameraProfile.cs",
+            "types": [
+                "CameraProfileType",
+                "CameraProfile"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/CameraProfileApplier.cs",
+            "types": [
+                "CameraProfileApplier"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/CameraShake.cs",
+            "types": [
+                "CameraShake"
+            ],
+            "serialized_fields": [
+                "maxPositionShake",
+                "maxRotationShake",
+                "traumaDecay",
+                "frequency"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/CameraWorldUpOverride.cs",
+            "types": [
+                "CameraWorldUpOverride"
+            ],
+            "serialized_fields": [
+                "target",
+                "positionOffset",
+                "positionDamping",
+                "rotationDamping"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/CharacterDiagnostic.cs",
+            "types": [
+                "CharacterDiagnostic"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/CharacterPush.cs",
+            "types": [
+                "CharacterPush"
+            ],
+            "serialized_fields": [
+                "pushPower",
+                "weightLimit"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/ChaseHazardMotor.cs",
+            "types": [
+                "ChaseHazardMotor"
+            ],
+            "serialized_fields": [
+                "chaseSpeed",
+                "acceleration",
+                "killRadius",
+                "activeOnStart"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/CinemachineEventFocus.cs",
+            "types": [
+                "CinemachineEventFocus"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/CinemachineGameplayDynamics.cs",
+            "types": [
+                "CinemachineGameplayDynamics"
+            ],
+            "serialized_fields": [
+                "baseFov",
+                "speedFovBoost",
+                "fovDamping",
+                "tiltOnJump",
+                "dutchMax",
+                "tiltDamping",
+                "landingOffsetDip",
+                "landingRecoverySpeed",
+                "baseFollowOffset",
+                "movementInfluence",
+                "followDamping"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/CinemachineRuntimeSetup.cs",
+            "types": [
+                "CinemachineRuntimeSetup"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/CinematicCameraDynamics.cs",
+            "types": [
+                "CinematicCameraDynamics"
+            ],
+            "serialized_fields": [
+                "virtualCamera",
+                "followTarget",
+                "baseOffset",
+                "movementInfluence",
+                "noiseAmplitude",
+                "noiseFrequency",
+                "fovBase",
+                "fovSpeedBoost",
+                "dutchMax",
+                "followLerpSpeed"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/CinematicRecordingOverlay.cs",
+            "types": [
+                "CinematicRecordingOverlay"
+            ],
+            "serialized_fields": [
+                "recordTimeScale",
+                "scanlineStrength",
+                "grainStrength",
+                "flickerStrength",
+                "desaturateStrength"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/DoorController.cs",
+            "types": [
+                "DoorController"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/DynamicTransformMotor.cs",
+            "types": [
+                "DynamicTransformMotor"
+            ],
+            "serialized_fields": [
+                "localPointA",
+                "localPointB",
+                "rotationDegreesPerSecond",
+                "cycleDuration",
+                "phaseOffset",
+                "usePositionMotion"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/EchoCameraTargetGroupManager.cs",
+            "types": [
+                "EchoCameraTargetGroupManager"
+            ],
+            "serialized_fields": [
+                "playerWeightWithEcho",
+                "echoWeight",
+                "goalWeightWithEcho",
+                "echoBlendSharpness"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/EchoConflictTrap.cs",
+            "types": [
+                "EchoConflictTrap"
+            ],
+            "serialized_fields": [
+                "doorsClosedByEcho",
+                "doorsOpenedByEcho",
+                "warningObjects",
+                "warningSpinSpeed",
+                "completionSignal"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/EchoDisintegrationZone.cs",
+            "types": [
+                "EchoDisintegrationZone"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/EchoesAnimatorParams.cs",
+            "types": [
+                "EchoesAnimatorParams"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/EchoesAudioManager.cs",
+            "types": [
+                "EchoesAudioManager"
+            ],
+            "serialized_fields": [
+                "audioMixer"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/EchoesCameraIdentity.cs",
+            "types": [
+                "EchoesCameraIdentity"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/EchoesLocomotionSettings.cs",
+            "types": [
+                "EchoesLocomotionSettings"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/EchoesPresentationSettings.cs",
+            "types": [
+                "EchoesPresentationSettings"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/EchoesUrpMaterials.cs",
+            "types": [
+                "EchoesUrpMaterials"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/EchoesWorldMetrics.cs",
+            "types": [
+                "EchoesWorldMetrics"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/EchoKineticBody.cs",
+            "types": [
+                "EchoKineticBody"
+            ],
+            "serialized_fields": [
+                "controlledTransform",
+                "inactiveLocalPosition",
+                "activeLocalPosition",
+                "inactiveLocalEuler",
+                "activeLocalEuler",
+                "travelSpeed",
+                "rotationSpeed",
+                "acceptPlayer",
+                "acceptEcho",
+                "requireEcho",
+                "holdToMove",
+                "completionSignal"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/EchoKineticRole.cs",
+            "types": [
+                "EchoKineticRole"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/EchoKineticZone.cs",
+            "types": [
+                "EchoKineticZone"
+            ],
+            "serialized_fields": [
+                "role",
+                "kineticBody",
+                "shieldField",
+                "platform",
+                "geometryMotor",
+                "completionSignal",
+                "momentumRelayTarget",
+                "momentumRelayForce",
+                "requireEcho",
+                "acceptPlayer"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/EchoPathHint.cs",
+            "types": [
+                "EchoPathHint"
+            ],
+            "serialized_fields": [
+                "waypoints",
+                "hintColor",
+                "particleSize",
+                "glowIntensity",
+                "pulseSpeed"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/EchoPlayback.cs",
+            "types": [
+                "EchoPlayback"
+            ],
+            "serialized_fields": [
+                "skinWidth",
+                "_matEcho"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/EchoRecorder.cs",
+            "types": [
+                "EchoRecorder"
+            ],
+            "serialized_fields": [
+                "echoSpawnRoot",
+                "maxEchoes",
+                "maxRecordSeconds",
+                "minRecordSeconds",
+                "hud"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/EchoShieldField.cs",
+            "types": [
+                "EchoShieldField"
+            ],
+            "serialized_fields": [
+                "hazardRenderers",
+                "hazardLight",
+                "activeColor",
+                "shieldedColor",
+                "activeIntensity",
+                "shieldedIntensity",
+                "completionSignal"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/EchoSpectralTrail.cs",
+            "types": [
+                "EchoSpectralTrail",
+                "PoseSample"
+            ],
+            "serialized_fields": [
+                "snapshotInterval",
+                "delayTiers",
+                "afterimageLifetime",
+                "afterimageColor",
+                "maxAfterimagesPerTier"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/EchoTemporalFragmentBurst.cs",
+            "types": [
+                "EchoTemporalFragmentBurst"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/EchoTemporalVisual.cs",
+            "types": [
+                "EchoTemporalVisual"
+            ],
+            "serialized_fields": [
+                "visualRoot",
+                "flickerSpeed",
+                "glitchInterval",
+                "echoTint",
+                "glitchTint"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/EventCameraDirector.cs",
+            "types": [
+                "EventCameraDirector"
+            ],
+            "serialized_fields": [
+                "maxSequenceDuration",
+                "buttonLookDuration",
+                "doorLookDuration",
+                "returnBlendDuration",
+                "blendStyle",
+                "blendTime",
+                "eventFov"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/FixedPuzzleCameraController.cs",
+            "types": [
+                "FixedPuzzleCameraController"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/GameFeelController.cs",
+            "types": [
+                "GameFeelController",
+                "Intensity",
+                "WaveKind"
+            ],
+            "serialized_fields": [
+                "jumpEffectPrefab",
+                "landingEffectPrefab",
+                "hardLandingEffectPrefab",
+                "footstepDustPrefab",
+                "movementScrapePrefab",
+                "gravityShiftEffectPrefab",
+                "puzzleSolvedEffectPrefab",
+                "recordEffectPrefab",
+                "echoSpawnEffectPrefab",
+                "deathEffectPrefab",
+                "respawnEffectPrefab",
+                "audioSource",
+                "jumpClip",
+                "landingClip",
+                "hardLandingClip",
+                "footstepClip",
+                "movementScrapeClip",
+                "gravityShiftClip",
+                "puzzleSolvedClip",
+                "recordClip",
+                "recordStopClip",
+                "echoSpawnClip",
+                "echoFadeClip",
+                "softErrorClip",
+                "platePressClip",
+                "doorMoveClip",
+                "playerDeathClip",
+                "respawnClip",
+                "defaultVolume",
+                "ambientLoopClip",
+                "industrialDroneClip",
+                "ventilationHumClip",
+                "clockChimeClip",
+                "cameraShake",
+                "gameplayCamera",
+                "fixedGameplayCamera",
+                "jumpShake",
+                "landingShake",
+                "gravityShake",
+                "puzzleSolvedShake",
+                "recordShake",
+                "echoSpawnShake",
+                "deathShake",
+                "slowMotionScale",
+                "slowMotionDuration",
+                "baseFOV"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/GameHUD.cs",
+            "types": [
+                "GameHUD"
+            ],
+            "serialized_fields": [
+                "showHUD"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/GameProgress.cs",
+            "types": [
+                "GameProgress"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/GameStateController.cs",
+            "types": [
+                "GameStateController",
+                "GameFlowState",
+                "ImportantEventType"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/GhostBridge.cs",
+            "types": [
+                "GhostBridge"
+            ],
+            "serialized_fields": [
+                "signal",
+                "visualMesh",
+                "bridgeCollider",
+                "activeColor",
+                "inactiveColor"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/GoalTrigger.cs",
+            "types": [
+                "GoalTrigger"
+            ],
+            "serialized_fields": [
+                "displayName",
+                "pressurePlate",
+                "doorController",
+                "puzzleSignal",
+                "usePlatePressedState",
+                "useDoorOpenState",
+                "usePuzzleSignalState",
+                "accumulateOnce"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/GravityZone.cs",
+            "types": [
+                "GravityZone"
+            ],
+            "serialized_fields": [
+                "gravityDirection",
+                "directionSpace",
+                "gravityStrength",
+                "priority"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/HubPortal.cs",
+            "types": [
+                "HubPortal"
+            ],
+            "serialized_fields": [
+                "sceneName",
+                "displayName",
+                "memoryLine",
+                "visualRenderers",
+                "portalLight",
+                "lockedColor",
+                "unlockedColor",
+                "completedColor"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/HubSceneController.cs",
+            "types": [
+                "HubSceneController"
+            ],
+            "serialized_fields": [
+                "objectiveText",
+                "introLine"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/IResettableLevelObject.cs",
+            "types": [],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/KenneyTiling.cs",
+            "types": [
+                "KenneyTiling"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/KillVolume.cs",
+            "types": [
+                "KillVolume"
+            ],
+            "serialized_fields": [
+                "playerTag",
+                "deathDelay"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/KineticPushableBlock.cs",
+            "types": [
+                "KineticPushableBlock"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/LevelArchetype.cs",
+            "types": [
+                "LevelArchetype"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/LevelBlueprint.cs",
+            "types": [
+                "ParadoxType",
+                "ModuleType",
+                "ModulePlacement",
+                "LevelBlueprint"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/LevelCameraProfiles.cs",
+            "types": [
+                "LevelCameraProfiles",
+                "Profile"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/LevelEnvironmentBootstrap.cs",
+            "types": [
+                "LevelEnvironmentBootstrap"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/LevelEscapeSequence.cs",
+            "types": [
+                "LevelEscapeSequence"
+            ],
+            "serialized_fields": [
+                "goal",
+                "exits",
+                "escapeRouteEnd",
+                "collapseDelay",
+                "escapeTimeLimit",
+                "hazard"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/LevelExit.cs",
+            "types": [
+                "LevelExit"
+            ],
+            "serialized_fields": [
+                "completionToast",
+                "lockedToast"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/LevelExperienceBlueprint.cs",
+            "types": [
+                "LevelExperienceBlueprint"
+            ],
+            "serialized_fields": [
+                "archetype",
+                "cameraIdentity",
+                "movementSection",
+                "syncSection",
+                "escalationSection",
+                "ahaMoment",
+                "traversalClimax",
+                "requiresEscapeAfterPuzzle",
+                "escapeDurationSeconds",
+                "chaseHazard"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/LevelGoal.cs",
+            "types": [
+                "LevelGoal"
+            ],
+            "serialized_fields": [
+                "objectiveText",
+                "readyPrompt",
+                "completionToast",
+                "linkedExits",
+                "triggers",
+                "autoCollectChildTriggers",
+                "requiredTriggerCount",
+                "anyTriggerSatisfiesGoal",
+                "skipEscapeSequence"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/LevelKitPiece.cs",
+            "types": [
+                "LevelKitPiece"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/LevelLightingSettings.cs",
+            "types": [
+                "LevelLightingSettings"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/LevelPacingMarker.cs",
+            "types": [
+                "LevelPacingMarker",
+                "Section"
+            ],
+            "serialized_fields": [
+                "section",
+                "adjustCameraOnEnter",
+                "cameraHint"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/LevelRuntimeController.cs",
+            "types": [
+                "LevelRuntimeController"
+            ],
+            "serialized_fields": [
+                "objectiveText",
+                "introLine",
+                "completionLine",
+                "allowSoftReset",
+                "allowHardReset",
+                "hardResetHoldSeconds"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/LevelScaledChild.cs",
+            "types": [
+                "LevelScaledChild"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/LevelSpawnMarker.cs",
+            "types": [
+                "LevelSpawnMarker"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/LevelVisualGuide.cs",
+            "types": [
+                "LevelVisualGuide"
+            ],
+            "serialized_fields": [
+                "playerSpawn",
+                "levelExit",
+                "plates",
+                "doors",
+                "readingDirection",
+                "readingAngle",
+                "voidHeight"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/LightFlicker.cs",
+            "types": [
+                "LightFlicker"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/MainMenuCinematicWorld.cs",
+            "types": [
+                "MainMenuCinematicWorld",
+                "MenuAmbience",
+                "MenuEchoWalker",
+                "CircuitPacketMover"
+            ],
+            "serialized_fields": [
+                "distantEchoWalkers",
+                "orbitRadius",
+                "orbitSpeed",
+                "fogPulseSpeed"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/MainMenuController.cs",
+            "types": [
+                "MainMenuController"
+            ],
+            "serialized_fields": [
+                "firstLevelScene",
+                "autoStartGame"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/MemoryPlatform.cs",
+            "types": [
+                "MemoryPlatform"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/MenuButtonHoverState.cs",
+            "types": [
+                "MenuButtonHoverState",
+                "State",
+                "UIParticleInstance"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/MenuHoverSystem.cs",
+            "types": [
+                "MenuHoverSystem",
+                "PanelTintType"
+            ],
+            "serialized_fields": [
+                "uiDocument",
+                "hoverInClip",
+                "hoverOutClip",
+                "clickConfirmClip",
+                "navMoveClip",
+                "crtAmbientClip",
+                "hoverInVolume",
+                "hoverOutVolume",
+                "clickVolume",
+                "navMoveVolume",
+                "crtAmbientVolume",
+                "hoverEnterDurationMouse",
+                "hoverEnterDurationController",
+                "hoverLeaveDuration",
+                "noiseBaseOpacity",
+                "ghostLayerAOpacity",
+                "ghostLayerBOpacity",
+                "particleSpeed",
+                "menuCursorTexture"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/MovingPlatformMomentum.cs",
+            "types": [
+                "MovingPlatformMomentum"
+            ],
+            "serialized_fields": [
+                "transferToPlayer",
+                "transferToEcho"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/NarrativeProp.cs",
+            "types": [
+                "NarrativeProp"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/ParkourPlatformMarker.cs",
+            "types": [
+                "ParkourPlatformMarker"
+            ],
+            "serialized_fields": [
+                "edgeGlowColor",
+                "glowIntensity",
+                "pulseSpeed",
+                "createEdgeLight",
+                "edgeLightRange",
+                "maxJumpHeight",
+                "minPlatformWidth"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/PauseMenu.cs",
+            "types": [
+                "PauseMenu"
+            ],
+            "serialized_fields": [
+                "hubSceneName",
+                "mainMenuScene"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/PlayerAdvancedLocomotion.cs",
+            "types": [
+                "PlayerAdvancedLocomotion"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/PlayerAnimationRuntimeBootstrap.cs",
+            "types": [
+                "PlayerAnimationRuntimeBootstrap"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/PlayerCharacterVisualSetup.cs",
+            "types": [
+                "PlayerCharacterVisualSetup"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/PlayerController.cs",
+            "types": [
+                "PlayerController",
+                "PlayerAnimationState",
+                "GroundProbe"
+            ],
+            "serialized_fields": [
+                "hardLandingSpeed",
+                "softLandingPause",
+                "hardLandingPause",
+                "footstepDistance",
+                "movementScrapeSpeed"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/PlayerController_Animation.cs",
+            "types": [
+                "PlayerController"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/PlayerController_Gravity.cs",
+            "types": [
+                "PlayerController"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/PlayerController_Visual.cs",
+            "types": [
+                "PlayerController"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/PlayerLocomotionAnimator.cs",
+            "types": [
+                "PlayerLocomotionAnimator"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/PlayerProceduralAnimator.cs",
+            "types": [
+                "PlayerProceduralAnimator"
+            ],
+            "serialized_fields": [
+                "visualRoot",
+                "modelRoot",
+                "leanAmount",
+                "runBobHeight",
+                "idleBreathHeight",
+                "squashAmount",
+                "turnLeanAmount",
+                "smoothing",
+                "jumpAnticipationSeconds",
+                "landingRecoverySeconds",
+                "recordPulseScale"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/PostProcessingSetup.cs",
+            "types": [
+                "PostProcessingSetup"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/PressurePlate.cs",
+            "types": [
+                "PressurePlate"
+            ],
+            "serialized_fields": [
+                "playerTag",
+                "echoTag",
+                "echoProjectionTag"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/PressurePlateAlignment.cs",
+            "types": [
+                "PressurePlateAlignment"
+            ],
+            "serialized_fields": [
+                "groundMask"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/PuzzleCondition.cs",
+            "types": [
+                "PuzzleCondition",
+                "ConditionType"
+            ],
+            "serialized_fields": [
+                "_isMet"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/PuzzleIntent.cs",
+            "types": [
+                "PuzzleIntent"
+            ],
+            "serialized_fields": [
+                "designNote"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/PuzzleSignal.cs",
+            "types": [
+                "PuzzleSignal"
+            ],
+            "serialized_fields": [
+                "displayName",
+                "accumulateOnce",
+                "satisfiedOnStart"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/PuzzleWire.cs",
+            "types": [
+                "PuzzleWire",
+                "Connection",
+                "LogicMode"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/RecordFrame.cs",
+            "types": [
+                "RecordFrame"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/SceneTransitionManager.cs",
+            "types": [
+                "SceneTransitionManager"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/ThirdPersonCamera.cs",
+            "types": [
+                "ThirdPersonCamera"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/TimedMovingPlatform.cs",
+            "types": [
+                "TimedMovingPlatform"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/TutorialHUD.cs",
+            "types": [
+                "TutorialHUD"
+            ],
+            "serialized_fields": [
+                "levelObjectives",
+                "bgColor",
+                "textColor",
+                "hintColor",
+                "objectiveColor",
+                "fadeSpeed",
+                "objectiveShowDuration",
+                "showObjectiveOnStart"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/TutorialTrigger.cs",
+            "types": [
+                "TutorialTrigger"
+            ],
+            "serialized_fields": [
+                "message",
+                "hint",
+                "displayDuration",
+                "oneShot",
+                "playerTag"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/UIBootstrap.cs",
+            "types": [
+                "UIBootstrap"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/ScriptableObjects/EnvironmentPass/Enums.cs",
+            "types": [
+                "PropSize",
+                "RoomType",
+                "NarrativeTag",
+                "Chapter"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/ScriptableObjects/EnvironmentPass/LevelDataSO.cs",
+            "types": [
+                "LevelDataSO"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/ScriptableObjects/EnvironmentPass/NarrativeClusterSO.cs",
+            "types": [
+                "NarrativeClusterSO"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/ScriptableObjects/EnvironmentPass/PropPlacementSO.cs",
+            "types": [
+                "PropPlacementSO"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/ScriptableObjects/EnvironmentPass/RoomDataSO.cs",
+            "types": [
+                "RoomDataSO"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/Data/RoomTemplate.cs",
+            "types": [
+                "RoomTemplate",
+                "Placement"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/Echo/EchoModeController.cs",
+            "types": [
+                "EchoModeController"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/Echo/EchoPlaybackMode.cs",
+            "types": [
+                "EchoPlaybackMode"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/Echo/EchoRecordingData.cs",
+            "types": [
+                "EchoRecordingData"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/Environment/ArchitecturePiece.cs",
+            "types": [
+                "ArchitecturePiece"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/Lighting/LightingApplier.cs",
+            "types": [
+                "LightingApplier"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/Lighting/LightingProfile.cs",
+            "types": [
+                "LightingProfile",
+                "Archetype"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/Paradox/ErosionSystem.cs",
+            "types": [
+                "ErosionSystem"
+            ],
+            "serialized_fields": [
+                "maxDurability",
+                "healthyColor",
+                "warningColor",
+                "collapsedColor"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/Paradox/LivingArchitectureSystem.cs",
+            "types": [
+                "LivingArchitectureSystem",
+                "MovingWall"
+            ],
+            "serialized_fields": [
+                "movingWalls"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/Paradox/ResonanceSystem.cs",
+            "types": [
+                "ResonanceSystem",
+                "ResonanceZone"
+            ],
+            "serialized_fields": [
+                "zones",
+                "targetSignal",
+                "requiredActiveZones"
+            ]
+        },
+        {
+            "path": "Assets/Scripts/Paradox/ResonanceZoneTrigger.cs",
+            "types": [
+                "ResonanceZoneTrigger"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/Scripts/Paradox/TemporalBridge.cs",
+            "types": [
+                "TemporalBridge"
+            ],
+            "serialized_fields": [
+                "bridgeCollider",
+                "visualMesh",
+                "activeColor",
+                "inactiveColor"
+            ]
+        },
+        {
+            "path": "Assets/UnityTechnologies/ParticlePack/Shared/Scripts/AdjustTimeScale.cs",
+            "types": [
+                "AdjustTimeScale"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/UnityTechnologies/ParticlePack/Shared/Scripts/ProximityActivate.cs",
+            "types": [
+                "ProximityActivate"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/UnityTechnologies/ParticlePack/Shared/Scripts/SimpleCameraController.cs",
+            "types": [
+                "SimpleCameraController",
+                "CameraState"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/UnityTechnologies/ParticlePack/Shared/Scripts/SimpleCharacterMotor.cs",
+            "types": [
+                "SimpleCharacterMotor"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/UnityTechnologies/ParticlePack/TutorialInfo/Scripts/Readme.cs",
+            "types": [
+                "Readme",
+                "Section"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/UnityTechnologies/ParticlePack/EffectExamples/Misc Effects/Scripts/SpawnEffect.cs",
+            "types": [
+                "SpawnEffect"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/UnityTechnologies/ParticlePack/Shared/Ramps/Editor/RampAssetEditor.cs",
+            "types": [
+                "RampAssetEditor"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/UnityTechnologies/ParticlePack/Shared/Ramps/Runtime/RampAsset.cs",
+            "types": [
+                "RampAsset"
+            ],
+            "serialized_fields": []
+        },
+        {
+            "path": "Assets/UnityTechnologies/ParticlePack/TutorialInfo/Scripts/Editor/ReadmeEditor.cs",
+            "types": [
+                "ReadmeEditor"
+            ],
+            "serialized_fields": [
+                "m_LinkStyle",
+                "m_TitleStyle",
+                "m_HeadingStyle",
+                "m_BodyStyle"
+            ]
+        }
+    ]
+}

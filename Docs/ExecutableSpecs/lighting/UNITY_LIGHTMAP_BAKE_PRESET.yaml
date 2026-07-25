@@ -1,0 +1,30 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-LGT-BAKE-001"
+# UNITY_LIGHTMAP_BAKE_PRESET.yaml
+# Executable parameters for Unity LightmapEditorSettings API.
+
+lightmap_editor_settings:
+  max_atlas_size: 1024
+  realtime_resolution: 2.0      # texels per unit
+  baked_resolution: 10.0        # texels per unit
+  bounce_scale: 1.0
+  bounces: 3
+  direct_sample_count: 32
+  indirect_sample_count: 128
+  environment_sample_count: 64
+  lightmapper: "ProgressiveGPU"  # Progressive GPU lightmapper
+  denoiser_type: "OpenImageDenoise"
+  filter_mode: "Bilinear"
+  lightmap_parameters: "Assets/Settings/Lighting/PS1_Liminal_LightmapParams.giparams"
+  ao_enabled: true
+  ao_direct: 0.2
+  ao_indirect: 0.8
+  ao_exponent: 1.0
+  ao_max_distance: 3.0
+  compress_lightmaps: true
+  mixed_bake_mode: "Subtractive" # Low VRAM overhead mode
+
+lightprobe_generator_preset:
+  grid_resolution_m: 2.0
+  vertical_layers: [0.5, 1.8, 3.5]
+  margin_from_walls_m: 0.4

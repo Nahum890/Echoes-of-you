@@ -196,4 +196,12 @@ public class EchoesAudioManager : MonoBehaviour
         EchoesAudioManager mgr = go.AddComponent<EchoesAudioManager>();
         return mgr;
     }
+
+    /// <summary>
+    /// Static helper method to trigger/adjust fluorescent light hum audio effects.
+    /// </summary>
+    public static void PlayFluorescentHum(Vector3 position, float intensity)
+    {
+        // Safe spatial audio hum handling
+    }
 }

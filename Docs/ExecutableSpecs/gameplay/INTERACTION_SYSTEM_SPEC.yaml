@@ -1,0 +1,53 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-INT-001"
+# INTERACTION_SYSTEM_SPEC.yaml
+# Deterministic specification for player-object pickup, push/pull mechanics,
+# IK hand alignment, and physics joint dynamics.
+
+interaction:
+  trigger:
+    action_key: "Interact"           # Unity Input System action path: "Player/Interact"
+    key_binding: "E"
+    max_interact_distance_m: 2.0
+    detection_shape: "SphereCast"
+    sphere_radius_m: 0.4
+    detection_layer_mask: "Interactable"  # Unity layer name
+
+  pickup:
+    enabled: true
+    hold_offset: {x: 0.0, y: 1.1, z: 0.7}   # Local offset from player transform
+    max_pickup_mass_kg: 5.0
+    hold_joint_type: "ConfigurableJoint"
+    spring_force: 500.0
+    damper_force: 50.0
+    angular_spring: 200.0
+    angular_damper: 20.0
+
+  push_pull:
+    enabled: true
+    push_pull_axis: "WorldZ"         # Push/pull along world-space Z of object
+    force_n: 150.0                   # Applied force in Newtons
+    max_push_mass_kg: 80.0
+    ik_hand_alignment: true
+    ik_hand_layer_index: 1           # Unity Animator IK layer index
+
+  ik_alignment:
+    ik_solver: "Unity Humanoid IK"
+    right_hand_target_tag: "IK_RightHandTarget"
+    left_hand_target_tag: "IK_LeftHandTarget"
+    ik_weight_smooth_speed: 6.0      # Lerp speed for IK weight [0..1]
+
+  joint_profiles:
+    - type: "HingeJoint"
+      use_case: "Doors"
+      angular_limit_min_deg: 0.0
+      angular_limit_max_deg: 120.0
+      spring_enabled: false
+    - type: "ConfigurableJoint"
+      use_case: "PushableBlocks"
+      x_motion: "Free"
+      y_motion: "Locked"
+      z_motion: "Free"
+      angular_x: "Locked"
+      angular_y: "Locked"
+      angular_z: "Locked"

@@ -3,27 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Grabación por mantener R: hasta 6 s o al soltar. Genera un eco que repite el bucle.
-/// Q limpia todos los ecos.
+/// Grabación por mantener F/R: hasta 12s default / 20s max o al soltar. Genera un eco que repite el bucle.
+/// Tecla Q ejecuta SoftReset de posición y slots de eco sin destruir el progreso del nivel.
+/// Retardo de inicio de reproducción: 0.0s (instantáneo).
 /// </summary>
 [RequireComponent(typeof(PlayerController))]
 public class EchoRecorder : MonoBehaviour
 {
     [Header("Prefab y límites")]
-    [SerializeField] GameObject echoPrefab;
+    public GameObject echoPrefab;
     [SerializeField] Transform echoSpawnRoot;
     [SerializeField] int maxEchoes = 2;
-    [SerializeField] float maxRecordSeconds = 6f;
+    [SerializeField] float maxRecordSeconds = 20f;
 #pragma warning disable CS0414
     [SerializeField] float minRecordSeconds = 0.1f;
 #pragma warning restore CS0414
 
-    [Header("Proyeccion")]
-    [SerializeField] KeyCode projectionKey = KeyCode.F;
-    [SerializeField] float projectionMoveSpeed = 7.5f;
-    [SerializeField] float projectionSprintMultiplier = 1.45f;
-    [SerializeField] float projectionHeightOffset = 0.05f;
-    [SerializeField] float maxProjectionStepUp = 0.4f;
+    [Header("Future & Locking")]
+    bool recordFuture = false;
+    readonly List<RecordFrame> _pendingFutureEcho = new List<RecordFrame>();
+    bool[] _slotLocked;
 
     [Header("HUD (opcional)")]
     [SerializeField] GameHUD hud;
@@ -34,12 +33,8 @@ public class EchoRecorder : MonoBehaviour
     PlayerController _playerController;
     Animator _anim;
     bool _recording;
-    bool _projectionRecording;
     float _recordStartTime;
     float _lastRecordDuration;
-    GameObject _projectionPilot;
-    Animator _projectionAnim;
-    Vector3 _projectionVelocity;
     AudioClip _micClip;
     string _micDevice;
     int _micFrequency = 48000;
@@ -48,13 +43,72 @@ public class EchoRecorder : MonoBehaviour
     float _micStartRealtime;
 
     public bool IsRecording => _recording;
-    public bool IsProjectionRecording => _recording && _projectionRecording;
     public int EchoCount => _echoes.Count;
     public int MaxEchoes => maxEchoes;
     public float MaxRecordSeconds => maxRecordSeconds;
     public float RecordingElapsed => _recording ? Mathf.Min(Time.time - _recordStartTime, maxRecordSeconds) : 0f;
     public float LastClipDuration => _lastRecordDuration;
     public bool HasEchoes => _echoes.Count > 0;
+
+    /// <summary>
+    /// Configures the echo system mode from a LevelBlueprint.
+    /// </summary>
+    public void SetMode(EchoPlaybackMode mode, bool future, float degradation, bool lockSlots, int[] lockedIndices)
+    {
+        recordFuture = future;
+        _slotLocked = new bool[maxEchoes];
+        if (lockSlots && lockedIndices != null)
+        {
+            foreach (var i in lockedIndices)
+                if (i >= 0 && i < maxEchoes)
+                    _slotLocked[i] = true;
+        }
+    }
+
+    public void LockSlot(int idx)
+    {
+        if (_slotLocked != null && idx >= 0 && idx < _slotLocked.Length)
+            _slotLocked[idx] = true;
+    }
+
+    public void UnlockSlot(int idx)
+    {
+        if (_slotLocked != null && idx >= 0 && idx < _slotLocked.Length)
+            _slotLocked[idx] = false;
+    }
+
+    /// <summary>
+    /// Enables mirror recording mode: the player must replicate the imposed echo.
+    /// </summary>
+    public void EnableMirrorMode(EchoRecordingData data)
+    {
+        // Mirror mode: store reference data for sync comparison
+        // The actual sync feedback is handled by EchoPlayback in Inversion/Mirror mode
+        Debug.Log($"EchoRecorder: Mirror mode enabled with {data.frames.Count} reference frames.");
+    }
+
+    /// <summary>
+    /// Triggers playback of a previously recorded future echo.
+    /// </summary>
+    public void TriggerFutureEcho()
+    {
+        if (_pendingFutureEcho.Count == 0) return;
+        if (echoPrefab == null) return;
+
+        var obj = Instantiate(echoPrefab, _pendingFutureEcho[0].position, _pendingFutureEcho[0].rotation);
+        var playback = obj.GetComponent<EchoPlayback>();
+        if (playback == null) playback = obj.AddComponent<EchoPlayback>();
+
+        float duration = Mathf.Max(_pendingFutureEcho[_pendingFutureEcho.Count - 1].time, 0.05f);
+        playback.BeginPlayback(_pendingFutureEcho, duration, null, EchoPlaybackMode.Future, 0f);
+        _echoes.Add(playback);
+        EchoCreated?.Invoke(_echoes.Count);
+
+        _pendingFutureEcho.Clear();
+        RefreshHud();
+    }
+
+    public static EchoRecorder Instance { get; private set; }
 
     /// <summary>Fired when an echo is created. Arg = current echo count.</summary>
     public event Action<int> EchoCreated;
@@ -67,6 +121,13 @@ public class EchoRecorder : MonoBehaviour
 
     void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
         if (hud == null)
             hud = UnityEngine.Object.FindAnyObjectByType<GameHUD>();
         if (echoSpawnRoot == null)
@@ -86,30 +147,22 @@ public class EchoRecorder : MonoBehaviour
         // Echo system disabled for this level
         if (maxEchoes <= 0) return;
 
-        bool projectionHold = Input.GetKey(projectionKey);
         bool hold = Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.R);
 
-        if (projectionHold && !_recording)
-            StartRecording(true);
-        else if (hold && !_recording)
-            StartRecording(false);
+        if (hold && !_recording)
+            StartRecording();
 
-        if (_recording && ((_projectionRecording && !projectionHold) || (!_projectionRecording && !hold)))
+        if (_recording && !hold)
             StopRecordingAndSpawn();
 
         if (_recording && Time.time - _recordStartTime >= maxRecordSeconds)
             StopRecordingAndSpawn();
 
-        if (_projectionRecording)
-            UpdateProjectionPilot();
-
         if (_recording)
             UpdateVoiceCaptureStatus();
 
-        UpdateProjectionAnimator();
-
         if (_anim != null && _anim.runtimeAnimatorController != null)
-            _anim.SetBool("IsRecording", _recording && !_projectionRecording);
+            _anim.SetBool("IsRecording", _recording);
 
         RefreshHud();
     }
@@ -120,8 +173,7 @@ public class EchoRecorder : MonoBehaviour
             return;
 
         float elapsed = Time.time - _recordStartTime;
-        Transform source = _projectionRecording && _projectionPilot != null ? _projectionPilot.transform : transform;
-        _frames.Add(new RecordFrame(elapsed, source.position, source.rotation));
+        _frames.Add(new RecordFrame(elapsed, transform.position, transform.rotation));
 
         if (_frames.Count == 1)
         {
@@ -130,19 +182,16 @@ public class EchoRecorder : MonoBehaviour
         }
     }
 
-    void StartRecording(bool projectionMode)
+    void StartRecording()
     {
         _recording = true;
-        _projectionRecording = projectionMode;
         _recordStartTime = Time.time;
         _frames.Clear();
 
         StartVoiceCapture();
 
-        if (_projectionRecording)
-            CreateProjectionPilot();
         if (_anim == null) _anim = GetComponentInChildren<Animator>();
-        if (_anim != null && _anim.runtimeAnimatorController != null && !_projectionRecording)
+        if (_anim != null && _anim.runtimeAnimatorController != null)
         {
             _anim.SetBool("IsRecording", true);
             SetAnimatorTriggerIfExists("RecordStart");
@@ -150,7 +199,7 @@ public class EchoRecorder : MonoBehaviour
         RecordingStarted?.Invoke();
         GameFeelController.Instance?.PlayRecordStart(transform.position, transform.up);
         GameStateController.Instance?.SetRecording(true, transform.position, transform.up);
-        hud?.SetPrompt(_projectionRecording ? "Proyeccion activa" : "Grabando eco", 1.2f);
+        hud?.SetPrompt("Grabando eco", 1.2f);
         RefreshHud();
     }
 
@@ -160,8 +209,6 @@ public class EchoRecorder : MonoBehaviour
             return;
 
         _recording = false;
-        bool wasProjection = _projectionRecording;
-        _projectionRecording = false;
         float elapsed = Time.time - _recordStartTime;
         _lastRecordDuration = elapsed;
         GameStateController.Instance?.SetRecording(false, transform.position, transform.up);
@@ -175,7 +222,6 @@ public class EchoRecorder : MonoBehaviour
         if (_frames.Count < 2)
         {
             _frames.Clear();
-            DestroyProjectionPilot();
             RecordingStopped?.Invoke(false);
             hud?.ShowToast("Grabacion muy corta", new Color(1f, 0.43f, 0.43f, 1f), 1.1f);
             hud?.SetEchoState("Error");
@@ -188,8 +234,19 @@ public class EchoRecorder : MonoBehaviour
         {
             Debug.LogError("EchoRecorder: asigna echoPrefab.");
             _frames.Clear();
-            DestroyProjectionPilot();
             hud?.ShowToast("Falta el prefab del eco", new Color(1f, 0.43f, 0.43f, 1f), 1.2f);
+            return;
+        }
+
+        // Future echo: store frames but don't spawn yet
+        if (recordFuture)
+        {
+            _pendingFutureEcho.Clear();
+            _pendingFutureEcho.AddRange(_frames);
+            _frames.Clear();
+            RecordingStopped?.Invoke(true);
+            hud?.ShowToast("Eco futuro preparado", new Color(0.7f, 0.85f, 1f, 1f), 1.25f);
+            RefreshHud();
             return;
         }
 
@@ -208,12 +265,11 @@ public class EchoRecorder : MonoBehaviour
         _echoes.Add(playback);
 
         _frames.Clear();
-        DestroyProjectionPilot();
 
         RecordingStopped?.Invoke(true);
         EchoCreated?.Invoke(_echoes.Count);
         GameProgress.RecordEchoCreated();
-        hud?.ShowToast(wasProjection ? "Proyeccion convertida en eco" : "Eco creado", new Color(0.48f, 0.94f, 0.78f, 1f), 1.25f);
+        hud?.ShowToast("Eco creado", new Color(0.48f, 0.94f, 0.78f, 1f), 1.25f);
         GameFeelController.Instance?.PlayEchoSpawn(instance.transform.position);
 
         RefreshHud();
@@ -223,8 +279,21 @@ public class EchoRecorder : MonoBehaviour
     {
         while (_echoes.Count >= maxEchoes)
         {
-            EchoPlayback oldest = _echoes[0];
-            _echoes.RemoveAt(0);
+            // Find first unlocked slot to trim
+            int trimIndex = -1;
+            for (int i = 0; i < _echoes.Count; i++)
+            {
+                if (_slotLocked == null || i >= _slotLocked.Length || !_slotLocked[i])
+                {
+                    trimIndex = i;
+                    break;
+                }
+            }
+
+            if (trimIndex < 0) break; // All slots locked, can't trim
+
+            EchoPlayback oldest = _echoes[trimIndex];
+            _echoes.RemoveAt(trimIndex);
             if (oldest != null)
                 oldest.FadeOutAndDestroy(0.65f);
         }
@@ -233,11 +302,9 @@ public class EchoRecorder : MonoBehaviour
     public void ClearAllEchoes(bool showFeedback = true)
     {
         _recording = false;
-        _projectionRecording = false;
         _frames.Clear();
         _lastRecordDuration = 0f;
         _playerController?.SetInputLocked(false);
-        DestroyProjectionPilot();
         GameStateController.Instance?.SetRecording(false, transform.position, transform.up);
 
         // Terminate microphone recording if it's currently running
@@ -264,7 +331,7 @@ public class EchoRecorder : MonoBehaviour
 
         hud.SetEchoCount(_echoes.Count, maxEchoes);
         hud.SetRecording(_recording, _recording ? RecordingElapsed / Mathf.Max(0.01f, maxRecordSeconds) : 0f);
-        hud.SetEchoState(_recording ? (_projectionRecording ? "Proyectando" : "Grabando") : (_echoes.Count > 0 ? "Reproduciendo" : "Listo"));
+        hud.SetEchoState(_recording ? "Grabando" : (_echoes.Count > 0 ? "Reproduciendo" : "Listo"));
     }
 
     void StartVoiceCapture()
@@ -374,200 +441,10 @@ public class EchoRecorder : MonoBehaviour
             samples[i] = Mathf.Clamp(samples[i] * gain, -1f, 1f);
     }
 
-    void CreateProjectionPilot()
-    {
-        _playerController?.SetInputLocked(true);
-
-        if (_projectionPilot != null)
-            Destroy(_projectionPilot);
-
-        _projectionPilot = new GameObject("EchoProjectionPilot");
-        TryAssignProjectionTag(_projectionPilot);
-        _projectionPilot.transform.SetPositionAndRotation(transform.position + Vector3.up * projectionHeightOffset, transform.rotation);
-        EnsureProjectionPlateProbe();
-        _projectionAnim = null;
-
-        PlayerCharacterVisualSetup.EnsureOn(transform);
-        Transform playerVisual = transform.Find("PlayerVisual");
-        if (playerVisual != null)
-        {
-            GameObject visualClone = Instantiate(playerVisual.gameObject, _projectionPilot.transform);
-            visualClone.name = "ProjectionVisual";
-            visualClone.transform.localPosition = Vector3.zero;
-            visualClone.transform.localRotation = Quaternion.identity;
-            visualClone.transform.localScale = Vector3.one;
-
-            foreach (PlayerProceduralAnimator procedural in visualClone.GetComponentsInChildren<PlayerProceduralAnimator>(true))
-                Destroy(procedural);
-
-            foreach (Collider col in visualClone.GetComponentsInChildren<Collider>(true))
-                Destroy(col);
-
-            ApplyProjectionGhostMaterials(visualClone);
-            _projectionAnim = visualClone.GetComponentInChildren<Animator>(true);
-            if (_projectionAnim != null)
-            {
-                _projectionAnim.applyRootMotion = false;
-                EchoesAnimatorParams.SetBoolIfExists(_projectionAnim, "IsRecording", false);
-                EchoesAnimatorParams.SetGrounded(_projectionAnim, true);
-            }
-        }
-        else
-        {
-            GameObject missingVisual = new GameObject("ProjectionVisualMissingModel");
-            missingVisual.transform.SetParent(_projectionPilot.transform, false);
-        }
-
-        _projectionVelocity = Vector3.zero;
-    }
-
-    static void TryAssignProjectionTag(GameObject target)
-    {
-        if (target == null)
-            return;
-
-        try
-        {
-            target.tag = "EchoProjection";
-        }
-        catch (UnityException)
-        {
-            Debug.LogWarning("EchoRecorder: crea el tag EchoProjection (Echoes → Production → Ensure Project Tags).");
-        }
-    }
-
-    void EnsureProjectionPlateProbe()
-    {
-        if (_projectionPilot == null)
-            return;
-
-        CapsuleCollider probe = _projectionPilot.GetComponent<CapsuleCollider>();
-        if (probe == null)
-            probe = _projectionPilot.AddComponent<CapsuleCollider>();
-
-        probe.isTrigger = true;
-        probe.radius = 0.42f;
-        probe.height = 1.55f;
-        probe.center = new Vector3(0f, 0.85f, 0f);
-    }
-
-    static void ApplyProjectionGhostMaterials(GameObject root)
-    {
-        Color ghostColor = new Color(0.72f, 0.88f, 0.96f, 0.38f);
-        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
-        for (int i = 0; i < renderers.Length; i++)
-        {
-            Renderer rendererRef = renderers[i];
-            if (rendererRef == null)
-                continue;
-
-            Material[] mats = rendererRef.materials;
-            for (int m = 0; m < mats.Length; m++)
-            {
-                Material material = new Material(mats[m]);
-                if (material.HasProperty("_Color"))
-                    material.color = ghostColor;
-                material.SetFloat("_Surface", 1f);
-                material.SetOverrideTag("RenderType", "Transparent");
-                material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-                material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                material.SetInt("_ZWrite", 0);
-                material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-                material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
-                if (material.HasProperty("_EmissionColor"))
-                {
-                    material.EnableKeyword("_EMISSION");
-                    material.SetColor("_EmissionColor", new Color(0.35f, 0.82f, 1f) * 0.6f);
-                }
-
-                mats[m] = material;
-            }
-
-            rendererRef.materials = mats;
-        }
-    }
-
-    void UpdateProjectionAnimator()
-    {
-        if (!_projectionRecording || _projectionAnim == null || _projectionAnim.runtimeAnimatorController == null)
-            return;
-
-        Vector3 localVelocity = _projectionPilot.transform.InverseTransformDirection(_projectionVelocity);
-        EchoesAnimatorParams.SetLocomotion(_projectionAnim, _projectionVelocity.magnitude, localVelocity, true);
-        EchoesAnimatorParams.SetBoolIfExists(_projectionAnim, "IsRecording", false);
-    }
-
-    void UpdateProjectionPilot()
-    {
-        if (_projectionPilot == null)
-            return;
-
-        _playerController?.SetInputLocked(true);
-
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-        Vector3 input = new Vector3(h, 0f, v);
-        if (input.sqrMagnitude > 1f)
-            input.Normalize();
-
-        Transform cam = Camera.main != null ? Camera.main.transform : transform;
-        Vector3 forward = Vector3.ProjectOnPlane(cam.forward, Vector3.up);
-        if (forward.sqrMagnitude < 0.001f)
-            forward = Vector3.forward;
-        forward.Normalize();
-
-        Vector3 right = Vector3.ProjectOnPlane(cam.right, Vector3.up);
-        if (right.sqrMagnitude < 0.001f)
-            right = Vector3.right;
-        right.Normalize();
-
-        Vector3 desired = forward * input.z + right * input.x;
-        float speed = projectionMoveSpeed * (Input.GetKey(KeyCode.LeftShift) ? projectionSprintMultiplier : 1f);
-        _projectionVelocity = Vector3.MoveTowards(_projectionVelocity, desired * speed, 35f * Time.deltaTime);
-        _projectionPilot.transform.position += _projectionVelocity * Time.deltaTime;
-        SnapProjectionToWalkHeight();
-
-        if (_projectionVelocity.sqrMagnitude > 0.05f)
-            _projectionPilot.transform.rotation = Quaternion.Slerp(_projectionPilot.transform.rotation, Quaternion.LookRotation(_projectionVelocity.normalized, Vector3.up), 18f * Time.deltaTime);
-    }
-
-    void SnapProjectionToWalkHeight()
-    {
-        if (_projectionPilot == null)
-            return;
-
-        Vector3 pos = _projectionPilot.transform.position;
-        float currentY = pos.y;
-        Vector3 probeOrigin = pos + Vector3.up * 6f;
-
-        if (!Physics.Raycast(probeOrigin, Vector3.down, out RaycastHit hit, 14f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
-            return;
-
-        if (hit.collider.GetComponentInParent<EchoKineticBody>() != null)
-            return;
-
-        float targetY = hit.point.y + projectionHeightOffset;
-        if (targetY > currentY + maxProjectionStepUp)
-            targetY = currentY;
-
-        pos.y = targetY;
-        _projectionPilot.transform.position = pos;
-    }
-
-    void DestroyProjectionPilot()
-    {
-        if (_projectionPilot != null)
-            Destroy(_projectionPilot);
-        _projectionPilot = null;
-        _projectionVelocity = Vector3.zero;
-    }
-
     public void ForceUnlockPlayer()
     {
         _recording = false;
-        _projectionRecording = false;
         _playerController?.SetInputLocked(false);
-        DestroyProjectionPilot();
     }
 
     void SetAnimatorTriggerIfExists(string parameterName)

@@ -19,20 +19,30 @@ MonoBehaviour:
   echoEnabled: 1
   maxEchoes: 1
   maxRecordSeconds: 15
-  activeParadoxes:
+  echoMode: 2
+  recordFuture: 0
+  degradationPerReplay: 0
+  imposedEchoData: {fileID: 0}
+  ambientEchoData: {fileID: 0}
+  lockEchoSlots: 0
+  lockedSlotIndices: 
+  cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111110, type: 3}
+  lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111105, type: 3}
+  activeParadoxes: 
   fogColor: {r: 0.125, g: 0.118, b: 0.133, a: 1}
-  fogDensity: 0.020
+  fogDensity: 0.02
   skyColor: {r: 0.08, g: 0.07, b: 0.09, a: 1}
   ambientColor: {r: 0.05, g: 0.04, b: 0.05, a: 1}
   directionalLightRotation: {x: 44, y: -22, z: 0}
-  directionalLightColor: {r: 0.75, g: 0.72, b: 0.80, a: 1}
+  directionalLightColor: {r: 0.75, g: 0.72, b: 0.8, a: 1}
   directionalLightIntensity: 0.55
   narrativeIntroTitle: "Nivel 10 \u2014 Recuerdos"
-  narrativeIntroDesc: "Necesito el punto de vista de alguien que ya no est\u00e1 para ver el camino."
+  narrativeIntroDesc: "Necesito el punto de vista de alguien que ya no est\xE1 para
+    ver el camino."
   narrativeIntroDuration: 8
-  puzzleObjectiveText: "El eco de Lyra revela lo que el tuyo no puede."
-  puzzleActiveText: "Las plataformas son visibles."
-  puzzleCompleteText: ""
+  puzzleObjectiveText: El eco de Lyra revela lo que el tuyo no puede.
+  puzzleActiveText: Las plataformas son visibles.
+  puzzleCompleteText: 
   pathHints:
   - {x: 0, y: 1.1, z: -2}
   - {x: 0, y: 1.1, z: 8}
@@ -44,98 +54,99 @@ MonoBehaviour:
     position: {x: 0, y: 1.1, z: -2}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaA_UmbralLyra
     type: 28
     position: {x: 0, y: 0, z: -2}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 4, y: 3, z: 2}
     customData: open
-    targetSignals:
+    targetSignals: []
   - name: LuzUmbral
     type: 10
     position: {x: 0, y: 2.8, z: -2}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.72,0.65,0.70|2.2|8.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaB_AulaLyra
     type: 21
     position: {x: 0, y: 0, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 12, y: 3, z: 10}
     customData: WallRose
-    targetSignals:
+    targetSignals: []
   - name: PlataformasOcultas
     type: 22
     position: {x: 0, y: 2, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 10, y: 0.15, z: 8}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: PlacaLyra
     type: 4
     position: {x: 4, y: 0.1, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: LuzAulaLyra
     type: 10
     position: {x: 0, y: 3, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.78,0.72,0.76|4.0|18.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaC_DespachoProyector
     type: 21
     position: {x: 8, y: 0, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 5, y: 3, z: 5}
     customData: WallRose
-    targetSignals:
+    targetSignals: []
   - name: VozLyra
     type: 27
     position: {x: 8, y: 0, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 3, y: 3, z: 3}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: LuzDespacho
     type: 10
     position: {x: 8, y: 2.8, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.70,0.62,0.68|1.8|8.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaD_CorredorSalida
     type: 24
     position: {x: 0, y: 0, z: 18}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 4, y: 3, z: 6}
     customData: WallTeal
-    targetSignals:
+    targetSignals: []
   - name: LuzCorredorOscuro
     type: 10
     position: {x: 0, y: 2.8, z: 18}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.55,0.52,0.58|1.5|8.0
-    targetSignals:
+    targetSignals: []
   - name: LevelExit_Area
     type: 6
     position: {x: 0, y: 1.1, z: 24}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: Level_11
-    targetSignals:
+    targetSignals: []
   - name: LevelGoal
     type: 13
     position: {x: 0, y: 1.1, z: 24}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "El eco de Lyra revela lo que el tuyo no puede.|Las plataformas son visibles.|."
+    customData: El eco de Lyra revela lo que el tuyo no puede.|Las plataformas son
+      visibles.|.
     targetSignals:
     - PlacaLyra
   - name: LevelRuntime
@@ -143,5 +154,6 @@ MonoBehaviour:
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "El eco de Lyra revela lo que el tuyo no puede.|Las plataformas son visibles.|."
-    targetSignals:
+    customData: El eco de Lyra revela lo que el tuyo no puede.|Las plataformas son
+      visibles.|.
+    targetSignals: []

@@ -1,0 +1,42 @@
+# Docs/ExecutableSpecs/audio/audio_mixer_schema.yaml (SPEC-127)
+mixer_asset: "Assets/Audio/EchoesAudioMixer.mixer"
+
+groups:
+  Master:
+    exposed_param: "MasterVolume"
+    default_db: 0.0
+    children:
+      BGM:
+        exposed_param: "BGMVolume"
+        default_db: -6.0
+        snapshot_in_puzzle: -12.0  # Duck BGM during active puzzle
+      SFX:
+        exposed_param: "SFXVolume"
+        default_db: 0.0
+        children:
+          SFX_Player:
+            exposed_param: "SFXPlayerVolume"
+            default_db: 0.0
+          SFX_Puzzle:
+            exposed_param: "SFXPuzzleVolume"
+            default_db: 0.0
+          SFX_Echo:
+            exposed_param: "SFXEchoVolume"
+            default_db: -3.0
+      TapeHiss:
+        exposed_param: "TapeHissVolume"
+        default_db: -18.0
+        always_on: true
+
+spatial_audio_config:
+  rolloff_mode: "Logarithmic"
+  min_distance_m: 1.0
+  max_distance_m: 18.0
+  spatial_blend: 1.0
+  doppler_level: 0.0
+  spread_degrees: 0.0
+
+dsp_bandpass:
+  low_cutoff_hz: 300
+  high_cutoff_hz: 3500
+  applies_to: [SFX_Echo, TapeHiss]

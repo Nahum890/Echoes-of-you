@@ -1,0 +1,76 @@
+# AUDIO_EVENT_REGISTRY.yaml
+# Spec ID: SPEC-138
+# Version: 1.0
+spec_id: SPEC-138
+version: "1.0"
+authority: "Docs/ExecutableSpecs/registry/decisions.yaml"
+
+# Central Audio Event Registry with verified asset clip paths.
+# An agent looking for audio MUST consult this file first.
+
+events:
+  SFX_Footstep_Tile:
+    clip_path: "Assets/Audio/SFX/Player/Footstep_Tile.wav"
+    bus: "Master/SFX/SFX_Player"
+    volume_db: -6.0
+    pitch_variance: 0.1     # ±10% random pitch variation
+    spatial: true
+    cooldown_s: 0.35        # minimum time between footsteps
+    trigger: "OnFootstepLand"  # Animation Event in PlayerController_Animation.cs
+
+  SFX_Echo_Record_Start:
+    clip_path: "Assets/Audio/SFX/Echo/EchoRecord_Start.wav"
+    bus: "Master/SFX/SFX_Echo"
+    volume_db: -3.0
+    pitch_variance: 0.0
+    spatial: false
+    trigger: "OnRecordingStart"
+
+  SFX_Echo_Record_Stop:
+    clip_path: "Assets/Audio/SFX/Echo/EchoRecord_Stop.wav"
+    bus: "Master/SFX/SFX_Echo"
+    volume_db: -3.0
+    pitch_variance: 0.0
+    spatial: false
+    trigger: "OnRecordingStop"
+
+  SFX_Echo_Playback_Loop:
+    clip_path: "Assets/Audio/SFX/Echo/EchoPlayback_Loop.wav"
+    bus: "Master/SFX/SFX_Echo"
+    volume_db: -9.0
+    spatial: true
+    loop: true
+    trigger: "OnEchoPlaybackActive"
+
+  SFX_Door_Open:
+    clip_path: "Assets/Audio/SFX/Environment/Door_Open.wav"
+    bus: "Master/SFX/SFX_Puzzle"
+    volume_db: -3.0
+    spatial: true
+    trigger: "OnDoorOpened"
+
+  SFX_PressurePlate_Activate:
+    clip_path: "Assets/Audio/SFX/Puzzle/PressurePlate_Click.wav"
+    bus: "Master/SFX/SFX_Puzzle"
+    volume_db: -6.0
+    spatial: true
+    trigger: "OnPressurePlateActivated"
+
+  BGM_Act1_Ambient:
+    clip_path: "Assets/Audio/BGM/Act1_Ambient.wav"
+    bus: "Master/BGM"
+    volume_db: -12.0
+    loop: true
+    fade_in_s: 2.0
+    fade_out_s: 2.0
+    trigger: "OnSceneLoad"
+
+  TapeHiss_Loop:
+    clip_path: "Assets/Audio/Ambience/TapeHiss.wav"
+    bus: "Master/TapeHiss"
+    volume_db: -18.0
+    loop: true
+    always_on: true
+    applies_dsp: "tape_hiss_bandpass"
+
+audio_asset_creation_rule: "Do NOT generate audio procedurally. Only reference existing assets."

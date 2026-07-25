@@ -1,0 +1,20 @@
+schema_version: "1.0"
+validator_id: CAMERA-SPEC-001
+type: camera_validator
+checks:
+  profile_reference:
+    id: CAMERA-001
+    severity: fatal
+    action: "Inspect serialized cameraProfile and confirm asset type CameraProfile"
+  controller_exclusivity:
+    id: CAMERA-002
+    severity: fatal
+    action: "Count active camera writers in loaded scene"
+  echo_target:
+    id: CAMERA-003
+    severity: error
+    action: "Confirm active Echo is added to target group during playback"
+  echo_visibility_capture:
+    id: CAMERA-004
+    severity: error
+    action: "Inspect required screenshot evidence for Echo visibility"

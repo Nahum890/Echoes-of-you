@@ -1,0 +1,37 @@
+# FRAME_RATE_INDEPENDENCE_SPEC.yaml
+# Spec ID: SPEC-142
+# Version: 1.0
+spec_id: SPEC-142
+version: "1.0"
+authority: "Docs/ExecutableSpecs/registry/decisions.yaml"
+
+# Frame Rate Independence Rules across All Engine Systems
+
+unity_settings:
+  fixed_timestep_s: 0.02     # 50Hz physics update (Unity default)
+  target_fps: 60
+  vsync: false               # No VSync — game runs at uncapped rate with frame limiter
+
+rules:
+  # [RULE-FPS-001] All movement uses deltaTime
+  movement: "All Player and Echo movement speeds must be multiplied by Time.deltaTime"
+  example_correct: "transform.position += velocity * Time.deltaTime"
+  example_wrong:   "transform.position += velocity * 0.016f"
+
+  # [RULE-FPS-002] Physics runs in FixedUpdate
+  physics: "All Rigidbody and CharacterController physics code must run in FixedUpdate, not Update"
+
+  # [RULE-FPS-003] Input sampling runs in Update
+  input: "Input.GetButtonDown must be sampled in Update. The boolean state is stored and consumed in FixedUpdate"
+
+  # [RULE-FPS-004] Animation state transitions use normalized time or deltaTime
+  animation: "All manual animator transitions use normalizedTime calculated using Time.deltaTime"
+
+  # [RULE-FPS-005] Echo replay is framerate-independent
+  echo_replay: >
+    EchoPlayback interpolates between recorded EchoRecordFrames using (Time.time - playbackStartTime).
+    It does NOT use a frame counter. If the game runs at 240Hz, the Echo interpolates the exact same
+    path as at 30Hz, only with higher sample sampling smoothness.
+
+echo_record_sample_rate_hz: 30   # Matches CONSTANTS_REGISTRY
+echo_playback_interpolation: "Linear"  # Vector3.Lerp between buffer frames

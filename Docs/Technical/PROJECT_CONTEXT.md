@@ -15,7 +15,7 @@ Para dirección de diseño, reglas visuales, y filosofía del gameplay, leer
 **Echoes of You** — puzzle 3D narrativo en tercera persona, Universal Render
 Pipeline (URP), Unity 2022+.
 
-El jugador graba sus propios movimientos (hasta 20 segundos, tecla configurable)
+El jugador graba sus propios movimientos (hasta **12 segundos (estándar), 20 segundos (narrativo)** — ver `DECISION-ECH-DURATION` en `decisions.yaml`, tecla configurable)
 y los reproduce como un "eco" — un cuerpo fantasma que repite exactamente lo
 que grabó, con colisión activa. El eco no combate, no improvisa, no se puede
 deshacer una vez reproducido. Esa irreversibilidad es el tema del juego.
@@ -83,6 +83,39 @@ Hay dos sistemas de cámara en el proyecto: Cinemachine (activo en algunos
 niveles) y `ThirdPersonCamera` (custom). Solo uno puede controlar el
 transform en `LateUpdate` en un nivel dado — si ambos están activos al
 mismo tiempo, hay jitter. Verificar que solo uno está activo por escena.
+
+### §3C Camera Lifecycle Contract
+
+```csharp
+// [CAM-LIFECYCLE-001] Camera lifecycle contract
+// ThirdPersonCamera.cs and Cinemachine CANNOT be active simultaneously.
+// Activation protocol (called by EchoesLevelShell.cs):
+public static void ActivateCinemachineForLevel(LevelBlueprint blueprint)
+{
+    // STEP 1: Disable ThirdPersonCamera if it exists
+    ThirdPersonCamera tpc = FindObjectOfType<ThirdPersonCamera>();
+    if (tpc != null)
+    {
+        tpc.enabled = false;    // Disable the component (do NOT destroy)
+        // NOT Destroy() — Player prefab may be reused between levels
+    }
+
+    // STEP 2: Activate the level's Virtual Camera
+    CinemachineVirtualCamera vcam = FindObjectOfType<CinemachineVirtualCamera>();
+    if (vcam == null)
+        throw new System.Exception("FAIL-CAM-01: No CinemachineVirtualCamera found in scene.");
+
+    vcam.enabled = true;
+    vcam.Priority = 20;   // Higher priority than any other VCam in the scene
+
+    // STEP 3: Apply blueprint profile
+    CameraProfileApplicator.Apply(vcam, blueprint.cameraProfile);
+}
+
+// [CAM-LIFECYCLE-002] Validator check
+// LEVEL_VALIDATOR runs this on each scene before build:
+// Assert: no more than 1 ThirdPersonCamera component with enabled = true in hierarchy
+```
 
 ---
 

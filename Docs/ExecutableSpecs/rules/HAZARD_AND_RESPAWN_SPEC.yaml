@@ -1,0 +1,36 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-HAZ-001"
+# HAZARD_AND_RESPAWN_SPEC.yaml
+# Complete mathematical definition of death zones, void triggers, damage rules,
+# and checkpoint respawn state logic for Echoes of You 2.0.
+
+hazard_zones:
+  # Trigger type: collider tag-based detection
+  void_trigger:
+    trigger_tag: "VoidTrigger"
+    detection_layer: "Hazard"  # Layer index 11
+    y_threshold_m: -12.0       # Any position below y = -12.0 triggers instant death
+    fallback_detection_mode: "LayerCollider"  # Secondary: collider on Hazard layer
+
+  death_on_enter:
+    trigger_tag: "DeathZone"
+    detection_layer: "Hazard"
+    damage: 999.0    # Instant death — no gradual damage
+
+respawn:
+  checkpoint_type: "LastActivatedCheckpoint"
+  respawn_position_offset: {x: 0.0, y: 0.0, z: 0.0}
+  respawn_fade_in_s: 0.3
+  respawn_fade_out_s: 0.3
+  echo_slots_on_respawn: "cleared"     # All active Eco slots destroyed on death
+  puzzle_signals_on_respawn: "preserved"  # PuzzleSignal states persist across respawn
+  animation_on_respawn: "Player_Respawn"  # Animator clip name
+
+physics_recovery:
+  out_of_bounds_y_floor: -12.0   # Autorespawn if player.position.y < this value
+  snap_to_ground_on_respawn: true
+  ignore_input_seconds: 0.5       # Input-blocked duration immediately post-respawn
+
+validation:
+  rule: "[RULE-HAZ-001]: Every scene MUST contain at least 1 CheckpointTrigger GameObject."
+  fail_code: "FAIL-HAZ-01"

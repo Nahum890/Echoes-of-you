@@ -158,6 +158,17 @@ public class LevelRuntimeController : MonoBehaviour
 
         _recorder?.ClearAllEchoes(false);
 
+        PlayerController player = FindAnyObjectByType<PlayerController>();
+        if (player != null)
+        {
+            GameObject spawnPoint = GameObject.FindWithTag("Respawn");
+            if (spawnPoint != null)
+            {
+                player.transform.position = spawnPoint.transform.position;
+                player.transform.rotation = spawnPoint.transform.rotation;
+            }
+        }
+
         MonoBehaviour[] behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude);
         for (int i = 0; i < behaviours.Length; i++)
         {
@@ -165,7 +176,7 @@ public class LevelRuntimeController : MonoBehaviour
                 resettable.ResetLevelState();
         }
 
-        _hud?.ShowToast("Ecos limpiados", new Color(0.48f, 0.94f, 0.78f, 1f), 1.1f);
+        _hud?.ShowToast("SoftReset: Posición y Ecos reiniciados", new Color(0.48f, 0.94f, 0.78f, 1f), 1.1f);
         _hud?.SetObjective(ResolveObjective());
     }
 

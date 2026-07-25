@@ -1,0 +1,50 @@
+# NARRATIVE_STATE_MACHINE.yaml
+# Spec ID: SPEC-137
+# Version: 1.0
+spec_id: SPEC-137
+version: "1.0"
+authority: "Docs/ExecutableSpecs/registry/decisions.yaml"
+
+# Narrative Event System & Narrative Prop Specification — Echoes of You
+
+narrative_events:
+  - id: NEV-001
+    trigger: "OnModuleLoad"
+    condition: "blueprint.narrativeIntroTitle != null"
+    action: "ShowIntroCard(blueprint.narrativeIntroTitle, blueprint.narrativeIntroDesc)"
+    duration_s: 3.0
+    skippable: true
+
+  - id: NEV-002
+    trigger: "OnNarrativePropInteract"
+    condition: "prop.save_flag NOT in SaveData.unlockedMemories"
+    action: >
+      1. AddMemory(prop.save_flag) → SaveData.unlockedMemories
+      2. Show prop.content_text_key via UI_NAVIGATION_GRAPH HUD→NarrativeProp
+    fires_once: true   # Once viewed, does not trigger again
+
+  - id: NEV-003
+    trigger: "OnLevelExitReached"
+    action: "ShowOutroCard(blueprint.levelName), SaveProgress(levelIndex + 1)"
+    duration_s: 2.0
+
+narrative_prop_spec:
+  Prop_Coat:
+    prefab_path: "Assets/Prefabs/Narrative/Prop_Coat.prefab"
+    trigger_collider:
+      type: "BoxCollider"
+      size: {x: 1.5, y: 1.5, z: 1.5}
+      offset: {x: 0.0, y: 0.75, z: 0.0}
+      is_trigger: true
+      layer: "Interact"           # Separated interaction collision layer
+    interaction:
+      prompt_text_key: "narrative.prop.coat.prompt"   # Localization schema key
+      prompt_default_es: "Examinar"
+      require_grounded: false
+      activation_radius_m: 2.0   # Prompt distance
+    on_interact:
+      ui_transition: "HUD→NarrativeProp"
+      content_text_key: "narrative.level01.coat.text"
+      content_default_es: "El abrigo de Lyra. Todavía huele a su perfume."
+      save_flag: "MEM-001_COAT_SEEN"   # References SAVE_DATA_SCHEMA unlockedMemories
+      closes_on: ["OnInteractPressed", "OnEscapePressed"]

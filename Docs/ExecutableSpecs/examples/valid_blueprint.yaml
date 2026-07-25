@@ -1,0 +1,44 @@
+example_type: valid
+schema: schemas/blueprint.schema.json
+levelName: Level_02
+nextLevel: Level_03
+actNumber: 1
+archetype: Standard
+maxEchoes: 1
+maxRecordSeconds: 12
+echoMode: Standard
+recordFuture: false
+lockEchoSlots: false
+lockedSlotIndices: []
+cameraProfile: Assets/Data/Camera/CamProfile_Learning.asset
+lightingProfile: Assets/Data/Lighting/LightProfile_Act1.asset
+activeParadoxes: []
+fogColor: {r: 0.12, g: 0.14, b: 0.2, a: 1}
+fogDensity: 0.008
+skyColor: {r: 0.2, g: 0.22, b: 0.28, a: 1}
+ambientColor: {r: 0.06, g: 0.08, b: 0.12, a: 1}
+directionalLightRotation: {x: 50, y: -30, z: 0}
+directionalLightColor: {r: 1, g: 1, b: 1, a: 1}
+directionalLightIntensity: 0.8
+narrativeIntroTitle: "Level 02 - Repetition"
+narrativeIntroDesc: "Three classrooms repeat the same decision."
+narrativeIntroDuration: 6
+puzzleObjectiveText: "Coordinate your past and present."
+puzzleActiveText: "The Echo remains where you left it."
+puzzleCompleteText: "The path opens."
+pathHints: []
+modules:
+  - name: PlayerStart
+    type: PlayerStart
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: ""
+    targetSignals: []
+  - name: LevelExit
+    type: LevelExit
+    position: {x: 0, y: 0, z: 24}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: ""
+    targetSignals: []

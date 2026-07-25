@@ -1,0 +1,29 @@
+schema_version: "1.0"
+catalog_type: shape_language
+
+shapes:
+  horizontal: {meaning: stability_or_stagnation, examples: [long_corridor, repeated_lockers]}
+  vertical: {meaning: aspiration_or_threat, examples: [stairs, high_void]}
+  diagonal: {meaning: instability, examples: [tilted_desks, ramps, fragments]}
+  repetition: {meaning: obsessive_memory, examples: [identical_classrooms, lockers]}
+  compression: {meaning: anxiety, examples: [low_ceiling, maintenance_corridor]}
+  void: {meaning: absence, examples: [black_opening, missing_wall]}
+  fragmentation: {meaning: loss, examples: [floating_classroom, broken_bridge]}
+  circle: {meaning: return, examples: [loop_corridor, courtyard]}
+
+chapter_dominants:
+  I_Persistence: [repetition, compression]
+  II_Coordination: [diagonal, vertical]
+  III_Confidence: [fragmentation, void]
+  IV_Optimization: [diagonal, repetition]
+  V_Consequence: [void, fragmentation]
+  VI_Acceptance: [horizontal, integration]
+
+rules:
+  - id: SHAPE-VAL-001
+    type: validation
+    status: active
+    severity: advisory
+    scope: [level, composition]
+    rule: "The dominant chapter shape should appear in at least one declared composition beat"
+    validator: validators/level_validator.yaml#shape_presence

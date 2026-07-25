@@ -1,143 +1,59 @@
-# PLAYTEST CHECKLIST — Echoes of You 2.0
-
-## Propósito
-Este documento sirve para validar si un nivel o sistema realmente funciona antes de continuar. Si una casilla falla, el contenido no se aprueba.
-
----
-
-## 1. Lectura inicial
-
-En los primeros 5 segundos, el jugador debe poder responder:
-- ¿Dónde estoy?
-- ¿Qué clase de lugar es?
-- ¿Qué parece importante?
-- ¿Hay algún objetivo visible?
-
-Si la respuesta no es clara, el nivel falla.
+# QA_CHECKLIST.md — Automated Verification Protocol
+## Spec ID: SPEC-304
+## Version: 3.0 (AI-Executable)
 
 ---
 
-## 2. Cámara
+### 1. PURPOSE
+Establishes the automated checklist suite executed during Pass 6 of scene generation by `LevelValidator.cs`.
 
-Verificar:
-- ¿La cámara ve al jugador?
-- ¿La cámara ve el eco cuando importa?
-- ¿La cámara ve el objetivo?
-- ¿La cámara oculta algo importante?
-- ¿Hay jitter o pelea entre sistemas?
+### 2. SCOPE
+Applies to automated level generation and CI/CD validation.
 
-Cualquier cámara que impida leer un puzzle debe corregirse antes de seguir.
+### 3. AUTHORITY
+Nivel 4 (Validación y QA). Subordinate to `SOURCE_OF_TRUTH.md` (`SPEC-000`) and `LEVEL_VALIDATOR.md` (`SPEC-301`).
 
----
+### 4. DEFINITIONS
+- `QA Item`: An individual automated assertion checking room bounds, lighting, camera, or puzzle components.
 
-## 3. Spawn y navegación
+### 5. INPUTS
+- [LEVEL_VALIDATOR.md](file:///c:/Users/lol xdd/OneDrive/Documentos/Colegio/Echoes of you/Docs/Validation/LEVEL_VALIDATOR.md) `[SPEC-301]`
 
-Verificar:
-- El jugador no spawnea en el vacío.
-- El jugador no queda atrapado al aparecer.
-- No hay softlock al girar en esquinas.
-- No hay colisión que bloquee el salto básico.
-- No hay props pegados a paredes que atrapen al jugador.
-- El eco no aparece fuera de zona.
+### 6. OUTPUTS
+- Automated QA pass report.
 
----
+### 7. RULES
+- `[RULE-QAC-001]`: **100% Automated Pass**: All items in Table 8.1 MUST return `Passed` status before scene export.
 
-## 4. Softlocks
+### 8. ALGORITHMS
 
-Revisar si el jugador puede quedar atrapado:
-- entre muebles
-- contra paredes
-- debajo de escaleras
-- entre props y coliders
-- sobre plataformas imposibles de abandonar
-- en zonas donde un salto deja al personaje sin control
+#### Table 8.1: Master Automated QA Verification Items
 
-Si puede pasar, mover, reducir o eliminar el obstáculo.
+| Item ID | Verification Target | Assertion Rule | Validator Reference |
+|---|---|---|---|
+| `QA-001` | Room Heights | Classroom $3.8\text{m}$, Corridor $3.2\text{m}$ | `VAL-A-01` |
+| `QA-002` | Door Openings | Single $1.20\text{m} \times 2.40\text{m}$, Double $2.40\text{m} \times 2.40\text{m}$ | `VAL-A-02` |
+| `QA-003` | NavMesh Corridor | Free width $W_{clearance} \ge 1.20\text{m}$ | `VAL-D-01` |
+| `QA-004` | Echo Button Test | Solvability requires Echo recording | `VAL-B-01` |
+| `QA-005` | Light Count Cap | Active light components $\le 48$ | `VAL-C-01` |
+| `QA-006` | Shadow Type | URP `Light.shadows == LightShadows.Hard` | `VAL-C-02` |
+| `QA-007` | Camera Controllers | Active camera controllers in scene $== 1$ | `VAL-E-01` |
+| `QA-008` | Amber Item Color | Key narrative object matches `#FFBF00` | `VAL-ENV-01` |
 
----
+### 9. CONSTRAINTS
+- `[CONS-QAC-001]`: Prohibido subjective checklist items in automated QA protocol.
 
-## 5. Iluminación
+### 10. VALIDATION
+- `[VAL-QAC-001]`: `LevelValidator.cs` parses Table 8.1 and asserts 100% item compliance.
 
-Verificar:
-- ¿Se ve el objetivo?
-- ¿Se distinguen puertas, botones y plataformas?
-- ¿La escena parece una escuela?
-- ¿La escena parece un juego distinto?
-- ¿La luz guía o confunde?
+### 11. EXAMPLES
+- Automated QA log report.
 
-Si el puzzle no se lee, la iluminación falla.
+### 12. FAILURE CASES
+- `[FAIL-QAC-001]`: **QA Failure**: Result: `FAIL-SYS-01`.
 
----
+### 13. CROSS REFERENCES
+- [LEVEL_VALIDATOR.md](file:///c:/Users/lol xdd/OneDrive/Documentos/Colegio/Echoes of you/Docs/Validation/LEVEL_VALIDATOR.md) `[SPEC-301]`
 
-## 6. Decoración / narrativa ambiental
-
-Verificar:
-- ¿El espacio se siente habitado?
-- ¿Hay señales de uso pasado?
-- ¿La decoración cuenta algo?
-- ¿Hay al menos un objeto narrativo relevante?
-- ¿El nivel parece vacío o descuidado sin intención?
-
----
-
-## 7. Objetivo y feedback
-
-Verificar:
-- ¿El jugador entiende qué hacer sin texto?
-- ¿Hay feedback visual cuando activa algo?
-- ¿Hay feedback sonoro cuando activa algo?
-- ¿La puerta / plataforma / mecanismo responde de forma clara?
-- ¿Hay un momento de confirmación al resolver?
-
----
-
-## 8. Ritmo
-
-Verificar:
-- ¿Hay una zona de observación?
-- ¿Hay una zona de ejecución?
-- ¿Hay una zona de respiración?
-- ¿El nivel alterna tensión y descanso?
-- ¿Hay demasiados puzzles seguidos sin pausa?
-
----
-
-## 9. Eco
-
-Verificar:
-- ¿El eco aparece en el lugar correcto?
-- ¿El eco se ve claramente?
-- ¿El eco tiene sentido en el puzzle?
-- ¿El estado residual se usa bien?
-- ¿La mecánica del eco fue enseñada antes de exigirla?
-
----
-
-## 10. Solución del nivel
-
-Verificar:
-- ¿El nivel introduce una sola idea principal?
-- ¿Esa idea fue presentada antes?
-- ¿Hay un momento “aha”?
-- ¿La solución es consistente?
-- ¿El nivel evita adivinar a ciegas?
-- ¿El nivel evita soluciones accidentales?
-
----
-
-## 11. Checklist final por nivel
-
-Marca cada punto:
-
-- [ ] El nivel tiene una entrada clara.
-- [ ] El nivel tiene una observación clara.
-- [ ] El nivel enseña una idea única.
-- [ ] El nivel no tiene softlocks.
-- [ ] La cámara no rompe la lectura.
-- [ ] La iluminación ayuda a jugar.
-- [ ] El entorno transmite escuela / memoria.
-- [ ] El eco cumple su función.
-- [ ] La salida es clara.
-- [ ] El jugador entiende el nivel sin texto.
-
-Si faltan dos o más puntos, el nivel requiere otra iteración.
+### 14. CHANGE HISTORY
+- **v3.0 (2026-07-25)**: Initial 14-section AI-Executable canonical spec creation for automated QA protocol.

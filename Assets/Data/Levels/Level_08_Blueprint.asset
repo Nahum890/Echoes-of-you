@@ -19,20 +19,30 @@ MonoBehaviour:
   echoEnabled: 1
   maxEchoes: 2
   maxRecordSeconds: 12
-  activeParadoxes:
-  fogColor: {r: 0.110, g: 0.118, b: 0.149, a: 1}
+  echoMode: 0
+  recordFuture: 0
+  degradationPerReplay: 0
+  imposedEchoData: {fileID: 0}
+  ambientEchoData: {fileID: 0}
+  lockEchoSlots: 1
+  lockedSlotIndices: 0000000001000000
+  cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111108, type: 3}
+  lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111103, type: 3}
+  activeParadoxes: 
+  fogColor: {r: 0.11, g: 0.118, b: 0.149, a: 1}
   fogDensity: 0.026
   skyColor: {r: 0.06, g: 0.06, b: 0.09, a: 1}
   ambientColor: {r: 0.04, g: 0.04, b: 0.06, a: 1}
   directionalLightRotation: {x: 48, y: -28, z: 0}
-  directionalLightColor: {r: 0.68, g: 0.70, b: 0.78, a: 1}
-  directionalLightIntensity: 0.50
+  directionalLightColor: {r: 0.68, g: 0.7, b: 0.78, a: 1}
+  directionalLightIntensity: 0.5
   narrativeIntroTitle: "Nivel 8 \u2014 Autosabotaje"
-  narrativeIntroDesc: "El tiempo vac\u00edo en una grabaci\u00f3n es una decisi\u00f3n, no un error."
+  narrativeIntroDesc: "El tiempo vac\xEDo en una grabaci\xF3n es una decisi\xF3n,
+    no un error."
   narrativeIntroDuration: 8
-  puzzleObjectiveText: "Dos ecos, dos momentos, un objetivo."
-  puzzleActiveText: "Los ecos est\u00e1n en posici\u00f3n."
-  puzzleCompleteText: ""
+  puzzleObjectiveText: Dos ecos, dos momentos, un objetivo.
+  puzzleActiveText: "Los ecos est\xE1n en posici\xF3n."
+  puzzleCompleteText: 
   pathHints:
   - {x: 0, y: 1.1, z: -4}
   - {x: 0, y: 1.1, z: 8}
@@ -43,49 +53,49 @@ MonoBehaviour:
     position: {x: 0, y: 1.1, z: -5}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaA_Antesala
     type: 24
     position: {x: 0, y: 0, z: -4}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 6, y: 3, z: 6}
     customData: WallMustard
-    targetSignals:
+    targetSignals: []
   - name: LuzAntesala
     type: 10
     position: {x: 0, y: 2.8, z: -4}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.72,0.72,0.78|2.5|10.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaB_SalaProfesores
     type: 21
     position: {x: 0, y: 0, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 14, y: 3, z: 10}
     customData: WallMustard
-    targetSignals:
+    targetSignals: []
   - name: PlacaEco1
     type: 4
     position: {x: -4, y: 0.1, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: PlacaEco2
     type: 4
     position: {x: 4, y: 0.1, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: PuertaSalaProf
     type: 5
     position: {x: 0, y: 0.1, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 2, y: 2.4, z: 0.2}
-    customData:
+    customData: 
     targetSignals:
     - PlacaEco1
     - PlacaEco2
@@ -95,34 +105,34 @@ MonoBehaviour:
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.70,0.70,0.76|3.0|16.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaC_Fotocopiadora
     type: 21
     position: {x: -8, y: 0, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 5, y: 3, z: 5}
     customData: WallMustard
-    targetSignals:
+    targetSignals: []
   - name: LuzFotocopiadora
     type: 10
     position: {x: -8, y: 2.8, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.68,0.68,0.74|2.0|8.0
-    targetSignals:
+    targetSignals: []
   - name: LevelExit_Area
     type: 6
     position: {x: 0, y: 1.1, z: 18}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: Level_09
-    targetSignals:
+    targetSignals: []
   - name: LevelGoal
     type: 13
     position: {x: 0, y: 1.1, z: 18}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "Dos ecos, dos momentos, un objetivo.|Los ecos est\u00e1n en posici\u00f3n.|."
+    customData: "Dos ecos, dos momentos, un objetivo.|Los ecos est\xE1n en posici\xF3n.|."
     targetSignals:
     - PlacaEco1
     - PlacaEco2
@@ -131,5 +141,5 @@ MonoBehaviour:
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "Dos ecos, dos momentos, un objetivo.|Los ecos est\u00e1n en posici\u00f3n.|."
-    targetSignals:
+    customData: "Dos ecos, dos momentos, un objetivo.|Los ecos est\xE1n en posici\xF3n.|."
+    targetSignals: []

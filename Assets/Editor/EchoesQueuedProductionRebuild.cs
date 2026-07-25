@@ -18,7 +18,7 @@ public static class EchoesQueuedProductionRebuild
     [MenuItem("Echoes of You/Production/Queue Rebuild In Open Editor", false, 199)]
     public static void QueueRebuild()
     {
-        File.WriteAllText(FlagAssetPath, "queued");
+        File.WriteAllText(FlagAssetPath, "queued", System.Text.Encoding.UTF8);
         AssetDatabase.ImportAsset(FlagAssetPath);
         TryRunQueuedRebuild();
     }

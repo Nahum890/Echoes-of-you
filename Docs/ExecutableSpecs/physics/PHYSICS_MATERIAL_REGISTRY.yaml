@@ -1,0 +1,40 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-PHYS-MAT-001"
+# PHYSICS_MATERIAL_REGISTRY.yaml
+# Friction, restitution, and mass density properties for all physical surfaces.
+
+physics_materials:
+  Concrete:
+    static_friction: 0.7
+    dynamic_friction: 0.6
+    bounciness: 0.0
+    friction_combine: "Multiply"
+    bounce_combine: "Average"
+
+  WoodFloor:
+    static_friction: 0.5
+    dynamic_friction: 0.4
+    bounciness: 0.1
+    friction_combine: "Average"
+    bounce_combine: "Average"
+
+  MetalLocker:
+    static_friction: 0.4
+    dynamic_friction: 0.3
+    bounciness: 0.2
+    friction_combine: "Minimum"
+    bounce_combine: "Average"
+
+  GhostPlatformSurface:
+    static_friction: 0.8
+    dynamic_friction: 0.8
+    bounciness: 0.0
+    friction_combine: "Maximum"
+    bounce_combine: "Minimum"
+
+  IceHazard:
+    static_friction: 0.05
+    dynamic_friction: 0.02
+    bounciness: 0.0
+    friction_combine: "Minimum"
+    bounce_combine: "Minimum"

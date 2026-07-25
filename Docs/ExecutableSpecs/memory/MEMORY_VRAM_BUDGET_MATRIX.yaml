@@ -1,0 +1,26 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-VRAM-001"
+# MEMORY_VRAM_BUDGET_MATRIX.yaml
+# VRAM and RAM memory limits per asset category and per level.
+
+global_budgets:
+  max_vram_mb: 512.0
+  max_ram_mb: 1024.0
+  max_draw_calls: 120
+  max_triangles: 85000
+
+category_allocations:
+  textures_mb: 128.0
+  lightmaps_mb: 64.0
+  meshes_mb: 48.0
+  audio_mb: 32.0
+  ui_assets_mb: 16.0
+  echo_record_buffers_kb: 46.5
+
+per_level_overrides:
+  Level_01:
+    max_draw_calls: 80
+    max_triangles: 45000
+  Level_15:
+    max_draw_calls: 120
+    max_triangles: 85000

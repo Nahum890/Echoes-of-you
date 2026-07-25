@@ -1,0 +1,14 @@
+schema_version: "1.0"
+state_machine:
+  states:
+    Idle: {clip: "Player_Idle", root_motion: false}
+    LocomotionBlendTree:
+      parameter: "Speed"
+      thresholds:
+        0.0: "Player_Idle"
+        2.8: "Player_Walk"
+        4.2: "Player_Run"
+  transitions:
+    IdleToWalk: {duration_s: 0.12, has_exit_time: false}
+    WalkToJump: {duration_s: 0.05, has_exit_time: false}
+    JumpToFall: {duration_s: 0.15, has_exit_time: true, exit_time: 0.85}

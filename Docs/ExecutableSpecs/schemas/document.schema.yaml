@@ -1,0 +1,42 @@
+schema_version: "1.0"
+schema_type: document_registry_entry
+required:
+  - id
+  - path
+  - title
+  - role
+  - status
+  - authority_level
+  - machine_source
+properties:
+  id:
+    type: string
+    pattern: "^DOC-[A-Z0-9-]+$"
+  path:
+    type: string
+  title:
+    type: string
+  role:
+    type: enum
+    values: [authority, design, specification, catalog, validation, ai, reference]
+  status:
+    type: enum
+    values: [active, draft, deprecated, superseded, generated, blocked]
+  authority_level:
+    type: integer
+    minimum: 1
+    maximum: 8
+  machine_source:
+    type: string
+  supersedes:
+    type: array
+    items: string
+  validators:
+    type: array
+    items: string
+  inputs:
+    type: array
+    items: string
+  outputs:
+    type: array
+    items: string

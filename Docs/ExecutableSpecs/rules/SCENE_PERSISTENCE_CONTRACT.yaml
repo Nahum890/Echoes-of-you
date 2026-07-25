@@ -1,0 +1,35 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-SCENE-PER-001"
+# SCENE_PERSISTENCE_CONTRACT.yaml
+# Memory contract for cross-scene persistent variables and DontDestroyOnLoad management.
+
+dont_destroy_on_load_singletons:
+  - class_name: "GameStateManager"
+    prefab_path: "Assets/Prefabs/Core/GameStateManager.prefab"
+    responsibilities: ["Session state", "Chapter progression", "Unlocked memory list"]
+  - class_name: "AudioManager"
+    prefab_path: "Assets/Prefabs/Core/AudioManager.prefab"
+    responsibilities: ["FMOD/Unity audio bus state", "Volume preferences", "Music track transitions"]
+  - class_name: "InputManager"
+    prefab_path: "Assets/Prefabs/Core/InputManager.prefab"
+    responsibilities: ["Input System Action Map instances", "Rebinding overrides"]
+
+scene_transition_lifecycle:
+  pre_unload_actions:
+    - "EchoRecorder.ClearAllActiveSlots()"
+    - "SaveSystem.AutosaveCurrentCheckpoint()"
+    - "CameraProfileApplier.ResetToDefault()"
+  post_load_actions:
+    - "LevelEnvironmentBootstrap.ApplyChapterLighting(currentChapter)"
+    - "PlayerStart.SpawnPlayerCharacter()"
+    - "LevelValidator.RunAllChecks()"
+
+persistent_data_contract:
+  unlocked_memories: "HashSet<string>"       # Memory IDs unlocked across all levels
+  total_playtime_s: "float"                  # Cumulative play time
+  settings:
+    master_volume: "float (0.0..1.0)"
+    sfx_volume: "float (0.0..1.0)"
+    music_volume: "float (0.0..1.0)"
+    camera_sensitivity: "float (0.5..2.0)"
+    invert_y: "bool"

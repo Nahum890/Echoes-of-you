@@ -1,0 +1,21 @@
+# LOCOMOTION EXECUTABLE SPECIFICATION — Echoes of You 2.0
+spec_id: SPEC-EXEC-LOC-001
+version: "1.0"
+authority: "Docs/Authority/SOURCE_OF_TRUTH.md"
+
+character_locomotion:
+  walk_speed: 2.8 # m/s
+  run_speed: 4.2 # m/s
+  jump_force: 5.5 # m/s
+  gravity: -18.0 # m/s^2
+
+collider_geometry:
+  capsule_radius: 0.4 # meters
+  capsule_height: 1.8 # meters
+  step_offset: 0.3 # meters
+  ground_check_radius: 0.25 # meters
+
+physics_tuning:
+  air_control_multiplier: 0.35
+  turn_damping_seconds: 0.12
+  jump_recovery_delay_seconds: 0.35

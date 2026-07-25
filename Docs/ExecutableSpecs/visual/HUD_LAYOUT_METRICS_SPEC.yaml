@@ -1,0 +1,68 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-HUD-001"
+# HUD_LAYOUT_METRICS_SPEC.yaml
+# UXML/USS layout anchoring coordinates, responsive scaling rules, z-index ordering.
+
+canvas:
+  render_mode: "ScreenSpaceOverlay"
+  reference_resolution: {width: 1920, height: 1080}
+  scale_mode: "ScaleWithScreenSize"
+  scale_match: 0.5  # Blended width+height scaling
+
+hud_elements:
+  echo_slot_icons:
+    id: "echo-slot-container"
+    anchor_min: {x: 0.02, y: 0.88}  # Top-left normalized screen position
+    anchor_max: {x: 0.20, y: 0.98}
+    icon_size_px: {width: 48, height: 48}
+    icon_spacing_px: 8
+    z_index: 10
+    font_family: "Mono-Institutional"
+    visibility_rule: "AlwaysVisible"
+
+  recording_indicator:
+    id: "recording-indicator"
+    anchor_min: {x: 0.45, y: 0.92}
+    anchor_max: {x: 0.55, y: 0.99}
+    icon_size_px: {width: 24, height: 24}
+    color_active: "#FF2222"    # Red blinking dot
+    color_inactive: "transparent"
+    blink_rate_hz: 2.0
+    z_index: 20
+
+  level_title:
+    id: "level-title"
+    anchor_min: {x: 0.30, y: 0.88}
+    anchor_max: {x: 0.70, y: 0.98}
+    font_size_px: 22
+    font_weight: "SemiBold"
+    color: "#E8EAF0"
+    text_align: "MiddleCenter"
+    display_duration_s: 4.0      # Auto-hide after N seconds
+    fade_in_s: 0.5
+    fade_out_s: 0.8
+    z_index: 5
+    # [BIB-TXT-003] compliant: UI level title is permitted per updated rule
+
+  puzzle_objective:
+    id: "puzzle-objective"
+    anchor_min: {x: 0.02, y: 0.02}
+    anchor_max: {x: 0.30, y: 0.10}
+    font_size_px: 14
+    font_weight: "Regular"
+    color: "#A0A8B8"
+    text_align: "MiddleLeft"
+    z_index: 5
+
+  debug_overlay:
+    id: "debug-overlay"
+    anchor_min: {x: 0.70, y: 0.02}
+    anchor_max: {x: 0.99, y: 0.30}
+    font_size_px: 11
+    color: "#00FF88"
+    visible_in_build: false    # Only visible in Editor/Development builds
+    z_index: 100
+
+fonts:
+  primary: "Assets/Fonts/Inconsolata/Inconsolata-Regular.ttf"
+  secondary: "Assets/Fonts/Inconsolata/Inconsolata-SemiBold.ttf"

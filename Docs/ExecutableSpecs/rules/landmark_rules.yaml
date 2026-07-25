@@ -1,0 +1,17 @@
+schema_version: "1.0"
+rule_set: landmarks
+rules:
+  - id: LAND-RULE-001
+    type: constraint
+    status: active
+    severity: warning
+    scope: [corridor, room, landmark]
+    rule: "Primary path segments may not exceed 18m without a landmark"
+    validator: validators/level_validator.yaml#landmark_spacing
+  - id: LAND-RULE-002
+    type: validation
+    status: active
+    severity: error
+    scope: [landmark]
+    rule: "Declared approach must have a clear line of sight to required landmark"
+    validator: validators/level_validator.yaml#landmark_visibility

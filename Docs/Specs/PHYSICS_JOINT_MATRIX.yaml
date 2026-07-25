@@ -1,0 +1,22 @@
+# Docs/Specs/PHYSICS_JOINT_MATRIX.yaml (SPEC-131)
+rigidbody_configs:
+  KineticPushBlock:
+    mass_kg: 50.0
+    drag: 0.5
+    angular_drag: 0.8
+    use_gravity: true
+    constraints: "FreezeRotationX | FreezeRotationZ"  # solo gira en Y
+    max_velocity_mps: 4.0
+
+  MovingPlatform:
+    mass_kg: 999.0       # efectivamente infinita — no se mueve por física
+    use_gravity: false
+    is_kinematic: true   # controlado por script, no por física
+    axis: "x"            # per ROOM_LIBRARY customData
+    distance_m: 8.0      # per ROOM_LIBRARY customData
+    speed_mps: 2.0
+
+  WeightPlate:
+    required_mass_kg: 100.0  # activación requiere objetos con masa >= 100kg
+    activation_threshold_kg: 95.0  # 5% de tolerancia
+    detection_method: "TriggerStay + Rigidbody.mass sum"

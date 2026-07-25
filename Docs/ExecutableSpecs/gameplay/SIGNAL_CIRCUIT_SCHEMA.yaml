@@ -1,0 +1,15 @@
+schema_version: "1.0"
+circuit_specification:
+  evaluation_rate_hz: 50.0 # Evaluado en FixedUpdate
+  signal_types: [BooleanLatch, BooleanPulse, FloatContinuous]
+  gate_types:
+    AND:
+      inputs_required: 2
+      logic: "all(inputs == true)"
+    OR:
+      inputs_required: 2
+      logic: "any(inputs == true)"
+    LATCH:
+      trigger: "rising_edge"
+      reset_signal: "SoftReset"
+      state: "retains_true_until_reset"

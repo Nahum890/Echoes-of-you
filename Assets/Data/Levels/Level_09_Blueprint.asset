@@ -19,20 +19,29 @@ MonoBehaviour:
   echoEnabled: 1
   maxEchoes: 1
   maxRecordSeconds: 12
-  activeParadoxes:
-  fogColor: {r: 0.165, g: 0.188, b: 0.220, a: 1}
+  echoMode: 0
+  recordFuture: 0
+  degradationPerReplay: 0
+  imposedEchoData: {fileID: 0}
+  ambientEchoData: {fileID: 0}
+  lockEchoSlots: 0
+  lockedSlotIndices: 
+  cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111109, type: 3}
+  lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111104, type: 3}
+  activeParadoxes: 
+  fogColor: {r: 0.165, g: 0.188, b: 0.22, a: 1}
   fogDensity: 0.013
   skyColor: {r: 0.12, g: 0.14, b: 0.18, a: 1}
-  ambientColor: {r: 0.07, g: 0.08, b: 0.10, a: 1}
+  ambientColor: {r: 0.07, g: 0.08, b: 0.1, a: 1}
   directionalLightRotation: {x: 38, y: -25, z: 0}
   directionalLightColor: {r: 0.82, g: 0.84, b: 0.88, a: 1}
   directionalLightIntensity: 0.65
   narrativeIntroTitle: "Nivel 9 \u2014 Control"
-  narrativeIntroDesc: "El eco no me ayuda a cruzar. Me dice cu\u00e1ndo cruzar."
+  narrativeIntroDesc: "El eco no me ayuda a cruzar. Me dice cu\xE1ndo cruzar."
   narrativeIntroDuration: 8
-  puzzleObjectiveText: "El eco marca el momento. Cruza cuando \u00e9l cruce."
-  puzzleActiveText: "El eco est\u00e1 en movimiento."
-  puzzleCompleteText: ""
+  puzzleObjectiveText: "El eco marca el momento. Cruza cuando \xE9l cruce."
+  puzzleActiveText: "El eco est\xE1 en movimiento."
+  puzzleCompleteText: 
   pathHints:
   - {x: 0, y: 1.1, z: -2}
   - {x: 0, y: 1.1, z: 14}
@@ -44,91 +53,92 @@ MonoBehaviour:
     position: {x: 0, y: 1.1, z: -2}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaA_UmbralInterior
     type: 28
     position: {x: 0, y: 0, z: -2}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 5, y: 3, z: 3}
     customData: open
-    targetSignals:
+    targetSignals: []
   - name: LuzUmbral
     type: 10
     position: {x: 0, y: 2.8, z: -2}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.72,0.78,0.82|2.5|10.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaB_PatioExterior
     type: 25
     position: {x: 0, y: 0, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 30, y: 0.2, z: 30}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaB_ZonaPeligro
     type: 17
     position: {x: 0, y: 0.3, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 8, y: 3, z: 8}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: PlacaPatio
     type: 4
     position: {x: 12, y: 0.1, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: LuzPatioAbierto
     type: 10
     position: {x: 0, y: 6, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.76,0.82,0.88|4.0|35.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaC_GaleriaPerimetral
     type: 24
     position: {x: 14, y: 0, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 3, y: 3, z: 30}
     customData: WallTeal
-    targetSignals:
+    targetSignals: []
   - name: LuzGaleria
     type: 10
     position: {x: 14, y: 2.8, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.70,0.74,0.80|2.0|12.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaD_UmbralSalida
     type: 28
     position: {x: 0, y: 0, z: 30}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 5, y: 3, z: 3}
     customData: open
-    targetSignals:
+    targetSignals: []
   - name: LuzSalida
     type: 10
     position: {x: 0, y: 2.8, z: 30}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.68,0.74,0.78|2.2|8.0
-    targetSignals:
+    targetSignals: []
   - name: LevelExit_Area
     type: 6
     position: {x: 0, y: 1.1, z: 34}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: Level_10
-    targetSignals:
+    targetSignals: []
   - name: LevelGoal
     type: 13
     position: {x: 0, y: 1.1, z: 34}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "El eco marca el momento. Cruza cuando \u00e9l cruce.|El eco est\u00e1 en movimiento.|."
+    customData: "El eco marca el momento. Cruza cuando \xE9l cruce.|El eco est\xE1
+      en movimiento.|."
     targetSignals:
     - PlacaPatio
   - name: LevelRuntime
@@ -136,5 +146,6 @@ MonoBehaviour:
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "El eco marca el momento. Cruza cuando \u00e9l cruce.|El eco est\u00e1 en movimiento.|."
-    targetSignals:
+    customData: "El eco marca el momento. Cruza cuando \xE9l cruce.|El eco est\xE1
+      en movimiento.|."
+    targetSignals: []

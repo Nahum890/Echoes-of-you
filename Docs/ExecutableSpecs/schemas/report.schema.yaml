@@ -1,0 +1,39 @@
+schema_version: "1.0"
+schema_type: validator_report
+required:
+  - report_id
+  - generated_at
+  - subject
+  - status
+  - summary
+  - checks
+properties:
+  report_id:
+    type: string
+    pattern: "^RPT-[A-Z0-9-]+$"
+  generated_at:
+    type: iso_datetime
+  subject:
+    type: string
+  validator_version:
+    type: string
+  status:
+    type: enum
+    values: [approved, rejected, blocked, needs_review, not_run]
+  summary:
+    type: object
+    required: [fatal, errors, warnings, passed]
+  checks:
+    type: array
+    items:
+      required: [rule_id, status, severity, message]
+      properties:
+        rule_id: {type: string}
+        status: {type: enum, values: [passed, failed, skipped, not_applicable]}
+        severity: {type: enum, values: [fatal, error, warning, advisory]}
+        message: {type: string}
+        evidence: {type: array, items: string}
+        remediation: {type: string}
+  next_actions:
+    type: array
+    items: string

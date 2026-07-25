@@ -53,8 +53,7 @@ public class PlayerProceduralAnimator : MonoBehaviour
             return;
 
         bool grounded = _player.IsGrounded;
-        bool recording = _player.CurrentAnimationState == PlayerController.PlayerAnimationState.Recording
-            && !(_player.GetComponent<EchoRecorder>()?.IsProjectionRecording ?? false);
+        bool recording = _player.CurrentAnimationState == PlayerController.PlayerAnimationState.Recording;
         float dt = Time.deltaTime;
         float speed01 = Mathf.Clamp01(_player.PlanarSpeed / Mathf.Max(0.01f, _player.moveSpeed * _player.sprintMultiplier));
         float proceduralWeight = 1f - Mathf.SmoothStep(0.15f, 1.2f, _player.PlanarSpeed);

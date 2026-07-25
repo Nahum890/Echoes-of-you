@@ -1,0 +1,17 @@
+schema_version: "1.0"
+audio_registry:
+  events:
+    SFX_Footstep:
+      clip_path: "Assets/Audio/SFX/Footstep_Concrete_01.wav"
+      guid: "aud001step0000000000000000000001"
+      mixer_bus: "Master/SFX/Player"
+      volume_db: -3.0
+      spatial_blend: 1.0
+      attenuation: {min_m: 1.0, max_m: 12.0, curve: "Logarithmic"}
+    SFX_PressurePlate_Click:
+      clip_path: "Assets/Audio/SFX/Plate_Click.wav"
+      guid: "aud002plate00000000000000000002"
+      mixer_bus: "Master/SFX/Puzzle"
+      volume_db: 0.0
+      spatial_blend: 1.0
+      attenuation: {min_m: 1.0, max_m: 18.0, curve: "Logarithmic"}

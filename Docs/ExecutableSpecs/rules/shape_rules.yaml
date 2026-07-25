@@ -1,0 +1,10 @@
+schema_version: "1.0"
+rule_set: shape_language
+rules:
+  - id: SHAPE-001
+    type: validation
+    status: active
+    severity: advisory
+    scope: [level, composition]
+    rule: "Level composition should contain at least one element from its chapter dominant shape set"
+    validator: validators/level_validator.yaml#shape_presence

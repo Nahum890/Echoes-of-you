@@ -1,0 +1,28 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-GEO-002"
+# SPLINE_ROUTING_ALGORITHM.yaml
+# Catmull-Rom spline equations, tube cross-section math, UV unwrapping for wire meshes.
+
+spline_type: "CentripetalCatmullRom"
+alpha: 0.5                      # 0.5 = Centripetal (no cusps/self-intersections)
+
+tube_mesh:
+  sides: 8                      # 8-sided cylinder cross section
+  radius_m: 0.04                # 4cm wire radius
+  segments_per_meter: 8         # 8 longitudinal quad loops per meter
+  uv_unwrap_mode: "CylindricalStretched"
+  uv_tile_v_per_meter: 2.0      # Tile emission texture every 0.5m
+
+routing_math:
+  floor_projection_offset_y_m: 0.02   # Height above floor NavMesh to avoid Z-fighting
+  corner_smoothing_radius_m: 0.20
+  avoidance_layer_mask: "Obstacle,Interactable"
+  max_turn_angle_deg: 90.0
+
+vertex_formula: |
+  P(t) = 0.5 * (
+    (2*P1) +
+    (-P0 + P2) * t +
+    (2*P0 - 5*P1 + 4*P2 - P3) * t^2 +
+    (-P0 + 3*P1 - 3*P2 + P3) * t^3
+  )

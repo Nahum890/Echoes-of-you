@@ -21,40 +21,58 @@ public enum ParadoxType
 /// </summary>
 public enum ModuleType
 {
-    // Legacy / Base
-    StandardPlatform,
-    BridgePlatform,
-    RampPlatform,
-    BarrierWall,
-    PressurePlate,
-    Door,
-    LevelExit,
-    PlayerStart,
-    MovingPlatform,
-    TutorialTrigger,
-    PointLight,
-    AmbientParticles,
-    DistantArchitecture,
-    LevelGoal,
-    LevelRuntime,
-    PuzzleSignal,
-    PuzzleCondition,
-    HazardField,
-    ConflictTrap,
-    MomentumRelay,
-    MotorPlatform,
-    
-    // New Architectural Vocabulary
-    ObservationChamber,
-    TemporalBridge,
-    PerspectiveAnchor,
-    MemoryCorridor,
-    ParadoxArena,
-    ErosionVault,
-    ResonanceChamber,
-    LiminalThreshold,
-    ChronologicalSpire,
-    VoidGallery
+    // Legacy / Base (0-20)
+    StandardPlatform = 0,
+    BridgePlatform = 1,
+    RampPlatform = 2,
+    BarrierWall = 3,
+    PressurePlate = 4,
+    Door = 5,
+    LevelExit = 6,
+    PlayerStart = 7,
+    MovingPlatform = 8,
+    TutorialTrigger = 9,
+    PointLight = 10,
+    AmbientParticles = 11,
+    DistantArchitecture = 12,
+    LevelGoal = 13,
+    LevelRuntime = 14,
+    PuzzleSignal = 15,
+    PuzzleCondition = 16,
+    HazardField = 17,
+    ConflictTrap = 18,
+    MomentumRelay = 19,
+    MotorPlatform = 20,
+
+    // Phase 3 (21-30)
+    ObservationChamber = 21,
+    TemporalBridge = 22,
+    PerspectiveAnchor = 23,
+    MemoryCorridor = 24,
+    ParadoxArena = 25,
+    ErosionVault = 26,
+    ResonanceChamber = 27,
+    LiminalThreshold = 28,
+    ChronologicalSpire = 29,
+    VoidGallery = 30,
+
+    // VOCABULARIO ARQUITECTÓNICO ESCOLAR (31-46) — USADOS EN BLUEPRINTS
+    SchoolHall = 31,
+    SchoolCorridor = 32,
+    SchoolClassroom = 33,
+    SchoolStairwell = 34,
+    SchoolBathroom = 35,
+    SchoolStaffRoom = 36,
+    SchoolLibrary = 37,
+    SchoolCourtyard = 38,
+    SchoolGym = 39,
+    SchoolLab = 40,
+    SchoolMaintenanceCorridor = 41,
+    SchoolEmergencyCorridor = 42,
+    SchoolLyraClassroom = 43,
+    SchoolOffice = 44,
+    SchoolLiminalClassroom = 45,
+    TransitionSpace = 46
 }
 
 /// <summary>
@@ -88,10 +106,19 @@ public class LevelBlueprint : ScriptableObject
     public int actNumber = 1;
     public LevelArchetype archetype = LevelArchetype.Standard;
     
-    [Header("Echo Limits")]
+    [Header("Echo Limits & Advanced Modes")]
     public bool echoEnabled = true;
     public int maxEchoes = 1;
     public float maxRecordSeconds = 12f;
+    public EchoPlaybackMode echoMode = EchoPlaybackMode.Standard;
+    public bool recordFuture = false;
+    public float degradationPerReplay = 0.0f;
+    public EchoRecordingData imposedEchoData;
+    public EchoRecordingData ambientEchoData;
+    public bool lockEchoSlots = false;
+    public int[] lockedSlotIndices;
+    public CameraProfile cameraProfile;
+    public LightingProfile lightingProfile;
 
     [Header("Paradox Systems")]
     public ParadoxType[] activeParadoxes;

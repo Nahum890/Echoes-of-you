@@ -1,0 +1,43 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-INP-REM-001"
+# INPUT_REMAPPING_SCHEMA.yaml
+# JSON/YAML schema for persistent input action remapping.
+
+default_bindings:
+  Move:
+    action_type: "Value"
+    control_type: "Vector2"
+    bindings:
+      - {composite: "2DVector", path: "<Keyboard>/w", part: "Up"}
+      - {composite: "2DVector", path: "<Keyboard>/s", part: "Down"}
+      - {composite: "2DVector", path: "<Keyboard>/a", part: "Left"}
+      - {composite: "2DVector", path: "<Keyboard>/d", part: "Right"}
+      - {path: "<Gamepad>/leftStick"}
+
+  RecordEcho:
+    action_type: "Button"
+    bindings:
+      - {path: "<Keyboard>/r"}
+      - {path: "<Gamepad>/buttonEast"}
+
+  SoftReset:
+    action_type: "Button"
+    bindings:
+      - {path: "<Keyboard>/q"}
+      - {path: "<Gamepad>/select"}
+
+  Interact:
+    action_type: "Button"
+    bindings:
+      - {path: "<Keyboard>/e"}
+      - {path: "<Gamepad>/buttonSouth"}
+
+remapping_persistence:
+  file_name: "input_rebinds.json"
+  storage_location: "Application.persistentDataPath"
+  override_format: "UnityInputSystemJson"
+
+deadzones:
+  gamepad_left_stick: 0.125
+  gamepad_right_stick: 0.125
+  mouse_sensitivity: 1.0

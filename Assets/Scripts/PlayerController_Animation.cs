@@ -28,7 +28,7 @@ public partial class PlayerController
         }
 
         Vector3 flatVelocity = Vector3.ProjectOnPlane(_controller.velocity, _currentUp);
-        bool isRecording = _echoRecorder != null && _echoRecorder.IsRecording && !_echoRecorder.IsProjectionRecording;
+        bool isRecording = _echoRecorder != null && _echoRecorder.IsRecording;
         CurrentAnimationState = ResolveAnimationState(flatVelocity.magnitude, isRecording);
 
         float speedParam = flatVelocity.magnitude * EchoesPresentationSettings.AnimationPlaybackSpeed;

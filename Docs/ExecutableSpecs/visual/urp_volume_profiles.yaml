@@ -1,0 +1,35 @@
+# URP VOLUME PROFILES EXECUTABLE SPECIFICATION — Echoes of You 2.0
+spec_id: SPEC-EXEC-PP-001
+version: "1.0"
+authority: "Docs/Authority/SOURCE_OF_TRUTH.md"
+
+urp_volume_settings:
+  bloom:
+    active: true
+    threshold: 0.8
+    intensity: 0.5
+    scatter: 0.7
+    tint: "#FFFFFF"
+
+  vignette:
+    active: true
+    color: "#000000"
+    intensity: 0.35
+    smoothness: 0.2
+    rounded: false
+
+  color_adjustments:
+    active: true
+    post_exposure: 0.0
+    contrast: 15.0
+    color_filter: "#FFFFFF"
+    hue_shift: 0.0
+    saturation: -20.0
+
+  fog_settings:
+    active: true
+    mode: "Linear"
+    color: "#0F141A"
+    density: 0.015
+    start_distance: 5.0
+    end_distance: 35.0

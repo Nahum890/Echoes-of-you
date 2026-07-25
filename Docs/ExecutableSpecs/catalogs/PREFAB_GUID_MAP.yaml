@@ -1,0 +1,27 @@
+schema_version: "1.0"
+catalog_type: prefab_guid_map
+registry:
+  PlayerStart:
+    path: "Assets/Prefabs/Core/PlayerStart.prefab"
+    guid: "a1b2c3d4e5f607890123456789abcdef"
+  LevelExit:
+    path: "Assets/Prefabs/Core/LevelExit.prefab"
+    guid: "f6e5d4c3b2a109876543210fedcba987"
+  SchoolCorridor:
+    path: "Assets/Prefabs/Architecture/SchoolCorridor.prefab"
+    guid: "1234567890abcdef1234567890abcdef"
+  SchoolClassroom:
+    path: "Assets/Prefabs/Architecture/SchoolClassroom.prefab"
+    guid: "abcdef1234567890abcdef1234567890"
+  PressurePlate:
+    path: "Assets/Prefabs/Puzzle/PressurePlate.prefab"
+    guid: "9876543210fedcba9876543210fedcba"
+  Door:
+    path: "Assets/Prefabs/Architecture/Door.prefab"
+    guid: "456789abcdef1234567890abcdef1234"
+  PuzzleWire:
+    path: "Assets/Prefabs/Puzzle/PuzzleWire.prefab"
+    guid: "789abcdef1234567890abcdef1234567"
+  Prop_Coat:
+    path: "Assets/Prefabs/Narrative/Prop_Coat.prefab"
+    guid: "cba9876543210fedcba9876543210fed"

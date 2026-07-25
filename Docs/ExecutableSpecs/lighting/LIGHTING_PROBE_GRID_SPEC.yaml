@@ -1,0 +1,25 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-PROBE-GRID-001"
+# LIGHTING_PROBE_GRID_SPEC.yaml
+# Automated light probe placement volume algorithms.
+
+grid_generation:
+  horizontal_spacing_m: 2.5
+  vertical_spacing_m: 1.5
+  wall_clearance_margin_m: 0.5
+  height_above_floor_layers: [0.5, 1.8, 3.2]
+
+volume_bounds_by_archetype:
+  Teaching:
+    probe_density_multiplier: 1.0
+    include_doorways: true
+  Puzzle:
+    probe_density_multiplier: 1.5      # Higher density near puzzle interactions
+    include_doorways: true
+  Narrative:
+    probe_density_multiplier: 1.2
+    include_doorways: true
+
+pruning_rules:
+  remove_inside_geometry: true       # Raycast check from center to prune probes placed inside solid meshes
+  remove_redundant_flat_probes: true # Deduplicate probes with identical ambient lighting values

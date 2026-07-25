@@ -86,6 +86,22 @@ public class EchoPlayback : MonoBehaviour
         {
             _audioSource.outputAudioMixerGroup = audioMgr.FindGroup("Echo");
         }
+
+        Shader ghostShader = Shader.Find("Hidden/AnalogGhost");
+        if (ghostShader != null)
+        {
+            Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+            foreach (var r in renderers)
+            {
+                if (r != null)
+                {
+                    Material m = new Material(ghostShader) { name = "Mat_Echo_AnalogGhost" };
+                    m.SetColor("_Color", new Color(0.31f, 0.765f, 0.91f, 0.45f));
+                    m.SetColor("_EmissionColor", new Color(0.0f, 0.5f, 0.65f, 1.0f));
+                    r.material = m;
+                }
+            }
+        }
     }
 
     void Start()
@@ -124,6 +140,19 @@ public class EchoPlayback : MonoBehaviour
 
     public void BeginPlayback(IReadOnlyList<RecordFrame> frames, float duration, AudioClip voiceClip = null)
     {
+        BeginPlayback(frames, duration, voiceClip, EchoPlaybackMode.Standard, 0f);
+    }
+
+    /// <summary>
+    /// Begins echo playback with a specific mode and degradation rate.
+    /// </summary>
+    public void BeginPlayback(IReadOnlyList<RecordFrame> frames, float duration, AudioClip voiceClip,
+        EchoPlaybackMode mode, float degradationRate)
+    {
+        playbackMode = mode;
+        degradationPerReplay = degradationRate;
+        _playCount = 0;
+
         EnsureVisualAnimator();
         _anim = ResolveEchoAnimator();
         ApplySavedEchoOpacity();
@@ -147,11 +176,15 @@ public class EchoPlayback : MonoBehaviour
         transform.SetPositionAndRotation(position, rotation);
         _cc.enabled = true;
 
+        if (mode != EchoPlaybackMode.Standard)
+            ApplyAnalogAudioFilters();
+
         if (_audioSource != null)
         {
             _audioSource.clip = voiceClip;
             ConfigureSpatialVoicePlayback();
-            RemoveVoiceDegradingFilters();
+            if (mode == EchoPlaybackMode.Standard)
+                RemoveVoiceDegradingFilters();
 
             if (voiceClip != null)
             {
@@ -236,6 +269,21 @@ public class EchoPlayback : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public EchoPlaybackMode playbackMode = EchoPlaybackMode.Standard;
+    public float degradationPerReplay = 0.0f;
+    private int _playCount = 0;
+
+    void ApplyAnalogAudioFilters()
+    {
+        AudioLowPassFilter lp = GetComponent<AudioLowPassFilter>();
+        if (lp == null) lp = gameObject.AddComponent<AudioLowPassFilter>();
+        lp.cutoffFrequency = 2500f;
+
+        AudioHighPassFilter hp = GetComponent<AudioHighPassFilter>();
+        if (hp == null) hp = gameObject.AddComponent<AudioHighPassFilter>();
+        hp.cutoffFrequency = 400f;
+    }
+
     void FixedUpdate()
     {
         if (!_playing || _frames.Count == 0)
@@ -243,9 +291,14 @@ public class EchoPlayback : MonoBehaviour
 
         _time += Time.deltaTime;
         if (_time >= _duration)
+        {
             _time = 0f;
+            _playCount++;
+        }
 
-        RecordFrame.Evaluate(_frames, _time, out Vector3 nextPosition, out Quaternion nextRotation);
+        // Degradation: time offset drifts slightly with each replay loop
+        float effectiveTime = Mathf.Clamp(_time + (_playCount * degradationPerReplay), 0f, _duration);
+        RecordFrame.Evaluate(_frames, effectiveTime, out Vector3 nextPosition, out Quaternion nextRotation);
 
         Vector3 moveOffset = nextPosition - transform.position;
 
@@ -258,6 +311,26 @@ public class EchoPlayback : MonoBehaviour
             transform.position = nextPosition;
         }
         transform.rotation = nextRotation;
+
+        // Mode specific behaviors
+        if (playbackMode == EchoPlaybackMode.Ambient || playbackMode == EchoPlaybackMode.Inversion)
+        {
+            var player = GameObject.FindWithTag("Player");
+            if (player != null)
+            {
+                float dist = Vector3.Distance(transform.position, player.transform.position);
+                if (playbackMode == EchoPlaybackMode.Inversion)
+                {
+                    // Sync HUD feedback
+                    var hud = Object.FindAnyObjectByType<GameHUD>();
+                    if (hud != null)
+                    {
+                        string syncStatus = dist < 0.5f ? "Sincronizado (<0.5m)" : (dist > 1.0f ? "Desincronizado (>1.0m)" : "Cerca");
+                        hud.SetPrompt($"Mirror Sync: {syncStatus}", 0.1f);
+                    }
+                }
+            }
+        }
     }
 
     void Update()

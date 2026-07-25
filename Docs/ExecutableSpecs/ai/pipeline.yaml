@@ -1,0 +1,55 @@
+schema_version: "1.0"
+pipeline_type: ai_execution_pipeline
+
+roles:
+  architecture:
+    reads: [school_graph, room_templates, transitions, landmarks, scale]
+    may_modify: [architecture_specs, level_intents]
+    may_not_modify: [player_runtime, echo_runtime]
+  puzzle:
+    reads: [echo_states, echo_capabilities, puzzle_archetypes, puzzle_specs]
+    may_modify: [puzzle_specs]
+    may_not_modify: [player_runtime]
+  blueprint:
+    reads: [blueprint_spec, modules, scale, props]
+    may_modify: [blueprint_assets, puzzle_specs]
+    may_not_modify: [legacy_builders]
+  scene_generation:
+    reads: [blueprint_spec, modules, room_templates, materials, lighting_profiles]
+    may_modify: [generated_scenes]
+    required_builder: Assets/Editor/EchoesNewProductionBuilder.cs
+  visual:
+    reads: [camera_profiles, lighting_profiles, materials, composition, shapes]
+    may_modify: [visual_profiles, approved_material_assets]
+  qa:
+    reads: [all_executable_specs, failure_patterns, validators]
+    may_modify: [reports, level_status]
+
+stages:
+  - id: AI-STAGE-001
+    name: context_load
+    required_inputs: [Docs/ExecutableSpecs/manifest.yaml]
+    output: context_pack
+  - id: AI-STAGE-002
+    name: design
+    required_output: task_contract
+  - id: AI-STAGE-003
+    name: implementation
+    required_output: changed_files
+  - id: AI-STAGE-004
+    name: validation
+    required_output: validator_report
+  - id: AI-STAGE-005
+    name: evidence
+    required_output: ai_task_report
+
+gates:
+  - id: AI-GATE-001
+    condition: "No unresolved fatal decision applies to task"
+    failure: blocked
+  - id: AI-GATE-002
+    condition: "All changed files are within allowed scope"
+    failure: rejected
+  - id: AI-GATE-003
+    condition: "All required validators pass"
+    failure: needs_review

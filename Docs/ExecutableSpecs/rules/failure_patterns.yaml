@@ -1,0 +1,20 @@
+schema_version: "1.0"
+catalog_type: failure_pattern_catalog
+
+patterns:
+  - {id: FAIL-001, name: prop_overlap, severity: error, validator: validators/level_validator.yaml#prop_overlaps, remediation: "Move or remove blocking prop"}
+  - {id: FAIL-002, name: empty_corridor, severity: warning, validator: validators/level_validator.yaml#landmark_spacing, remediation: "Add intentional landmark or shorten route"}
+  - {id: FAIL-003, name: generic_button_puzzle, severity: fatal, validator: validators/blueprint_validator.yaml#button_test, remediation: "Make Echo-specific behavior necessary"}
+  - {id: FAIL-004, name: missing_teaching, severity: error, validator: validators/blueprint_validator.yaml#teaching_stage, remediation: "Add observation or safe experiment stage"}
+  - {id: FAIL-005, name: softlock, severity: fatal, validator: validators/level_validator.yaml#connectivity, remediation: "Add recovery path or fix signal state"}
+  - {id: FAIL-006, name: camera_without_echo, severity: error, validator: validators/camera_validator.yaml#echo_target, remediation: "Add Echo to active target group"}
+  - {id: FAIL-007, name: wrong_scale, severity: error, validator: validators/level_validator.yaml#clearance, remediation: "Use scale catalog and rerun clearance check"}
+  - {id: FAIL-008, name: missing_landmark, severity: warning, validator: validators/level_validator.yaml#landmark_spacing, remediation: "Add navigation or story landmark"}
+  - {id: FAIL-009, name: abrupt_transition, severity: warning, validator: validators/static_validator.yaml#transition_presentation, remediation: "Add transition presentation data"}
+  - {id: FAIL-010, name: flat_lighting, severity: warning, validator: validators/level_validator.yaml#light_count, remediation: "Apply room and chapter lighting profile"}
+  - {id: FAIL-011, name: invalid_material, severity: fatal, validator: validators/static_validator.yaml#urp_only, remediation: "Use URP material through EchoesMaterialLibrary"}
+  - {id: FAIL-012, name: invisible_narrative, severity: warning, validator: validators/blueprint_validator.yaml#narrative_beats, remediation: "Declare and place narrative beat"}
+  - {id: FAIL-013, name: excessive_repetition, severity: advisory, validator: validators/level_validator.yaml#visual_evidence, remediation: "Break repetition with landmark or narrative variation"}
+  - {id: FAIL-014, name: echo_irrelevant, severity: fatal, validator: validators/blueprint_validator.yaml#button_test, remediation: "Require recorded trajectory or temporal persistence"}
+  - {id: FAIL-015, name: nondeterministic_solution, severity: fatal, validator: validators/level_validator.yaml#echo_determinism, remediation: "Make timing and movement deterministic"}
+  - {id: FAIL-016, name: ambiguous_blueprint, severity: error, validator: validators/static_validator.yaml#documentation_links, remediation: "Use schema-valid fields and registered module keys"}

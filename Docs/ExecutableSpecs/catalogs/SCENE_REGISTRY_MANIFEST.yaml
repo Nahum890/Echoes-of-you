@@ -1,0 +1,148 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-SCENE-001"
+# SCENE_REGISTRY_MANIFEST.yaml
+# Single canonical table mapping scene names, build indices, level blueprints, and asset bundle addresses.
+
+scenes:
+  - name: "MainMenu"
+    build_index: 0
+    blueprint_asset: null
+    addressable_address: "Scene_MainMenu"
+    level_spec_id: null
+    chapter: null
+
+  - name: "Level_01"
+    build_index: 1
+    blueprint_asset: "Assets/Data/Levels/Level_01.asset"
+    addressable_address: "Scene_Level_01"
+    level_spec_id: "LEVEL-SPEC-01"
+    scene_file: "Assets/Scenes/Level_01_PasilloAusente.unity"
+    chapter: 1
+    archetype: "Teaching"
+
+  - name: "Level_02"
+    build_index: 2
+    blueprint_asset: "Assets/Data/Levels/Level_02.asset"
+    addressable_address: "Scene_Level_02"
+    level_spec_id: "LEVEL-SPEC-02"
+    scene_file: "Assets/Scenes/Level_02.unity"
+    chapter: 1
+
+  - name: "Level_03"
+    build_index: 3
+    blueprint_asset: "Assets/Data/Levels/Level_03.asset"
+    addressable_address: "Scene_Level_03"
+    level_spec_id: "LEVEL-SPEC-03"
+    scene_file: "Assets/Scenes/Level_03.unity"
+    chapter: 1
+
+  - name: "Level_04"
+    build_index: 4
+    blueprint_asset: "Assets/Data/Levels/Level_04.asset"
+    addressable_address: "Scene_Level_04"
+    level_spec_id: "LEVEL-SPEC-04"
+    scene_file: "Assets/Scenes/Level_04.unity"
+    chapter: 2
+
+  - name: "Level_05"
+    build_index: 5
+    blueprint_asset: "Assets/Data/Levels/Level_05.asset"
+    addressable_address: "Scene_Level_05"
+    level_spec_id: "LEVEL-SPEC-05"
+    scene_file: "Assets/Scenes/Level_05.unity"
+    chapter: 2
+
+  - name: "Level_06"
+    build_index: 6
+    blueprint_asset: "Assets/Data/Levels/Level_06.asset"
+    addressable_address: "Scene_Level_06"
+    level_spec_id: "LEVEL-SPEC-06"
+    scene_file: "Assets/Scenes/Level_06.unity"
+    chapter: 2
+
+  - name: "Level_07"
+    build_index: 7
+    blueprint_asset: "Assets/Data/Levels/Level_07.asset"
+    addressable_address: "Scene_Level_07"
+    level_spec_id: "LEVEL-SPEC-07"
+    scene_file: "Assets/Scenes/Level_07.unity"
+    chapter: 3
+
+  - name: "Level_08"
+    build_index: 8
+    blueprint_asset: "Assets/Data/Levels/Level_08.asset"
+    addressable_address: "Scene_Level_08"
+    level_spec_id: "LEVEL-SPEC-08"
+    scene_file: "Assets/Scenes/Level_08.unity"
+    chapter: 3
+
+  - name: "Level_09"
+    build_index: 9
+    blueprint_asset: "Assets/Data/Levels/Level_09.asset"
+    addressable_address: "Scene_Level_09"
+    level_spec_id: "LEVEL-SPEC-09"
+    scene_file: "Assets/Scenes/Level_09.unity"
+    chapter: 3
+
+  - name: "Level_10"
+    build_index: 10
+    blueprint_asset: "Assets/Data/Levels/Level_10.asset"
+    addressable_address: "Scene_Level_10"
+    level_spec_id: "LEVEL-SPEC-10"
+    scene_file: "Assets/Scenes/Level_10.unity"
+    chapter: 4
+
+  - name: "Level_11"
+    build_index: 11
+    blueprint_asset: "Assets/Data/Levels/Level_11.asset"
+    addressable_address: "Scene_Level_11"
+    level_spec_id: "LEVEL-SPEC-11"
+    scene_file: "Assets/Scenes/Level_11.unity"
+    chapter: 4
+
+  - name: "Level_12"
+    build_index: 12
+    blueprint_asset: "Assets/Data/Levels/Level_12.asset"
+    addressable_address: "Scene_Level_12"
+    level_spec_id: "LEVEL-SPEC-12"
+    scene_file: "Assets/Scenes/Level_12.unity"
+    chapter: 4
+
+  - name: "Level_13"
+    build_index: 13
+    blueprint_asset: "Assets/Data/Levels/Level_13.asset"
+    addressable_address: "Scene_Level_13"
+    level_spec_id: "LEVEL-SPEC-13"
+    scene_file: "Assets/Scenes/Level_13.unity"
+    chapter: 5
+
+  - name: "Level_14"
+    build_index: 14
+    blueprint_asset: "Assets/Data/Levels/Level_14.asset"
+    addressable_address: "Scene_Level_14"
+    level_spec_id: "LEVEL-SPEC-14"
+    scene_file: "Assets/Scenes/Level_14.unity"
+    chapter: 5
+
+  - name: "Level_15"
+    build_index: 15
+    blueprint_asset: "Assets/Data/Levels/Level_15.asset"
+    addressable_address: "Scene_Level_15"
+    level_spec_id: "LEVEL-SPEC-15"
+    scene_file: "Assets/Scenes/Level_15.unity"
+    chapter: 5
+
+  - name: "Credits"
+    build_index: 16
+    blueprint_asset: null
+    addressable_address: "Scene_Credits"
+    level_spec_id: null
+    chapter: null
+
+lookup_by_name:
+  description: "Use this table for SceneManager.LoadScene(string) calls"
+  pattern: "SceneManager.LoadScene(SCENE_REGISTRY_MANIFEST.scenes[i].name)"
+
+lookup_by_index:
+  description: "Use this table for SceneManager.LoadScene(int) calls"
+  pattern: "SceneManager.LoadScene(SCENE_REGISTRY_MANIFEST.scenes[i].build_index)"

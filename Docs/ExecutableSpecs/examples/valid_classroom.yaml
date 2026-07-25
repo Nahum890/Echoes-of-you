@@ -1,0 +1,12 @@
+example_type: valid
+schema: catalogs/room_templates.yaml
+room_type: SchoolClassroom
+template_id: ROOM-TMPL-003
+dimensions: {width: 10.0, depth: 10.0, height: 3.8}
+clearance: {central_aisle: 1.8, perimeter: 1.2}
+required_props: [PupitreDoble, SillaEscolar, Pizarra, MesaProfesor]
+camera_profile: Learning
+lighting_profile: Classroom
+validation:
+  expected: approved
+  checks: [ROOM-VAL-001, ROOM-VAL-002, SCALE-001]

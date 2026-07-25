@@ -1,0 +1,159 @@
+# MANIFEST — Echoes of You v3.0
+# Single entry point for every IA agent.
+# An IA MUST read this file first, before any other document, code, or asset.
+
+project:
+  id: echoes_of_you
+  version: "3.0"
+  engine: unity
+  render_pipeline: urp
+  build_target: windows64
+
+entry_points:
+  authority: Docs/ExecutableSpecs/rules/authority.yaml
+  decisions: Docs/ExecutableSpecs/registry/decisions.yaml
+  documents: Docs/ExecutableSpecs/registry/documents.yaml
+  schemas: Docs/ExecutableSpecs/schemas/
+
+session_protocol:
+  1: "Read this manifest"
+  2: "Read authority.yaml"
+  3: "Read decisions.yaml — resolve all unverified entries before acting"
+  4: "Read documents.yaml — confirm document status and authority level"
+  5: "Identify task-specific schemas"
+  6: "Read task-specific catalogs and rules"
+  7: "Execute with evidence"
+  8: "Produce validator report"
+
+schemas:
+  core:
+    - schema: schemas/rule.schema.yaml
+    - schema: schemas/document.schema.yaml
+    - schema: schemas/decision.schema.yaml
+    - schema: schemas/report.schema.yaml
+    - schema: schemas/blueprint.schema.json
+    - schema: schemas/ai-task.schema.json
+    - schema: schemas/validator-report.schema.json
+  design:
+    - schema: catalogs/scale.yaml
+    - schema: catalogs/props.yaml
+    - schema: catalogs/room_templates.yaml
+    - schema: catalogs/modules.yaml
+  architecture:
+    - schema: architecture/school_graph.yaml
+    - schema: architecture/transitions.yaml
+    - schema: architecture/landmarks.yaml
+  gameplay:
+    - schema: gameplay/echo_states.yaml
+    - schema: gameplay/echo_capabilities.yaml
+    - schema: gameplay/puzzle_archetypes.yaml
+    - schema: gameplay/blueprint_spec.yaml
+    - schema: levels/level_structure.yaml
+    - schema: levels/level_intents.yaml
+    - schema: levels/puzzle_specs.yaml
+  visual:
+    - schema: visual/camera_profiles.yaml
+    - schema: visual/lighting_profiles.yaml
+    - schema: visual/materials.yaml
+    - schema: visual/composition.yaml
+    - schema: visual/shapes.yaml
+  narrative:
+    - schema: narrative/objects.yaml
+    - schema: narrative/emotional_arc.yaml
+
+rules:
+  authority:
+    - rules/authority.yaml
+  design:
+    - rules/scale_rules.yaml
+    - rules/prop_rules.yaml
+    - rules/room_rules.yaml
+    - rules/module_rules.yaml
+  architecture:
+    - rules/transition_rules.yaml
+    - rules/landmark_rules.yaml
+    - rules/circulation_rules.yaml
+  gameplay:
+    - rules/echo_rules.yaml
+    - rules/puzzle_rules.yaml
+    - rules/blueprint_rules.yaml
+    - rules/level_rules.yaml
+  narrative:
+    - rules/narrative_rules.yaml
+    - rules/emotional_rules.yaml
+    - rules/failure_patterns.yaml
+  visual:
+    - rules/camera_rules.yaml
+    - rules/lighting_rules.yaml
+    - rules/material_rules.yaml
+    - rules/composition_rules.yaml
+    - rules/shape_rules.yaml
+
+validators:
+  static:
+    - validators/static_validator.yaml
+  runtime:
+    - validators/level_validator.yaml
+    - validators/blueprint_validator.yaml
+    - validators/camera_validator.yaml
+  doc:
+    - validators/documentation_validator.yaml
+    - validators/scorecard.yaml
+    - validators/playtest.schema.yaml
+
+ai_contracts:
+  task_schema: ai/task_schema.yaml
+  report_schema: ai/report_schema.yaml
+  task_json_schema: schemas/ai-task.schema.json
+  report_json_schema: schemas/validator-report.schema.json
+  machine_pipeline: ai/pipeline.yaml
+  machine_roles: ai/roles.yaml
+  execution_readme: ai/README_EXECUTION.md
+  rulebook: Docs/AI/AI_RULEBOOK.md
+  human_pipeline: Docs/AI/AI_PIPELINE.md
+  responsibilities: Docs/AI/AI_RESPONSIBILITIES.md
+
+examples:
+  valid:
+    - examples/valid_blueprint.yaml
+    - examples/valid_classroom.yaml
+    - examples/valid_corridor.yaml
+    - examples/valid_puzzle.yaml
+  invalid:
+    - examples/invalid_blueprint.yaml
+    - examples/invalid_classroom.yaml
+    - examples/invalid_corridor.yaml
+    - examples/invalid_puzzle.yaml
+
+execution_contract:
+  blueprint_source_of_truth: Assets/Scripts/LevelBlueprint.cs
+  active_builder: Assets/Editor/EchoesNewProductionBuilder.cs
+  generated_report: Reports/generated/executable_specs_report.json
+  runtime_precedence: "ExecutableSpecs/*.yaml is the runtime data contract; overrides Markdown specs without exceptions."
+  unresolved_contracts: []
+
+reports:
+  base_path: Reports/generated/
+  required:
+    - code_inventory.json
+    - asset_inventory.json
+    - blueprint_inventory.json
+
+dependency_dag:
+  # Mandatory read order to avoid circular dependencies.
+  # Each document may only depend on documents with a lower load_order index.
+  load_order:
+    1: "registry/decisions.yaml"          # Resolve all conflicts first
+    2: "rules/authority.yaml"             # Establish hierarchy
+    3: "Docs/Specs/CONSTANTS_REGISTRY.yaml" # Canonical numbers
+    4: "Docs/Specs/ASSET_GUID_REGISTRY.md"  # Asset paths
+    5: "visual/materials.yaml"            # Shader contracts
+    6: "gameplay/echo_states.yaml"
+    7: "gameplay/puzzle_archetypes.yaml"
+    8: "levels/puzzle_specs.yaml"
+    9: "levels/level_structure.yaml"      # Depends on all of the above
+  circular_dependency_prevention:
+    prohibited: "A document cannot be in its own dependency chain"
+    detection: "validators/documentation_validator.yaml#dag_check"
+    enforcement: "Any agent detecting a cycle MUST emit FAIL-DAG-001 and halt"
+

@@ -1,0 +1,27 @@
+example_type: invalid
+schema: schemas/blueprint.schema.json
+levelName: Broken_Level
+nextLevel: Level_03
+actNumber: 1
+archetype: Standard
+maxEchoes: 1
+maxRecordSeconds: 45
+cameraProfile: null
+lightingProfile: null
+modules:
+  - name: OnlyRoom
+    type: SchoolClassroom
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    customData: "unknown_key=bad"
+    targetSignals: [MissingReceiver]
+expected_failure:
+  - rule_id: BLU-001
+    code: PLAYER_START_OR_EXIT_MISSING
+  - rule_id: BLU-002
+    code: NULL_CAMERA_OR_LIGHTING_PROFILE
+  - rule_id: ECHO-002
+    code: ECHO_DURATION_OUT_OF_RANGE
+  - rule_id: BLU-003
+    code: SIGNAL_RECEIVER_MISSING

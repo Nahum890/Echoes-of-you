@@ -145,6 +145,7 @@ public class MainMenuController : MonoBehaviour
         if (!_wired)
         {
             SetupHoverCallbacks();
+            SetupFocusNavigation();
 
             RegisterButtonClick("nav-newgame", StartNewGame);
             RegisterButtonClick("nav-levels", ShowStabilityMap);
@@ -153,7 +154,6 @@ public class MainMenuController : MonoBehaviour
         }
 
         GameProgress.EnsureInitialized();
-        GameProgress.RecordSessionStarted();
 
         // Settings panel bindings
         _sldMaster = _root.Q<Slider>("sld-master");
@@ -229,15 +229,57 @@ public class MainMenuController : MonoBehaviour
 
     void Start()
     {
-        UnityEngine.Cursor.lockState = CursorLockMode.None;
-        UnityEngine.Cursor.visible = true;
-        Time.timeScale = 1f;
+        SetMenuCursor();
+
+        GameProgress.RecordSessionStarted();
 
         // Debug auto-start
         if (autoStartGame)
         {
             Invoke(nameof(AutoStart), 0.5f);
         }
+    }
+
+    void OnDisable()
+    {
+        UnregisterButtonClick("nav-newgame", StartNewGame);
+        UnregisterButtonClick("nav-levels", ShowStabilityMap);
+        UnregisterButtonClick("nav-settings", ShowSettings);
+        UnregisterButtonClick("nav-exit", QuitGame);
+
+        if (_btnNewGame != null)
+        {
+            _btnNewGame.UnregisterCallback<MouseEnterEvent>(_ => {});
+            _btnNewGame.UnregisterCallback<MouseLeaveEvent>(_ => {});
+        }
+        if (_btnLevels != null)
+        {
+            _btnLevels.UnregisterCallback<MouseEnterEvent>(_ => {});
+            _btnLevels.UnregisterCallback<MouseLeaveEvent>(_ => {});
+        }
+        if (_btnSettings != null)
+        {
+            _btnSettings.UnregisterCallback<MouseEnterEvent>(_ => {});
+            _btnSettings.UnregisterCallback<MouseLeaveEvent>(_ => {});
+        }
+        if (_btnExit != null)
+        {
+            _btnExit.UnregisterCallback<MouseEnterEvent>(_ => {});
+            _btnExit.UnregisterCallback<MouseLeaveEvent>(_ => {});
+        }
+    }
+
+    public static void SetGameplayCursor()
+    {
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        UnityEngine.Cursor.visible = false;
+    }
+
+    public static void SetMenuCursor()
+    {
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
+        UnityEngine.Cursor.visible = true;
+        Time.timeScale = 1f;
     }
 
     void Update()
@@ -279,6 +321,47 @@ public class MainMenuController : MonoBehaviour
             if (el != null)
                 el.RegisterCallback<ClickEvent>(_ => action());
         }
+    }
+
+    void UnregisterButtonClick(string name, System.Action action)
+    {
+        var btn = _root.Q<Button>(name);
+        if (btn != null)
+        {
+            btn.clicked -= action;
+        }
+    }
+
+    void SetupFocusNavigation()
+    {
+        if (_btnNewGame != null)
+        {
+            _btnNewGame.RegisterCallback<FocusEvent>(_ => OnNavFocus(_btnNewGame, MainMenuCinematicWorld.MenuAmbience.Void, "Aula 104"));
+        }
+        if (_btnLevels != null)
+        {
+            _btnLevels.RegisterCallback<FocusEvent>(_ => OnNavFocus(_btnLevels, MainMenuCinematicWorld.MenuAmbience.Stability, "Archivos Escolares"));
+        }
+        if (_btnSettings != null)
+        {
+            _btnSettings.RegisterCallback<FocusEvent>(_ => OnNavFocus(_btnSettings, MainMenuCinematicWorld.MenuAmbience.System, "Ajustar Receptor"));
+        }
+        if (_btnExit != null)
+        {
+            _btnExit.RegisterCallback<FocusEvent>(_ => OnNavFocus(_btnExit, MainMenuCinematicWorld.MenuAmbience.Disconnect, "Salir del Recuerdo"));
+        }
+    }
+
+    void OnNavFocus(Button btn, MainMenuCinematicWorld.MenuAmbience ambience, string title)
+    {
+        if (MainMenuCinematicWorld.Instance != null)
+            MainMenuCinematicWorld.Instance.SetAmbience(ambience);
+
+        if (_heroTitle != null)
+            _heroTitle.text = title;
+
+        SetActiveNav(btn);
+        ShowPreviewPanel(GetPanelNameForButton(btn));
     }
 
     // --- Hover Background & Title Swap ---

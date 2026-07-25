@@ -1,0 +1,74 @@
+schema_version: "1.0"
+catalog_type: echo_state_machine
+runtime_sources:
+  - Assets/Scripts/EchoRecorder.cs
+  - Assets/Scripts/EchoPlayback.cs
+  - Assets/Scripts/Echo/EchoModeController.cs
+
+states:
+  recording:
+    entry: "Player holds configured record input"
+    visual: "Aiden rim light echo-cyan; Echo object does not exist"
+    collision: player_only
+    records: [position, rotation, frame_time, input_events, interaction_events]
+    exits: [release_input, max_record_duration]
+  pending_playback:
+    entry: "Recording released and recording data accepted"
+    visual: "Echo spawn visual is implementation-dependent"
+    collision: "must_be_verified"
+    configured_start_latency: 0.8
+    implementation_status: unverified
+    exits: [playback_start]
+  playback:
+    entry: "Playback begins after configured latency"
+    visual: "AnalogGhost / echo-cyan alpha target 0.45"
+    collision: environment_player_pressure_plate
+    deterministic: true
+    improvisation: false
+    exits: [recording_end, playback_interrupted]
+  residual:
+    entry: "Recorded trajectory reaches final frame"
+    visual: "Alpha fades from 0.3 to 0"
+    configured_duration: 2.5
+    collision: active
+    implementation_status: partial
+    exits: [destroyed]
+  destroyed:
+    entry: "Residual timer ends or Echo is removed"
+    visual: none
+    collision: none
+    exits: []
+
+parameters:
+  default_record_seconds: 12.0
+  special_level_max_seconds: 20.0
+  hard_limit_seconds: 30.0
+  start_latency_seconds: 0.8
+  residual_duration_seconds: 2.5
+  max_echoes_default: 1
+  max_echoes_runtime_default_in_recorder: 2
+  max_echoes_conflict: "must be resolved through LevelBlueprint"
+
+validation:
+  - id: ECHO-VAL-001
+    type: mapping
+    status: active
+    severity: error
+    scope: [echo, level]
+    rule: "Runtime record duration must be sourced from LevelBlueprint.maxRecordSeconds"
+    evidence_source: [Assets/Scripts/LevelBlueprint.cs, Assets/Scripts/EchoRecorder.cs]
+    validator_implementation: pending
+  - id: ECHO-VAL-002
+    type: status
+    status: active
+    severity: error
+    scope: [echo]
+    rule: "Latency and residual behavior cannot be used as verified puzzle mechanics until runtime-tested"
+    validator_implementation: pending
+  - id: ECHO-VAL-003
+    type: prohibition
+    status: active
+    severity: fatal
+    scope: [echo]
+    rule: "An Echo cannot improvise, react, attack or be controlled after playback starts"
+    validator_implementation: pending

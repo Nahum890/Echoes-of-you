@@ -1,0 +1,82 @@
+schema_version: "1.0"
+validator_id: STATIC-SPEC-001
+type: static_project_validator
+runtime: filesystem_and_source_scan
+output_schema: schemas/report.schema.yaml
+
+checks:
+  asset_paths:
+    id: STATIC-001
+    severity: error
+    input: [catalogs/props.yaml, visual/materials.yaml, architecture/landmarks.yaml]
+    action: "Resolve every Assets/... path and report missing files"
+  material_paths:
+    id: STATIC-002
+    severity: error
+    input: [visual/materials.yaml]
+    action: "Resolve material and shader paths"
+  prefab_components:
+    id: STATIC-003
+    severity: warning
+    input: [catalogs/props.yaml]
+    action: "Inspect prefab components and record collider/material status"
+  room_module_mapping:
+    id: STATIC-004
+    severity: fatal
+    input: [catalogs/room_templates.yaml, catalogs/modules.yaml, Assets/Scripts/LevelBlueprint.cs]
+    action: "Confirm every room module exists in the enum and catalog"
+  enum_mapping:
+    id: STATIC-005
+    severity: fatal
+    input: [catalogs/modules.yaml, Assets/Scripts/LevelBlueprint.cs]
+    action: "Compare enum names and integer values"
+  factory_mapping:
+    id: STATIC-006
+    severity: error
+    input: [catalogs/modules.yaml, Assets/Editor/EchoesModuleFactory.cs]
+    action: "Confirm factory switch case for every module"
+  custom_data:
+    id: STATIC-007
+    severity: error
+    input: [catalogs/modules.yaml, Assets/Editor/EchoesModuleFactory.cs]
+    action: "Extract and verify accepted customData keys"
+  transition_types:
+    id: STATIC-008
+    severity: fatal
+    input: [architecture/transitions.yaml]
+    action: "Confirm every transition type has dimensions and compatibility rules"
+  transition_compatibility:
+    id: STATIC-009
+    severity: fatal
+    input: [architecture/transitions.yaml, architecture/school_graph.yaml]
+    action: "Check every graph edge against allowed transition matrix"
+  transition_presentation:
+    id: STATIC-010
+    severity: warning
+    input: [architecture/transitions.yaml]
+    action: "Check lighting, fog and audio presentation fields"
+  lighting_fields:
+    id: STATIC-011
+    severity: error
+    input: [visual/lighting_profiles.yaml, Assets/Scripts/Lighting/LightingProfile.cs]
+    action: "Confirm profile properties exist in LightingProfile.cs"
+  urp_only:
+    id: STATIC-012
+    severity: fatal
+    input: [Assets/**/*.cs, Assets/**/*.mat]
+    action: "Reject Standard shader usage and Built-in material references"
+  material_properties:
+    id: STATIC-013
+    severity: warning
+    input: [visual/materials.yaml, Assets/Materials/Echoes]
+    action: "Compare material shader and numeric properties"
+  documentation_links:
+    id: STATIC-014
+    severity: error
+    input: [registry/documents.yaml]
+    action: "Confirm every source and machine_source path"
+
+status_policy:
+  fatal_failure: blocked
+  error_failure: needs_review
+  warning_failure: approved_with_warnings

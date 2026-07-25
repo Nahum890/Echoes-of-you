@@ -1,0 +1,63 @@
+# LIGHT_PROBE_GRID_SPEC.yaml
+# Spec ID: SPEC-135
+# Version: 1.0
+spec_id: SPEC-135
+version: "1.0"
+authority: "Docs/ExecutableSpecs/registry/decisions.yaml"
+
+# Light Probe Grid Generation Specification — Echoes of You
+# Applied by: EchoesModuleFactory.cs (Pass 3 of EchoesNewProductionBuilder.cs)
+# Cross-reference: LIGHTMAP_PROBE_SPEC.md [SPEC-122]
+
+probe_grid_algorithm:
+  # For a module with bounds [width, height, depth]:
+  # width = module_x_size_m  (varies per module type, from ROOM_LIBRARY)
+  # height = 3.20m           (wall_height, constant per PROCEDURAL_MESH_SPEC)
+  # depth = module_z_size_m  (varies per module type)
+
+  y_heights: [0.5, 1.8, 2.8]   # 3 rows of probes at these heights (m from floor)
+  # y=0.5: floor level (for low objects and player feet)
+  # y=1.8: player head level
+  # y=2.8: ceiling level (for ceiling shadow illumination)
+
+  xz_spacing_m: 3.0            # Matches min_probe_spacing_m in CONSTANTS_REGISTRY
+  border_offset_m: 0.5         # Probes are NOT flush with walls — 50cm inset
+
+  # --- Probe count formula ---
+  # x_probes = ceil(width  / xz_spacing_m) + 1
+  # z_probes = ceil(depth  / xz_spacing_m) + 1
+  # y_probes = len(y_heights) = 3 (fixed)
+  # total    = x_probes × z_probes × y_probes
+
+  # --- Example: SchoolCorridor 4.5m × 24.0m ---
+  example_corridor:
+    width_m: 4.5
+    depth_m: 24.0
+    x_probes: 3   # ceil(4.5 / 3.0) + 1 = 3
+    z_probes: 9   # ceil(24.0 / 3.0) + 1 = 9
+    y_probes: 3
+    total: 81     # 3 × 9 × 3 = 81 probes
+
+  # --- Example: SchoolClassroom 8.0m × 9.0m ---
+  example_classroom:
+    width_m: 8.0
+    depth_m: 9.0
+    x_probes: 4   # ceil(8.0 / 3.0) + 1 = 4
+    z_probes: 4   # ceil(9.0 / 3.0) + 1 = 4
+    y_probes: 3
+    total: 48     # 4 × 4 × 3 = 48 probes
+
+  # --- C# Generation pseudocode ---
+  # List<Vector3> positions = new List<Vector3>();
+  # foreach (float y in y_heights)
+  #   for (float z = border_offset_m; z <= depth - border_offset_m; z += xz_spacing_m)
+  #     for (float x = border_offset_m; x <= width - border_offset_m; x += xz_spacing_m)
+  #       positions.Add(moduleOrigin + new Vector3(x, y, z));
+  # LightProbeGroup.probePositions = positions.ToArray();
+
+validation:
+  min_coverage_percent: 95.0    # 95% of traversable volume must have a probe within 3.0m
+  max_probes_per_scene: 2000    # Unity LightProbeGroup memory limit
+  warn_if_probe_inside_geometry: true  # Emit WARN-PROBE-001 if probe origin is inside a collider
+  error_code_coverage_fail: "FAIL-PROBE-001"
+  error_code_budget_exceeded: "FAIL-PROBE-002"

@@ -1,0 +1,453 @@
+schema_version: "1.0"
+catalog_type: prop_catalog
+unit_system: meters
+runtime_authority: Assets/Prefabs
+verification_policy: "filesystem_present does not mean collider/material/runtime_validated"
+
+global_rules:
+  min_separation: 0.4
+  max_density_per_10m2: 6
+  allowed_rotation_snap_degrees: [0, 90, 180, 270]
+  classroom_rotation_jitter_degrees: 15
+  allowed_scale_variance: 0.05
+  no_floating: true
+  no_wall_clipping: true
+  no_doorway_blocking: true
+
+architecture:
+  - id: PROP-ARCH-001
+    name: Arch_Floor
+    prefab: Assets/Prefabs/Architecture/Arch_Floor.prefab
+    category: architecture
+    allowed_rooms: [all]
+    runtime_verified: false
+  - id: PROP-ARCH-002
+    name: Arch_Wall
+    prefab: Assets/Prefabs/Architecture/Arch_Wall.prefab
+    category: architecture
+    allowed_rooms: [all]
+    runtime_verified: false
+  - id: PROP-ARCH-003
+    name: Arch_WallWindow
+    prefab: Assets/Prefabs/Architecture/Arch_WallWindow.prefab
+    category: architecture
+    allowed_rooms: [SchoolClassroom, SchoolLibrary, SchoolHall]
+    runtime_verified: false
+  - id: PROP-ARCH-004
+    name: Arch_Doorway
+    prefab: Assets/Prefabs/Architecture/Arch_Doorway.prefab
+    category: transition
+    allowed_rooms: [all]
+    runtime_verified: false
+  - id: PROP-ARCH-005
+    name: Arch_Stairs
+    prefab: Assets/Prefabs/Architecture/Arch_Stairs.prefab
+    category: navigation
+    allowed_rooms: [SchoolStairwell, SchoolHall]
+    runtime_verified: false
+  - id: PROP-ARCH-006
+    name: Arch_Column
+    prefab: Assets/Prefabs/Architecture/Arch_Column.prefab
+    category: architecture
+    allowed_rooms: [SchoolHall, SchoolCourtyard, SchoolGym]
+    runtime_verified: false
+  - id: PROP-ARCH-007
+    name: Arch_Fence
+    prefab: Assets/Prefabs/Architecture/Arch_Fence.prefab
+    category: navigation
+    allowed_rooms: [SchoolCourtyard, SchoolGym]
+    runtime_verified: false
+  - id: PROP-ARCH-008
+    name: Arch_Tree
+    prefab: Assets/Prefabs/Architecture/Arch_Tree.prefab
+    category: landmark
+    allowed_rooms: [SchoolCourtyard]
+    runtime_verified: false
+  - id: PROP-ARCH-009
+    name: Arch_Shelf
+    prefab: Assets/Prefabs/Architecture/Arch_Shelf.prefab
+    category: furniture
+    allowed_rooms: [SchoolLibrary, SchoolStaffRoom, SchoolOffice]
+    runtime_verified: false
+  - id: PROP-ARCH-010
+    name: Arch_Locker
+    prefab: Assets/Prefabs/Architecture/Arch_Locker.prefab
+    category: furniture
+    allowed_rooms: [SchoolHall, SchoolCorridor]
+    runtime_verified: false
+  - id: PROP-ARCH-011
+    name: Arch_Desk
+    prefab: Assets/Prefabs/Architecture/Arch_Desk.prefab
+    category: furniture
+    allowed_rooms: [SchoolClassroom, SchoolLyraClassroom, SchoolOffice]
+    runtime_verified: false
+  - id: PROP-ARCH-012
+    name: Arch_Chair
+    prefab: Assets/Prefabs/Architecture/Arch_Chair.prefab
+    category: furniture
+    allowed_rooms: [SchoolClassroom, SchoolStaffRoom, SchoolLibrary]
+    runtime_verified: false
+  - id: PROP-ARCH-013
+    name: Arch_Bench
+    prefab: Assets/Prefabs/Architecture/Arch_Bench.prefab
+    category: furniture
+    allowed_rooms: [SchoolHall, SchoolCorridor, SchoolCourtyard]
+    runtime_verified: false
+  - id: PROP-ARCH-014
+    name: Arch_Trashcan
+    prefab: Assets/Prefabs/Architecture/Arch_Trashcan.prefab
+    category: detail
+    allowed_rooms: [all]
+    runtime_verified: false
+
+school_props:
+  - id: PROP-SCHOOL-001
+    name: PupitreDoble
+    prefab: Assets/Prefabs/Props/PupitreDoble.prefab
+    category: furniture
+    allowed_rooms: [SchoolClassroom, SchoolLyraClassroom]
+  - id: PROP-SCHOOL-002
+    name: SillaEscolar
+    prefab: Assets/Prefabs/Props/SillaEscolar.prefab
+    category: furniture
+    allowed_rooms: [SchoolClassroom, SchoolLyraClassroom]
+  - id: PROP-SCHOOL-003
+    name: MesaProfesor
+    prefab: Assets/Prefabs/Props/MesaProfesor.prefab
+    category: furniture
+    allowed_rooms: [SchoolClassroom, SchoolLyraClassroom, SchoolStaffRoom]
+  - id: PROP-SCHOOL-004
+    name: MesaRedonda
+    prefab: Assets/Prefabs/Props/MesaRedonda.prefab
+    category: furniture
+    allowed_rooms: [SchoolLibrary, SchoolStaffRoom]
+  - id: PROP-SCHOOL-005
+    name: MesaKenney
+    prefab: Assets/Prefabs/Props/MesaKenney.prefab
+    category: furniture
+    allowed_rooms: [SchoolClassroom, SchoolStaffRoom]
+  - id: PROP-SCHOOL-006
+    name: SillaOficina
+    prefab: Assets/Prefabs/Props/SillaOficina.prefab
+    category: furniture
+    allowed_rooms: [SchoolOffice, SchoolStaffRoom]
+  - id: PROP-SCHOOL-007
+    name: Locker
+    prefab: Assets/Prefabs/Props/Locker.prefab
+    category: furniture
+    allowed_rooms: [SchoolHall, SchoolCorridor]
+  - id: PROP-SCHOOL-008
+    name: LockerPuertaAbierta
+    prefab: Assets/Prefabs/Props/LockerPuertaAbierta.prefab
+    category: narrative_detail
+    allowed_rooms: [SchoolCorridor, SchoolLiminalClassroom]
+  - id: PROP-SCHOOL-009
+    name: Estanteria
+    prefab: Assets/Prefabs/Props/Estanteria.prefab
+    category: furniture
+    allowed_rooms: [SchoolLibrary, SchoolStaffRoom, SchoolOffice]
+  - id: PROP-SCHOOL-010
+    name: EstanteriaCerrada
+    prefab: Assets/Prefabs/Props/EstanteriaCerrada.prefab
+    category: furniture
+    allowed_rooms: [SchoolLibrary, SchoolStaffRoom, SchoolOffice]
+  - id: PROP-SCHOOL-011
+    name: Pizarra
+    prefab: Assets/Prefabs/Props/Pizarra.prefab
+    category: narrative_surface
+    allowed_rooms: [SchoolClassroom, SchoolLyraClassroom, SchoolLiminalClassroom]
+  - id: PROP-SCHOOL-012
+    name: VentanaMarco
+    prefab: Assets/Prefabs/Props/VentanaMarco.prefab
+    category: architecture_detail
+    allowed_rooms: [SchoolClassroom, SchoolLibrary, SchoolHall]
+  - id: PROP-SCHOOL-013
+    name: Perchero
+    prefab: Assets/Prefabs/Props/Perchero.prefab
+    category: furniture
+    allowed_rooms: [SchoolCorridor, SchoolStaffRoom, SchoolHall]
+  - id: PROP-SCHOOL-014
+    name: Radiador
+    prefab: Assets/Prefabs/Props/Radiador.prefab
+    category: architecture_detail
+    allowed_rooms: [SchoolCorridor, SchoolClassroom, SchoolLibrary]
+  - id: PROP-SCHOOL-015
+    name: Fluorescente
+    prefab: Assets/Prefabs/Props/Fluorescente.prefab
+    category: lighting_detail
+    allowed_rooms: [SchoolHall, SchoolCorridor, SchoolClassroom, SchoolStaffRoom]
+  - id: PROP-SCHOOL-016
+    name: LamparaTecho
+    prefab: Assets/Prefabs/Props/LamparaTecho.prefab
+    category: lighting_detail
+    allowed_rooms: [SchoolLibrary, SchoolOffice, SchoolStaffRoom]
+  - id: PROP-SCHOOL-017
+    name: Cartelera
+    prefab: Assets/Prefabs/Props/Cartelera.prefab
+    category: landmark_detail
+    allowed_rooms: [SchoolHall, SchoolCorridor]
+  - id: PROP-SCHOOL-018
+    name: Extintor
+    prefab: Assets/Prefabs/Props/Extintor.prefab
+    category: navigation_detail
+    allowed_rooms: [SchoolHall, SchoolCorridor, SchoolGym]
+  - id: PROP-SCHOOL-019
+    name: Perchero
+    prefab: Assets/Prefabs/Props/Perchero.prefab
+    category: furniture
+    allowed_rooms: [SchoolCorridor, SchoolStaffRoom]
+
+general_props:
+  - id: PROP-GEN-001
+    name: BancoMadera
+    prefab: Assets/Prefabs/Props/BancoMadera.prefab
+    category: furniture
+    allowed_rooms: [SchoolHall, SchoolCorridor, SchoolCourtyard]
+  - id: PROP-GEN-002
+    name: Basurero
+    prefab: Assets/Prefabs/Props/Basurero.prefab
+    category: detail
+    allowed_rooms: [all]
+  - id: PROP-GEN-003
+    name: PapeleraKenney
+    prefab: Assets/Prefabs/Props/PapeleraKenney.prefab
+    category: detail
+    allowed_rooms: [all]
+  - id: PROP-GEN-004
+    name: CajaCartonCerrada
+    prefab: Assets/Prefabs/Props/CajaCartonCerrada.prefab
+    category: detail
+    allowed_rooms: [SchoolMaintenanceCorridor, SchoolOffice, SchoolStaffRoom]
+  - id: PROP-GEN-005
+    name: CajaCartonAbierta
+    prefab: Assets/Prefabs/Props/CajaCartonAbierta.prefab
+    category: narrative_detail
+    allowed_rooms: [SchoolMaintenanceCorridor, SchoolOffice, SchoolStaffRoom]
+  - id: PROP-GEN-006
+    name: CarritoConserje
+    prefab: Assets/Prefabs/Props/CarritoConserje.prefab
+    category: detail
+    allowed_rooms: [SchoolMaintenanceCorridor, SchoolEmergencyCorridor]
+  - id: PROP-GEN-007
+    name: Mochila
+    prefab: Assets/Prefabs/Props/Mochila.prefab
+    category: narrative_detail
+    allowed_rooms: [SchoolClassroom, SchoolCorridor, SchoolHall]
+  - id: PROP-GEN-008
+    name: Libros
+    prefab: Assets/Prefabs/Props/Libros.prefab
+    category: detail
+    allowed_rooms: [SchoolLibrary, SchoolClassroom, SchoolOffice]
+  - id: PROP-GEN-009
+    name: PlantaMaceta
+    prefab: Assets/Prefabs/Props/PlantaMaceta.prefab
+    category: detail
+    allowed_rooms: [SchoolHall, SchoolLibrary, SchoolStaffRoom, SchoolOffice]
+  - id: PROP-GEN-010
+    name: Radio
+    prefab: Assets/Prefabs/Props/Radio.prefab
+    category: narrative_detail
+    allowed_rooms: [SchoolStaffRoom, SchoolOffice, SchoolMaintenanceCorridor]
+  - id: PROP-GEN-011
+    name: RelojPared
+    prefab: Assets/Prefabs/Props/RelojPared.prefab
+    category: story_landmark
+    allowed_rooms: [SchoolHall, SchoolCorridor, SchoolClassroom, SchoolOffice]
+  - id: PROP-GEN-012
+    name: Paraguas
+    prefab: Assets/Prefabs/Props/Paraguas.prefab
+    category: detail
+    allowed_rooms: [SchoolHall, SchoolCorridor, SchoolCourtyard]
+  - id: PROP-GEN-013
+    name: Casco
+    prefab: Assets/Prefabs/Props/Casco.prefab
+    category: detail
+    allowed_rooms: [SchoolGym, SchoolLab, SchoolMaintenanceCorridor]
+  - id: PROP-GEN-014
+    name: TazaCafe
+    prefab: Assets/Prefabs/Props/TazaCafe.prefab
+    category: detail
+    allowed_rooms: [SchoolStaffRoom, SchoolOffice]
+  - id: PROP-GEN-015
+    name: Balon
+    prefab: Assets/Prefabs/Props/Balon.prefab
+    category: gameplay_detail
+    allowed_rooms: [SchoolGym, SchoolCourtyard]
+
+narrative:
+  - id: PROP-NARR-001
+    name: MochilaLyra
+    prefab: Assets/Prefabs/Props/MochilaLyra.prefab
+    category: story_landmark
+    material_token: memory-amber
+    allowed_rooms: [SchoolLyraClassroom, SchoolClassroom]
+    max_per_level: 1
+    narrative_weight: 1.0
+  - id: PROP-NARR-002
+    name: Prop_Coat
+    prefab: Assets/Prefabs/Props/Narrative/Prop_Coat.prefab
+    category: story_prop
+    material_token: memory-amber
+    allowed_rooms: [SchoolHall, SchoolCorridor, SchoolStaffRoom]
+    max_per_level: 1
+  - id: PROP-NARR-003
+    name: Prop_Notebook
+    prefab: Assets/Prefabs/Props/Narrative/Prop_Notebook.prefab
+    category: story_prop
+    material_token: memory-amber
+    allowed_rooms: [SchoolClassroom, SchoolCorridor, SchoolOffice]
+    max_per_level: 3
+  - id: PROP-NARR-004
+    name: Prop_StoppedClock
+    prefab: Assets/Prefabs/Props/Narrative/Prop_StoppedClock.prefab
+    category: story_landmark
+    material_token: dusty-rose
+    allowed_rooms: [all]
+    max_per_room: 1
+  - id: PROP-NARR-005
+    name: Prop_TeacherNotebook
+    prefab: Assets/Prefabs/Props/Narrative/Prop_TeacherNotebook.prefab
+    category: story_prop
+    allowed_rooms: [SchoolClassroom, SchoolStaffRoom]
+  - id: PROP-NARR-006
+    name: Prop_PhotoFrame
+    prefab: Assets/Prefabs/Props/Narrative/Prop_PhotoFrame.prefab
+    category: story_prop
+    material_token: memory-amber
+    allowed_rooms: [SchoolHall, SchoolCorridor, SchoolLyraClassroom]
+  - id: PROP-NARR-007
+    name: Prop_Backpack
+    prefab: Assets/Prefabs/Props/Narrative/Prop_Backpack.prefab
+    category: story_prop
+    material_token: memory-amber
+    allowed_rooms: [SchoolClassroom, SchoolCorridor, SchoolHall]
+  - id: PROP-NARR-008
+    name: Prop_CenterBackpack
+    prefab: Assets/Prefabs/Props/Narrative/Prop_CenterBackpack.prefab
+    category: story_landmark
+    material_token: memory-amber
+    allowed_rooms: [SchoolClassroom, SchoolLyraClassroom]
+  - id: PROP-NARR-009
+    name: Prop_BlankBook
+    prefab: Assets/Prefabs/Props/Narrative/Prop_BlankBook.prefab
+    category: story_prop
+    allowed_rooms: [SchoolLibrary, SchoolClassroom, SchoolOffice]
+  - id: PROP-NARR-010
+    name: Prop_AttendanceList
+    prefab: Assets/Prefabs/Props/Narrative/Prop_AttendanceList.prefab
+    category: story_prop
+    allowed_rooms: [SchoolClassroom, SchoolStaffRoom, SchoolOffice]
+  - id: PROP-NARR-011
+    name: Prop_RecordsBoard
+    prefab: Assets/Prefabs/Props/Narrative/Prop_RecordsBoard.prefab
+    category: navigation_landmark
+    allowed_rooms: [SchoolHall, SchoolCorridor, SchoolGym]
+  - id: PROP-NARR-012
+    name: Prop_LibraryStamp
+    prefab: Assets/Prefabs/Props/Narrative/Prop_LibraryStamp.prefab
+    category: story_prop
+    allowed_rooms: [SchoolLibrary]
+  - id: PROP-NARR-013
+    name: Prop_JanitorCart
+    prefab: Assets/Prefabs/Props/Narrative/Prop_JanitorCart.prefab
+    category: story_prop
+    allowed_rooms: [SchoolMaintenanceCorridor, SchoolEmergencyCorridor]
+  - id: PROP-NARR-014
+    name: Prop_DriedFlowers
+    prefab: Assets/Prefabs/Props/Narrative/Prop_DriedFlowers.prefab
+    category: story_prop
+    material_token: dusty-rose
+    allowed_rooms: [SchoolLyraClassroom, SchoolLibrary, SchoolStaffRoom]
+  - id: PROP-NARR-015
+    name: Prop_CoffeeCups
+    prefab: Assets/Prefabs/Props/Narrative/Prop_CoffeeCups.prefab
+    category: detail
+    allowed_rooms: [SchoolStaffRoom, SchoolOffice]
+  - id: PROP-NARR-016
+    name: Prop_ChalkGraffiti
+    prefab: Assets/Prefabs/Props/Narrative/Prop_ChalkGraffiti.prefab
+    category: narrative_surface
+    material_token: echo-cyan
+    allowed_rooms: [SchoolClassroom, SchoolLyraClassroom, SchoolLiminalClassroom]
+  - id: PROP-NARR-017
+    name: Prop_ChalkDrawing
+    prefab: Assets/Prefabs/Props/Narrative/Prop_ChalkDrawing.prefab
+    category: narrative_surface
+    allowed_rooms: [SchoolClassroom, SchoolLyraClassroom, SchoolLiminalClassroom]
+  - id: PROP-NARR-018
+    name: Prop_OverturnedDesk
+    prefab: Assets/Prefabs/Props/Narrative/Prop_OverturnedDesk.prefab
+    category: narrative_detail
+    allowed_rooms: [SchoolClassroom, SchoolLyraClassroom, SchoolLiminalClassroom]
+  - id: PROP-NARR-019
+    name: Prop_SoccerBall
+    prefab: Assets/Prefabs/Props/Narrative/Prop_SoccerBall.prefab
+    category: story_prop
+    allowed_rooms: [SchoolGym, SchoolCourtyard]
+  - id: PROP-NARR-020
+    name: Prop_Stopwatch
+    prefab: Assets/Prefabs/Props/Narrative/Prop_Stopwatch.prefab
+    category: puzzle_detail
+    material_token: echo-cyan
+    allowed_rooms: [SchoolGym, SchoolLab, SchoolLyraClassroom]
+
+decals:
+  - id: DECAL-001
+    prefab: Assets/Prefabs/Decals/dec_humedad.prefab
+    surfaces: [wall, ceiling_corner]
+  - id: DECAL-002
+    prefab: Assets/Prefabs/Decals/dec_tiza_borrada.prefab
+    surfaces: [blackboard]
+  - id: DECAL-003
+    prefab: Assets/Prefabs/Decals/dec_lyra_notes.prefab
+    surfaces: [wall, desk, blackboard]
+  - id: DECAL-004
+    prefab: Assets/Prefabs/Decals/dec_floor_drag.prefab
+    surfaces: [floor]
+  - id: DECAL-005
+    prefab: Assets/Prefabs/Decals/dec_grieta.prefab
+    surfaces: [floor, wall]
+  - id: DECAL-006
+    prefab: Assets/Prefabs/Decals/dec_arrastre.prefab
+    surfaces: [floor]
+  - id: DECAL-007
+    prefab: Assets/Prefabs/Decals/dec_crack_liminal.prefab
+    surfaces: [floor, wall]
+  - id: DECAL-008
+    prefab: Assets/Prefabs/Decals/dec_papel_suelo.prefab
+    surfaces: [floor]
+  - id: DECAL-009
+    prefab: Assets/Prefabs/Decals/dec_nota_adhesiva.prefab
+    surfaces: [wall, desk]
+  - id: DECAL-010
+    prefab: Assets/Prefabs/Decals/dec_foto_borrosa.prefab
+    surfaces: [wall, frame]
+  - id: DECAL-011
+    prefab: Assets/Prefabs/Decals/dec_aviso_corcho.prefab
+    surfaces: [cork_board]
+  - id: DECAL-012
+    prefab: Assets/Prefabs/Decals/dec_moisture_lines.prefab
+    surfaces: [wall, ceiling]
+
+validation:
+  - id: PROP-VAL-001
+    type: validation
+    status: active
+    severity: error
+    scope: [prop, level]
+    rule: "Every referenced prefab path must exist under Assets"
+    validator: validators/static_validator.yaml#asset_paths
+  - id: PROP-VAL-002
+    type: validation
+    status: active
+    severity: error
+    scope: [prop, level]
+    rule: "No static prop collider may intersect a primary navigation route"
+    validator: validators/level_validator.yaml#prop_overlaps
+  - id: PROP-VAL-003
+    type: validation
+    status: active
+    severity: warning
+    scope: [prop]
+    rule: "Every narrative prop must have a narrative weight and allowed placement"
+    validator: validators/static_validator.yaml#narrative_metadata

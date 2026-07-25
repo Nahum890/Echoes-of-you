@@ -1,0 +1,40 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-UI-NAV-001"
+# UI_INPUT_NAVIGATION_MAP.yaml
+# Keyboard/gamepad focus navigation state machine and submit/cancel events.
+
+navigation_graph:
+  MainMenu:
+    initial_focus_element: "btn-start"
+    elements:
+      btn-start:
+        navigation_down: "btn-options"
+        navigation_up: "btn-quit"
+        on_submit: "LoadScene(Level_01)"
+      btn-options:
+        navigation_up: "btn-start"
+        navigation_down: "btn-quit"
+        on_submit: "OpenPanel(PanelOptions)"
+      btn-quit:
+        navigation_up: "btn-options"
+        navigation_down: "btn-start"
+        on_submit: "Application.Quit()"
+
+  PauseMenu:
+    initial_focus_element: "btn-resume"
+    elements:
+      btn-resume:
+        navigation_down: "btn-restart"
+        on_submit: "ClosePauseMenu()"
+      btn-restart:
+        navigation_up: "btn-resume"
+        navigation_down: "btn-mainmenu"
+        on_submit: "SoftResetCurrentLevel()"
+      btn-mainmenu:
+        navigation_up: "btn-restart"
+        on_submit: "LoadScene(MainMenu)"
+
+focus_visual_feedback:
+  auto_scroll_to_focus: true
+  focus_ring_color: "#FFBF00"
+  focus_ring_width_px: 2

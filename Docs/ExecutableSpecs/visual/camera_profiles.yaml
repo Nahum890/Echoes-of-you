@@ -1,0 +1,143 @@
+schema_version: "1.0"
+catalog_type: camera_profile_catalog
+code_source: Assets/Scripts/CameraProfile.cs
+asset_status: "No CameraProfile .asset files found by filesystem scan; all Blueprint references currently null"
+
+profile_type_enum:
+  Learning: 5
+  Discovery: 6
+  Puzzle: 7
+  Transition: 8
+  Emotional: 9
+  Suspense: 10
+  Memory: 11
+  Replay: 12
+  Acceptance: 13
+  LeapOfFaith: 14
+  Inversion: 15
+
+profiles:
+  Learning:
+    field_of_view: 40.0
+    follow_offset: {x: 0.0, y: 2.8, z: -5.5}
+    damping: {x: 1.2, y: 1.2, z: 1.2}
+    pitch_deg: 12.0
+    blend_duration_s: 1.5
+    noise_gain: 0.1
+    target_group: {player_weight: 1.0}
+  Discovery:
+    field_of_view: 45.0
+    follow_offset: {x: 0.0, y: 3.2, z: -6.5}
+    damping: {x: 1.0, y: 1.0, z: 1.0}
+    pitch_deg: 15.0
+    blend_duration_s: 1.5
+    noise_gain: 0.2
+    target_group: {player_weight: 1.0}
+  Puzzle:
+    field_of_view: 45.0
+    follow_offset: {x: 0.0, y: 6.0, z: -9.0}
+    damping: {x: 0.8, y: 0.8, z: 0.8}
+    pitch_deg: 25.0
+    blend_duration_s: 2.0
+    noise_gain: 0.0
+    target_group: {player_weight: 1.0, echo_weight: 1.0, framing_radius_m: 2.0}
+  Transition:
+    field_of_view: 48.0
+    follow_offset: {x: 0.0, y: 3.0, z: -6.0}
+    damping: {x: 1.4, y: 1.4, z: 1.4}
+    pitch_deg: 14.0
+    blend_duration_s: 1.5
+    noise_gain: 0.0
+    target_group: {player_weight: 1.0}
+  Emotional:
+    field_of_view: 35.0
+    follow_offset: {x: 0.0, y: 2.0, z: -4.0}
+    damping: {x: 1.5, y: 1.5, z: 1.5}
+    pitch_deg: 10.0
+    blend_duration_s: 3.0
+    noise_gain: 0.0
+    target_group: {player_weight: 1.0, prop_weight: 1.0}
+  Suspense:
+    field_of_view: 45.0
+    follow_offset: {x: 0.0, y: 3.0, z: -6.0}
+    damping: {x: 1.0, y: 1.0, z: 1.0}
+    pitch_deg: 15.0
+    dutch_deg: 5.0
+    blend_duration_s: 1.0
+    noise_gain: 0.3
+    target_group: {player_weight: 1.0}
+  Memory:
+    field_of_view: 37.0
+    follow_offset: {x: 0.0, y: 2.2, z: -4.5}
+    damping: {x: 1.1, y: 1.1, z: 1.1}
+    pitch_deg: 10.0
+    blend_duration_s: 2.0
+    noise_gain: 0.15
+    target_group: {player_weight: 1.0, echo_weight: 1.0}
+  Replay:
+    field_of_view: 45.0
+    follow_offset: {x: 0.0, y: 4.0, z: -7.5}
+    damping: {x: 0.9, y: 0.9, z: 0.9}
+    pitch_deg: 18.0
+    blend_duration_s: 1.5
+    noise_gain: 0.0
+    target_group: {player_weight: 1.0, echo_weight: 1.0}
+  Acceptance:
+    field_of_view: 52.0
+    follow_offset: {x: 0.0, y: 3.5, z: -7.0}
+    damping: {x: 1.6, y: 1.6, z: 1.6}
+    pitch_deg: 15.0
+    blend_duration_s: 2.5
+    noise_gain: 0.0
+    target_group: {player_weight: 1.0}
+  LeapOfFaith:
+    field_of_view: 55.0
+    follow_offset: {x: 0.0, y: 1.5, z: -4.5}
+    damping: {x: 0.5, y: 0.5, z: 0.5}
+    pitch_deg: 8.0
+    blend_duration_s: 0.8
+    noise_gain: 0.5
+    target_group: {player_weight: 1.0}
+  Inversion:
+    field_of_view: 45.0
+    follow_offset: {x: 0.0, y: -3.2, z: -6.5}
+    damping: {x: 1.0, y: 1.0, z: 1.0}
+    pitch_deg: -15.0
+    roll_deg: 180.0
+    blend_duration_s: 2.5
+    noise_gain: 0.3
+    target_group: {player_weight: 1.0}
+  # Global collider settings (applies to all profiles):
+  _global_collider:
+    strategy: "PullCameraForward"
+    collision_filter: "Default,Environment,Architecture"
+    ignore_tag: "Player"
+    minimum_distance_from_target_m: 1.5
+    damping_into_collider: 0.0
+    damping_from_collider: 0.5
+    optimal_target_distance_m: 2.0
+    lookAt_deadzone: {w: 0.1, h: 0.1}
+    lookAt_softzone: {w: 0.8, h: 0.8}
+
+rules:
+  - id: CAM-VAL-001
+    type: validation
+    status: active
+    severity: fatal
+    scope: [camera, blueprint]
+    rule: "Production Blueprint cameraProfile reference must resolve to a CameraProfile asset"
+    validator: validators/camera_validator.yaml#profile_reference
+  - id: CAM-VAL-002
+    type: prohibition
+    status: active
+    severity: fatal
+    scope: [camera, level]
+    rule: "Cinemachine and ThirdPersonCamera must not both write camera transform in one scene"
+    validator: validators/camera_validator.yaml#controller_exclusivity
+  - id: CAM-VAL-003
+    type: validation
+    status: active
+    severity: error
+    scope: [camera, echo]
+    rule: "Active Echo must be represented in the camera target group during playback"
+    validator: validators/camera_validator.yaml#echo_target

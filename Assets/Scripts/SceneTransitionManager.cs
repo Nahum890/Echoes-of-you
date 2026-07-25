@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class SceneTransitionManager : MonoBehaviour
 {
@@ -10,9 +10,21 @@ public class SceneTransitionManager : MonoBehaviour
 
     const float FadeSpeed = 2f;
 
-    Canvas _canvas;
-    Image _fadeImage;
+    UIDocument _doc;
+    VisualElement _fadeOverlay;
     bool _isTransitioning;
+    bool _initialized;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    static void AutoInitialize()
+    {
+        if (Instance != null)
+            return;
+
+        GameObject go = new GameObject("SceneTransitionManager");
+        go.AddComponent<SceneTransitionManager>();
+        DontDestroyOnLoad(go);
+    }
 
     void Awake()
     {
@@ -25,9 +37,31 @@ public class SceneTransitionManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        CreateCanvas();
-        ResetFade();
         SceneManager.sceneLoaded += OnSceneLoaded;
+        InitializeUI();
+    }
+
+    void InitializeUI()
+    {
+        if (_initialized)
+            return;
+
+        _doc = gameObject.AddComponent<UIDocument>();
+        _doc.sortingOrder = 999;
+
+        var root = new VisualElement();
+        root.style.position = Position.Absolute;
+        root.style.left = 0;
+        root.style.top = 0;
+        root.style.right = 0;
+        root.style.bottom = 0;
+        root.style.backgroundColor = new StyleColor(Color.black);
+        root.style.opacity = 0f;
+        root.pickingMode = PickingMode.Ignore;
+
+        _fadeOverlay = root;
+        _doc.rootVisualElement.Add(root);
+        _initialized = true;
     }
 
     void OnDestroy()
@@ -39,44 +73,6 @@ public class SceneTransitionManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         ResetFade();
-    }
-
-    void CreateCanvas()
-    {
-        // Destroy any existing FadeCanvas children to avoid stale references.
-        // transform.Find can return destroyed-but-not-yet-GC'd objects that pass
-        // C# null checks but throw MissingReferenceException on any Unity API call.
-        for (int i = transform.childCount - 1; i >= 0; i--)
-        {
-            try
-            {
-                Transform child = transform.GetChild(i);
-                if (child != null && child.name == "FadeCanvas")
-                    DestroyImmediate(child.gameObject);
-            }
-            catch (MissingReferenceException) { }
-        }
-
-        // Create fresh canvas hierarchy — no stale references possible
-        GameObject canvasObject = new GameObject("FadeCanvas");
-        canvasObject.transform.SetParent(transform, false);
-
-        _canvas = canvasObject.AddComponent<Canvas>();
-        _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        _canvas.sortingOrder = 999;
-
-        CanvasScaler scaler = canvasObject.AddComponent<CanvasScaler>();
-        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(1920, 1080);
-
-        GameObject imgObj = new GameObject("FadeImage");
-        imgObj.transform.SetParent(canvasObject.transform, false);
-        _fadeImage = imgObj.AddComponent<Image>();
-
-        RectTransform rt = _fadeImage.GetComponent<RectTransform>();
-        rt.anchorMin = Vector2.zero;
-        rt.anchorMax = Vector2.one;
-        rt.sizeDelta = Vector2.zero;
     }
 
     public void LoadScene(string sceneName)
@@ -100,10 +96,12 @@ public class SceneTransitionManager : MonoBehaviour
     IEnumerator TransitionRoutine(string sceneName)
     {
         _isTransitioning = true;
-        CreateCanvas();
-        _fadeImage.raycastTarget = true;
 
-        yield return FadeTo(1f);
+        if (_fadeOverlay != null)
+        {
+            _fadeOverlay.pickingMode = PickingMode.Position;
+            yield return FadeTo(1f);
+        }
 
         AsyncOperation loadOperation = null;
         try
@@ -131,28 +129,28 @@ public class SceneTransitionManager : MonoBehaviour
 
     IEnumerator FadeTo(float targetAlpha)
     {
-        if (_fadeImage == null)
+        if (_fadeOverlay == null)
             yield break;
 
-        float alpha = _fadeImage.color.a;
+        float alpha = _fadeOverlay.style.opacity.value;
         while (!Mathf.Approximately(alpha, targetAlpha))
         {
             alpha = Mathf.MoveTowards(alpha, targetAlpha, Time.unscaledDeltaTime * FadeSpeed);
-            _fadeImage.color = new Color(0f, 0f, 0f, alpha);
+            _fadeOverlay.style.opacity = alpha;
             yield return null;
         }
 
-        _fadeImage.color = new Color(0f, 0f, 0f, targetAlpha);
+        _fadeOverlay.style.opacity = targetAlpha;
     }
 
     void ResetFade()
     {
         _isTransitioning = false;
 
-        if (_fadeImage == null)
+        if (_fadeOverlay == null)
             return;
 
-        _fadeImage.color = new Color(0f, 0f, 0f, 0f);
-        _fadeImage.raycastTarget = false;
+        _fadeOverlay.style.opacity = 0f;
+        _fadeOverlay.pickingMode = PickingMode.Ignore;
     }
 }

@@ -1,0 +1,71 @@
+schema_version: "1.0"
+validator_id: BLUEPRINT-SPEC-001
+type: serialized_blueprint_validator
+input: Assets/Data/Levels/Level_*_Blueprint.asset
+output_schema: schemas/report.schema.yaml
+
+checks:
+  required_modules:
+    id: BLUEPRINT-001
+    severity: fatal
+    action: "Count PlayerStart == 1 and LevelExit or LevelGoal >= 1"
+  profile_references:
+    id: BLUEPRINT-002
+    severity: fatal
+    action: "Resolve cameraProfile and lightingProfile references"
+  signals:
+    id: BLUEPRINT-003
+    severity: error
+    action: "Resolve every targetSignals entry to a sender and receiver"
+  echo_duration:
+    id: BLUEPRINT-004
+    severity: error
+    action: "Check maxRecordSeconds in canonical range and against decisions.yaml"
+  module_mapping:
+    id: BLUEPRINT-005
+    severity: fatal
+    action: "Check every serialized ModuleType against catalogs/modules.yaml"
+  level_zones:
+    id: BLUEPRINT-006
+    severity: error
+    action: "Resolve external level structure and five required zones"
+  puzzle_mapping:
+    id: BLUEPRINT-007
+    severity: error
+    action: "Require exactly one puzzle spec for every level"
+  button_test:
+    id: BLUEPRINT-008
+    severity: fatal
+    action: "Require button_test == pass_required and echo_required == true"
+  one_idea:
+    id: BLUEPRINT-009
+    severity: error
+    action: "Count new core mechanics and compare to archetype limit"
+  teaching_stage:
+    id: BLUEPRINT-010
+    severity: error
+    action: "Require teaching or discovery stage before execution"
+  puzzle_stages:
+    id: BLUEPRINT-011
+    severity: error
+    action: "Require teaching, execution and payoff stages"
+  recovery_paths:
+    id: BLUEPRINT-012
+    severity: error
+    action: "Require recovery for every intentional failure state"
+  unverified_dependency:
+    id: BLUEPRINT-013
+    severity: fatal
+    action: "Reject puzzle depending on unverified Echo latency or residual"
+  narrative_beats:
+    id: BLUEPRINT-014
+    severity: warning
+    action: "Require declared narrative object or environmental beat"
+  emotional_arc:
+    id: BLUEPRINT-015
+    severity: error
+    action: "Require five emotional arc fields"
+  composition_profile:
+    id: BLUEPRINT-016
+    severity: advisory
+    action: "Require composition profile for core puzzle"

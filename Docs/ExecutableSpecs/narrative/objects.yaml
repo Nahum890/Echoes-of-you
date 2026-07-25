@@ -1,0 +1,82 @@
+schema_version: "1.0"
+catalog_type: narrative_object_catalog
+
+objects:
+  - id: NARR-OBJ-001
+    name: LyraBackpack
+    prefab: Assets/Prefabs/Props/MochilaLyra.prefab
+    meaning: "Presence of the conversation Aiden postponed"
+    allowed_rooms: [SchoolClassroom, SchoolLyraClassroom]
+    visual_token: memory-amber
+    maximum_per_level: 1
+  - id: NARR-OBJ-002
+    name: AbandonedCoat
+    prefab: Assets/Prefabs/Props/Narrative/Prop_Coat.prefab
+    meaning: "Absence made physical"
+    allowed_rooms: [SchoolHall, SchoolCorridor, SchoolStaffRoom]
+    visual_token: memory-amber
+    maximum_per_level: 1
+  - id: NARR-OBJ-003
+    name: StoppedClock
+    prefab: Assets/Prefabs/Props/Narrative/Prop_StoppedClock.prefab
+    meaning: "Time stopped at the moment of separation"
+    allowed_rooms: [all]
+    visual_token: dusty-rose
+    maximum_per_room: 1
+  - id: NARR-OBJ-004
+    name: UnfinishedNotebook
+    prefab: Assets/Prefabs/Props/Narrative/Prop_Notebook.prefab
+    meaning: "Thoughts that never became a conversation"
+    allowed_rooms: [SchoolClassroom, SchoolCorridor, SchoolOffice]
+    visual_token: memory-amber
+    maximum_per_level: 3
+  - id: NARR-OBJ-005
+    name: ChalkEquation
+    prefab: Assets/Prefabs/Props/Narrative/Prop_ChalkGraffiti.prefab
+    meaning: "Lyra trying to explain what Aiden could not hear"
+    allowed_rooms: [SchoolClassroom, SchoolLyraClassroom, SchoolLiminalClassroom]
+    visual_token: echo-cyan
+    maximum_per_room: 2
+  - id: NARR-OBJ-006
+    name: BlurredPhoto
+    prefab: Assets/Prefabs/Decals/dec_foto_borrosa.prefab
+    meaning: "Memory becomes readable only through presence"
+    allowed_rooms: [SchoolHall, SchoolCorridor, SchoolLyraClassroom]
+    visual_token: memory-amber
+    maximum_per_level: 2
+
+chapter_beats:
+  I_Persistence:
+    required_objects: [StoppedClock]
+    narrative_mode: absence_and_repetition
+  II_Coordination:
+    required_objects: [UnfinishedNotebook]
+    narrative_mode: objects_out_of_place
+  III_Confidence:
+    required_objects: [BlurredPhoto]
+    narrative_mode: first_revelation
+  IV_Optimization:
+    required_objects: [LyraBackpack, ChalkEquation]
+    narrative_mode: memory_becomes_specific
+  V_Consequence:
+    required_objects: [ChalkEquation, BlurredPhoto]
+    narrative_mode: fragmentation
+  VI_Acceptance:
+    required_objects: [StoppedClock]
+    narrative_mode: integration_without_exposition
+
+validation:
+  - id: NARR-VAL-001
+    type: mapping
+    status: active
+    severity: error
+    scope: [narrative, prop]
+    rule: "Every narrative object must resolve to an existing prefab or decal"
+    validator: validators/static_validator.yaml#asset_paths
+  - id: NARR-VAL-002
+    type: constraint
+    status: active
+    severity: warning
+    scope: [level, narrative]
+    rule: "Every level must contain at least one declared narrative beat"
+    validator: validators/blueprint_validator.yaml#narrative_beats

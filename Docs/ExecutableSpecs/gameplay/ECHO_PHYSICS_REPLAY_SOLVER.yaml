@@ -1,0 +1,18 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-ECH-SOLV-001"
+# ECHO_PHYSICS_REPLAY_SOLVER.yaml
+# Algorithm for correcting desync and collision during Echo playback.
+
+playback_solver:
+  interpolation_mode: "CubicHermiteSpline"
+  sample_rate_hz: 30.0
+  render_framerate_hz: 60.0    # Interpolate to 60/144 FPS
+  position_error_threshold_m: 0.15
+  snap_to_recorded_position_if_exceeded: true
+  physics_mode: "KinematicRigidbody"
+
+collision_resolution:
+  when_blocked_by_player: "PushPlayerSoftly"  # Apply small impulse to player
+  player_push_impulse: 2.0
+  when_blocked_by_environment: "SnapToNearestNavMeshPoint"
+  max_navmesh_search_radius_m: 0.5
