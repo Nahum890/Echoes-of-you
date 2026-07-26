@@ -1,6 +1,6 @@
 # PREFAB_REGISTRY.md — Prefab Alias & Addressables Registry Specification
 ## Spec ID: SPEC-123
-## Version: 4.0 (AI-Executable)
+## Version: 5.0 (AI-Executable)
 
 ---
 
@@ -11,74 +11,62 @@ Defines explicit asset alias-to-filepath mapping, Addressable keys, and immutabl
 Applies to `EchoesNewProductionBuilder.cs`, `EchoesModuleFactory.cs`, `EchoesPropDecorator.cs`, and `Addressables` group catalogs.
 
 ### 3. AUTHORITY
-Nivel 3 (Especificación Ejecutable). Subordinate to `SOURCE_OF_TRUTH.md` (`SPEC-000`) and `PROP_LIBRARY.md` (`SPEC-005`). Replaces `ASSET_CATALOG.md`.
+Level 4 (Declarative Specs). Subordinate to `SOURCE_OF_TRUTH.md` (`SPEC-000`) and `PROP_LIBRARY.md` (`SPEC-005`). Replaces `ASSET_CATALOG.md`. Canonical GUID mapping is in `Docs/Specs/ASSET_GUID_REGISTRY.yaml` (`SPEC-126`).
 
 ### 4. DEFINITIONS
 - `Prefab Alias`: Standardized code identifier mapping 1:1 to an immutable Unity project path (`Assets/Prefabs/...`).
+- `Addressable Key`: Unity Addressables catalog entry for runtime loading.
 
 ### 5. INPUTS
 - [PROP_LIBRARY.md](file:///c:/Users/lol xdd/OneDrive/Documentos/Colegio/Echoes of you/Docs/Specs/PROP_LIBRARY.md) `[SPEC-005]`
 - [ROOM_LIBRARY.md](file:///c:/Users/lol xdd/OneDrive/Documentos/Colegio/Echoes of you/Docs/Specs/ROOM_LIBRARY.md) `[SPEC-004]`
+- [ASSET_GUID_REGISTRY.yaml](file:///c:/Users/lol xdd/OneDrive/Documentos/Colegio/Echoes of you/Docs/Specs/ASSET_GUID_REGISTRY.yaml) `[SPEC-126]` — Single source of truth for alias↔GUID mapping.
 
 ### 6. OUTPUTS
 - Resolved Addressable keys and GameObject instances during build passes.
 
 ### 7. RULES
-
-- `[RULE-REG-001]`: **Immutable Path Lookup**: AI agents and automated scripts MUST resolve prefabs using exact `alias`, `path`, or `addressable_key` entries from Table 8.1. Partial string searching or guessing paths is strictly prohibited.
-- `[RULE-REG-002]`: **Addressable Key Parity**: 100% of prefabs listed in Table 8.1 MUST be registered in Unity Addressables group `Default Local Group`.
+- `[RULE-REG-001]`: **Immutable Path Lookup** — AI agents and automated scripts MUST resolve prefabs using exact `alias` entries from `ASSET_GUID_REGISTRY.yaml`. Partial string searching or guessing paths is strictly prohibited.
+- `[RULE-REG-002]`: **Addressable Key Parity** — 100% of prefabs listed in `ASSET_GUID_REGISTRY.yaml` MUST be registered in Unity Addressables group `Default Local Group`.
+- `[RULE-REG-003]`: **GUID Authority** — The GUID value in `ASSET_GUID_REGISTRY.yaml` is the definitive identifier. Prefab paths in this document are informational; GUID is authoritative.
 
 ### 8. ALGORITHMS
+Canonical alias-to-GUID mapping is defined in `ASSET_GUID_REGISTRY.yaml`. This document provides usage rules only.
 
-#### Algorithm 8.1: Master Prefab Registry Schema
+#### Usage Pattern in C#
+```csharp
+// CORRECT: Resolve via alias through Addressables
+GameObject prefab = Addressables.LoadAssetAsync<GameObject>("EchoPrefab").WaitForCompletion();
 
-```yaml
-# Mapeo canónico de alias a rutas de prefab Unity
-# Un agente NUNCA debe usar string.Find() o Resources.Load() con nombres parciales.
-# Siempre usar la ruta exacta o la Addressable key.
-registry:
-  - alias: "PlayerPrefab"
-    path: "Assets/Prefabs/Player/Player.prefab"
-    addressable_key: "Player"
-  - alias: "EchoPrefab"
-    path: "Assets/Prefabs/Echo/EchoBody.prefab"
-    addressable_key: "EchoBody"
-  - alias: "Prop_Desk_01"
-    path: "Assets/Prefabs/Props/Furniture/Prop_Desk_01.prefab"
-    addressable_key: "Prop_Desk_01"
-  - alias: "Prop_Locker_01"
-    path: "Assets/Prefabs/Props/Furniture/Prop_Locker_01.prefab"
-    addressable_key: "Prop_Locker_01"
-  - alias: "Prop_Coat"
-    path: "Assets/Prefabs/Narrative/Prop_Coat.prefab"
-    addressable_key: "Prop_Coat"
-  - alias: "PuzzleWirePrefab"
-    path: "Assets/Prefabs/Puzzle/PuzzleWire.prefab"
-    addressable_key: "PuzzleWire"
-  - alias: "PressurePlatePrefab"
-    path: "Assets/Prefabs/Puzzle/PressurePlate.prefab"
-    addressable_key: "PressurePlate"
-  - alias: "DoorPrefab"
-    path: "Assets/Prefabs/Architecture/Door.prefab"
-    addressable_key: "Door"
+// CORRECT: Resolve via GUID through AssetDatabase (Editor only)
+string guid = "8d38dfd767baaa04cb84cc974dc6ea4c";
+string path = AssetDatabase.GUIDToAssetPath(guid);
+GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
-rule: "Prohibido referencia por nombre parcial. La ruta 'path' es inmutable."
+// PROHIBITED: Partial name search
+// GameObject prefab = Resources.Load<GameObject>("Echo"); // FAIL-REG-01
 ```
 
 ### 9. CONSTRAINTS
-- `[CONS-REG-001]`: Prohibido instantiating prefabs using dynamic string concatenation without registering the alias in Table 8.1.
+- `[CONS-REG-001]`: Prohibido instantiating prefabs using dynamic string concatenation without registering the alias in `ASSET_GUID_REGISTRY.yaml`.
 
 ### 10. VALIDATION
-- `[VAL-REG-001]`: Static validator asserts 100% of paths in Table 8.1 exist on disk.
+- `[VAL-REG-001]`: Static validator asserts 100% of aliases in `ASSET_GUID_REGISTRY.yaml` exist on disk.
+- `[VAL-REG-002]`: Build pipeline asserts all aliases are registered in Addressables `Default Local Group`.
 
 ### 11. EXAMPLES
-- Registry schema above.
+See `ASSET_GUID_REGISTRY.yaml` for complete 100% synchronized alias↔GUID mapping.
 
 ### 12. FAILURE CASES
-- `[FAIL-REG-001]`: **Missing Prefab Asset**: File specified in path does not exist on disk. Result: `FAIL-REG-01`.
+- `[FAIL-REG-001]`: **Partial Name Resolution** — Agent uses `Resources.Load("Echo")` instead of Addressable key. Result: Build pipeline aborts with `FAIL-REG-01`.
 
 ### 13. CROSS REFERENCES
+- [ASSET_GUID_REGISTRY.yaml](file:///c:/Users/lol xdd/OneDrive/Documentos/Colegio/Echoes of you/Docs/Specs/ASSET_GUID_REGISTRY.yaml) `[SPEC-126]`
 - [PROP_LIBRARY.md](file:///c:/Users/lol xdd/OneDrive/Documentos/Colegio/Echoes of you/Docs/Specs/PROP_LIBRARY.md) `[SPEC-005]`
+- [ROOM_LIBRARY.md](file:///c:/Users/lol xdd/OneDrive/Documentos/Colegio/Echoes of you/Docs/Specs/ROOM_LIBRARY.md) `[SPEC-004]`
 
 ### 14. CHANGE HISTORY
-- **v4.0 (2026-07-25)**: Created canonical SPEC-123 mapping 8 critical pipeline prefabs to immutable paths and Addressable keys.
+- **v4.0 (2026-07-25)**: Created canonical SPEC-123 for Prefab Registry.
+- **v5.0 (2026-07-25)**: Removed inline alias table. Delegated to `ASSET_GUID_REGISTRY.yaml` as single source of truth. Added GUID authority rule.
+
+(End of file - total 58 lines)

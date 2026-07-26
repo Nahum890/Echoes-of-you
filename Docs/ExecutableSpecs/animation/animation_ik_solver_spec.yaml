@@ -1,0 +1,51 @@
+# Docs/ExecutableSpecs/animation/animation_ik_solver_spec.yaml
+# Animation IK Solver Specification - Foot & Hand IK for Player & Echo
+# SPEC-EXEC-ANIM-IK | Authority: Level 3 (Runtime Data Contract)
+
+animation_ik_solver_spec:
+  foot_ik:
+    enabled: true
+    layers:
+      - "Default"
+      - "Architecture"
+      - "Geometry"
+    raycast_distance_m: 1.5
+    foot_radius_m: 0.15
+    offset_y_m: 0.05
+    smooth_time_s: 0.1
+    weight_curve:
+      keys:
+        - {time: 0.0, value: 0.0, in_tangent: 0.0, out_tangent: 10.0}
+        - {time: 0.1, value: 1.0, in_tangent: 10.0, out_tangent: 0.0}
+        - {time: 0.9, value: 1.0, in_tangent: 0.0, out_tangent: -10.0}
+        - {time: 1.0, value: 0.0, in_tangent: -10.0, out_tangent: 0.0}
+
+  hand_ik:
+    enabled: true
+    max_distance_m: 0.5
+    interaction_layers:
+      - "Interactable"
+      - "Props"
+      - "Doors"
+    reach_weight_curve:
+      keys:
+        - {time: 0.0, value: 0.0, in_tangent: 0.0, out_tangent: 8.0}
+        - {time: 0.15, value: 1.0, in_tangent: 8.0, out_tangent: 0.0}
+        - {time: 0.85, value: 1.0, in_tangent: 0.0, out_tangent: -8.0}
+        - {time: 1.0, value: 0.0, in_tangent: -8.0, out_tangent: 0.0}
+
+  solver:
+    iterations: 10
+    tolerance_mm: 1.0
+    damping: 0.95
+
+  body_ik:
+    enabled: false
+    root_offset_m: 0.1
+    spine_weight: 0.5
+    head_weight: 0.3
+
+  validation:
+    assert_foot_ik_enabled: true
+    assert_hand_ik_max_distance: true
+    assert_solver_iterations_positive: true

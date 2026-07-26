@@ -30,9 +30,9 @@ Nivel 2 (Contexto Técnico y Filosofía). Subordinate only to `SOURCE_OF_TRUTH.m
 ### 7. RULES
 
 - `[RULE-PHI-001]`: **Irreversibility Directive**: Prohibido implement any "Undo" or real-time rewind functionality for an active Echo recording. Once recorded, an Echo MUST complete its full playback cycle ($12.0\text{s}$) plus residual state ($2.5\text{s}$).
-- `[RULE-PHI-002]`: **Locomotion Boundaries**: Player movement speed MUST be strictly bounded:
+- `[RULE-PHI-002]`: **Locomotion Boundaries**: Player movement speed MUST be strictly bounded (cross-ref `CONSTANTS_REGISTRY.yaml`):
   - Base Walking Speed: $V_{walk} = 2.8\text{ m/s} \pm 0.0$
-  - Maximum Sprint Speed: $V_{sprint} = 4.5\text{ m/s} \pm 0.0$
+  - Maximum Sprint Speed: $V_{sprint} = 4.2\text{ m/s} \pm 0.0$
   - Jump Height: $H_{jump} = 1.2\text{ m} \pm 0.0$
   - Combat Abilities: $0$
 - `[RULE-PHI-003]`: **Color Saturation Boundary**: All environmental materials MUST maintain HSL saturation within the range $S \in [0.10, 0.35]$. Vibrant or fluorescent colors on static architecture are forbidden.

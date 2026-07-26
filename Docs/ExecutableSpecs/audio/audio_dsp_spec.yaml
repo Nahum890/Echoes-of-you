@@ -1,0 +1,74 @@
+# Docs/ExecutableSpecs/audio/audio_dsp_spec.yaml
+# Audio Mixer Bus Hierarchy & DSP Parameters - Executable Spec
+# SPEC-EXEC-AUD-DSP | Authority: Level 3 (Runtime Data Contract)
+
+audio_mixer:
+  buses:
+    - name: "Master"
+      volume_db: 0.0
+      children: ["Music", "SFX", "Ambience", "TapeHiss"]
+
+    - name: "Music"
+      volume_db: -6.0
+      ducking:
+        enabled: true
+        target_db: -12.0
+        attack_tau_s: 0.05
+        decay_tau_s: 0.2
+        curve: "exponential"
+
+    - name: "SFX"
+      volume_db: 0.0
+      children: ["SFX_Echo", "SFX_Puzzle", "SFX_UI", "SFX_Foley"]
+
+    - name: "SFX_Echo"
+      volume_db: 0.0
+      dsp_bandpass:
+        enabled: true
+        highpass_hz: 300
+        lowpass_hz: 3500
+        filter_type: "Butterworth"
+        order: 2
+
+    - name: "SFX_Puzzle"
+      volume_db: 0.0
+
+    - name: "SFX_UI"
+      volume_db: -3.0
+
+    - name: "SFX_Foley"
+      volume_db: -3.0
+
+    - name: "Ambience"
+      volume_db: -12.0
+
+    - name: "TapeHiss"
+      volume_db: -18.0
+      muted: false
+      always_active: true
+
+spatial_audio:
+  rolloff_mode: "Logarithmic"
+  min_distance_m: 1.0
+  max_distance_m: 18.0
+  spread_deg: 0
+
+voice_management:
+  max_voices: 32
+  virtualization: true
+  priority_system: "distance"
+
+exposed_parameters:
+  - "MasterVolume"
+  - "MusicVolume"
+  - "SFXVolume"
+  - "AmbienceVolume"
+  - "TapeHissVolume"
+  - "EchoBandpassEnabled"
+  - "EchoBandpassFreqLow"
+  - "EchoBandpassFreqHigh"
+
+validation:
+  assert_mixer_exists: true
+  assert_all_parameters_exposed: true
+  assert_bandpass_frequencies: {low_hz: 300, high_hz: 3500}

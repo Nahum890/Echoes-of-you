@@ -11,7 +11,7 @@ Defines the autonomous execution workflow, prompt chaining rules, specification 
 Applies to all AI generation sessions, subagents, and automated code/level generation tasks in `Docs/` and `Assets/`.
 
 ### 3. AUTHORITY
-Nivel 4 (Validación y QA). Subordinate to `SOURCE_OF_TRUTH.md` (`SPEC-000`) and `AI_RULEBOOK.md` (`SPEC-401`).
+Level 6 (AI Agent Protocols). Subordinate to `SOURCE_OF_TRUTH.md` (`SPEC-000`, Level 1) and `AI_RULEBOOK.md` (`SPEC-401`, Level 6).
 
 ### 4. DEFINITIONS
 - `Agent Prompt Loop`: Iterative execution cycle where an AI agent reads specs, generates code/data assets, and validates against `LevelValidator.cs`.

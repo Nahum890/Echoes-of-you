@@ -1,7 +1,26 @@
 schema_version: "1.0"
 spec_id: "SPEC-EXEC-GEO-001"
 # PROCEDURAL_ROOM_MESH_SCHEMA.yaml
-# Vertex array math, wall thickness, door cutout offsets, UV tiling factors.
+# Complete mesh generation spec: winding, UV, tangents, collision, vertex attributes.
+
+mesh_generation:
+  winding_order: "CCW"
+  uv_mapping:
+    floor: "planar_y"
+    walls: "triplanar"
+    ceiling: "planar_y"
+  normal_generation: "area_weighted"
+  tangent_generation: "mikktspace"
+  collision_mesh:
+    simplification_ratio: 0.1
+    convex_decomposition: true
+    max_hulls_per_mesh: 12
+  vertex_attributes:
+    - "Position"
+    - "Normal"
+    - "Tangent"
+    - "UV0"
+    - "UV1_Lightmap"
 
 topology:
   wall_thickness_m: 0.30
@@ -13,7 +32,7 @@ topology:
 
 vertex_generation_rules:
   mesh_type: "SubdividedBoxMesh"
-  subdivision_step_m: 1.0      # Insert vertex every 1.0m for lightmap density
+  subdivision_step_m: 1.0
   generate_normals: true
   generate_tangents: true
   calculate_uv2_lightmaps: true

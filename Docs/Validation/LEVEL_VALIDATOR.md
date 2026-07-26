@@ -49,6 +49,10 @@ Nivel 4 (Validación y QA). Subordinate to `SOURCE_OF_TRUTH.md` (`SPEC-000`). Co
 | **G** | `VAL-G-01` | Performance Budget | Draw calls $\le 120$, triangles $\le 85,000$ | `FAIL-PRF-01` |
 | **H** | `VAL-H-01` | Camera Profiles | `cameraProfile != null` on all room blueprints | `FAIL-CAM-03` |
 | **I** | `VAL-I-01` | NavMesh Coverage | NavMesh coverage $\ge 95\%$ of walkable floor area | `FAIL-NAV-02` |
+| **J** | `VAL-J-01` | Visual Regression | Pixel diff $\le 2\%$ vs reference frame | `FAIL-VIS-01` |
+| **K** | `VAL-K-01` | Memory Leak | GC.AllocatedInFrame $< 1\text{MB}$ after scene unload | `FAIL-MEM-01` |
+| **L** | `VAL-L-01` | Shader Compilation | $0$ errors, $0$ fallbacks to URP/Lit | `FAIL-SHD-01` |
+| **M** | `VAL-M-01` | Audio | Max voices $\le 32$, no clipping detected | `FAIL-AUD-01` |
 
 ### 9. CONSTRAINTS
 - `[CONS-VAL-001]`: Prohibido bypassing validation checks in production builds.

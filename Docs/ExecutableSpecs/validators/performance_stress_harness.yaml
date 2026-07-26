@@ -1,0 +1,72 @@
+# Docs/ExecutableSpecs/validators/performance_stress_harness.yaml
+# Performance Stress Test Harness - Executable Spec
+# SPEC-EXEC-STRESS | Authority: Level 3 (Runtime Data Contract)
+
+performance_stress_harness:
+  scenario: "sequential_15_levels"
+  iterations: 3
+  warmup_runs: 1
+
+  metrics:
+    max_frame_time_ms: 16.67
+    avg_frame_time_ms: 14.0
+    p99_frame_time_ms: 16.0
+    memory_leak_threshold_mb: 100
+    gc_alloc_per_frame_kb: 64
+    draw_calls_peak: 120
+    batches_peak: 120
+    triangles_peak: 85000
+    setpass_calls_peak: 120
+    shader_changes_peak: 24
+
+  duration_min: 30
+
+  level_sequence:
+    - "Level_01"
+    - "Level_02"
+    - "Level_03"
+    - "Level_04"
+    - "Level_05"
+    - "Level_06"
+    - "Level_07"
+    - "Level_08"
+    - "Level_09"
+    - "Level_10"
+    - "Level_11"
+    - "Level_12"
+    - "Level_13"
+    - "Level_14"
+    - "Level_15"
+
+  transitions:
+    include_transition_time: true
+    transition_timeout_s: 5.0
+
+  profiler_markers:
+    - "SceneLoad"
+    - "SceneUnload"
+    - "GC.Collect"
+    - "Resources.UnloadUnusedAssets"
+    - "EchoRecorder.Record"
+    - "EchoPlayback.Playback"
+    - "NavMesh.Bake"
+    - "Lightmap.Bake"
+
+  memory_tracking:
+    track_managed: true
+    track_native: true
+    track_gfx: true
+    sample_interval_frames: 60
+    leak_detection_threshold_mb: 1.0
+
+  frame_timing:
+    capture_mode: "FrameTimingManager"
+    min_samples: 1000
+    outlier_rejection_std_dev: 3.0
+
+  ci_gate:
+    fail_on_metric_exceed: true
+    required_pass_rate: 1.0
+    artifact_report: true
+    report_format: "json"
+    report_path: "Reports/performance_stress_report.json"

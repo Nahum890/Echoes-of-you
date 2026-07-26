@@ -27,6 +27,8 @@ properties:
 
   recordedEchoFrames:
     type: "array"
+    maxItems: 1200
+    description: "Supports up to 20.0s narrative recording duration at 60Hz (1200 frames)"
     items:
       type: "object"
       required:

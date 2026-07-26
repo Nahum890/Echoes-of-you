@@ -1,51 +1,92 @@
 # Docs/Specs/CONSTANTS_REGISTRY.yaml — Single source of all game constants
-# SPEC-124 | Authority: Level 1 (companion to SOURCE_OF_TRUTH.md)
+# SPEC-124 | Authority: Level 2 (companion to SOURCE_OF_TRUTH.md)
 # REGLA: Ningún archivo YAML o Markdown puede hardcodear un valor numérico
 # que esté listado aquí. Debe referenciar la clave de este archivo.
 
-echo:
-  max_record_seconds_standard: 12.0    # FROZEN — CC-2026-003
-  max_record_seconds_narrative: 20.0   # FROZEN — CC-2026-003
-  min_record_seconds: 1.0
-  playback_latency_s: 0.8
-  residual_duration_s: 2.5
-  sample_rate_hz: 30
-  max_slots: 3
-  capsule_radius_m: 0.35
-  capsule_height_m: 1.80
+primitives:
+  player:
+    height_m: 1.80
+    radius_m: 0.35
+    walk_speed_ms: 2.8
+    sprint_speed_ms: 4.2
+    jump_height_m: 1.2
 
-locomotion:
-  walk_speed_mps: 2.8
-  run_speed_mps: 4.2
-  gravity_mps2: -18.0
-  jump_force_mps: 5.5
-  step_offset_m: 0.30
-  capsule_radius_m: 0.35
-  capsule_height_m: 1.80
-  coyote_time_s: 0.12
-  jump_buffer_s: 0.10
-  max_fall_speed_mps: -25.0
+  echo:
+    max_record_seconds: 12.0
+    max_record_seconds_narrative: 20.0
+    latency_seconds: 0.8
+    residual_seconds: 2.5
+    capsule_radius_m: 0.35
+    capsule_height_m: 1.80
+    min_record_seconds: 1.0
+    sample_rate_hz: 30
+    max_slots: 3
 
-architecture:
-  grid_unit_m: 3.0
-  door_width_m: 1.20
-  door_height_m: 2.40
-  corridor_main_width_m: 4.5     # FROZEN — CC-2026-004
-  corridor_secondary_width_m: 3.0 # FROZEN — CC-2026-004
+  timing:
+    sync_floor_seconds: 0.4
+    min_record_seconds: 1.0
 
-lighting:
-  max_lights_per_scene: 48
-  shadow_distance_m: 40.0
-  shadow_cascades: 2
-  sun_intensity_lux: 0.85
-  fog_density_chapter_I: 0.008   # FROZEN — CC-2026-002
+  navigation:
+    clearance_min_m: 1.2
+    door_clearance_min_m: 2.4
+    corridor_height_m: 3.2
+    classroom_height_m: 3.8
 
-validation:
-  min_pass_score: 80             # FROZEN — CC-2026-008
+  lighting:
+    max_lights_per_scene: 48
+    max_light_intensity_lux: 5.0
+    max_light_range_m: 25.0
+    shadow_distance_m: 40.0
+    lightmap_resolution_texels_per_m: 30
+    fog_density_chapter_I: 0.008
 
-performance:
-  target_fps: 60.0
-  frame_budget_ms: 16.66
-  max_draw_calls: 120
-  max_triangles: 85000
-  max_ram_gb: 1.2
+  camera:
+    fov_min_deg: 30.0
+    fov_max_deg: 90.0
+    blend_min_seconds: 0.5
+    blend_max_seconds: 3.0
+    dutch_max_deg: 5.0
+    inversion_dutch_deg: 180.0
+
+  performance:
+    max_draw_calls: 120
+    max_triangles: 85000
+    max_batches: 120
+    target_fps: 60
+    max_ram_gb: 1.2
+
+  shaders:
+    liminal_surface: "Echoes/LiminalSurface"
+    liminal_fog_volume: "Echoes/LiminalFogVolume"
+    echo_liminal: "Echoes/EchoLiminal"
+    analog_ghost: "Echoes/AnalogGhost"
+
+  colors:
+    memory_amber: "#FFBF00"
+    echo_cyan: "#4FC3E8"
+    void_black: "#0A0A0D"
+    corridor_navy: "#1C2430"
+    wrongness_red: "#B23A3A"
+    fluorescent_sick: "#C9D4B0"
+
+  locomotion:
+    walk_speed_mps: 2.8
+    run_speed_mps: 4.2
+    gravity_mps2: -18.0
+    jump_force_mps: 5.5
+    step_offset_m: 0.30
+    capsule_radius_m: 0.35
+    capsule_height_m: 1.80
+    coyote_time_s: 0.12
+    jump_buffer_s: 0.10
+    max_fall_speed_mps: -25.0
+
+  architecture:
+    grid_unit_m: 3.0
+    door_width_m: 1.20
+    door_height_m: 2.40
+    corridor_main_width_m: 4.5
+    corridor_secondary_width_m: 3.0
+
+  validation:
+    min_pass_score: 80

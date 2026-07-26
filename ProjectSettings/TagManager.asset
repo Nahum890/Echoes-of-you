@@ -10,6 +10,7 @@ TagManager:
   - KineticBlock
   - PlayerOnlyBarrier
   - EnvironmentPassProp
+  - PlayerStart
   layers:
   - Default
   - TransparentFX
@@ -19,10 +20,10 @@ TagManager:
   - UI
   - Ground
   - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Echo
+  - Hazard
+  - PressurePlate
   - 
   - 
   - 

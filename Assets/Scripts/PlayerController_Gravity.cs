@@ -165,10 +165,8 @@ public partial class PlayerController
             groundCheck = gc.transform;
         }
 
-        // Place groundCheck at the center of the capsule's bottom sphere.
-        // Works correctly regardless of whether the pivot is at the feet or the center.
-        float localYOffset = _controller.center.y - (_controller.height * 0.5f) + _controller.radius;
-        groundCheck.localPosition = new Vector3(0f, localYOffset, 0f);
+        // Spec: Ground check: SphereCast de radio 0.25m en y = -0.02m.
+        groundCheck.localPosition = new Vector3(0f, -0.02f, 0f);
         groundCheck.localRotation = Quaternion.identity;
     }
 

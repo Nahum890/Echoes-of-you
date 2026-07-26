@@ -10,6 +10,8 @@ public class CameraProfileApplier : MonoBehaviour
     private Camera mainCam;
     private CinemachineCamera vcam;
     private CinemachineBrain brain;
+    private ThirdPersonCamera _thirdPersonCamera;
+    private bool _wasThirdPersonCameraEnabled;
 
     void Awake()
     {
@@ -29,6 +31,18 @@ public class CameraProfileApplier : MonoBehaviour
         {
             brain = mainCam.GetComponent<CinemachineBrain>();
             if (!brain) brain = mainCam.gameObject.AddComponent<CinemachineBrain>();
+
+            // CRITICAL: Disable ThirdPersonCamera to prevent jitter (both systems writing transform in LateUpdate)
+            _thirdPersonCamera = mainCam.GetComponent<ThirdPersonCamera>();
+            if (_thirdPersonCamera != null)
+            {
+                _wasThirdPersonCameraEnabled = _thirdPersonCamera.enabled;
+                if (_thirdPersonCamera.enabled)
+                {
+                    _thirdPersonCamera.enabled = false;
+                    Debug.Log("[CameraProfileApplier] ThirdPersonCamera disabled — Cinemachine is now the active camera controller.");
+                }
+            }
         }
 
         vcam = FindAnyObjectByType<CinemachineCamera>();
@@ -39,6 +53,15 @@ public class CameraProfileApplier : MonoBehaviour
             vcamObj.AddComponent<CinemachineFollow>();
             vcamObj.AddComponent<CinemachineRotationComposer>();
             vcam.Priority = 10;
+        }
+    }
+
+    void OnDestroy()
+    {
+        // Restore ThirdPersonCamera if it was originally enabled
+        if (_thirdPersonCamera != null && _wasThirdPersonCameraEnabled)
+        {
+            _thirdPersonCamera.enabled = true;
         }
     }
 

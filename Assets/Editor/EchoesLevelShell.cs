@@ -219,7 +219,6 @@ public static class EchoesLevelShell
 
         PlayerController playerController = player.AddComponent<PlayerController>();
         playerController.groundMask = (1 << 6);
-        playerController.jumpHeight = EchoesWorldMetrics.PlayerJumpHeight;
 
         player.AddComponent<PlayerCharacterVisualSetup>();
         player.AddComponent<PlayerAdvancedLocomotion>();

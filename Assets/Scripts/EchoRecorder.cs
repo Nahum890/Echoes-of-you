@@ -13,8 +13,8 @@ public class EchoRecorder : MonoBehaviour
     [Header("Prefab y límites")]
     public GameObject echoPrefab;
     [SerializeField] Transform echoSpawnRoot;
-    [SerializeField] int maxEchoes = 2;
-    [SerializeField] float maxRecordSeconds = 20f;
+    [SerializeField] int maxEchoes = 3;
+    [SerializeField] float maxRecordSeconds = 12f;
 #pragma warning disable CS0414
     [SerializeField] float minRecordSeconds = 0.1f;
 #pragma warning restore CS0414
@@ -41,6 +41,8 @@ public class EchoRecorder : MonoBehaviour
     int _micLastPosition;
     bool _micReady;
     float _micStartRealtime;
+    float _nextRecordTime;
+    float _recordInterval = 1f / 30f; // 30Hz recording
 
     public bool IsRecording => _recording;
     public int EchoCount => _echoes.Count;
@@ -96,6 +98,7 @@ public class EchoRecorder : MonoBehaviour
         if (echoPrefab == null) return;
 
         var obj = Instantiate(echoPrefab, _pendingFutureEcho[0].position, _pendingFutureEcho[0].rotation);
+        obj.layer = LayerMask.NameToLayer("Echo"); // Layer 9
         var playback = obj.GetComponent<EchoPlayback>();
         if (playback == null) playback = obj.AddComponent<EchoPlayback>();
 
@@ -172,13 +175,11 @@ public class EchoRecorder : MonoBehaviour
         if (!_recording)
             return;
 
-        float elapsed = Time.time - _recordStartTime;
-        _frames.Add(new RecordFrame(elapsed, transform.position, transform.rotation));
-
-        if (_frames.Count == 1)
+        if (Time.time >= _nextRecordTime)
         {
-            // Duplicar primer fotograma en t=0 para interpolación estable al inicio
-            _frames.Insert(0, new RecordFrame(0f, _frames[0].position, _frames[0].rotation));
+            float elapsed = Time.time - _recordStartTime;
+            _frames.Add(new RecordFrame(elapsed, transform.position, transform.rotation));
+            _nextRecordTime += _recordInterval;
         }
     }
 
@@ -187,6 +188,7 @@ public class EchoRecorder : MonoBehaviour
         _recording = true;
         _recordStartTime = Time.time;
         _frames.Clear();
+        _nextRecordTime = Time.time;
 
         StartVoiceCapture();
 
@@ -230,6 +232,12 @@ public class EchoRecorder : MonoBehaviour
             return;
         }
 
+        // Ensure first frame is at t=0 for stable spline interpolation
+        if (_frames.Count > 0 && _frames[0].time > 0f)
+        {
+            _frames.Insert(0, new RecordFrame(0f, _frames[0].position, _frames[0].rotation));
+        }
+
         if (echoPrefab == null)
         {
             Debug.LogError("EchoRecorder: asigna echoPrefab.");
@@ -256,6 +264,7 @@ public class EchoRecorder : MonoBehaviour
         Quaternion spawnRotation = _frames.Count > 0 ? _frames[0].rotation : echoSpawnRoot.rotation;
         GameObject instance = Instantiate(echoPrefab, spawnPosition, spawnRotation);
         instance.tag = "Echo";
+        instance.layer = LayerMask.NameToLayer("Echo"); // Layer 9
         var playback = instance.GetComponent<EchoPlayback>();
         if (playback == null)
             playback = instance.AddComponent<EchoPlayback>();

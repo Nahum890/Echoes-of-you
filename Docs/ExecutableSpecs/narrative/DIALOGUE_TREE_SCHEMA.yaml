@@ -1,9 +1,50 @@
-schema_version: "1.0"
-dialogue_nodes:
-  MEM-001_COAT:
-    node_id: "NAR_NODE_001"
-    speaker: "Lyra"
-    text_key: "dialogue.mem001.coat"
-    audio_event: "SFX_Voice_Mem001"
-    display_duration_s: 4.5
-    next_node: null
+# Docs/ExecutableSpecs/narrative/dialogue_tree_schema.yaml
+# Dialogue Tree Schema - Narrative Choice & Voice System
+# SPEC-EXEC-DIALOGUE | Authority: Level 3 (Runtime Data Contract)
+
+dialogue_tree_schema:
+  interpolation_syntax: "{variable}"
+  wrap_width_chars: 42
+  overflow: "truncate_ellipsis"
+
+  choice_node:
+    timeout_seconds: 0.0
+    timeout_action: "default_first"
+    max_choices_visible: 4
+    choice_text_max_chars: 64
+
+  voice_fragment:
+    max_duration_s: 8.0
+    sample_rate_hz: 44100
+    channels: 1
+    compression: "Vorbis"
+    quality: 0.7
+
+  dialogue_node:
+    speaker_id: "string"
+    text_key: "string"
+    conditions: "string[]"
+    choices: "choice_node[]"
+    voice_clip_ref: "string|guid"
+    auto_advance: false
+    advance_delay_s: 0.0
+
+  narrative_variables:
+    - name: "player_name"
+      type: "string"
+      default: "Player"
+    - name: "echo_count"
+      type: "int"
+      default: 0
+    - name: "level_name"
+      type: "string"
+      default: ""
+    - name: "memory_fragments"
+      type: "int"
+      default: 0
+
+  validation:
+    assert_interpolation_syntax: true
+    assert_wrap_width_positive: true
+    assert_voice_duration_max: true
+    assert_choice_limit: true

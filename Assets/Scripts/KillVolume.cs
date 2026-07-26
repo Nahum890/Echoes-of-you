@@ -11,6 +11,7 @@ public class KillVolume : MonoBehaviour
 
     void Awake()
     {
+        gameObject.layer = LayerMask.NameToLayer("Hazard"); // Layer 10
         Collider col = GetComponent<Collider>();
         col.isTrigger = true;
     }

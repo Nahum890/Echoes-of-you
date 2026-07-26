@@ -11,7 +11,7 @@ This document establishes the supreme authority hierarchy, conflict resolution p
 Applies to 100% of codebase assets, level blueprints, C# scripts, URP shaders, and specification documents in `Docs/`. Explicitly excludes external third-party package internals (e.g. Cinemachine package source).
 
 ### 3. AUTHORITY
-Nivel 1 (Supreme Level Authority). Overrides all other documents in `Docs/`, all comments in `Assets/Scripts/**/*.cs`, and all temporary prompts.
+Level 1 (Supreme Level Authority — Unique). The single highest authority in the project. Overrides all other documents in `Docs/`, all comments in `Assets/Scripts/**/*.cs`, and all temporary prompts. No other document shares this level.
 
 ### 4. DEFINITIONS
 - `Authority Level`: Priority rank from Level 1 (Highest) to Level 8 (Lowest).
@@ -30,21 +30,18 @@ Nivel 1 (Supreme Level Authority). Overrides all other documents in `Docs/`, all
 ### 7. RULES
 
 - `[RULE-SOT-001]`: **Hierarchy Precedence Rule**: When two documents or specifications conflict, the resolution MUST follow the strict hierarchy rank without exception:
-  1. *Level 1*: `SOURCE_OF_TRUTH.md` (`SPEC-000`), `CONSTANTS_REGISTRY.yaml` (`SPEC-124`), `ECHOES_BIBLE.md` (`SPEC-101`), `CHANGE_CONTROL.md` (`SPEC-000D`). Note: `CONSTANTS_REGISTRY.yaml` (`SPEC-124`) is the single canonical source of truth for all numerical primitives.
-  2. *Level 1A (Runtime Data Contract)*: `Docs/ExecutableSpecs/**/*.yaml` (Contrato de Datos Runtime Ejecutable).
-  3. *Level 2*: `PROJECT_CONTEXT.md` (`SPEC-110`), `DESIGN_PHILOSOPHY.md` (`SPEC-001`)
-  4. *Level 3 (Declarative Specs)*: `Docs/Specs/*.md` (`SPEC-002` to `SPEC-202`) (Especificación Técnica Declarativa de Soporte)
-  5. *Level 4*: `Docs/Validation/*.md` (`SPEC-301` to `SPEC-304`)
-  6. *Level 5*: `Docs/AI/*.md` (`SPEC-401` to `SPEC-402`)
-  7. *Level 6*: Active Production Code (`Assets/Scripts/**/*.cs`, `Assets/Editor/EchoesNewProductionBuilder.cs`)
-  8. *Level 7*: Data Assets (`Assets/Data/Levels/*.asset`)
-  9. *Level 8*: Historical/Obsolescent files (`Docs/Archive/*`)
-- `[RULE-SOT-001B]`: **YAML Runtime Precedence (SCOPED)**: Los archivos YAML en `Docs/ExecutableSpecs/*.yaml` prevalecen sobre Markdown SOLO para:
-  - Parámetros de instanciación de escena (posiciones, rotaciones, customData)
-  - Parámetros de presentación visual (colores de perfiles no congelados)
-  - Metadatos de nivel no congelados
-
-  Los archivos YAML **NUNCA** pueden sobrescribir entradas en la Frozen Decisions Matrix (Algorithm 8.2). Toda entrada en Algorithm 8.2 es inviolable en TODOS los niveles. Intentar sobrescribir un valor congelado mediante YAML genera `FAIL-SOT-01`.
+  1. *Level 1*: `SOURCE_OF_TRUTH.md` (`SPEC-000`) — Única autoridad suprema. Ningún otro documento comparte este nivel.
+  2. *Level 2*: `CONSTANTS_REGISTRY.yaml` (`SPEC-124`), `CHANGE_CONTROL.md` (`SPEC-000D`), `ECHOES_BIBLE.md` (`SPEC-101`), `PROJECT_CONTEXT.md` (`SPEC-110`), `DESIGN_PHILOSOPHY.md` (`SPEC-001`), `INDEX.md` (`SPEC-INDEX`) — Contexto Técnico y Registros Canónicos.
+  3. *Level 3 (Runtime Data Contract)*: `Docs/ExecutableSpecs/**/*.yaml` — Datos serializables, contratos de ejecución.
+  4. *Level 4 (Declarative Specs)*: `Docs/Specs/*.md` (`SPEC-002` to `SPEC-202`), `Docs/GameDesign/*.md` — Especificación Técnica Declarativa.
+  5. *Level 5 (Validation)*: `Docs/Validation/*.md` (`SPEC-301` to `SPEC-304`) — Reglas de validación automatizada.
+  6. *Level 6 (AI Agents)*: `Docs/AI/*.md` (`SPEC-401` to `SPEC-402`) — Protocolos de ejecución IA.
+  7. *Level 7 (Active Code)*: `Assets/Scripts/**/*.cs`, `Assets/Editor/EchoesNewProductionBuilder.cs` — Código de producción activo.
+  8. *Level 8 (Assets)*: Data Assets (`Assets/Data/Levels/*.asset`) — Assets de datos generados.
+  9. *Level 9 (Archive)*: Historical/Obsolescent files (`Docs/Archive/*`) — Archivos históricos.
+- `[RULE-SOT-001B]`: **CONSTANTS_REGISTRY Absolute Primitive Authority**: `CONSTANTS_REGISTRY.yaml` (`SPEC-124`, Level 2) es el único dueño de todos los primitivos numéricos del proyecto. Cualquier valor numérico definido en `CONSTANTS_REGISTRY.yaml` prevalece de forma ABSOLUTA sobre valores hardcodeados en cualquier otro documento o código fuente (.md, .yaml, .cs). ExecutableSpecs YAML (Level 3) pueden contener valores derivados pero NUNCA redefinir primitivas ya registradas en CONSTANTS_REGISTRY.yaml.
+   
+   Los archivos YAML **NUNCA** pueden sobrescribir entradas en la Frozen Decisions Matrix (Algorithm 8.2). Toda entrada en Algorithm 8.2 es inviolable en TODOS los niveles. Intentar sobrescribir un valor congelado mediante YAML genera `FAIL-SOT-01`.
 - `[RULE-SOT-002]`: **Frozen Decision Binding**: The decisions listed in Section 8 (Algorithms) are locked and immutable. No AI agent or human developer may deviate from these decisions.
 - `[RULE-SOT-003]`: **Ambiguity Resolution Protocol**: If an unlisted contradiction is encountered, execution MUST halt immediately and prompt for resolution via `CHANGE_CONTROL.md`.
 
@@ -65,7 +62,7 @@ graph TD
 
 | Topic / System | Prohibited / Obsolescent Option B | Official / Binding Option A | Technical Directive |
 |---|---|---|---|
-| **Constants Registry** | Valores hardcodeados dispersos en Markdown/YAML | **`CONSTANTS_REGISTRY.yaml` `[SPEC-124]`** | Todos los valores numéricos DEBEN referenciar claves de `CONSTANTS_REGISTRY.yaml`. Hardcodear valores cubiertos por este registro genera `FAIL-SOT-01`. |
+| **Constants Registry** | Valores hardcodeados dispersos en Markdown/YAML/C# | **`CONSTANTS_REGISTRY.yaml` `[SPEC-124]`** (Level 2) | Todos los valores numéricos DEBEN referenciar claves de `CONSTANTS_REGISTRY.yaml`. Hardcodear valores cubiertos por este registro genera `FAIL-SOT-01`. |
 | **Render Pipeline** | Standard / Built-in Shader | **Universal Render Pipeline (URP)** | Material base utiliza `Universal Render Pipeline/Lit`. Props especiales de Echo y atmósfera utilizan custom shaders en `Assets/Shaders/` según `SHADER_SPEC.md` `[SPEC-109]`. La restricción aplica SOLO a shaders de geometría estática de colegio. Prohibido `Shader.Find("Standard")`. |
 | **Active Builder** | `EchoesLevelBuilder.cs` / `EchoesProductionBuilder.cs` | **`EchoesNewProductionBuilder.cs`** | `EchoesNewProductionBuilder.cs` is the single active generator. |
 | **Echo Max Duration** | 6.0s / 10.0s | **12.0s Standard Max** (20.0s Narrative) | `EchoRecorder.maxRecordSeconds = 12.0f` standard default. Ref: `CONSTANTS_REGISTRY.yaml` `echo.max_record_seconds_standard`. |

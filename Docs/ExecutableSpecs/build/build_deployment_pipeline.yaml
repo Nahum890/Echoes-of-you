@@ -1,0 +1,62 @@
+# Docs/ExecutableSpecs/build/build_deployment_pipeline.yaml
+# Build & Deployment Pipeline - CI/CD Configuration
+# SPEC-EXEC-BUILD | Authority: Level 3 (Runtime Data Contract)
+
+build_deployment_pipeline:
+  targets:
+    - "Win64"
+    - "Linux64"
+    - "MacOS"
+
+  compression: "LZ4"
+  il2cpp: true
+  strip_engine_code: true
+  development_build: false
+
+  scene_list_source: "LEVEL_SPEC_01..15"
+  scenes_in_build:
+    - "Assets/Scenes/Level_01.unity"
+    - "Assets/Scenes/Level_02.unity"
+    - "Assets/Scenes/Level_03.unity"
+    - "Assets/Scenes/Level_04.unity"
+    - "Assets/Scenes/Level_05.unity"
+    - "Assets/Scenes/Level_06.unity"
+    - "Assets/Scenes/Level_07.unity"
+    - "Assets/Scenes/Level_08.unity"
+    - "Assets/Scenes/Level_09.unity"
+    - "Assets/Scenes/Level_10.unity"
+    - "Assets/Scenes/Level_11.unity"
+    - "Assets/Scenes/Level_12.unity"
+    - "Assets/Scenes/Level_13.unity"
+    - "Assets/Scenes/Level_14.unity"
+    - "Assets/Scenes/Level_15.unity"
+
+  build_options:
+    - "CleanBuild"
+    - "CompressWithLz4"
+    - "StrictMode"
+
+  output_directory: "Builds/{target}/{version}"
+
+  unity_version: "2022.3.20f1"
+  scripting_backend: "IL2CPP"
+  api_compatibility_level: ".NET Standard 2.1"
+
+  pre_build_steps:
+    - "ExecuteMethod ExecutableSpecValidator.ValidateProject"
+    - "ExecuteMethod EchoesNewProductionBuilder.BuildAllBlueprints"
+    - "ExecuteMethod LevelValidator.RunAllChecks"
+
+  post_build_steps:
+    - "RunTests -testMode EditMode -testFilter VN_EndingResolver"
+    - "ExecuteMethod VisualRegressionTest.Run"
+    - "ExecuteMethod PerformanceStressHarness.Run"
+
+  validation:
+    assert_zero_compile_errors: true
+    assert_zero_missing_refs: true
+    assert_all_15_levels_score_ge_80: true
+    assert_visual_regression_diff_le_2pct: true
+    assert_frame_time_le_16_67ms: true
+    assert_memory_leak_le_100mb: true
+    assert_vn_32_paths_resolve: true

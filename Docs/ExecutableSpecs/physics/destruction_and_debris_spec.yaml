@@ -1,0 +1,71 @@
+# Docs/ExecutableSpecs/physics/destruction_and_debris_spec.yaml
+# Destruction & Debris Specification - Physics-based Breakable Objects
+# SPEC-EXEC-PHYS-DEBRIS | Authority: Level 3 (Runtime Data Contract)
+
+destruction_and_debris_spec:
+  global_limits:
+    max_debris_per_interaction: 12
+    debris_lifetime_s: 3.0
+    cleanup_mode: "pooled"
+    collision_layer: "Debris"
+    max_concurrent_destructions: 8
+
+  debris_types:
+    - id: "wood_splinters"
+      prefab_alias: "Debris_Wood_Splinter"
+      count_range: [3, 6]
+      initial_velocity_range_ms: [1.0, 4.0]
+      angular_velocity_range_deg_s: [180, 720]
+      mass_kg: 0.2
+      drag: 0.5
+      gravity_scale: 1.0
+
+    - id: "concrete_chunks"
+      prefab_alias: "Debris_Concrete_Chunk"
+      count_range: [2, 4]
+      initial_velocity_range_ms: [0.5, 2.5]
+      angular_velocity_range_deg_s: [90, 360]
+      mass_kg: 1.5
+      drag: 0.1
+      gravity_scale: 1.0
+
+    - id: "glass_shards"
+      prefab_alias: "Debris_Glass_Shard"
+      count_range: [4, 8]
+      initial_velocity_range_ms: [2.0, 6.0]
+      angular_velocity_range_deg_s: [360, 1440]
+      mass_kg: 0.1
+      drag: 0.8
+      gravity_scale: 1.0
+
+    - id: "metal_scrap"
+      prefab_alias: "Debris_Metal_Scrap"
+      count_range: [1, 3]
+      initial_velocity_range_ms: [0.5, 2.0]
+      angular_velocity_range_deg_s: [45, 180]
+      mass_kg: 2.0
+      drag: 0.05
+      gravity_scale: 1.0
+
+  destruction_triggers:
+    - trigger: "player_kinetic_push"
+      debris_type: "wood_splinters"
+      force_threshold_n: 500
+
+    - trigger: "echo_resonance"
+      debris_type: "glass_shards"
+      force_threshold_n: 300
+
+    - trigger: "environmental_hazard"
+      debris_type: "concrete_chunks"
+      force_threshold_n: 1000
+
+  pooling:
+    pool_size_per_type: 48
+    auto_expand: false
+    return_to_pool_delay_s: 0.5
+
+  validation:
+    assert_debris_count_under_limit: true
+    assert_lifetime_enforced: true
+    assert_pool_never_exhausted: true

@@ -1,6 +1,6 @@
 # AI_RULEBOOK.md — Contrato de Ejecución para Agentes IA
 ## Spec ID: SPEC-401 | Version: 4.0 (Zero-Inference Compliant)
-## Authority: Level 5 (per SOURCE_OF_TRUTH.md §7)
+## Authority: Level 6 (per SOURCE_OF_TRUTH.md §7)
 
 ---
 

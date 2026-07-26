@@ -25,3 +25,7 @@ registry:
   Prop_Coat:
     path: "Assets/Prefabs/Narrative/Prop_Coat.prefab"
     guid: "cba9876543210fedcba9876543210fed"
+  PREFAB_CLASSROOM_LG_02:
+    path: "Assets/Prefabs/Architecture/SchoolClassroom.prefab"
+    guid: "b89d41e734c214e44a1e987162b6a9e1"
+

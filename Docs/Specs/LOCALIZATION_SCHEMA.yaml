@@ -1,27 +1,28 @@
-# Docs/Specs/LOCALIZATION_SCHEMA.yaml (SPEC-133)
-default_locale: "es-MX"
-supported_locales: ["es-MX", "en-US"]
+# Docs/Specs/LOCALIZATION_SCHEMA.yaml — Localization Configuration
+# SPEC-133 | Authority: Level 4 (Declarative Spec)
 
-table_path: "Assets/Localization/"
-tables:
-  UI:
-    file: "UI_es-MX.csv"
-    encoding: "UTF-8"
-    format: "key,value"
-    example:
-      key: "menu.play"
-      value: "Jugar"
-  Narrative:
-    file: "Narrative_es-MX.csv"
-    example:
-      key: "level01.memory.coat"
-      value: "El abrigo de Lyra"
-
-font_fallback:
-  primary: "Inter-Regular SDF"
-  fallback: "Arial"
-  emoji_font: "Noto Color Emoji"
-
-string_format:
-  dynamic_params: "{{key}}"  # ej: "Nivel {{levelNumber}}"
-  max_length_ui: 64          # caracteres máximos en UI strings
+localization:
+  supported_locales:
+    - "es-MX"
+    - "en-US"
+    - "ja-JP"
+  string_format: "ICU MessageFormat"
+  fallback_locale: "en-US"
+  interpolation_syntax: "{variable}"
+  wrap_width_chars: 42
+  overflow: "truncate_ellipsis"
+  text_bounds:
+    ui_button_max_chars: 18
+    hud_label_max_chars: 24
+    subtitle_max_chars_per_line: 42
+    subtitle_max_lines: 2
+  font_fallbacks:
+    - "Inter"
+    - "Noto Sans JP"
+    - "Noto Sans SC"
+  csv_encoding: "UTF-8"
+  csv_delimiter: ","
+  csv_quote_char: '"'
+  csv_escape_char: '"'
+  key_naming_convention: "snake_case"
+  namespace_prefix: "echoes."

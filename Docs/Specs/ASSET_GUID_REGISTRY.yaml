@@ -1,0 +1,164 @@
+# Docs/Specs/ASSET_GUID_REGISTRY.yaml — Single Source of Truth for Asset GUIDs
+# SPEC-126 | Authority: Level 2 (companion to CONSTANTS_REGISTRY.yaml)
+# REGLA: 100% de aliases DEBEN mapear a GUIDs exactos de Unity. Validado en pre-build.
+
+assets:
+  prefabs:
+    # Core Prefabs
+    EchoPrefab: "8d38dfd767baaa04cb84cc974dc6ea4c"
+    PlayerAnimController: "eeab5e21720dedd48bb135f9df6cefa8"
+    EchoPathHint: "878dc8c6090179647bb53d1db7afe703"
+    FluorescentLight: "9bffa6ed97d688c40babe9175da5228e"
+
+    # Architecture Prefabs
+    Arch_Bench: "b5f764881fe93fe4e8e126a0bd1130d2"
+    Arch_Chair: "2c182b284db2b8f4caa186cb045f1249"
+    Arch_Column: "d6851e1b2ad546e42a11bf0a8841dada"
+    Arch_Desk: "bd00c369a183a8e40bf343a883460559"
+    Arch_Doorway: "b9091d0215d3eda448f327e95fa21ed5"
+    Arch_Fence: "0593f644be3a9544da7c21c33c89f78a"
+    Arch_Floor: "50188b4f10487ce409add769f1a8f1e1"
+    Arch_Locker: "9e3f8d9adfaa7dd4981f7b6c725ad239"
+    Arch_Shelf: "a4c3384f49f91a8438237bfa30226125"
+    Arch_Stairs: "24367ab7c6447424e842a3ffe8da0b2e"
+    Arch_Trashcan: "8a200ea474b81dc44a5b19b0c52a42e1"
+    Arch_Tree: "1fea69e82375590419236d8f36f0fffd"
+    Arch_Wall: "aed302bead1213049b2a9dd73c70c449"
+    Arch_WallWindow: "4afe2b7f2a5d0614cab2c66544e2013a"
+
+    # Camera
+    EventFocusVCam: "08d0831b73393c5418926e5a35bd40e9"
+
+    # Decals
+    dec_arrastre: "d763de34f934be344999fad4d998267f"
+    dec_aviso_corcho: "34a63c1a373aa274598fb360fd1dd77d"
+    dec_crack_liminal: "23d9c0c0ca6349c3aed8fe7c40f1170f"
+    dec_floor_drag: "2210386585a84652a452df8ef8a9112f"
+    dec_foto_borrosa: "7c06b7edde5bd1a418593b0334366eac"
+    dec_grieta: "6f969cd38f418cb42a64387b8d132283"
+    dec_humedad: "07081bbf3e29b6445846c2dd3bfc42c5"
+    dec_lyra_notes: "5b441248519046138c2494366e9c262e"
+    dec_moisture_lines: "e4a3e70feb084387afc517a6e0ec3f3f"
+    dec_nota_adhesiva: "06ac53126fe54d148ba4ad4f33481624"
+    dec_papel_suelo: "d94c211ef080d85428f270337c2e2fa3"
+    dec_tiza_borrada: "71e5b2cdae0b4f347a59e100d486ec38"
+
+    # Props - Furniture
+    AbrigoColgado: "296901611494c834598fa1761e879763"
+    Balon: "02da633ff55812541a0338703ea0c472"
+    BancoMadera: "a264b69a1f2534842b241e099d76a5d8"
+    Basurero: "31462c3702ea713468954eee29bdc140"
+    CajaCartonAbierta: "d73e52d47ebe384498461aebff62aefd"
+    CajaCartonCerrada: "e8444bc26ec98d343b9ba8f6f3316089"
+    CarritoConserje: "c0a07a38f991a60409313942e19c205f"
+    Cartelera: "78db2988e0959f74c97cfc3a9dfe3d0d"
+    Casco: "bedccf0c91aad5a429d10016835b8955"
+    Cronometro: "23bb1876997ea174d94576cbd78e1fb8"
+    Escritorio: "2752fb04cea029942806fa8d4cd6a951"
+    Estanteria: "2c18f1c8781863b43bf722f08b7189ae"
+    EstanteriaCerrada: "0c4dca852479bf84b9456b3217c900a0"
+    Extintor: "5cf861ca5ff5f794e86506cefff9989a"
+    Fluorescente: "7e267bfd98bc08c43965c5a35a2002f9"
+    LamparaTecho: "bcd5c21c9941882449aa49602487926b"
+    Libros: "4cdafbc552e31f84daa140a1dccf05a8"
+    Locker: "7c1636f343c588b45b9e4a6c7b465404"
+    LockerPuertaAbierta: "4fff775e88bb4194fb400d21d5bcc768"
+    MesaKenney: "a3d4f625a40c4804e8bf0d85c74f7bb4"
+    MesaProfesor: "8ebc048ced245f14c9a0bdab96dbbc71"
+    MesaRedonda: "a676e9fe1b31c5f4586d04c84c56f3d7"
+    Mochila: "d3806b42372d01649bca8afa6707618a"
+    MochilaLyra: "e8de793bb9225ab4d9d299f80968689a"
+    PapeleraKenney: "7b0f64d8a0a7d664dab61f938298200b"
+    Paraguas: "fb3ac9370ab987d409562bb33981d304"
+    Perchero: "68343d2a595676e4196383934cdefa85"
+    Pizarra: "ac40a67761ec61244806bc2b63c2abf9"
+    PlantaMaceta: "08df157ee231acb4eba56de8c3d562ac"
+    PupitreDoble: "4deda25460577bb43b47236fe9d7377c"
+    Radiador: "f45681a38a7298a4cb254971b08fbd32"
+    Radio: "75b9ca7cdd51dd2458110bf995ba0777"
+    RelojPared: "3e65b74ed300b25458ebed3bf920f5e9"
+    SillaEscolar: "d8f30615fc128244398ca3a50a5caf95"
+    SillaOficina: "3aa250b55932e894088f0f713b5d37e7"
+    TazaCafe: "3b90a103419a5164ebc486211fd8460e"
+    VentanaMarco: "0dfc90c6eb1a3f9408ca81d164b77361"
+
+    # Props - Narrative
+    Prop_AttendanceList: "3432c178de3d8314ab369dae2f25923e"
+    Prop_Backpack: "79fb67c5882f9754c9b3ac8f34d77ea6"
+    Prop_BlankBook: "d6b6e4be20056194596e262d37b2359a"
+    Prop_CenterBackpack: "55bc6de5797a0e8478f5b330ff337847"
+    Prop_ChalkDrawing: "22ced674a2a90304c89010088d0ecaab"
+    Prop_ChalkGraffiti: "6846a41c09527694399a013cea1f0690"
+    Prop_Coat: "2a893f9d009433a498a28079f98ea63a"
+    Prop_CoffeeCups: "c57dbef30f8e2e74681f4235f9ab9380"
+    Prop_DriedFlowers: "aa00ef858ed9e03428a1214af6c8c29a"
+    Prop_JanitorCart: "5a15f4f4c579b384f8d51a9d5773d727"
+    Prop_LibraryStamp: "55727df6b844359428058981c95a8158"
+    Prop_Notebook: "d95b5b8643ccc14408268274027fe7f0"
+    Prop_OverturnedDesk: "4ebd588f322504d4c88bca6c319ed20a"
+    Prop_PhotoFrame: "303f4874fd462674e84b84dca8f8c7dd"
+    Prop_RecordsBoard: "e9a3587e10a9f1049a7ba1e87fd83fc3"
+    Prop_SoccerBall: "8c9a496b7f64bfe4f8aa2fd8c4440501"
+    Prop_StoppedClock: "31322bfdafce3814cab5bc6bf04fcea9"
+    Prop_Stopwatch: "3130b70457531d84b910a73235031ab7"
+    Prop_TeacherNotebook: "7008d651ed482f34cbac0be866d5e999"
+
+  fonts:
+    Courier: "7e77bcd8e71e4c044a9a645dad18dee1"
+    CourierBold: "19c86f702b24b8146ba89aef6613d5d2"
+    Garamond: "f53e2578fd365b64d9138b153bcf0f7c"
+    GaramondBold: "bf3fb6481dcb8f64ca60cd602dee8451"
+    ManropeVariable: "070fc9907c41ce84596c0721dbe22b46"
+    SpaceGroteskVariable: "53744e3501daa544c9b8d2d06591e39b"
+    LiberationSans: "e3265ab4bf004d28a9537516768c1c75"
+
+  shaders:
+    AnalogGhost: "686686db9f23872488e4a70fb1c6d7bd"
+    EchoLiminal: "18f555a847322c845b21436b9c3af7a3"
+    LiminalFog: "63b3aed0d06728b4ab23b965a0067198"
+    LiminalFogVolume: "aa997d0c5faf8864a9ddcdce3919c69c"
+    LiminalSurface: "3dfb7997268a7ec489415ecb79c85b16"
+    RetroFlatLit: "bca3d458e1278d1489ff5c1d44f3f35f"
+
+  textures:
+    # Cookie textures for lighting
+    cookie_fluorescent_grid: "6cb8c564dbef4572886617416df862f7"  # tex_cork_board_128
+    cookie_window_grid: "5fc44f06a4124013a32ef5c8c74653cb"       # tex_chalkboard_256
+    cookie_blinds: "004a5fc83e3f452d80740319be4187b2"           # tex_plaster_wall_128
+    cookie_tree: "d9e0e34a18494a1587959cd1af1b49af"             # tex_linoleum_floor_128
+    cookie_emergency_beam: "7b06d3aab14d4080b5db824bcbcda4af"  # tex_school_wood_128
+
+    # School textures
+    tex_chalkboard_256_school: "2852b141c4ce00149b216c779051e4f8"
+    tex_cork_board_128_school: "b1ca6e205de776a4997bd5c90e248847"
+    tex_linoleum_floor_128_school: "96cfa7132a10c2c47bf91526740e34b1"
+    tex_plaster_wall_128_school: "24f98840bdea78e4dabb8c885cb8904b"
+    tex_school_wood_128_school: "d2ab7404de434124b99cf7b3a3a32697"
+
+    # Prop textures
+    tex_cork_board_128: "6cb8c564dbef4572886617416df862f7"
+    tex_chalkboard_256: "5fc44f06a4124013a32ef5c8c74653cb"
+    tex_linoleum_floor_128: "d9e0e34a18494a1587959cd1af1b49af"
+    tex_plaster_wall_128: "004a5fc83e3f452d80740319be4187b2"
+    tex_school_wood_128: "7b06d3aab14d4080b5db824bcbcda4af"
+
+  audio:
+    room_tone_ambience: "b58b8056d73278b408c2ae6dc81b296f"
+    school_telephone_bell: "a446f73ad56c0f84a9b2b1e70abab00f"
+    metal_concrete: "40ca4781f1076ab4c8daa2798bd34273"
+    hallway_ambience: "37f2f9fd114732a4a9d1ee3dba7f54ca"
+    cassette_hiss: "ffbe8558051bf5f47a029471edb92ca0"
+    synth_drone: "aea3b29e7c7773d40ba0b74e1da33448"
+    click: "4d14129f1d125ec4d9238cab3cae1fab"
+    echo_creation: "c954a69156fa8a54fb16fe3b67793929"
+    clock_chime: "863c96ec5105dce43aed8a6428506d99"
+    echo_recording_start: "973a114e59f144c428fad4bf42625492"
+    industrial_hum: "42de61e9dcbb91941859204ab7859811"
+    echo_loop: "ebf6315a4fccebc4abff5035b2b1f1fc"
+    door: "6a893b8310935c64ab5a0d938274632e"
+    reset: "a0c4185626d699245a95678aea756dac"
+    steps: "82f8dfc6f04f80649a6ecf5f98d26d73"
+    ventilation: "1154fc56527d6344783d637f673fb858"
+
+# Validation: Pre-build script verifica 100% concordancia alias↔GUID
+# Ejecutar: unity -batchmode -executeMethod AssetGuidValidator.ValidateAll

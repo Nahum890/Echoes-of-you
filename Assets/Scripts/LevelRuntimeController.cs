@@ -161,11 +161,19 @@ public class LevelRuntimeController : MonoBehaviour
         PlayerController player = FindAnyObjectByType<PlayerController>();
         if (player != null)
         {
-            GameObject spawnPoint = GameObject.FindWithTag("Respawn");
-            if (spawnPoint != null)
+            // Try LevelSpawnMarker first, then PlayerStart tag
+            LevelSpawnMarker spawnMarker = FindAnyObjectByType<LevelSpawnMarker>();
+            if (spawnMarker != null)
             {
-                player.transform.position = spawnPoint.transform.position;
-                player.transform.rotation = spawnPoint.transform.rotation;
+                player.Teleport(spawnMarker.transform.position, spawnMarker.transform.rotation);
+            }
+            else
+            {
+                GameObject spawnPoint = GameObject.FindWithTag("PlayerStart");
+                if (spawnPoint != null)
+                {
+                    player.Teleport(spawnPoint.transform.position, spawnPoint.transform.rotation);
+                }
             }
         }
 

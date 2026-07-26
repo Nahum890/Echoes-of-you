@@ -11,7 +11,7 @@ Records all frozen architectural decisions, change requests, and contradiction r
 Applies to 100% of specification documents in `Docs/`, C# scripts in `Assets/Scripts/`, and data assets in `Assets/Data/`.
 
 ### 3. AUTHORITY
-Nivel 1 (Supreme Level Authority). Subordinate only to `SOURCE_OF_TRUTH.md` (`SPEC-000`).
+Level 2 (Technical Context & Change Registry). Subordinate only to `SOURCE_OF_TRUTH.md` (`SPEC-000`, Level 1).
 
 ### 4. DEFINITIONS
 - `Frozen Decision`: A non-negotiable architectural decision requiring explicit change control authorization to modify.

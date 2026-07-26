@@ -1,0 +1,58 @@
+# Docs/ExecutableSpecs/validators/memory_leak_validator_spec.yaml
+# Memory Leak Validator Specification - Automated GC & Memory Monitoring
+# SPEC-EXEC-MEM-LEAK | Authority: Level 3 (Runtime Data Contract)
+
+memory_leak_validator_spec:
+  gc_threshold_mb: 50
+  unload_check_frames: 60
+  profiler_markers:
+    - "SceneUnload"
+    - "GC.Collect"
+    - "Resources.UnloadUnusedAssets"
+
+  validation_rules:
+    - name: "No Leak After Scene Unload"
+      condition: "GC.AllocatedInFrame < 1.0 MB after 60 frames post-unload"
+      threshold_mb: 1.0
+      frame_delay: 60
+
+    - name: "No Accumulating Native Memory"
+      condition: "Profiler.GetTotalAllocatedMemoryLong() stable over 300 frames"
+      sample_window_frames: 300
+      max_growth_mb: 5.0
+
+    - name: "Audio Clip Cleanup"
+      condition: "AudioClip count returns to baseline after level unload"
+      tolerance: 0
+
+    - name: "Texture Memory Release"
+      condition: "Texture2D count stable after scene transition"
+      tolerance: 0
+
+    - name: "Particle System Cleanup"
+      condition: "No orphaned ParticleSystem components in DontDestroyOnLoad"
+      check_scene: "DontDestroyOnLoad"
+
+  gc_monitoring:
+    sample_interval_frames: 30
+    gen0_threshold_kb: 1024
+    gen1_threshold_kb: 2048
+    gen2_threshold_kb: 4096
+
+  memory_budget:
+    total_mb: 1200
+    textures_mb: 512
+    meshes_mb: 128
+    audio_mb: 64
+    animations_mb: 64
+    scripts_mb: 32
+    other_mb: 400
+
+  reporting:
+    log_to_console: true
+    write_json_report: true
+    report_path: "Reports/memory_leak_report.json"
+
+  ci_gate:
+    fail_on_leak_detected: true
+    max_allowed_leak_mb: 1.0

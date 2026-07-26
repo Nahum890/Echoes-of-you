@@ -28,3 +28,28 @@ lightprobe_generator_preset:
   grid_resolution_m: 2.0
   vertical_layers: [0.5, 1.8, 3.5]
   margin_from_walls_m: 0.4
+
+headless_bake_config:
+  cli_args: "-batchmode -nographics -quit -projectPath . -executeMethod EchoesBakePipeline.BakeLightmapsHeadless"
+  csharp_invocation: |
+    using UnityEditor;
+    using UnityEngine;
+
+    public static class EchoesBakePipeline
+    {
+        [MenuItem("Echoes/Bake Lightmaps Headless")]
+        public static void BakeLightmapsHeadless()
+        {
+            Lightmapping.bakeCompleted += () => {
+                Debug.Log("HEADLESS_BAKE_SUCCESS: Lightmap baking completed successfully.");
+                EditorApplication.Exit(0);
+            };
+            bool started = Lightmapping.BakeAsync();
+            if (!started)
+            {
+                Debug.LogError("HEADLESS_BAKE_FAILED: Failed to start Lightmapping.BakeAsync().");
+                EditorApplication.Exit(1);
+            }
+        }
+    }
+

@@ -33,6 +33,7 @@ public class EchoPlayback : MonoBehaviour
     void Awake()
     {
         transform.localScale = Vector3.one;
+        gameObject.layer = LayerMask.NameToLayer("Echo"); // Layer 9
         _cc = GetComponent<CharacterController>();
         _cc.skinWidth = skinWidth;
         _cc.height = EchoHeight;

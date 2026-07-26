@@ -24,26 +24,31 @@ public partial class PlayerController : MonoBehaviour
     const string AnimatorParamRespawn = "Respawn";
 
     [Header("Movimiento")]
-    public float moveSpeed = 8f;
-    public float sprintMultiplier = 1.6f;
+    public float moveSpeed = 2.8f;
+    public float sprintMultiplier = 1.5f;
     public float acceleration = 36f;
     public float deceleration = 38f;
-    public float rotationSharpness = 16f;
+    [Tooltip("Turn damping time constant (seconds). Spec: 0.12s. Sharpness = 1 / dampingTime.")]
+    public float turnDampingSeconds = 0.12f;
     [Range(0.1f, 1f)]
-    public float airControlFactor = 0.72f;
+    public float airControlFactor = 0.35f;
 
     [Header("Salto / Gravedad")]
-    public float jumpHeight = 3.2f;
-    public float gravityStrength = 28f;
+    public float jumpForce = 5.5f;
+    public float gravityStrength = 18.0f;
     public Vector3 defaultGravityDirection = Vector3.down;
     public float groundedStickForce = 5f;
     public float gravityBlendSpeed = 12f;
     public float fallGravityMultiplier = 2.0f;
+    public float maxFallSpeed = 25.0f;
     public bool alignToGroundNormal = true;
 
+    /// <summary>Theoretical max jump height calculated from jumpForce and gravity (v²/2g).</summary>
+    public float JumpHeight => (jumpForce * jumpForce) / (2f * gravityStrength);
+
     [Header("Jump Assist")]
-    public float jumpBufferTime = 0.25f;
-    public float coyoteTime = 0.25f;
+    public float jumpBufferTime = 0.10f;
+    public float coyoteTime = 0.12f;
 
     [Header("Peso / Game Feel")]
     [SerializeField] float hardLandingSpeed = 13f;
@@ -54,7 +59,7 @@ public partial class PlayerController : MonoBehaviour
 
     [Header("Deteccion de suelo")]
     public Transform groundCheck;
-    public float groundProbeRadius = 0.24f;
+    public float groundProbeRadius = 0.25f;
     public float groundProbeDistance = 0.6f;
     public LayerMask groundMask = (1 << 6); // Solo layer Ground — incluir Default causa que el SphereCast detecte al propio jugador
 
@@ -132,7 +137,18 @@ public partial class PlayerController : MonoBehaviour
     void Awake()
     {
         gameObject.tag = "Player";
+        gameObject.layer = LayerMask.NameToLayer("Player"); // Layer 8
         _controller = GetComponent<CharacterController>();
+        if (_controller != null)
+        {
+            _controller.stepOffset = 0.30f;
+            _controller.slopeLimit = 45.0f;
+            _controller.radius = 0.35f;
+            _controller.height = 1.80f;
+            _controller.center = new Vector3(0f, 0.90f, 0f);
+            _controller.skinWidth = 0.08f;
+        }
+
         TryGetComponent(out _rb);
         if (_rb != null)
         {
@@ -318,6 +334,12 @@ public partial class PlayerController : MonoBehaviour
             if (downSpeed > 0f && !_jumpedThisFrame)
                 gravMul *= fallGravityMultiplier;
             _verticalVelocity += _currentGravity * gravMul * Time.deltaTime;
+            // Terminal fall velocity cap (spec: -25 m/s)
+            float currentDownSpeed = Vector3.Dot(_verticalVelocity, GravityDirection);
+            if (currentDownSpeed > maxFallSpeed)
+            {
+                _verticalVelocity = GravityDirection * maxFallSpeed;
+            }
         }
 
         _gravityScale = 1f;
@@ -499,7 +521,7 @@ public partial class PlayerController : MonoBehaviour
             _planarVelocity += Vector3.ProjectOnPlane(_platformVelocity, movementUp);
         }
 
-        float jumpSpeed = Mathf.Sqrt(2f * gravityStrength * jumpHeight);
+        float jumpSpeed = jumpForce;
         _verticalVelocity = movementUp * jumpSpeed;
         _grounded = false;
         _jumpedThisFrame = true;
@@ -532,6 +554,7 @@ public partial class PlayerController : MonoBehaviour
 
         Quaternion targetRotation = Quaternion.LookRotation(_lastFacing, _currentUp);
         Vector3 oldForward = Vector3.ProjectOnPlane(transform.forward, _currentUp).normalized;
+        float rotationSharpness = 1f / Mathf.Max(0.001f, turnDampingSeconds);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, DampingFactor(rotationSharpness, deltaTime));
         Vector3 newForward = Vector3.ProjectOnPlane(transform.forward, _currentUp).normalized;
         if (oldForward.sqrMagnitude > 0.001f && newForward.sqrMagnitude > 0.001f)

@@ -1,0 +1,20 @@
+# Docs/ExecutableSpecs/camera/dynamic_occlusion_solver.yaml
+# Dynamic Occlusion Solver - Camera Collision Avoidance
+# SPEC-EXEC-CAM-OCC | Authority: Level 3 (Runtime Data Contract)
+
+dynamic_occlusion_solver:
+  sphere_cast_radius_m: 0.3
+  layer_mask: ["Default", "Architecture"]
+  fallback_offset_m: [0, 0.5, 0]
+  min_distance_from_target_m: 0.5
+  max_distance_from_target_m: 15.0
+  occlusion_check_interval_frames: 2
+  smooth_time_s: 0.15
+  ignore_layers: ["Player", "Echo", "Trigger", "Debris", "Water"]
+  push_back_factor: 1.0
+  near_clip_margin_m: 0.05
+
+  validation:
+    assert_no_camera_wall_penetration: true
+    assert_min_distance_maintained: true
+    assert_no_instant_snap: true

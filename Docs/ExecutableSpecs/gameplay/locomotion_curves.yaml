@@ -1,0 +1,69 @@
+# Docs/ExecutableSpecs/gameplay/locomotion_curves.yaml
+# Player Locomotion AnimationCurves - Serialized Keyframes with Tangents
+# SPEC-EXEC-LOC | Authority: Level 3 (Runtime Data Contract)
+
+locomotion_curves:
+  acceleration:
+    keys:
+      - time: 0.0
+        value: 0.0
+        in_tangent: 0.0
+        out_tangent: 15.0
+      - time: 0.2
+        value: 1.0
+        in_tangent: 15.0
+        out_tangent: 0.0
+    post_wrap_mode: "Clamp"
+    pre_wrap_mode: "Clamp"
+
+  deceleration:
+    keys:
+      - time: 0.0
+        value: 1.0
+        in_tangent: 0.0
+        out_tangent: -20.0
+      - time: 0.15
+        value: 0.0
+        in_tangent: -20.0
+        out_tangent: 0.0
+    post_wrap_mode: "Clamp"
+    pre_wrap_mode: "Clamp"
+
+  jump_arc:
+    keys:
+      - time: 0.0
+        value: 0.0
+        in_tangent: 0.0
+        out_tangent: 10.0
+      - time: 0.5
+        value: 1.2
+        in_tangent: 0.0
+        out_tangent: 0.0
+      - time: 1.0
+        value: 0.0
+        in_tangent: -10.0
+        out_tangent: 0.0
+    post_wrap_mode: "Clamp"
+    pre_wrap_mode: "Clamp"
+
+  coyote_time_curve:
+    keys:
+      - time: 0.0
+        value: 1.0
+        in_tangent: 0.0
+        out_tangent: -8.33
+      - time: 0.12
+        value: 0.0
+        in_tangent: -8.33
+        out_tangent: 0.0
+
+  jump_buffer_curve:
+    keys:
+      - time: 0.0
+        value: 1.0
+        in_tangent: 0.0
+        out_tangent: -10.0
+      - time: 0.10
+        value: 0.0
+        in_tangent: -10.0
+        out_tangent: 0.0
