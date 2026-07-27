@@ -275,7 +275,8 @@ Latency 0.8 s (alpha 0.2, congelado) → Playback (EchoLiminal, alpha 0.45)
 blueprints+escenas, fog volumes, props narrativos (`EchoesPropDecorator`)
 y validación visual (`EchoesVisualValidationPass` →
 `Reports/generated/visual_regression_report.json`). No reconstruye escenas
-— respeta el Environment Pass.
+— respeta el Environment Pass. Detalle completo, decisiones y pendientes:
+`Docs/Technical/TECHNICAL_ART_PASS.md`.
 
 **Niebla/atmósfera:** el bug histórico de hardcodear está **corregido** —
 `EchoesLevelShell.SetupAtmosphere` lee `blueprint.fogColor` y
