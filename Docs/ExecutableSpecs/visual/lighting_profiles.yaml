@@ -1,0 +1,52 @@
+schema_version: "1.0"
+catalog_type: lighting_profile_catalog
+code_source: Assets/Scripts/Lighting/LightingProfile.cs
+asset_status: "No LightingProfile .asset files found by filesystem scan; Blueprint references must be created"
+
+archetypes:
+  FluorescentStandard: {flicker_probability: 0.15, intensity: 2.5, dominant_color: "#C8E6C9"}
+  FluorescentDying: {flicker_probability: 0.45, intensity: 2.0, dominant_color: "#A9C0A0"}
+  WindowNatural: {flicker_probability: 0.0, intensity: 2.2, dominant_color: "#C8D8E8"}
+  EmergencyRed: {flicker_probability: 0.2, intensity: 1.8, dominant_color: "#B23A3A"}
+  VoidNone: {flicker_probability: 0.0, intensity: 0.0, dominant_color: "#0A0A0F"}
+  WarmMemory: {flicker_probability: 0.0, intensity: 2.5, dominant_color: "#E8B262"}
+
+chapter_profiles:
+  I_Persistence: {archetype: FluorescentStandard, fog_color: "#1C2430", fog_density: 0.008, ambient_color: "#0F141A"}
+  II_Coordination: {archetype: FluorescentDying, fog_color: "#2E3024", fog_density: 0.010, ambient_color: "#1A1C14"}
+  III_Confidence: {archetype: WindowNatural, fog_color: "#2A1E1E", fog_density: 0.012, ambient_color: "#140E0E"}
+  IV_Optimization: {archetype: WarmMemory, fog_color: "#3B3024", fog_density: 0.015, ambient_color: "#1E1812"}
+  V_Consequence: {archetype: EmergencyRed, fog_color: "#1A1020", fog_density: 0.020, ambient_color: "#0C0810"}
+  VI_Acceptance: {archetype: VoidNone, fog_color: "#F0F4FF", fog_density: 0.002, ambient_color: "#FFFFFF"}
+
+room_profiles:
+  Hall: {archetype: FluorescentStandard, light_spacing: 4.0, flicker_probability: 0.2}
+  Corridor: {archetype: FluorescentDying, light_spacing: 4.0, flicker_probability: 0.3}
+  Classroom: {archetype: FluorescentDying, light_spacing: 5.0, flicker_probability: 0.45}
+  Library: {archetype: WarmMemory, light_spacing: irregular, flicker_probability: 0.0}
+  Stairwell: {archetype: FluorescentDying, light_spacing: 4.0, flicker_probability: 0.35}
+  Bathroom: {archetype: FluorescentDying, light_spacing: 3.0, flicker_probability: 0.5}
+  StaffRoom: {archetype: FluorescentStandard, light_spacing: 5.0, flicker_probability: 0.2}
+  Courtyard: {archetype: WindowNatural, light_spacing: none, flicker_probability: 0.0}
+  Gym: {archetype: FluorescentStandard, light_spacing: 6.0, flicker_probability: 0.1}
+  Lab: {archetype: FluorescentDying, light_spacing: 4.0, flicker_probability: 0.4}
+  Maintenance: {archetype: FluorescentDying, light_spacing: 3.0, flicker_probability: 0.55}
+  Emergency: {archetype: EmergencyRed, light_spacing: 4.0, flicker_probability: 0.2}
+  LyraClassroom: {archetype: WarmMemory, light_spacing: 5.0, flicker_probability: 0.0, anomalous_color_bleed: true}
+  Liminal: {archetype: VoidNone, light_spacing: none, flicker_probability: 0.0, anomalous_color_bleed: true}
+
+rules:
+  - id: LIGHT-VAL-001
+    type: mapping
+    status: active
+    severity: error
+    scope: [lighting, level]
+    rule: "Lighting profile values must map to fields in LightingProfile.cs"
+    validator: validators/static_validator.yaml#lighting_fields
+  - id: LIGHT-VAL-002
+    type: constraint
+    status: active
+    severity: warning
+    scope: [lighting, level]
+    rule: "Point or spot light count should remain <= 48 per scene"
+    validator: validators/level_validator.yaml#light_count

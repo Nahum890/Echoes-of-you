@@ -1,0 +1,20 @@
+schema_version: "1.0"
+schema_type: playtest_report
+required: [playtest_id, level_id, build_id, testers, metrics, observations, verdict]
+fields:
+  playtest_id: {type: string}
+  level_id: {type: string, pattern: "^N[0-9]{2}$"}
+  build_id: {type: string}
+  testers: {type: integer, minimum: 1}
+  metrics:
+    type: object
+    fields:
+      first_echo_seconds: {type: number}
+      first_puzzle_discovery_seconds: {type: number}
+      completion_minutes: {type: number}
+      softlock_events: {type: integer, minimum: 0}
+      confusion_events: {type: integer, minimum: 0}
+      echo_misuses: {type: integer, minimum: 0}
+  observations: {type: array, items: string}
+  verdict: {type: enum, values: [approved, rejected, needs_review]}
+  evidence: {type: array, items: string}

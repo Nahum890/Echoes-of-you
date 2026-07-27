@@ -1,0 +1,75 @@
+schema_version: "1.0"
+catalog_type: puzzle_archetype_catalog
+
+archetypes:
+  teaching:
+    id: PUZ-ARCH-001
+    required_stages: [observation, safe_experiment, single_execution, payoff]
+    new_mechanics_max: 1
+    failure_risk: none_or_low
+  experimentation:
+    id: PUZ-ARCH-002
+    required_stages: [recap, variation, execution, payoff]
+    new_mechanics_max: 0
+    context_change_required: true
+  combination:
+    id: PUZ-ARCH-003
+    required_stages: [recap, combination, execution, recovery]
+    mechanics_max: 2
+  twist:
+    id: PUZ-ARCH-004
+    required_stages: [normal_expectation, reveal, adaptation, payoff]
+    expectation_change_required: true
+  mastery:
+    id: PUZ-ARCH-005
+    required_stages: [setup, independent_execution, integrated_payoff]
+    guidance: minimal
+
+chapters:
+  I_Persistence:
+    levels: [N01, N02, N03]
+    archetypes: [teaching, experimentation]
+    core_idea: echo_persistence
+  II_Coordination:
+    levels: [N04, N05, N08]
+    archetypes: [teaching, experimentation, combination]
+    core_idea: timing_and_coordination
+  III_Confidence:
+    levels: [N06, N07, N09]
+    archetypes: [twist, combination]
+    core_idea: trust_and_revelation
+  IV_Optimization:
+    levels: [N10, N11]
+    archetypes: [combination, mastery]
+    core_idea: memory_and_efficiency
+  V_Consequence:
+    levels: [N12, N13]
+    archetypes: [twist, mastery]
+    core_idea: conflict_and_consequence
+  VI_Acceptance:
+    levels: [N14, N15]
+    archetypes: [mastery]
+    core_idea: integration
+
+rules:
+  - id: PUZ-VAL-001
+    type: validation
+    status: active
+    severity: fatal
+    scope: [puzzle, level]
+    rule: "The puzzle must require Echo-specific timing, persistence, duplication or deterministic trajectory"
+    validator: validators/blueprint_validator.yaml#button_test
+  - id: PUZ-VAL-002
+    type: constraint
+    status: active
+    severity: error
+    scope: [puzzle]
+    rule: "A level may introduce at most one new core mechanic"
+    validator: validators/blueprint_validator.yaml#one_idea
+  - id: PUZ-VAL-003
+    type: validation
+    status: active
+    severity: error
+    scope: [puzzle]
+    rule: "Every puzzle must define a teaching or discovery stage before its mastery test"
+    validator: validators/blueprint_validator.yaml#teaching_stage

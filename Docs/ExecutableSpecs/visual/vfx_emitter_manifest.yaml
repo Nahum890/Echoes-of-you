@@ -1,0 +1,66 @@
+# Docs/ExecutableSpecs/visual/vfx_emitter_manifest.yaml
+# VFX Emitter Manifest - Particle System & Visual Effect Constraints
+# SPEC-EXEC-VFX | Authority: Level 3 (Runtime Data Contract)
+
+vfx_emitter_manifest:
+  global_limits:
+    max_particles_per_emitter: 500
+    max_emitters_per_scene: 24
+    vram_budget_mb: 16
+    max_particle_systems_active: 32
+
+  particle_systems:
+    - id: "echo_trail"
+      max_particles: 100
+      lifetime_range_s: [0.5, 2.0]
+      emission_rate_pps: 30
+      start_size: 0.15
+      start_color: [0.31, 0.76, 0.91, 0.6]
+      material_ref: "Mat_EchoTrail"
+
+    - id: "echo_burst"
+      max_particles: 200
+      lifetime_range_s: [0.3, 1.5]
+      emission_rate_pps: 0
+      burst_count: 50
+      start_size: 0.25
+      start_color: [0.31, 0.76, 0.91, 0.8]
+      material_ref: "Mat_EchoBurst"
+
+    - id: "memory_amber_glow"
+      max_particles: 50
+      lifetime_range_s: [2.0, 8.0]
+      emission_rate_pps: 10
+      start_size: 0.1
+      start_color: [1.0, 0.75, 0.0, 0.4]
+      material_ref: "Mat_MemoryAmber"
+
+    - id: "liminal_fog_drift"
+      max_particles: 300
+      lifetime_range_s: [3.0, 8.0]
+      emission_rate_pps: 20
+      start_size: 2.0
+      start_color: [0.11, 0.14, 0.19, 0.15]
+      material_ref: "Mat_LiminalFog"
+
+    - id: "puzzle_wire_spark"
+      max_particles: 30
+      lifetime_range_s: [0.2, 0.8]
+      emission_rate_pps: 0
+      burst_count: 10
+      start_size: 0.05
+      start_color: [0.31, 0.76, 0.91, 1.0]
+      material_ref: "Mat_WireSpark"
+
+    - id: "hazard_dissolve"
+      max_particles: 100
+      lifetime_range_s: [1.0, 3.0]
+      emission_rate_pps: 25
+      start_size: 0.3
+      start_color: [0.70, 0.23, 0.23, 0.5]
+      material_ref: "Mat_HazardDissolve"
+
+  validation:
+    assert_particle_count_under_budget: true
+    assert_vram_under_budget_mb: 16
+    assert_no_infinite_lifetime: true

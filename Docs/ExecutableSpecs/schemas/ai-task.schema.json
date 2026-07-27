@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "echoes-of-you/ai-task.schema.json",
+  "title": "Echoes of You AI task",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["task_id", "objective", "scope", "context_pack", "allowed_operations", "forbidden_operations", "acceptance_criteria", "required_evidence"],
+  "properties": {
+    "task_id": {"type": "string", "pattern": "^TASK-[A-Z0-9-]+$"},
+    "objective": {"type": "string", "minLength": 1},
+    "scope": {"type": ["string", "array"]},
+    "context_pack": {"type": "array", "items": {"type": "string"}},
+    "allowed_files": {"type": "array", "items": {"type": "string"}},
+    "forbidden_files": {"type": "array", "items": {"type": "string"}},
+    "allowed_operations": {"type": "array", "items": {"type": "string"}},
+    "forbidden_operations": {"type": "array", "items": {"type": "string"}},
+    "acceptance_criteria": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "rule_ids": {"type": "array", "items": {"type": "string"}},
+    "required_evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "validation_commands": {"type": "array", "items": {"type": "string"}},
+    "rollback_plan": {"type": "string"},
+    "human_decision_required": {"type": "array", "items": {"type": "string"}}
+  }
+}

@@ -1,0 +1,14 @@
+schema_version: "1.0"
+pipeline: URP
+vertex_jitter:
+  enabled: true
+  grid_resolution: {x: 320.0, y: 240.0} # Resolución fija PS1
+  geometry_snap_space: ScreenSpace
+color_quantization:
+  color_depth_bits: 15 # 5 bits por canal (RGB555)
+  dither_matrix_4x4: [
+    0,  8,  2, 10,
+   12,  4, 14,  6,
+    3, 11,  1,  9,
+   15,  7, 13,  5
+  ]

@@ -1,0 +1,21 @@
+# PERFORMANCE BUDGET EXECUTABLE SPECIFICATION — Echoes of You 2.0
+spec_id: SPEC-EXEC-BDG-001
+version: "1.0"
+authority: "Docs/Authority/SOURCE_OF_TRUTH.md"
+
+performance_budget:
+  target_frame_rate: 60.0 # fps
+  frame_time_budget_ms: 16.66 # ms
+
+rendering_limits:
+  max_draw_calls_per_scene: 120
+  max_triangles_per_scene: 85000
+  max_light_count_per_scene: 8
+  max_shadow_casters_per_scene: 4
+
+memory_limits:
+  max_system_ram_mb: 1200 # 1.2 GB
+  max_vram_mb: 1024 # 1.0 GB
+
+audio_limits:
+  max_simultaneous_voices: 16

@@ -1,0 +1,53 @@
+# Docs/ExecutableSpecs/validators/save_migration_validator.yaml
+# Save Migration Validator - Executable Spec
+# SPEC-EXEC-SAVE-MIG | Authority: Level 3 (Runtime Data Contract)
+
+save_migration_validator:
+  schema_version_field: "save_schema_version"
+  current_schema_version: 1
+
+  migration_map:
+    "1.0":
+      target_version: 2
+      migration_method: "migrate_v1_to_v2"
+      description: "Add echo frame compression and level completion flags migration"
+
+  migration_rules:
+    - from_version: 1
+      to_version: 2
+      operations:
+        - type: "add_field"
+          field: "echoFrameCompressionEnabled"
+          default: true
+        - type: "add_field"
+          field: "levelCompletionFlags"
+          default: []
+          array_size: 15
+        - type: "rename_field"
+          old_name: "unlockedMemories"
+          new_name: "memoryIds"
+        - type: "transform_array"
+          field: "memoryIds"
+          transform: "ensure_pattern"
+          pattern: "^MEM-[0-9]{3}$"
+
+  validation:
+    pre_migration:
+      - check_field_exists: "saveVersion"
+      - check_field_type: "saveVersion" == "integer"
+    post_migration:
+      - check_field_exists: "save_schema_version"
+      - check_field_type: "save_schema_version" == "integer"
+      - check_value: "save_schema_version >= 1"
+      - check_field_exists: "levelCompletionFlags"
+      - check_array_length: "levelCompletionFlags == 15"
+
+  rollback:
+    enabled: true
+    backup_suffix: ".bak"
+    max_backups: 3
+
+  ci_gate:
+    test_all_migrations: true
+    assert_no_data_loss: true
+    assert_schema_compliance: true

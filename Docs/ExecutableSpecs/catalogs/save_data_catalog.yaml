@@ -1,0 +1,26 @@
+# Docs/ExecutableSpecs/catalogs/save_data_catalog.yaml
+# Save Data Schema - Numeric Constraints (referenced from SAVE_DATA_SCHEMA.md)
+# SPEC-119 | Authority: Level 3 → Runtime Data Contract (Level 3)
+
+save_data_catalog:
+  schema_version: 1
+  file_path: "Application.persistentDataPath + \"/save_v1.json\""
+  level_index:
+    min: 1
+    max: 15
+  level_completion_flags:
+    type: "boolean_array"
+    fixed_length: 15
+  unlocked_memories:
+    type: "string_array"
+    pattern: "^MEM-[0-9]{3}$"
+    max_items: 15
+  total_playtime_seconds:
+    type: "number"
+    minimum: 0.0
+  recorded_echo_frames:
+    type: "array"
+    items:
+      type: "object"
+    max_items: 7200  # 12s × 60fps = 7200 frames (dynamic cap per CONSTANTS_REGISTRY echo.max_record_seconds_standard)
+    description: "Max frames = max_record_seconds_standard × 60fps. Computed at runtime from CONSTANTS_REGISTRY."

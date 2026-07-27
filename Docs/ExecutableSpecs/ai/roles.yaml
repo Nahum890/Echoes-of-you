@@ -1,0 +1,37 @@
+schema_version: "1.0"
+catalog_type: ai_role_permissions
+
+roles:
+  - id: AI-ROLE-001
+    name: architecture
+    allowed_spec_domains: [scale, props, room_templates, modules, school_graph, transitions, landmarks]
+    forbidden_code_paths: [Assets/Scripts/PlayerController.cs, Assets/Scripts/EchoRecorder.cs]
+  - id: AI-ROLE-002
+    name: puzzle
+    allowed_spec_domains: [echo, puzzle, level_intents]
+    forbidden_code_paths: [Assets/Scripts/PlayerController.cs]
+  - id: AI-ROLE-003
+    name: blueprint
+    allowed_spec_domains: [blueprint, modules, rooms, scale]
+    allowed_asset_domains: [Assets/Data/Levels]
+    forbidden_code_paths: [Assets/Editor/EchoesProductionBuilder.cs]
+  - id: AI-ROLE-004
+    name: scene_generation
+    allowed_code_paths: [Assets/Editor/EchoesNewProductionBuilder.cs, Assets/Editor/EchoesModuleFactory.cs]
+    forbidden_code_paths: [Assets/Editor/EchoesProductionBuilder.cs]
+  - id: AI-ROLE-005
+    name: visual
+    allowed_spec_domains: [camera, lighting, materials, composition, shapes]
+    allowed_code_paths: [Assets/Editor/EchoesMaterialLibrary.cs, Assets/Scripts/Lighting/LightingApplier.cs]
+  - id: AI-ROLE-006
+    name: qa
+    allowed_spec_domains: [validators, failure_patterns, scorecard, playtest]
+    allowed_outputs: [Reports/generated]
+
+global_prohibitions:
+  - id: AI-PRO-001
+    rule: "Never invent a script, prefab, shader, class, field or asset path"
+  - id: AI-PRO-002
+    rule: "Never enable destructive queued rebuild without explicit task authorization"
+  - id: AI-PRO-003
+    rule: "Never report approved without evidence"

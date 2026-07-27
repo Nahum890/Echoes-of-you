@@ -1,0 +1,17 @@
+schema_version: "1.0"
+rule_set: narrative
+rules:
+  - id: NARR-001
+    type: constraint
+    status: active
+    severity: warning
+    scope: [level, narrative]
+    rule: "Narrative props must declare meaning, placement and chapter relevance"
+    validator: validators/static_validator.yaml#narrative_metadata
+  - id: NARR-002
+    type: validation
+    status: active
+    severity: warning
+    scope: [level, narrative]
+    rule: "Each chapter must contain at least one environmental narrative beat"
+    validator: validators/blueprint_validator.yaml#narrative_beats

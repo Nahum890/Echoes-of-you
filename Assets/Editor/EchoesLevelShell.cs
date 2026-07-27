@@ -34,7 +34,9 @@ public static class EchoesLevelShell
         // Usa los valores reales del blueprint. Sin esto, los 15 niveles
         // comparten la misma atmósfera sin importar qué se les configure.
         RenderSettings.fogColor = blueprint.fogColor;
-        RenderSettings.fogDensity = Mathf.Clamp(blueprint.fogDensity, 0.012f, 0.04f);
+        // Rango ampliado a [0.002, 0.04]: los perfiles por capítulo de
+        // LIGHTING_GRAMMAR usan 0.002 (Cap. VI) a 0.020 (Cap. V).
+        RenderSettings.fogDensity = Mathf.Clamp(blueprint.fogDensity, 0.002f, 0.04f);
 
         // Ambient plano, no Trilight — PS1 no suaviza el contraste entre
         // superficies con tres colores direccionales. Un solo tono de piso,
@@ -70,7 +72,7 @@ public static class EchoesLevelShell
         lightRef.type = LightType.Directional;
         lightRef.color = blueprint.directionalLightColor;
         lightRef.intensity = blueprint.directionalLightIntensity;
-        lightRef.shadows = LightShadows.Soft; // Sombras suaves
+        lightRef.shadows = LightShadows.Hard; // LIGHTING_GRAMMAR: soft shadows prohibidas (0 Soft Shadows)
         lightRef.shadowStrength = 0.85f;
         lightRef.lightmapBakeType = LightmapBakeType.Mixed; // Modo mixto para personajes dinámicos y geometría estática
         lightObject.transform.rotation = Quaternion.Euler(blueprint.directionalLightRotation);
@@ -131,6 +133,76 @@ public static class EchoesLevelShell
 
     public static GameObject SpawnPlayer(Vector3 position, LevelBlueprint blueprint)
     {
+        var playerPrefab = Resources.Load<GameObject>("Prefabs/Player");
+        if (playerPrefab == null)
+        {
+            playerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Player.prefab")
+                        ?? AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Resources/Prefabs/Player.prefab");
+        }
+
+        Vector3 validPos = FindValidSpawnPosition(position);
+        GameObject player = null;
+
+        if (playerPrefab != null)
+        {
+            player = PrefabUtility.InstantiatePrefab(playerPrefab) as GameObject;
+            player.transform.SetPositionAndRotation(validPos, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogWarning("[EchoesLevelShell] Player prefab no encontrado, generando jugador proceduralmente");
+            player = BuildProceduralPlayer(validPos, blueprint);
+        }
+
+        if (player != null)
+        {
+            var cc = player.GetComponent<CharacterController>();
+            if (cc) cc.enabled = true;
+
+            var pc = player.GetComponent<PlayerController>();
+            if (pc) pc.ForceUnlockAndReset();
+        }
+
+        return player;
+    }
+
+    public static Vector3 FindValidSpawnPosition(Vector3 desiredPos)
+    {
+        // 1. Raycast desde arriba para encontrar suelo real
+        if (Physics.Raycast(desiredPos + Vector3.up * 10f, Vector3.down, out RaycastHit hit, 20f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+        {
+            if (!Physics.CheckSphere(hit.point + Vector3.up * 1f, 0.6f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+            {
+                return hit.point + Vector3.up * 1.5f; // Spawn 1.5m sobre suelo
+            }
+        }
+        
+        // 2. Buscar en espiral alrededor
+        for (float r = 1f; r < 15f; r += 1f)
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                float angle = i * Mathf.PI * 2f / 16f;
+                Vector3 testPos = desiredPos + new Vector3(Mathf.Cos(i * Mathf.PI / 8f), 0, Mathf.Sin(i * Mathf.PI / 8f)) * r;
+                if (Physics.Raycast(testPos + Vector3.up * 10f, Vector3.down, out RaycastHit spiralHit, 20f))
+                {
+                    if (!Physics.CheckSphere(spiralHit.point + Vector3.up * 1f, 0.6f))
+                    {
+                        return spiralHit.point + Vector3.up * 1.5f;
+                    }
+                }
+            }
+        }
+        
+        // 3. Fallback: LevelExit
+        var exit = Object.FindAnyObjectByType<LevelExit>();
+        if (exit != null) return exit.transform.position + Vector3.up * 2f;
+        
+        return Vector3.up * 10f;
+    }
+
+    private static GameObject BuildProceduralPlayer(Vector3 position, LevelBlueprint blueprint)
+    {
         Transform playerRoot = CreateRoot("--- PLAYER ---");
         GameObject player = new GameObject("Player");
         player.transform.SetParent(playerRoot, false);
@@ -149,7 +221,6 @@ public static class EchoesLevelShell
 
         PlayerController playerController = player.AddComponent<PlayerController>();
         playerController.groundMask = (1 << 6);
-        playerController.jumpHeight = EchoesWorldMetrics.PlayerJumpHeight;
 
         player.AddComponent<PlayerCharacterVisualSetup>();
         player.AddComponent<PlayerAdvancedLocomotion>();
@@ -157,8 +228,8 @@ public static class EchoesLevelShell
 
         EchoRecorder recorder = player.AddComponent<EchoRecorder>();
         SetSerializedValue(recorder, "echoPrefab", AssetDatabase.LoadAssetAtPath<GameObject>(EchoPrefabPath));
-        SetSerializedValue(recorder, "maxEchoes", blueprint.echoEnabled ? blueprint.maxEchoes : 0);
-        SetSerializedValue(recorder, "maxRecordSeconds", blueprint.maxRecordSeconds);
+        SetSerializedValue(recorder, "maxEchoes", blueprint != null && blueprint.echoEnabled ? blueprint.maxEchoes : 0);
+        SetSerializedValue(recorder, "maxRecordSeconds", blueprint != null ? blueprint.maxRecordSeconds : 10f);
 
         player.AddComponent<PlayerLocomotionAnimator>();
         player.AddComponent<PlayerAnimationRuntimeBootstrap>();
@@ -206,6 +277,8 @@ public static class EchoesLevelShell
         cameraObject.AddComponent<CinematicRecordingOverlay>();
         CinematicCameraDynamics cameraDynamics = cameraObject.AddComponent<CinematicCameraDynamics>();
         FixedPuzzleCameraController fixedCamera = cameraObject.AddComponent<FixedPuzzleCameraController>();
+        cameraObject.AddComponent<EchoCameraTargetGroupManager>();
+        cameraObject.AddComponent<EventCameraDirector>();
 
         CinemachineBrain brain = cameraObject.AddComponent<CinemachineBrain>();
         brain.DefaultBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.EaseInOut, 0.35f);
@@ -455,6 +528,12 @@ public static class EchoesLevelShell
         ps.referenceResolution = new Vector2Int(1920, 1080);
         ps.screenMatchMode = PanelScreenMatchMode.MatchWidthOrHeight;
         ps.match = 0.5f;
+
+        string tssPath = "Assets/UI/EchoesTheme.tss";
+        ThemeStyleSheet theme = AssetDatabase.LoadAssetAtPath<ThemeStyleSheet>(tssPath);
+        if (theme != null)
+            ps.themeStyleSheet = theme;
+
         AssetDatabase.CreateAsset(ps, panelPath);
         AssetDatabase.SaveAssets();
         return ps;

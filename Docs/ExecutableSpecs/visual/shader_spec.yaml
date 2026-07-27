@@ -1,0 +1,74 @@
+# Docs/ExecutableSpecs/visual/shader_spec.yaml
+# URP Custom Shader Specifications - Executable Spec
+# SPEC-EXEC-SHD | Authority: Level 3 (Runtime Data Contract)
+
+shaders:
+  - id: "liminal_surface"
+    path: "Assets/Shaders/LiminalSurface.shader"
+    pass: "UniversalForward"
+    blend: "SrcAlpha OneMinusSrcAlpha"
+    zwrite: "Off"
+    cull: "Off"
+    queue: "Geometry"
+    keywords:
+      - "_EMISSION"
+      - "_STAINS"
+      - "_WEAR"
+      - "_SUBSURFACE"
+    properties_ref: "CONSTANTS_REGISTRY.yaml#primitives.shaders.liminal_surface"
+
+  - id: "liminal_fog_volume"
+    path: "Assets/Shaders/LiminalFogVolume.shader"
+    pass: "FogPass"
+    blend: "SrcAlpha OneMinusSrcAlpha"
+    zwrite: "Off"
+    cull: "Off"
+    queue: "Transparent"
+    keywords:
+      - "_CORNER_ACCUM"
+      - "_LIGHT_SCATTER"
+      - "_NOISE_3D"
+    properties_ref: "CONSTANTS_REGISTRY.yaml#primitives.shaders.liminal_fog_volume"
+
+  - id: "echo_liminal"
+    path: "Assets/Shaders/EchoLiminal.shader"
+    pass: "UniversalForward"
+    blend: "SrcAlpha OneMinusSrcAlpha"
+    zwrite: "Off"
+    cull: "Off"
+    queue: "Geometry"
+    keywords:
+      - "_DISTORTION"
+      - "_CHROMATIC_ABERRATION"
+      - "_SCANLINES"
+      - "_TEMPORAL_JITTER"
+      - "_DITHER"
+      - "_15FPS_CAP"
+    properties_ref: "CONSTANTS_REGISTRY.yaml#primitives.shaders.echo_liminal"
+
+  - id: "analog_ghost"
+    path: "Assets/Shaders/AnalogGhost.shader"
+    pass:
+      - "UniversalForward"
+      - "UniversalForwardOnly"
+    blend: "SrcAlpha OneMinusSrcAlpha"
+    zwrite: "Off"
+    cull: "Off"
+    queue: "Transparent"
+    keywords:
+      - "_SCANLINES"
+      - "_DITHER_BAYER"
+      - "_FPS_CAP"
+    properties_ref: "CONSTANTS_REGISTRY.yaml#primitives.shaders.analog_ghost"
+
+  - id: "retro_flat_lit"
+    path: "Assets/Shaders/RetroFlatLit.shader"
+    pass: "UniversalForward"
+    blend: "Off"
+    zwrite: "On"
+    cull: "Back"
+    queue: "Geometry"
+    keywords:
+      - "_STEPS"
+      - "_SMOOTHNESS"
+    properties_ref: "CONSTANTS_REGISTRY.yaml#primitives.shaders.retro_flat_lit"

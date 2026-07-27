@@ -1,0 +1,87 @@
+# Docs/ExecutableSpecs/catalogs/lighting_profiles.yaml
+# URP Lighting, Fog & Post-Processing Profiles per Chapter
+# SPEC-105 | Authority: Level 3 → Runtime Data Contract (Level 3)
+
+lighting_profiles:
+  chapters:
+    - id: "I"
+      title: "Persistencia"
+      fog_color: [0.109, 0.141, 0.188, 1.0]  # #1C2430
+      fog_density: 0.008
+      ambient_color: [0.059, 0.078, 0.102, 1.0]  # #0F141A
+      visual_mood: "Institutional Cold"
+      sun_intensity_lux: 0.85
+      sun_color: [0.949, 0.949, 1.0, 1.0]  # #F2F2FF
+      sun_rotation: [50.0, -30.0, 0.0]
+
+    - id: "II"
+      title: "Coordinación"
+      fog_color: [0.180, 0.188, 0.141, 1.0]  # #2E3024
+      fog_density: 0.010
+      ambient_color: [0.102, 0.110, 0.078, 1.0]  # #1A1C14
+      visual_mood: "Strategic Neutral"
+      sun_intensity_lux: 0.85
+      sun_color: [0.949, 0.949, 1.0, 1.0]
+      sun_rotation: [50.0, -30.0, 0.0]
+
+    - id: "III"
+      title: "Confianza"
+      fog_color: [0.165, 0.118, 0.118, 1.0]  # #2A1E1E
+      fog_density: 0.012
+      ambient_color: [0.078, 0.055, 0.055, 1.0]  # #140E0E
+      visual_mood: "Intimate Warm"
+      sun_intensity_lux: 0.85
+      sun_color: [0.949, 0.949, 1.0, 1.0]
+      sun_rotation: [50.0, -30.0, 0.0]
+
+    - id: "IV"
+      title: "Optimización"
+      fog_color: [0.231, 0.188, 0.141, 1.0]  # #3B3024
+      fog_density: 0.015
+      ambient_color: [0.118, 0.094, 0.071, 1.0]  # #1E1812
+      visual_mood: "Nostalgic Warm"
+      sun_intensity_lux: 0.85
+      sun_color: [0.949, 0.949, 1.0, 1.0]
+      sun_rotation: [50.0, -30.0, 0.0]
+
+    - id: "V"
+      title: "Consecuencia"
+      fog_color: [0.102, 0.063, 0.125, 1.0]  # #1A1020
+      fog_density: 0.020
+      ambient_color: [0.047, 0.031, 0.063, 1.0]  # #0C0810
+      visual_mood: "Liminal Cold"
+      sun_intensity_lux: 0.85
+      sun_color: [0.949, 0.949, 1.0, 1.0]
+      sun_rotation: [50.0, -30.0, 0.0]
+
+    - id: "VI"
+      title: "Integración"
+      fog_color: [0.941, 0.957, 1.0, 1.0]  # #F0F4FF
+      fog_density: 0.002
+      ambient_color: [1.0, 1.0, 1.0, 1.0]  # #FFFFFF
+      visual_mood: "Resolutive Clarity"
+      sun_intensity_lux: 0.85
+      sun_color: [0.949, 0.949, 1.0, 1.0]
+      sun_rotation: [50.0, -30.0, 0.0]
+
+  post_processing_global:
+    bloom:
+      intensity: 0.25
+      threshold: 0.9
+      scatter: 0.7
+    vignette:
+      intensity: 0.35
+      smoothness: 0.4
+      color: [0.051, 0.051, 0.102, 1.0]  # #0D0D1A
+    color_adjustments:
+      contrast: 15.0
+      saturation: -8.0
+      post_exposure: -0.5
+
+  limits:
+    max_lights_per_scene: 48
+    shadow_distance_m: 40.0
+    shadow_cascades: 2
+    shadow_type: "Hard"
+    ambient_mode: "Flat"
+    ambient_intensity_lux: 0.15

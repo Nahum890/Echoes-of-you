@@ -19,20 +19,29 @@ MonoBehaviour:
   echoEnabled: 1
   maxEchoes: 1
   maxRecordSeconds: 12
-  activeParadoxes:
-  fogColor: {r: 0.086, g: 0.110, b: 0.094, a: 1}
-  fogDensity: 0.030
+  echoMode: 0
+  recordFuture: 0
+  degradationPerReplay: 0.02
+  imposedEchoData: {fileID: 0}
+  ambientEchoData: {fileID: 0}
+  lockEchoSlots: 0
+  lockedSlotIndices: 
+  cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111106, type: 3}
+  lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111101, type: 3}
+  activeParadoxes: 
+  fogColor: {r: 0.086, g: 0.11, b: 0.094, a: 1}
+  fogDensity: 0.03
   skyColor: {r: 0.05, g: 0.06, b: 0.05, a: 1}
   ambientColor: {r: 0.04, g: 0.05, b: 0.04, a: 1}
   directionalLightRotation: {x: 60, y: -40, z: 0}
   directionalLightColor: {r: 0.55, g: 0.62, b: 0.58, a: 1}
   directionalLightIntensity: 0.45
-  narrativeIntroTitle: "Nivel 6 \u2014 Negaci\u00F3n"
-  narrativeIntroDesc: "Debo cruzar antes de ver que puedo cruzar."
+  narrativeIntroTitle: "Nivel 6 \u2014 Negaci\xF3n"
+  narrativeIntroDesc: Debo cruzar antes de ver que puedo cruzar.
   narrativeIntroDuration: 8
-  puzzleObjectiveText: "El puente existe solo cuando el eco lo atraviesa."
-  puzzleActiveText: "El eco sostiene el puente."
-  puzzleCompleteText: ""
+  puzzleObjectiveText: El puente existe solo cuando el eco lo atraviesa.
+  puzzleActiveText: El eco sostiene el puente.
+  puzzleCompleteText: 
   pathHints:
   - {x: 0, y: 1.1, z: -10}
   - {x: 0, y: 1.1, z: 0}
@@ -44,98 +53,98 @@ MonoBehaviour:
     position: {x: 0, y: 1.1, z: -6}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaA_Lectura
     type: 24
     position: {x: 0, y: 0, z: -4}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 10, y: 3, z: 8}
     customData: WallSage
-    targetSignals:
+    targetSignals: []
   - name: LuzLectura
     type: 10
     position: {x: 0, y: 2.8, z: -4}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.72,0.68,0.55|3.5|14.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaB_PasilloEstanterias
     type: 27
     position: {x: 0, y: 0, z: 6}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 4, y: 3.5, z: 12}
     customData: WallSage
-    targetSignals:
+    targetSignals: []
   - name: AbismoPequenoLearning
     type: 21
     position: {x: 0, y: 0, z: 6}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 3, y: 0.1, z: 2}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: LuzEstanteria
     type: 10
     position: {x: 0, y: 3.2, z: 6}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.55,0.62,0.58|2.0|10.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaC_AbismoPrincipal_Izq
     type: 0
     position: {x: -6, y: 0, z: 18}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 4, y: 0.2, z: 10}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaC_AbismoPrincipal_Der
     type: 0
     position: {x: 6, y: 0, z: 18}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 4, y: 0.2, z: 10}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: PuenteEspectral
     type: 21
     position: {x: 0, y: 0, z: 18}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 8, y: 0.15, z: 10}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: PlacaEco_Puente
     type: 4
     position: {x: 4, y: 0.1, z: 18}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaD_Llegada
     type: 24
     position: {x: 0, y: 0, z: 28}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 10, y: 3, z: 8}
     customData: WallSage
-    targetSignals:
+    targetSignals: []
   - name: LuzLlegada
     type: 10
     position: {x: 0, y: 2.8, z: 28}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.55,0.60,0.50|2.2|12.0
-    targetSignals:
+    targetSignals: []
   - name: LevelExit_Area
     type: 6
     position: {x: 0, y: 1.1, z: 32}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: Level_07
-    targetSignals:
+    targetSignals: []
   - name: LevelGoal
     type: 13
     position: {x: 0, y: 1.1, z: 32}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "El puente existe solo mientras el eco lo sostiene.|Cruzaste.|."
+    customData: El puente existe solo mientras el eco lo sostiene.|Cruzaste.|.
     targetSignals:
     - PlacaEco_Puente
   - name: LevelRuntime
@@ -143,5 +152,6 @@ MonoBehaviour:
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "El puente existe solo cuando el eco lo atraviesa.|El eco sostiene el puente.|."
-    targetSignals:
+    customData: El puente existe solo cuando el eco lo atraviesa.|El eco sostiene
+      el puente.|.
+    targetSignals: []

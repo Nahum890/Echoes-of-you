@@ -1,0 +1,111 @@
+schema_version: "1.2"
+spec_type: prop_rules
+id_prefix: "PROP-SPEC-"
+
+prop_allowances:
+  - id: PROP-SPEC-001
+    room_type: SchoolClassroom
+    max_props: 12
+    allowed_categories: [furniture, narrative, lighting]
+    forbidden_props: [industrial_hazard, heavy_machinery]
+
+  - id: PROP-SPEC-002
+    room_type: SchoolCorridor
+    max_props: 6
+    allowed_categories: [lockers, posters, signage, lights]
+    forbidden_props: [large_tables, beds]
+
+  - id: PROP-SPEC-003
+    room_type: SchoolLibrary
+    max_props: 20
+    allowed_categories: [bookshelves, reading_tables, lamps, records]
+    forbidden_props: [water_hazards, gym_equipment]
+
+  - id: PROP-SPEC-004
+    room_type: SchoolGym
+    max_props: 15
+    allowed_categories: [bleachers, sports_gear, scoreboards]
+    forbidden_props: [bookshelves, laboratory_glassware]
+
+  - id: PROP-SPEC-005
+    room_type: SchoolLab
+    max_props: 16
+    allowed_categories: [lab_benches, glassware, chalkboards, hazard_kits]
+    forbidden_props: [beds, couches]
+
+  - id: PROP-SPEC-006
+    room_type: SchoolStairwell
+    max_props: 4
+    allowed_categories: [handrails, emergency_lights, signs]
+    forbidden_props: [large_tables, bookshelves]
+
+  - id: PROP-SPEC-007
+    room_type: SchoolStaffRoom
+    max_props: 10
+    allowed_categories: [coffee_machine, desks, chairs, noticeboard]
+    forbidden_props: [gym_equipment]
+
+  - id: PROP-SPEC-008
+    room_type: SchoolBathroom
+    max_props: 8
+    allowed_categories: [sinks, mirrors, stalls, paper_dispensers]
+    forbidden_props: [bookshelves, desks]
+
+  - id: PROP-SPEC-009
+    room_type: SchoolCourtyard
+    max_props: 14
+    allowed_categories: [benches, trees, planters, lamp_posts]
+    forbidden_props: [chalkboards, lab_benches]
+
+  - id: PROP-SPEC-010
+    room_type: SchoolMaintenanceCorridor
+    max_props: 8
+    allowed_categories: [pipes, fuse_boxes, toolbox, hazard_signs]
+    forbidden_props: [soft_furniture, books]
+
+  - id: PROP-SPEC-011
+    room_type: SchoolEmergencyCorridor
+    max_props: 6
+    allowed_categories: [exit_signs, fire_extinguishers, emergency_lights]
+    forbidden_props: [large_tables, bookcases]
+
+  - id: PROP-SPEC-012
+    room_type: SchoolLyraClassroom
+    max_props: 15
+    allowed_categories: [special_desk, personal_bag, custom_drawings, memory_props]
+    forbidden_props: [generic_office_furniture]
+
+  - id: PROP-SPEC-013
+    room_type: SchoolOffice
+    max_props: 10
+    allowed_categories: [principal_desk, filing_cabinets, phone, awards]
+    forbidden_props: [lab_glassware]
+
+  - id: PROP-SPEC-014
+    room_type: SchoolLiminalClassroom
+    max_props: 8
+    allowed_categories: [floating_chairs, warped_blackboard, anomaly_light]
+    forbidden_props: [standard_props]
+
+  - id: PROP-SPEC-015
+    room_type: TransitionSpace
+    max_props: 3
+    allowed_categories: [threshold_lamp, arch_trim]
+    forbidden_props: [heavy_clutter]
+
+placement_constraints:
+  - id: PROP-SPEC-016
+    rule: "Props must not intersect player movement corridors (minimum clearance 1.2m)"
+    severity: error
+  - id: PROP-SPEC-017
+    rule: "Interactive puzzle props must maintain 2.0m line of sight clearance"
+    severity: error
+  - id: PROP-SPEC-018
+    rule: "Wall props must align to module wall surface normals within 5 degrees"
+    severity: warning
+  - id: PROP-SPEC-019
+    rule: "Ceiling lighting props require structural anchor verification"
+    severity: warning
+  - id: PROP-SPEC-020
+    rule: "Narrative key props (Lyra's belongings) require unique placement tags"
+    severity: error

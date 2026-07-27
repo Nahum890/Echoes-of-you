@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EchoesBlueprint_CI_Validation",
+  "description": "JSON Schema to automatically validate LevelBlueprint YAML files in CI/CD pipeline",
+  "type": "object",
+  "required": ["levelName", "modules", "maxRecordSeconds", "cameraProfile"],
+  "properties": {
+    "levelName": {
+      "type": "string",
+      "pattern": "^Level_[0-9]{2}$"
+    },
+    "maxRecordSeconds": {
+      "type": "number",
+      "minimum": 1.0,
+      "maximum": 20.0,
+      "description": "Per DECISION-ECH-DURATION. Max 20.0 for narrative, 12.0 for standard."
+    },
+    "cameraProfile": {
+      "type": "string",
+      "pattern": "^Assets/Data/Camera/CamProfile_.*\\.asset$",
+      "description": "Must reference an existing .asset file"
+    },
+    "fogDensity": {
+      "type": "number",
+      "minimum": 0.001,
+      "maximum": 0.05
+    },
+    "modules": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["name", "type", "position"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "PlayerStart",
+              "LevelExit",
+              "SchoolCorridor",
+              "SchoolClassroom",
+              "SchoolHall",
+              "PressurePlate",
+              "Door",
+              "GhostBridge",
+              "MovingPlatform"
+            ]
+          },
+          "position": {
+            "type": "object",
+            "required": ["x", "y", "z"],
+            "properties": {
+              "x": { "type": "number" },
+              "y": {
+                "type": "number",
+                "multipleOf": 3.2,
+                "description": "Y must be multiple of 3.2m (floor levels)"
+              },
+              "z": { "type": "number" }
+            }
+          }
+        }
+      },
+      "contains": { "properties": { "type": { "const": "PlayerStart" } } },
+      "description": "Must contain exactly 1 PlayerStart and at least 1 LevelExit"
+    }
+  }
+}

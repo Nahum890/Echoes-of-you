@@ -1,0 +1,17 @@
+schema_version: "1.0"
+rule_set: emotional_flow
+rules:
+  - id: EMO-001
+    type: constraint
+    status: active
+    severity: error
+    scope: [level, narrative]
+    rule: "Each level must declare start, exploration, puzzle and resolution emotions"
+    validator: validators/blueprint_validator.yaml#emotional_arc
+  - id: EMO-002
+    type: validation
+    status: active
+    severity: advisory
+    scope: [level]
+    rule: "Architecture, color and audio should reinforce the assigned emotion"
+    validator: validators/level_validator.yaml#emotional_consistency

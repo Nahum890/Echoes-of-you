@@ -1,0 +1,36 @@
+# ECHO_PHYSICS_INTERACTION_SPEC.yaml
+# Spec ID: SPEC-139
+# Version: 1.0
+spec_id: SPEC-139
+version: "1.0"
+authority: "Docs/ExecutableSpecs/registry/decisions.yaml"
+
+# Physics Interaction Formulas: Echo-Player & Echo-Environment
+
+echo_physics:
+  # Echo does NOT have a Rigidbody — uses only CharacterController in kinematic mode
+  uses_rigidbody: false
+  uses_character_controller: true
+  character_controller:
+    radius_m: 0.35      # matches locomotion_spec.yaml
+    height_m: 1.80
+    # DIFFERENCE with Player: Echo CC is Trigger-only for Push collisions
+    detect_collisions: false   # Echo does not detect collisions — only Player detects Echo
+
+  # Echo→Player collision: does Player push Echo? NO.
+  # Player→Echo collision: Player passes through Echo. Layer = Echo (9).
+  # Layer 8 (Player) vs Layer 9 (Echo): collision_matrix sets to false.
+  player_echo_collision: false   # Confirmed in layer_matrix_spec.yaml
+
+  # Echo→PuzzleEnvironment collision:
+  # Echo DOES activate PressurePlates (Layer 11 Hazard → Layer 9 Echo: true)
+  echo_triggers_pressure_plates: true
+  detection_method: "TriggerEnter with tag 'Echo'"
+
+  # GhostPlatform (Layer 12):
+  ghost_platform_behavior:
+    default_state: "Passthrough"    # Player and Echo pass through
+    activated_state: "Solid"         # Only when Echo plays back and is on top
+    activation_trigger: "EchoPlayback.IsActive && EchoPosition within 0.5m of platform"
+    layer_switch_method: "gameObject.layer = LayerMask.NameToLayer('Default')"
+    layer_revert_method: "gameObject.layer = LayerMask.NameToLayer('GhostPlatform')"

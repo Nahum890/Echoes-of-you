@@ -12,6 +12,8 @@ public static class EchoesNewProductionBuilder
     private const string BlueprintRoot = "Assets/Data/Levels";
 
     [MenuItem("Echoes of You/Production/Build All Blueprint Levels", false, 201)]
+    public static void BuildAllBlueprintLevels() => BuildAllBlueprints();
+
     public static void BuildAllBlueprints()
     {
         BuildLegacyExperienceBlueprints();
@@ -23,8 +25,9 @@ public static class EchoesNewProductionBuilder
         // 0. Export prefabs to ensure no missing dependencies exist
         // EchoesLevelKitExporter.ExportLevelKitPrefabs();
 
-        // 1. Ensure setup
+        // 1. Ensure setup and validate executable specs
         EchoesMaterialLibrary.EnsureMaterials();
+        ExecutableSpecValidator.ValidateProject();
         
         // 2. Find all LevelBlueprint ScriptableObjects
         string[] guids = AssetDatabase.FindAssets("t:LevelBlueprint", new[] { BlueprintRoot });
@@ -332,26 +335,6 @@ public static class EchoesNewProductionBuilder
             }
         }
 
-        // 2. Wire ResonanceSystem to its PuzzleSignal
-        foreach (var inst in instantiated)
-        {
-            if (inst.config.type == ModuleType.ResonanceChamber)
-            {
-                ResonanceSystem resonance = inst.gameObject.GetComponent<ResonanceSystem>();
-                if (resonance != null && inst.config.targetSignals != null && inst.config.targetSignals.Length > 0)
-                {
-                    // Find puzzle signal
-                    string sigName = inst.config.targetSignals[0];
-                    // We can check if there's a PuzzleSignal component in the hierarchy
-                    PuzzleSignal signal = Object.FindAnyObjectByType<PuzzleSignal>();
-                    if (signal != null && signal.gameObject.name == sigName)
-                    {
-                        SetSerializedValue(resonance, "targetSignal", signal);
-                    }
-                }
-            }
-        }
-
         // 3. Wire LevelGoals to their triggers (Plates or Signals)
         foreach (var inst in instantiated)
         {
@@ -603,7 +586,7 @@ public static class EchoesNewProductionBuilder
                 sb.AppendLine(path);
         }
         string outputPath = "Assets/_RealAssetManifest.txt";
-        File.WriteAllText(outputPath, sb.ToString());
+        File.WriteAllText(outputPath, sb.ToString(), System.Text.Encoding.UTF8);
         AssetDatabase.Refresh();
         Debug.Log($"[Echoes Production] Manifiesto escrito en {outputPath}");
         EditorUtility.RevealInFinder(outputPath);

@@ -1,0 +1,17 @@
+schema_version: "1.0"
+rule_set: materials
+rules:
+  - id: MAT-001
+    type: prohibition
+    status: active
+    severity: fatal
+    scope: [material, code]
+    rule: "Built-in Standard shader is forbidden in URP project"
+    validator: validators/static_validator.yaml#urp_only
+  - id: MAT-002
+    type: mapping
+    status: active
+    severity: error
+    scope: [material]
+    rule: "Token material must resolve through EchoesMaterialLibrary or an approved asset"
+    validator: validators/static_validator.yaml#material_paths

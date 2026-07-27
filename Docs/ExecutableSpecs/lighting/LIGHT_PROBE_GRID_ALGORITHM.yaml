@@ -1,0 +1,6 @@
+schema_version: "1.0"
+algorithm:
+  spacing_meters: {x: 3.0, y: 1.5, z: 3.0}
+  margin_meters: 0.5
+  height_layers: [0.5, 1.8, 3.0]
+  formula: "ProbePos(i,j,k) = RoomMin + Margin + Vector3(i*dx, height_layers[j], k*dz)"

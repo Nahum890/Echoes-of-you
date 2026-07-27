@@ -1,0 +1,44 @@
+# Docs/Specs/ANIMATION_TRANSITION_MATRIX.yaml (SPEC-128)
+animator_controller: "Assets/Animation/Player/PlayerAnimator.controller"
+sample_rate_fps: 60
+
+parameters:
+  Speed:        {type: float,  default: 0.0}
+  IsGrounded:   {type: bool,   default: true}
+  IsJumping:    {type: bool,   default: false}
+  IsRecording:  {type: bool,   default: false}
+  IsInteracting:{type: bool,   default: false}
+  IsInLatency:  {type: bool,   default: false}
+
+transitions:
+  Idle->Walk:
+    condition: "Speed > 0.1"
+    blend_duration_s: 0.15
+    can_be_cancelled: true
+  Walk->Idle:
+    condition: "Speed < 0.05"
+    blend_duration_s: 0.10
+    can_be_cancelled: true
+  Walk->Jump:
+    condition: "IsJumping == true"
+    blend_duration_s: 0.05
+    can_be_cancelled: false
+  Jump->Idle:
+    condition: "IsGrounded == true && IsJumping == false"
+    blend_duration_s: 0.20
+    can_be_cancelled: false
+  Idle->Record:   # Layer 1 Additive
+    condition: "IsRecording == true"
+    blend_duration_s: 0.10
+    layer: 1
+  Record->Idle:   # Layer 1 Additive
+    condition: "IsRecording == false"
+    blend_duration_s: 0.20
+    layer: 1
+
+echo_replay:
+  uses_animator: false
+  # El Echo NO usa Animator — reproduce Vector3/Quaternion del buffer directamente
+  # Transform.position se interpola con Vector3.Lerp a 30Hz (sample_rate de EchoRecordFrame)
+  position_lerp_t: 0.85   # parámetro de suavizado (0 = sin suavizado, 1 = instantáneo)
+  playback_frame_rate_hz: 30   # matches CONSTANTS_REGISTRY.echo.sample_rate_hz

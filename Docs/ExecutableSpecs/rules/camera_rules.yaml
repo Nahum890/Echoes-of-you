@@ -1,0 +1,24 @@
+schema_version: "1.0"
+rule_set: camera
+rules:
+  - id: CAM-001
+    type: prohibition
+    status: active
+    severity: fatal
+    scope: [camera, level]
+    rule: "Only one camera controller may write the camera transform in LateUpdate"
+    validator: validators/camera_validator.yaml#controller_exclusivity
+  - id: CAM-002
+    type: validation
+    status: active
+    severity: fatal
+    scope: [camera, blueprint]
+    rule: "Production Blueprint cameraProfile must be non-null and resolvable"
+    validator: validators/camera_validator.yaml#profile_reference
+  - id: CAM-003
+    type: validation
+    status: active
+    severity: error
+    scope: [camera, echo]
+    rule: "The active Echo must be included in the active target group during playback"
+    validator: validators/camera_validator.yaml#echo_target

@@ -1,0 +1,69 @@
+# Docs/ExecutableSpecs/persistence/save_schema.yaml
+# Save Data JSON Schema & Serialization Parameters - Executable Spec
+# SPEC-EXEC-SAV | Authority: Level 3 (Runtime Data Contract)
+
+save_schema:
+  version: 1
+  file_path: "Application.persistentDataPath + '/save_v1.json'"
+  serialization_format: "JSON (Draft-07)"
+
+json_schema:
+  $schema: "http://json-schema.org/draft-07/schema#"
+  title: "EchoesOfYou_SaveData"
+  type: "object"
+  required:
+    - "saveVersion"
+    - "currentLevelIndex"
+    - "unlockedMemories"
+  properties:
+    saveVersion:
+      type: "integer"
+      const: 1
+    currentLevelIndex:
+      type: "integer"
+      minimum: 1
+      maximum: 15
+    unlockedMemories:
+      type: "array"
+      items:
+        type: "string"
+        pattern: "^MEM-[0-9]{3}$"
+      maxItems: 15
+    totalPlaytimeSeconds:
+      type: "number"
+      minimum: 0.0
+    levelCompletionFlags:
+      type: "array"
+      items:
+        type: "boolean"
+      minItems: 15
+      maxItems: 15
+    recordedEchoFrames:
+      type: "array"
+      items:
+        type: "object"
+        properties:
+          position:
+            type: "array"
+            items:
+              type: "number"
+            minItems: 3
+            maxItems: 3
+          rotation:
+            type: "array"
+            items:
+              type: "number"
+            minItems: 4
+            maxItems: 4
+          timestamp:
+            type: "number"
+      minItems: 0
+      maxItems: 7200  # 12.0s × 60fps = 7200 frames (CONSTANTS_REGISTRY.yaml echo.max_record_seconds × 60)
+
+constraints:
+  binary_serialization_prohibited: true
+  json_only: true
+
+validation:
+  unit_test_assertion: "JSON validation against schema must pass 100%"
+  corrupt_file_handling: "Rename to .bak and generate fresh save"

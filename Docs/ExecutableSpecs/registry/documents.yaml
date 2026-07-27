@@ -1,0 +1,456 @@
+schema_version: "1.0"
+registry_type: document_registry
+last_audited: "2026-07-23"
+
+documents:
+  - id: DOC-AUTH-001
+    path: Docs/ExecutableSpecs/manifest.yaml
+    title: Executable specification manifest
+    role: authority
+    status: active
+    authority_level: 1
+    machine_source: self
+    validators: [DOC-VAL-001, DOC-VAL-002]
+
+  - id: DOC-AUTH-002
+    path: Docs/ExecutableSpecs/rules/authority.yaml
+    title: Machine authority rules
+    role: authority
+    status: active
+    authority_level: 1
+    machine_source: self
+    validators: [DOC-VAL-001, DOC-VAL-003]
+
+  - id: DOC-AUTH-003
+    path: Docs/ExecutableSpecs/registry/decisions.yaml
+    title: Resolved project decisions
+    role: authority
+    status: active
+    authority_level: 1
+    machine_source: self
+    validators: [DOC-VAL-001, DOC-VAL-004]
+
+  - id: DOC-AUTH-004
+    path: Docs/Authority/SOURCE_OF_TRUTH.md
+    title: Human authority overview
+    role: authority
+    status: active
+    authority_level: 1
+    machine_source: Docs/ExecutableSpecs/rules/authority.yaml
+    validators: [DOC-VAL-005]
+
+  - id: DOC-AUTH-005
+    path: Docs/Technical/PROJECT_CONTEXT.md
+    title: Active technical project context
+    role: authority
+    status: active
+    authority_level: 3
+    machine_source: Reports/generated/code_inventory.json
+    validators: [DOC-VAL-006]
+
+  - id: DOC-DESIGN-001
+    path: Docs/GameDesign/ECHOES_BIBLE.md
+    title: Creative design bible
+    role: design
+    status: active
+    authority_level: 2
+    machine_source: Docs/ExecutableSpecs/rules/bible_rules.yaml
+    validators: [DOC-VAL-007]
+
+  - id: DOC-DESIGN-002
+    path: Docs/GameDesign/BRIEF_ESPACIAL_15_NIVELES.md
+    title: Fifteen-level spatial brief
+    role: design
+    status: active
+    authority_level: 7
+    machine_source: Docs/ExecutableSpecs/levels/level_intents.yaml
+    validators: [DOC-VAL-008]
+
+  - id: DOC-DESIGN-003
+    path: Docs/GameDesign/SPACE_GRAMMAR.md
+    title: Spatial language
+    role: design
+    status: active
+    authority_level: 7
+    machine_source: Docs/ExecutableSpecs/catalogs/room_templates.yaml
+    validators: [DOC-VAL-008]
+
+  - id: DOC-DESIGN-004
+    path: Docs/GameDesign/ENVIRONMENT_GRAMMAR.md
+    title: Environment grammar
+    role: design
+    status: active
+    authority_level: 7
+    machine_source: Docs/ExecutableSpecs/catalogs/props.yaml
+    validators: [DOC-VAL-008]
+
+  - id: DOC-DESIGN-005
+    path: Docs/GameDesign/SPATIAL_LANGUAGE.md
+    title: Spatial readability
+    role: design
+    status: active
+    authority_level: 7
+    machine_source: Docs/ExecutableSpecs/catalogs/landmarks.yaml
+    validators: [DOC-VAL-008]
+
+  - id: DOC-DESIGN-006
+    path: Docs/GameDesign/BUILDING_FLOW.md
+    title: School circulation flow
+    role: design
+    status: active
+    authority_level: 7
+    machine_source: Docs/ExecutableSpecs/architecture/school_graph.yaml
+    validators: [DOC-VAL-008]
+
+  - id: DOC-DESIGN-007
+    path: Docs/GameDesign/EXPLORATION_MODEL.md
+    title: Exploration model
+    role: design
+    status: active
+    authority_level: 7
+    machine_source: Docs/ExecutableSpecs/rules/level_rules.yaml
+    validators: [DOC-VAL-008]
+
+  - id: DOC-DESIGN-008
+    path: Docs/Art/VISUAL_TARGET.md
+    title: Visual target
+    role: design
+    status: active
+    authority_level: 7
+    machine_source: Docs/ExecutableSpecs/visual/materials.yaml
+    validators: [DOC-VAL-008]
+
+  - id: DOC-DESIGN-009
+    path: Docs/Art/CAMERA_GRAMMAR.md
+    title: Camera intent
+    role: design
+    status: active
+    authority_level: 7
+    machine_source: Docs/ExecutableSpecs/visual/camera_profiles.yaml
+    validators: [DOC-VAL-008]
+
+  - id: DOC-SPEC-001
+    path: Docs/Specs/SCALE_GUIDE.md
+    title: Physical scale guide
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/catalogs/scale.yaml
+    validators: [SCALE-VAL-001, SCALE-VAL-002]
+
+  - id: DOC-SPEC-002
+    path: Docs/Specs/PROP_GRAMMAR.md
+    title: Prop grammar
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/catalogs/props.yaml
+    validators: [PROP-VAL-001, PROP-VAL-002]
+
+  - id: DOC-SPEC-003
+    path: Docs/Specs/ROOM_TEMPLATES.md
+    title: Room templates
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/catalogs/room_templates.yaml
+    validators: [ROOM-VAL-001, ROOM-VAL-002]
+
+  - id: DOC-SPEC-004
+    path: Docs/Specs/MODULE_LIBRARY.md
+    title: Module library
+    role: catalog
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/catalogs/modules.yaml
+    validators: [MODULE-VAL-001, MODULE-VAL-002]
+
+  - id: DOC-SPEC-005
+    path: Docs/Specs/SCHOOL_ARCHITECTURE.md
+    title: School architecture
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/architecture/school_graph.yaml
+    validators: [ARCH-VAL-001, ARCH-VAL-002]
+
+  - id: DOC-SPEC-006
+    path: Docs/Specs/TRANSITION_GRAMMAR.md
+    title: Transition grammar
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/architecture/transitions.yaml
+    validators: [TRANS-VAL-001, TRANS-VAL-002]
+
+  - id: DOC-SPEC-007
+    path: Docs/Specs/LANDMARK_GRAMMAR.md
+    title: Landmark grammar
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/architecture/landmarks.yaml
+    validators: [LAND-VAL-001, LAND-VAL-002]
+
+  - id: DOC-SPEC-008
+    path: Docs/Specs/ECHO_GRAMMAR.md
+    title: Echo grammar
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/gameplay/echo_states.yaml
+    validators: [ECHO-VAL-001, ECHO-VAL-002]
+
+  - id: DOC-SPEC-009
+    path: Docs/Specs/PUZZLE_GRAMMAR.md
+    title: Puzzle grammar
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/gameplay/puzzle_archetypes.yaml
+    validators: [PUZ-VAL-001, PUZ-VAL-002]
+
+  - id: DOC-SPEC-010
+    path: Docs/Specs/BLUEPRINT_SPEC.md
+    title: LevelBlueprint contract
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/gameplay/blueprint_spec.yaml
+    validators: [BLU-VAL-001, BLU-VAL-002]
+
+  - id: DOC-SPEC-011
+    path: Docs/Specs/LEVEL_GRAMMAR.md
+    title: Level grammar
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/levels/level_structure.yaml
+    validators: [LVL-VAL-001, LVL-VAL-002]
+
+  - id: DOC-SPEC-012
+    path: Docs/Specs/NARRATIVE_ENVIRONMENT.md
+    title: Environmental narrative
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/narrative/objects.yaml
+    validators: [NARR-VAL-001]
+
+  - id: DOC-SPEC-013
+    path: Docs/Specs/EMOTIONAL_FLOW.md
+    title: Emotional flow
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/narrative/emotional_arc.yaml
+    validators: [EMO-VAL-001]
+
+  - id: DOC-SPEC-014
+    path: Docs/Specs/LIGHTING_GRAMMAR.md
+    title: Lighting grammar
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/visual/lighting_profiles.yaml
+    validators: [LIGHT-VAL-001, LIGHT-VAL-002]
+
+  - id: DOC-SPEC-015
+    path: Docs/Specs/MATERIAL_GRAMMAR.md
+    title: Material grammar
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/visual/materials.yaml
+    validators: [MAT-VAL-001, MAT-VAL-002]
+
+  - id: DOC-SPEC-016
+    path: Docs/Specs/COMPOSITION_RULES.md
+    title: Composition rules
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/visual/composition.yaml
+    validators: [COMP-VAL-001]
+
+  - id: DOC-SPEC-017
+    path: Docs/Specs/SHAPE_LANGUAGE.md
+    title: Shape language
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/visual/shapes.yaml
+    validators: [SHAPE-VAL-001]
+
+  - id: DOC-SPEC-018
+    path: Docs/Specs/CAMERA_SPEC.md
+    title: Camera specification
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/visual/camera_profiles.yaml
+    validators: [CAM-VAL-001, CAM-VAL-002]
+
+  - id: DOC-SPEC-019
+    path: Docs/Specs/LEVEL_PIPELINE.md
+    title: Level production pipeline
+    role: procedure
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/ai/task_schema.yaml
+    validators: [PIPE-VAL-001]
+
+  - id: DOC-SPEC-020
+    path: Docs/Specs/SYSTEM_CONTRACT.md
+    title: Code and specification contract
+    role: specification
+    status: active
+    authority_level: 4
+    machine_source: Reports/generated/code_inventory.json
+    validators: [CNT-VAL-001, CNT-VAL-002]
+
+  - id: DOC-CATALOG-001
+    path: Docs/Specs/ASSET_CATALOG.md
+    title: Asset catalog overview
+    role: catalog
+    status: generated
+    authority_level: 4
+    machine_source: Reports/generated/asset_inventory.json
+    validators: [ASSET-VAL-001, ASSET-VAL-002]
+
+  - id: DOC-CATALOG-002
+    path: Docs/Specs/PUZZLE_IMPLEMENTATION_MATRIX.md
+    title: Puzzle implementation matrix
+    role: catalog
+    status: generated
+    authority_level: 4
+    machine_source: Reports/generated/blueprint_inventory.json
+    validators: [PUZ-MAT-001]
+
+  - id: DOC-CATALOG-003
+    path: Docs/Specs/LEVEL_STATUS.md
+    title: Level production status
+    role: catalog
+    status: generated
+    authority_level: 4
+    machine_source: Reports/generated/level_status.json
+    validators: [STATUS-VAL-001]
+
+  - id: DOC-CATALOG-004
+    path: Docs/Specs/DECISION_LOG.md
+    title: Human decision log
+    role: reference
+    status: active
+    authority_level: 7
+    machine_source: Docs/ExecutableSpecs/registry/decisions.yaml
+    validators: [DOC-VAL-009]
+
+  - id: DOC-VAL-001
+    path: Docs/Validation/LEVEL_VALIDATOR.md
+    title: Level validator overview
+    role: validation
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/validators/level_validator.yaml
+    validators: [DOC-VAL-010]
+
+  - id: DOC-VAL-002
+    path: Docs/Validation/LEVEL_SCORECARD.md
+    title: Level scorecard overview
+    role: validation
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/validators/scorecard.yaml
+    validators: [DOC-VAL-011]
+
+  - id: DOC-VAL-003
+    path: Docs/Validation/PLAYTEST_GUIDE.md
+    title: Playtest protocol
+    role: validation
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/validators/playtest.schema.yaml
+    validators: [DOC-VAL-012]
+
+  - id: DOC-VAL-004
+    path: Docs/Validation/FAILURE_PATTERNS.md
+    title: Failure patterns
+    role: validation
+    status: active
+    authority_level: 4
+    machine_source: Docs/ExecutableSpecs/rules/failure_patterns.yaml
+    validators: [DOC-VAL-013]
+
+  - id: DOC-AI-001
+    path: Docs/AI/AI_RULEBOOK.md
+    title: IA rulebook
+    role: ai
+    status: active
+    authority_level: 5
+    machine_source: Docs/ExecutableSpecs/ai/task_schema.yaml
+    validators: [AI-VAL-001]
+
+  - id: DOC-AI-002
+    path: Docs/AI/AI_PIPELINE.md
+    title: IA pipeline
+    role: ai
+    status: active
+    authority_level: 5
+    machine_source: Docs/ExecutableSpecs/ai/pipeline.yaml
+    validators: [AI-VAL-002]
+
+  - id: DOC-AI-003
+    path: Docs/AI/AI_RESPONSIBILITIES.md
+    title: IA responsibilities
+    role: ai
+    status: active
+    authority_level: 5
+    machine_source: Docs/ExecutableSpecs/ai/roles.yaml
+    validators: [AI-VAL-003]
+
+  - id: DOC-AI-004
+    path: Docs/AI/AI_VALIDATION_PROTOCOL.md
+    title: IA validation protocol
+    role: ai
+    status: active
+    authority_level: 5
+    machine_source: Docs/ExecutableSpecs/ai/report_schema.yaml
+    validators: [AI-VAL-004]
+
+  - id: DOC-AI-005
+    path: Docs/AI/AI_TASK_TEMPLATE.md
+    title: IA task template
+    role: ai
+    status: active
+    authority_level: 5
+    machine_source: Docs/ExecutableSpecs/ai/task_schema.yaml
+    validators: [AI-VAL-005]
+
+  - id: DOC-LEGACY-001
+    path: AIPromptContext.md
+    title: Legacy IA context summary
+    role: reference
+    status: superseded
+    authority_level: 8
+    machine_source: Docs/ExecutableSpecs/manifest.yaml
+    supersedes: []
+    validators: [DOC-VAL-014]
+
+  - id: DOC-LEGACY-002
+    path: Docs/GameDesign/TRANSITION_LANGUAGE.md
+    title: Legacy transition language
+    role: reference
+    status: superseded
+    authority_level: 8
+    machine_source: Docs/ExecutableSpecs/architecture/transitions.yaml
+    supersedes: [Docs/Specs/TRANSITION_GRAMMAR.md]
+    validators: [DOC-VAL-014]
+
+  - id: DOC-LEGACY-003
+    path: Docs/Archive/LEVEL_GRAMMAR.md
+    title: Archived level grammar
+    role: reference
+    status: deprecated
+    authority_level: 8
+    machine_source: Docs/ExecutableSpecs/levels/level_structure.yaml
+    validators: [DOC-VAL-014]

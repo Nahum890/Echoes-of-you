@@ -1,0 +1,193 @@
+---
+# SAVE_SERIALIZATION_SPEC.yaml
+# SPEC-ID: SPEC-310
+# Authority: L1A (ExecutableSpec)
+# Purpose: Defines the complete save/load serialization contract for EchoSaveManager.cs
+# Cross-Refs:
+#   - ECHOES_BIBLE.md (SPEC-101): Progression model
+#   - ECHO_GRAMMAR.md (SPEC-107): EchoRecording struct
+#   - MEMORY_VRAM_BUDGET_MATRIX.yaml (SPEC-300): Memory budget constraints
+#   - CONSTANTS_REGISTRY.yaml: Echo timing primitives
+
+schema_version: "1.0.0"
+spec_id: "SPEC-310"
+
+# --- Save File Format ---
+save_file_format:
+  serializer: "UnityEngine.JsonUtility"  # NOT Newtonsoft — avoid reflection overhead on mobile
+  file_extension: ".echosave"
+  encoding: "UTF-8"
+  compression: "none"  # Files are < 64KB; compression overhead is counterproductive
+  max_file_size_bytes: 65536  # 64 KB hard cap — exceeding this triggers FAIL-SAVE-001
+
+# --- Save Data Schema (maps to C# [Serializable] class) ---
+save_data_schema:
+  class_name: "EchoSaveData"
+  namespace: "EchoesOfYou.Persistence"
+  fields:
+    - name: "version"
+      type: "int"
+      description: "Schema version for migration. Current: 1."
+      default: 1
+
+    - name: "current_level_build_index"
+      type: "int"
+      description: "BuildSettings index of last active scene."
+      range: [0, 15]  # 16 levels: L00–L15
+
+    - name: "unlocked_levels"
+      type: "bool[]"
+      length: 16
+      description: "Per-level unlock flags. Index = build_index."
+      default_all: false
+      rule: "unlocked_levels[0] is ALWAYS true (tutorial is always unlocked)."
+
+    - name: "collectibles_found"
+      type: "bool[]"
+      length: 48  # 3 collectibles × 16 levels
+      description: "Flat array. Index = (level_index * 3) + collectible_index."
+      default_all: false
+
+    - name: "best_completion_time_s"
+      type: "float[]"
+      length: 16
+      description: "Best completion time per level in seconds. -1.0 = not completed."
+      default_all: -1.0
+
+    - name: "total_play_time_s"
+      type: "float"
+      description: "Cumulative play time across all sessions."
+      default: 0.0
+
+    - name: "settings"
+      type: "EchoSettingsData"
+      description: "Player settings sub-object."
+
+# --- Settings Sub-Schema ---
+settings_sub_schema:
+  class_name: "EchoSettingsData"
+  namespace: "EchoesOfYou.Persistence"
+  fields:
+    - name: "master_volume"
+      type: "float"
+      range: [0.0, 1.0]
+      default: 0.8
+
+    - name: "music_volume"
+      type: "float"
+      range: [0.0, 1.0]
+      default: 0.7
+
+    - name: "sfx_volume"
+      type: "float"
+      range: [0.0, 1.0]
+      default: 0.9
+
+    - name: "look_sensitivity"
+      type: "float"
+      range: [0.1, 5.0]
+      default: 1.0
+
+    - name: "invert_y"
+      type: "bool"
+      default: false
+
+    - name: "language_code"
+      type: "string"
+      description: "ISO 639-1 code. Supported: es, en, pt."
+      default: "es"
+      allowed_values: ["es", "en", "pt"]
+
+# --- Serialization Rules ---
+rules:
+  - id: "RULE-SAVE-001"
+    description: "Save MUST occur on level completion (LevelGoal trigger) and on application pause/quit."
+    trigger_events:
+      - "LevelGoal.OnPlayerEnter"
+      - "Application.focusChanged(false)"
+      - "Application.quitting"
+
+  - id: "RULE-SAVE-002"
+    description: "Load MUST occur exactly once at application start, before any scene transition."
+    trigger_event: "GameManager.Awake()"
+
+  - id: "RULE-SAVE-003"
+    description: "If save file is missing or corrupted (JsonUtility parse failure), create default save and log warning. Do NOT crash."
+    fallback: "EchoSaveData.CreateDefault()"
+
+  - id: "RULE-SAVE-004"
+    description: "Save file path is platform-dependent."
+    paths:
+      windows: "${Application.persistentDataPath}/echoes_save_0.echosave"
+      android: "${Application.persistentDataPath}/echoes_save_0.echosave"
+      ios: "${Application.persistentDataPath}/echoes_save_0.echosave"
+
+# --- Validation ---
+validation:
+  - id: "VAL-SAVE-001"
+    description: "On load, assert version field exists and equals current schema version."
+    action_on_fail: "Run migration or reset to default."
+
+  - id: "VAL-SAVE-002"
+    description: "On save, assert serialized JSON size < max_file_size_bytes (64KB)."
+    action_on_fail: "Log error FAIL-SAVE-001 and abort save."
+
+  - id: "VAL-SAVE-003"
+    description: "On load, assert unlocked_levels.Length == 16 and collectibles_found.Length == 48."
+    action_on_fail: "Resize arrays with defaults; log migration warning."
+
+# --- Failure Cases ---
+failure_cases:
+  - id: "FAIL-SAVE-001"
+    description: "Serialized save exceeds 64KB. Likely caused by unbounded array growth."
+    severity: "CRITICAL"
+
+  - id: "FAIL-SAVE-002"
+    description: "JsonUtility.FromJson returns null. File is corrupted."
+    recovery: "Delete corrupted file, create default, warn user via UI toast."
+
+  - id: "FAIL-SAVE-003"
+    description: "File I/O exception (disk full, permissions). Save silently fails."
+    recovery: "Retry once after 1.0s delay. If retry fails, show persistent UI warning."
+
+# --- C# Code Generation Contract ---
+code_generation:
+  output_path: "Assets/Scripts/Persistence/EchoSaveData.cs"
+  template: |
+    using UnityEngine;
+    using System;
+
+    namespace EchoesOfYou.Persistence
+    {
+        [Serializable]
+        public class EchoSettingsData
+        {
+            public float master_volume = 0.8f;
+            public float music_volume = 0.7f;
+            public float sfx_volume = 0.9f;
+            public float look_sensitivity = 1.0f;
+            public bool invert_y = false;
+            public string language_code = "es";
+        }
+
+        [Serializable]
+        public class EchoSaveData
+        {
+            public int version = 1;
+            public int current_level_build_index = 0;
+            public bool[] unlocked_levels = new bool[16];
+            public bool[] collectibles_found = new bool[48];
+            public float[] best_completion_time_s = new float[16];
+            public float total_play_time_s = 0f;
+            public EchoSettingsData settings = new EchoSettingsData();
+
+            public static EchoSaveData CreateDefault()
+            {
+                var data = new EchoSaveData();
+                data.unlocked_levels[0] = true; // Tutorial always unlocked
+                for (int i = 0; i < 16; i++)
+                    data.best_completion_time_s[i] = -1f;
+                return data;
+            }
+        }
+    }

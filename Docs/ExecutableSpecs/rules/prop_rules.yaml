@@ -1,0 +1,31 @@
+schema_version: "1.0"
+rule_set: props
+rules:
+  - id: PROP-001
+    type: mapping
+    status: active
+    severity: error
+    scope: [prop]
+    rule: "Every prop reference must resolve to a prefab under Assets"
+    validator: validators/static_validator.yaml#asset_paths
+  - id: PROP-002
+    type: constraint
+    status: active
+    severity: error
+    scope: [prop, level]
+    rule: "Static prop colliders must keep at least 0.4m separation unless the prop is a designed assembly"
+    validator: validators/level_validator.yaml#prop_overlaps
+  - id: PROP-003
+    type: prohibition
+    status: active
+    severity: fatal
+    scope: [prop, transition]
+    rule: "Props must not block PlayerStart, LevelExit, doors, plates or primary navigation"
+    validator: validators/level_validator.yaml#critical_overlap
+  - id: PROP-004
+    type: status
+    status: active
+    severity: warning
+    scope: [prop]
+    rule: "Runtime collider, material and scale must be verified before a prop is marked production_ready"
+    validator: validators/static_validator.yaml#prefab_components

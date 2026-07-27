@@ -1,0 +1,35 @@
+# Docs/ExecutableSpecs/rules/navmesh_spec.yaml
+# Navigation Mesh Baking Configuration - Executable Spec
+# SPEC-EXEC-NAV | Authority: Level 3 (Runtime Data Contract)
+
+navmesh_bake_config:
+  agent_type: "Humanoid"
+  agent_radius_m: 0.35
+  agent_height_m: 1.80
+  max_slope_deg: 45.0
+  step_height_m: 0.30
+  drop_height_m: 2.0
+  jump_distance_m: 0.0
+  bake_mode: "Editor_Static"
+  navmesh_data_path: "Assets/Data/Levels/NavMesh/"
+  min_region_area_m2: 2.0
+  off_mesh_links_enabled: false
+
+area_types:
+  - name: "Walkable"
+    index: 0
+    cost: 1.0
+  - name: "NotWalkable"
+    index: 1
+    cost: 9999.0
+  - name: "Jump"
+    index: 2
+    cost: 2.0
+  - name: "GhostPlatform"
+    index: 4
+    cost: 1.5  # Traversable during Echo playback only
+
+validation:
+  min_coverage_percent: 95.0
+  check_door_thresholds: true
+  door_clearance_min_m: 1.2

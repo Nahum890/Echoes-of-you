@@ -1,0 +1,24 @@
+schema_version: "1.0"
+rule_set: modules
+rules:
+  - id: MODULE-001
+    type: mapping
+    status: active
+    severity: fatal
+    scope: [module, blueprint]
+    rule: "Module enum name and numeric value must match LevelBlueprint.cs"
+    validator: validators/static_validator.yaml#enum_mapping
+  - id: MODULE-002
+    type: mapping
+    status: active
+    severity: error
+    scope: [module]
+    rule: "Module must have a matching switch case in EchoesModuleFactory.cs"
+    validator: validators/static_validator.yaml#factory_mapping
+  - id: MODULE-003
+    type: validation
+    status: blocked
+    severity: error
+    scope: [module]
+    rule: "customData keys must be validated against factory parsing code"
+    validator: validators/static_validator.yaml#custom_data

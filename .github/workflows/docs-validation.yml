@@ -1,0 +1,359 @@
+name: Echoes of You - Docs Validation & Build Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  UNITY_VERSION: 2022.3.20f1
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
+jobs:
+  validate-specs:
+    name: Validate Executable Specs
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ runner.os }}-${{ hashFiles('**/Packages/**', '**/Packages.lock.json') }}
+          restore-keys: |
+            Library-${{ runner.os }}-
+
+      - name: Validate Executable Specs
+        run: |
+          unity -batchmode -nographics \
+            -executeMethod ExecutableSpecValidator.ValidateProject \
+            -projectPath . \
+            -quit
+        shell: bash
+
+      - name: Check Validation Exit Code
+        run: |
+          if [ $? -ne 0 ]; then
+            echo "::error::ExecutableSpecValidator failed — 0 Fatal, 0 Errors, 0 Warnings required"
+            exit 1
+          fi
+        shell: bash
+
+  build-all-levels:
+    name: Build All 15 Levels
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: validate-specs
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ runner.os }}-${{ hashFiles('**/Packages/**', '**/Packages.lock.json') }}
+          restore-keys: |
+            Library-${{ runner.os }}-
+
+      - name: Build All Level Blueprints
+        run: |
+          unity -batchmode -nographics \
+            -executeMethod EchoesNewProductionBuilder.BuildAllBlueprints \
+            -projectPath . \
+            -quit
+        shell: bash
+
+      - name: Verify Build Outputs
+        run: |
+          if [ $? -ne 0 ]; then
+            echo "::error::EchoesNewProductionBuilder.BuildAllBlueprints failed"
+            exit 1
+          fi
+        shell: bash
+
+  validate-generated-scenes:
+    name: Validate Generated Scenes
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: build-all-levels
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ runner.os }}-${{ hashFiles('**/Packages/**', '**/Packages.lock.json') }}
+          restore-keys: |
+            Library-${{ runner.os }}-
+
+      - name: Run LevelValidator on All Scenes
+        run: |
+          unity -batchmode -nographics \
+            -executeMethod LevelValidator.RunAllChecks \
+            -projectPath . \
+            -quit
+        shell: bash
+
+      - name: Assert All 15 Levels Score >= 80
+        run: |
+          # LevelValidator.RunAllChecks exits with code 0 only if all 15 levels >= 80/100
+          if [ $? -ne 0 ]; then
+            echo "::error::LevelValidator failed — all 15 levels must score >= 80/100"
+            exit 1
+          fi
+        shell: bash
+
+  visual-regression:
+    name: Visual Regression Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: validate-generated-scenes
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ runner.os }}-${{ hashFiles('**/Packages/**', '**/Packages.lock.json') }}
+          restore-keys: |
+            Library-${{ runner.os }}-
+
+      - name: Run Visual Regression Tests
+        run: |
+          unity -batchmode -nographics \
+            -executeMethod VisualRegressionTest.Run \
+            -projectPath . \
+            -quit
+        shell: bash
+
+      - name: Assert Pixel Diff <= 2%
+        run: |
+          if [ $? -ne 0 ]; then
+            echo "::error::Visual Regression failed — pixel diff must be <= 2% vs reference frames"
+            exit 1
+          fi
+        shell: bash
+
+  performance-stress:
+    name: Performance Stress Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: validate-generated-scenes
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ runner.os }}-${{ hashFiles('**/Packages/**', '**/Packages.lock.json') }}
+          restore-keys: |
+            Library-${{ runner.os }}-
+
+      - name: Run Performance Stress Harness
+        run: |
+          unity -batchmode -nographics \
+            -executeMethod PerformanceStressHarness.Run \
+            -projectPath . \
+            -quit
+        shell: bash
+
+      - name: Assert Frame Time <= 16.67ms & No Memory Leak
+        run: |
+          if [ $? -ne 0 ]; then
+            echo "::error::Performance Stress failed — frame time <= 16.67ms, leak <= 100MB required"
+            exit 1
+          fi
+        shell: bash
+
+  vn-unit-tests:
+    name: VN Ending Resolver Unit Tests (32 Paths)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ runner.os }}-${{ hashFiles('**/Packages/**', '**/Packages.lock.json') }}
+          restore-keys: |
+            Library-${{ runner.os }}-
+
+      - name: Run VN Unit Tests
+        run: |
+          unity -batchmode -nographics \
+            -runTests -testMode EditMode \
+            -testFilter "VN_EndingResolver" \
+            -projectPath . \
+            -quit
+        shell: bash
+
+      - name: Assert 32/32 Paths Resolve
+        run: |
+          if [ $? -ne 0 ]; then
+            echo "::error::VN_EndingResolver tests failed — all 32 paths must resolve correctly"
+            exit 1
+          fi
+        shell: bash
+
+  roslyn-symbol-verifier:
+    name: Roslyn Symbol Verifier
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Run Roslyn Symbol Verifier
+        run: |
+          unity -batchmode -nographics \
+            -executeMethod RoslynSymbolVerifier.VerifyAll \
+            -projectPath . \
+            -quit
+        shell: bash
+
+      - name: Assert 0 Missing Assemblies, 0 Obsolete APIs
+        run: |
+          if [ $? -ne 0 ]; then
+            echo "::error::RoslynSymbolVerifier failed — 0 missing assemblies, 0 obsolete APIs required"
+            exit 1
+          fi
+        shell: bash
+
+  guid-registry-sync:
+    name: GUID Registry Sync Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Verify Asset GUID Registry
+        run: |
+          unity -batchmode -nographics \
+            -executeMethod AssetGuidValidator.ValidateAll \
+            -projectPath . \
+            -quit
+        shell: bash
+
+      - name: Assert 100% Alias<->GUID Match
+        run: |
+          if [ $? -ne 0 ]; then
+            echo "::error::GUID Registry sync failed — 100% alias↔GUID match required"
+            exit 1
+          fi
+        shell: bash
+
+  constant-registry-sync:
+    name: Constant Registry Sync Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Verify Constant Registry
+        run: |
+          unity -batchmode -nographics \
+            -executeMethod ConstantRegistryValidator.ValidateNoHardcodedPrimitives \
+            -projectPath . \
+            -quit
+        shell: bash
+
+      - name: Assert 0 Hardcoded Primitives
+        run: |
+          if [ $? -ne 0 ]; then
+            echo "::error::Constant Registry sync failed — 0 hardcoded primitives in code/docs allowed"
+            exit 1
+          fi
+        shell: bash
+
+  authority-header-consistency:
+    name: Authority Header Consistency
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Verify Authority Headers
+        run: |
+          unity -batchmode -nographics \
+            -executeMethod AuthorityHeaderValidator.ValidateAll \
+            -projectPath . \
+            -quit
+        shell: bash
+
+      - name: Assert 0 Conflicts with SOURCE_OF_TRUTH.md
+        run: |
+          if [ $? -ne 0 ]; then
+            echo "::error::Authority header conflicts detected — 0 conflicts required"
+            exit 1
+          fi
+        shell: bash
+
+  final-gate:
+    name: Final Certification Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs:
+      - validate-specs
+      - build-all-levels
+      - validate-generated-scenes
+      - visual-regression
+      - performance-stress
+      - vn-unit-tests
+      - roslyn-symbol-verifier
+      - guid-registry-sync
+      - constant-registry-sync
+      - authority-header-consistency
+    if: always()
+    steps:
+      - name: Check All Required Jobs Passed
+        run: |
+          FAILED=0
+          for job in ${{ needs.validate-specs.result }} ${{ needs.build-all-levels.result }} ${{ needs.validate-generated-scenes.result }} ${{ needs.visual-regression.result }} ${{ needs.performance-stress.result }} ${{ needs.vn-unit-tests.result }} ${{ needs.roslyn-symbol-verifier.result }} ${{ needs.guid-registry-sync.result }} ${{ needs.constant-registry-sync.result }} ${{ needs.authority-header-consistency.result }}; do
+            if [ "$job" != "success" ]; then
+              echo "Job failed: $job"
+              FAILED=1
+            fi
+          done
+          if [ $FAILED -eq 1 ]; then
+            echo "::error::One or more certification gates failed — 100/100 not achieved"
+            exit 1
+          fi
+          echo "✅ All certification gates passed — AI Production Readiness: 100/100"
+        shell: bash

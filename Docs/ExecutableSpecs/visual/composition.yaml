@@ -1,0 +1,28 @@
+schema_version: "1.0"
+catalog_type: composition_profile_catalog
+validation_mode: mixed_manual_and_runtime
+
+profiles:
+  solitude: {player_focus: center, echo_visible: false, negative_space_ratio_min: 0.25, depth_layers: 3}
+  presence: {player_screen_region: left_third, echo_screen_region: right_third, echo_visible: true, depth_layers: 3}
+  immersion: {foreground_occluder: desk_or_prop, focus: player_or_echo, depth_layers: 3}
+  revelation: {camera_behavior: threshold_reveal, focus: destination_landmark, depth_layers: 3}
+  vertigo: {camera_behavior: overlook, negative_space_ratio_min: 0.35, focus: void_edge, depth_layers: 2}
+  intimacy: {focus: story_landmark, camera_behavior: controlled_close, echo_visible: optional, depth_layers: 2}
+  integration: {focus: exit_light, symmetry: high, negative_space_ratio_min: 0.20, depth_layers: 3}
+
+rules:
+  - id: COMP-VAL-001
+    type: validation
+    status: active
+    severity: error
+    scope: [camera, composition, echo]
+    rule: "When Echo is active, the playtest capture must show the Echo at least once in the intended puzzle beat"
+    validator: validators/camera_validator.yaml#echo_visibility_capture
+  - id: COMP-VAL-002
+    type: status
+    status: active
+    severity: advisory
+    scope: [composition]
+    rule: "Rules requiring visual judgement must have screenshot evidence and manual_review status"
+    validator: validators/level_validator.yaml#visual_evidence

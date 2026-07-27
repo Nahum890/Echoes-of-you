@@ -1,0 +1,53 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-SAV-001"
+# SAVE_STATE_RECOVERY_SPEC.yaml
+# Protocol for handling corrupted save data, schema migration rollbacks,
+# and mid-level checkpoint serialization.
+
+save_file:
+  path: "Application.persistentDataPath/save_v{schema_version}.json"
+  format: "JSON"
+  encoding: "UTF-8"
+  current_schema_version: 3
+
+corruption_detection:
+  method: "CRC32Checksum"
+  checksum_field: "save_checksum"  # Field at root of save JSON
+  on_corruption:
+    action: "AttemptMigrationFromPreviousVersion"
+    fallback_action: "DeleteAndCreateFresh"
+    alert_player: true
+    alert_message_key: "ui.save.corrupted_message"
+
+migration:
+  supported_migrations:
+    - from_version: 1
+      to_version: 2
+      script: "SaveMigration_v1_to_v2.cs"
+    - from_version: 2
+      to_version: 3
+      script: "SaveMigration_v2_to_v3.cs"
+  rollback:
+    enabled: true
+    backup_on_upgrade: true
+    backup_path: "Application.persistentDataPath/save_backup_v{previous_version}.json"
+    max_backups: 2
+
+checkpoint_serialization:
+  checkpoint_fields:
+    - "currentLevel"              # int: build index
+    - "checkpointPosition"        # Vector3: world position
+    - "unlockedMemories"          # int[]: narrative memory IDs unlocked
+    - "totalPlaytimeSeconds"      # float: cumulative playtime
+    - "echoSlotsUnlocked"         # int: number of Echo slots available
+  mid_level_autosave:
+    enabled: true
+    trigger: "OnCheckpointActivated"
+    max_autosave_slots: 1
+
+fresh_save_defaults:
+  currentLevel: 1
+  checkpointPosition: {x: 0.0, y: 0.0, z: 0.0}
+  unlockedMemories: []
+  totalPlaytimeSeconds: 0.0
+  echoSlotsUnlocked: 1

@@ -1,0 +1,140 @@
+schema_version: "1.2"
+spec_type: camera_profiles
+id_prefix: "CAM-PROF-"
+
+profiles:
+  - id: CAM-PROF-001
+    profile_type: Learning
+    fov: 50.0  # Canonical value. CAMERA_RECIPES.md Table 8.1 is authoritative.
+    follow_offset: { x: 0.0, y: 3.0, z: -6.0 }
+    damping: { x: 1.2, y: 1.2, z: 1.2 }
+    blend_duration: 1.5
+    pitch: 12.0
+    yaw: 0.0
+
+  - id: CAM-PROF-002
+    profile_type: Discovery
+    fov: 45.0
+    follow_offset: { x: 0.0, y: 3.2, z: -6.5 }
+    damping: { x: 1.0, y: 1.0, z: 1.0 }
+    blend_duration: 1.5
+    pitch: 15.0
+    yaw: 0.0
+
+  - id: CAM-PROF-003
+    profile_type: Puzzle
+    fov: 45.0
+    follow_offset: { x: 0.0, y: 6.0, z: -9.0 }
+    damping: { x: 0.8, y: 0.8, z: 0.8 }
+    blend_duration: 2.0
+    pitch: 25.0
+    yaw: 0.0
+
+  - id: CAM-PROF-004
+    profile_type: Transition
+    fov: 48.0
+    follow_offset: { x: 0.0, y: 3.0, z: -6.0 }
+    damping: { x: 1.4, y: 1.4, z: 1.4 }
+    blend_duration: 1.5
+    pitch: 14.0
+    yaw: 0.0
+
+  - id: CAM-PROF-005
+    profile_type: Emotional
+    fov: 35.0
+    follow_offset: { x: 0.0, y: 2.0, z: -4.0 }
+    damping: { x: 1.5, y: 1.5, z: 1.5 }
+    blend_duration: 3.0
+    pitch: 10.0
+    yaw: 0.0
+
+  - id: CAM-PROF-006
+    profile_type: Suspense
+    fov: 45.0
+    follow_offset: { x: 0.0, y: 3.0, z: -6.0 }
+    damping: { x: 1.0, y: 1.0, z: 1.0 }
+    blend_duration: 1.0
+    pitch: 15.0
+    dutch: 5.0  # [RULE-CAM-004] allows 5° dutch for Suspense
+    yaw: 0.0
+
+  - id: CAM-PROF-007
+    profile_type: Memory
+    fov: 37.0
+    follow_offset: { x: 0.0, y: 2.2, z: -4.5 }
+    damping: { x: 1.1, y: 1.1, z: 1.1 }
+    blend_duration: 2.0
+    pitch: 10.0
+    yaw: 0.0
+
+  - id: CAM-PROF-008
+    profile_type: Replay
+    fov: 45.0
+    follow_offset: { x: 0.0, y: 4.0, z: -7.5 }
+    damping: { x: 0.9, y: 0.9, z: 0.9 }
+    blend_duration: 1.5
+    pitch: 18.0
+    yaw: 0.0
+
+  - id: CAM-PROF-009
+    profile_type: Acceptance
+    fov: 52.0
+    follow_offset: { x: 0.0, y: 3.5, z: -7.0 }
+    damping: { x: 1.6, y: 1.6, z: 1.6 }
+    blend_duration: 2.5
+    pitch: 15.0
+    yaw: 0.0
+
+  - id: CAM-PROF-010
+    profile_type: LeapOfFaith
+    fov: 55.0  # Fixed: was 65.0, violating [CONS-CAM-001] (max 60.0°). Now 55.0°.
+    follow_offset: { x: 0.0, y: 1.5, z: -4.5 }
+    damping: { x: 0.5, y: 0.5, z: 0.5 }
+    blend_duration: 0.8
+    pitch: 8.0
+    yaw: 0.0
+
+  - id: CAM-PROF-011
+    profile_type: Inversion
+    fov: 45.0
+    follow_offset: { x: 0.0, y: -3.2, z: -6.5 }
+    damping: { x: 1.0, y: 1.0, z: 1.0 }
+    blend_duration: 1.8
+    pitch: -15.0
+    yaw: 0.0
+
+  - id: CAM-PROF-012
+    profile_type: Learning
+    fov: 50.0
+    follow_offset: { x: 0.0, y: 3.2, z: -6.2 }
+    damping: { x: 1.0, y: 1.0, z: 1.0 }
+    blend_duration: 1.5
+    pitch: 15.0
+    yaw: 0.0
+
+  - id: CAM-PROF-013
+    profile_type: Puzzle
+    fov: 46.0
+    follow_offset: { x: 0.0, y: 6.5, z: -11.0 }
+    damping: { x: 0.8, y: 0.8, z: 0.8 }
+    blend_duration: 1.1
+    pitch: 26.0
+    yaw: 0.0
+
+  - id: CAM-PROF-014
+    profile_type: Suspense
+    fov: 41.0
+    follow_offset: { x: 0.5, y: 2.0, z: -4.2 }
+    damping: { x: 0.6, y: 0.6, z: 0.6 }
+    blend_duration: 0.9
+    pitch: 14.0
+    yaw: 2.0
+
+  - id: CAM-PROF-015
+    profile_type: Acceptance
+    fov: 48.0
+    follow_offset: { x: 0.0, y: 3.5, z: -7.5 }
+    damping: { x: 1.5, y: 1.5, z: 1.5 }
+    blend_duration: 2.5
+    pitch: 12.0
+    yaw: 0.0

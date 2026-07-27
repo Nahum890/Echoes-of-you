@@ -1,0 +1,102 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-CAM-FRAME-001"
+# CINEMACHINE_FRAMING_MATRIX.yaml
+# Framing transposer hard/soft zone screen coordinates for all 11 CameraProfileType values.
+
+framing_defaults:
+  soft_zone_width: 0.8
+  soft_zone_height: 0.8
+  dead_zone_width: 0.1
+  dead_zone_height: 0.1
+  bias_x: 0.0
+  bias_y: 0.0
+  unlimited_soft_zone: false
+
+profile_framing_matrix:
+  Learning:
+    soft_zone_width: 0.8
+    soft_zone_height: 0.8
+    dead_zone_width: 0.1
+    dead_zone_height: 0.1
+    bias_x: 0.0
+    bias_y: 0.0
+
+  Discovery:
+    soft_zone_width: 0.75
+    soft_zone_height: 0.75
+    dead_zone_width: 0.15
+    dead_zone_height: 0.15
+    bias_x: 0.0
+    bias_y: 0.05
+
+  Puzzle:
+    soft_zone_width: 0.9
+    soft_zone_height: 0.9
+    dead_zone_width: 0.05
+    dead_zone_height: 0.05
+    bias_x: 0.0
+    bias_y: 0.1
+
+  Transition:
+    soft_zone_width: 0.6
+    soft_zone_height: 0.6
+    dead_zone_width: 0.2
+    dead_zone_height: 0.2
+    bias_x: 0.0
+    bias_y: 0.0
+
+  Emotional:
+    soft_zone_width: 0.5
+    soft_zone_height: 0.5
+    dead_zone_width: 0.05
+    dead_zone_height: 0.05
+    bias_x: 0.0
+    bias_y: -0.05
+
+  Suspense:
+    soft_zone_width: 0.7
+    soft_zone_height: 0.7
+    dead_zone_width: 0.2
+    dead_zone_height: 0.2
+    bias_x: 0.1
+    bias_y: 0.0
+
+  Memory:
+    soft_zone_width: 0.65
+    soft_zone_height: 0.65
+    dead_zone_width: 0.1
+    dead_zone_height: 0.1
+    bias_x: 0.0
+    bias_y: 0.0
+
+  Replay:
+    soft_zone_width: 0.85
+    soft_zone_height: 0.85
+    dead_zone_width: 0.08
+    dead_zone_height: 0.08
+    bias_x: 0.0
+    bias_y: 0.05
+
+  Acceptance:
+    soft_zone_width: 0.8
+    soft_zone_height: 0.8
+    dead_zone_width: 0.1
+    dead_zone_height: 0.1
+    bias_x: 0.0
+    bias_y: 0.0
+
+  LeapOfFaith:
+    soft_zone_width: 0.95
+    soft_zone_height: 0.95
+    dead_zone_width: 0.02
+    dead_zone_height: 0.02
+    bias_x: 0.0
+    bias_y: -0.15
+
+  Inversion:
+    soft_zone_width: 0.8
+    soft_zone_height: 0.8
+    dead_zone_width: 0.1
+    dead_zone_height: 0.1
+    bias_x: 0.0
+    bias_y: 0.0

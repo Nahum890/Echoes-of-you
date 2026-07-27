@@ -1,0 +1,62 @@
+schema_version: "1.0"
+catalog_type: echo_capability_matrix
+
+capabilities:
+  - id: ECHO-CAP-001
+    action: activate_pressure_plate
+    allowed: true
+    required_components: [PressurePlate, EchoPlayback]
+    levels: [N01, N02, N03, N04, N05, N08, N11, N15]
+  - id: ECHO-CAP-002
+    action: activate_echo_only_plate
+    allowed: true
+    required_components: [PressurePlate]
+    implementation_status: verify_prefab_and_layer
+  - id: ECHO-CAP-003
+    action: push_recorded_kinetic_object
+    allowed: true
+    required_components: [EchoPlayback, EchoKineticBody]
+    implementation_status: partial
+  - id: ECHO-CAP-004
+    action: reveal_temporal_bridge
+    allowed: true
+    required_components: [TemporalBridge]
+    levels: [N06]
+    implementation_status: partial
+  - id: ECHO-CAP-005
+    action: provide_residual_collision
+    allowed: true
+    required_state: residual
+    implementation_status: partial
+  - id: ECHO-CAP-006
+    action: record_future
+    allowed: true
+    required_blueprint_field: recordFuture
+    levels: [N07]
+    implementation_status: partial
+  - id: ECHO-CAP-007
+    action: ambient_lyra_echo
+    allowed: true
+    required_blueprint_field: ambientEchoData
+    levels: [N10]
+    implementation_status: unverified
+
+prohibitions:
+  - id: ECHO-PRO-001
+    action: combat
+    allowed: false
+  - id: ECHO-PRO-002
+    action: improvisation
+    allowed: false
+  - id: ECHO-PRO-003
+    action: in_place_undo
+    allowed: false
+
+validation:
+  - id: ECHO-CAP-VAL-001
+    type: validation
+    status: active
+    severity: error
+    scope: [echo, puzzle]
+    rule: "Every puzzle that declares an Echo capability must reference a required component and implementation status"
+    validator_implementation: pending

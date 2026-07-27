@@ -1,0 +1,31 @@
+schema_version: "1.0"
+rule_set: echo
+rules:
+  - id: ECHO-001
+    type: invariant
+    status: active
+    severity: fatal
+    scope: [echo]
+    rule: "Echo playback is deterministic and cannot improvise"
+    validator: validators/level_validator.yaml#echo_determinism
+  - id: ECHO-002
+    type: constraint
+    status: active
+    severity: error
+    scope: [echo, level]
+    rule: "LevelBlueprint.maxRecordSeconds must be within [1.0, 12.0] seconds for standard levels and [1.0, 20.0] for narrative-flagged levels (isNarrativeLevel: true). Values > 20.0 are PROHIBITED. Ref: SOURCE_OF_TRUTH.md CC-2026-003."
+    validator: validators/blueprint_validator.yaml#echo_duration
+  - id: ECHO-003
+    type: status
+    status: active
+    severity: error
+    scope: [echo]
+    rule: "Latency and residual mechanics remain blocked until runtime evidence exists"
+    validator: validators/level_validator.yaml#echo_runtime_evidence
+  - id: ECHO-004
+    type: prohibition
+    status: active
+    severity: fatal
+    scope: [echo]
+    rule: "In-place undo of a played Echo is forbidden"
+    validator: validators/level_validator.yaml#echo_irreversibility

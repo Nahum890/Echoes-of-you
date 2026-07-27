@@ -1,0 +1,39 @@
+schema_version: "1.0"
+validator_id: DOCUMENTATION-SPEC-001
+type: documentation_validator
+checks:
+  registry_paths:
+    id: DOC-CHK-001
+    severity: fatal
+    action: "Every registry path must exist"
+  duplicate_ids:
+    id: DOC-CHK-002
+    severity: fatal
+    action: "Every executable rule and catalog id must be unique"
+  schema_fields:
+    id: DOC-CHK-003
+    severity: error
+    action: "Every rule must contain required schema fields"
+  validator_links:
+    id: DOC-CHK-004
+    severity: error
+    action: "Every active rule must reference a validator"
+  code_mappings:
+    id: DOC-CHK-005
+    severity: error
+    action: "Every code mapping must resolve to an existing class, enum or field"
+  asset_mappings:
+    id: DOC-CHK-006
+    severity: error
+    action: "Every Assets/... path in executable catalogs must exist"
+  unresolved_status:
+    id: DOC-CHK-007
+    severity: warning
+    action: "Every implementation claim must use a recognized status"
+  source_documents:
+    id: DOC-CHK-008
+    severity: warning
+    action: "Every executable catalog should name its source document"
+
+report:
+  output: Reports/generated/documentation_validation.json

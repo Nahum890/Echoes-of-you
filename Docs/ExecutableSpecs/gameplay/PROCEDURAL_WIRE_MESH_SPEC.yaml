@@ -1,0 +1,7 @@
+schema_version: "1.0"
+mesh_generation:
+  cross_section_sides: 8
+  radius_m: 0.04
+  uv_tiling_v_per_meter: 1.0
+  corner_smoothing: "CatmullRomSpline"
+  subdivision_per_meter: 4

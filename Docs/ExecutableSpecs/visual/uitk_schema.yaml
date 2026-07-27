@@ -1,0 +1,49 @@
+# UI TOOLKIT (UITK) BINDING SCHEMA EXECUTABLE SPECIFICATION — Echoes of You 2.0
+spec_id: SPEC-EXEC-UITK-001
+version: "1.0"
+authority: "Docs/Authority/SOURCE_OF_TRUTH.md"
+
+elements:
+  - uxml_id: "#btn-play"
+    element_type: "Button"
+    uss_class: ".btn-primary"
+    csharp_event: "OnClickPlay()"
+    target_controller: "MainMenuController"
+
+  - uxml_id: "#btn-options"
+    element_type: "Button"
+    uss_class: ".btn-secondary"
+    csharp_event: "OnClickOptions()"
+    target_controller: "MainMenuController"
+
+  - uxml_id: "#slider-volume"
+    element_type: "Slider"
+    uss_class: ".slider-audio"
+    csharp_event: "OnVolumeChanged(float)"
+    target_controller: "OptionsMenuController"
+
+  - uxml_id: "#label-level-title"
+    element_type: "Label"
+    uss_class: ".text-title"
+    csharp_binding: "currentLevelTitle"
+    target_controller: "HUDController"
+
+  - uxml_id: "#echo-timer-bar"
+    element_type: "ProgressBar"
+    uss_class: ".hud-echo-timer"
+    csharp_binding: "echoRecordingProgress"
+    target_controller: "HUDController"
+    value_range: {min: 0.0, max: 1.0}
+    visible_states: ["Recording", "Latency"]
+
+  - uxml_id: "#echo-slot-indicator"
+    element_type: "VisualElement"
+    uss_class: ".hud-echo-slots"
+    csharp_binding: "activeEchoSlotCount"
+    target_controller: "HUDController"
+
+  - uxml_id: "#label-chapter"
+    element_type: "Label"
+    uss_class: ".text-chapter"
+    csharp_binding: "currentChapterName"
+    target_controller: "HUDController"

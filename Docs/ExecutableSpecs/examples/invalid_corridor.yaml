@@ -1,0 +1,13 @@
+example_type: invalid
+schema: catalogs/room_templates.yaml
+room_type: SchoolCorridor
+template_id: ROOM-TMPL-002
+dimensions: {width: 2.0, depth: 40.0, height: 2.5}
+clearance: {primary: 0.7, secondary: 0.4}
+required_props: [Arch_Locker]
+landmarks: []
+expected_failure:
+  - rule_id: SCALE-001
+    code: CORRIDOR_TOO_NARROW
+  - rule_id: LAND-RULE-001
+    code: LANDMARK_MISSING

@@ -1,0 +1,49 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-AUD-CURV-001"
+# AUDIO_SPATIALIZATION_CURVES.yaml
+# Distance falloff curves, decibel attenuation limits, and 3D blend curves.
+
+attenuation_presets:
+  Footstep:
+    min_distance_m: 1.0
+    max_distance_m: 12.0
+    rolloff_mode: "Logarithmic"
+    spatial_blend_curve:
+      0.0m: 1.0    # Fully 3D near
+      12.0m: 1.0   # Fully 3D far
+    volume_attenuation_db_curve:
+      1.0m: 0.0dB
+      3.0m: -6.0dB
+      6.0m: -14.0dB
+      12.0m: -30.0dB
+
+  PuzzleMechanism:
+    min_distance_m: 1.0
+    max_distance_m: 20.0
+    rolloff_mode: "Logarithmic"
+    spatial_blend_curve:
+      0.0m: 1.0
+      20.0m: 1.0
+    volume_attenuation_db_curve:
+      1.0m: 0.0dB
+      5.0m: -8.0dB
+      10.0m: -18.0dB
+      20.0m: -36.0dB
+
+  EchoGhostSound:
+    min_distance_m: 0.5
+    max_distance_m: 25.0
+    rolloff_mode: "Custom"
+    spatial_blend_curve:
+      0.0m: 0.7    # 30% 2D blend for ghostly presence
+      25.0m: 0.7
+    volume_attenuation_db_curve:
+      0.5m: 0.0dB
+      5.0m: -4.0dB
+      15.0m: -12.0dB
+      25.0m: -24.0dB
+
+occlusion_layer_mask:
+  layers: ["Architecture", "Environment"]
+  max_occlusion_attenuation_db: -12.0
+  lowpass_cutoff_frequency_hz: 600.0

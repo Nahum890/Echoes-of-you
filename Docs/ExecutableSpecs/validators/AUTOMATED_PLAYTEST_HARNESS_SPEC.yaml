@@ -1,0 +1,25 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-HARNESS-001"
+# AUTOMATED_PLAYTEST_HARNESS_SPEC.yaml
+# Specification for headless automated playtest harness in Unity Test Framework.
+
+playtest_runner:
+  mode: "HeadlessBatchmode"
+  framework: "UnityTestFramework"
+  test_suite: "PlayMode"
+  timeout_per_level_seconds: 60.0
+
+test_scenarios:
+  - id: TEST-PLAY-001
+    name: "FullLevelTraversalTest"
+    description: "Executes recorded playback inputs to traverse level from PlayerStart to LevelExit."
+    asserts:
+      - "Player reaches LevelExit trigger within timeout."
+      - "No NullReferenceException or unhandled error logged."
+      - "Draw call peak <= 120."
+
+  - id: TEST-PLAY-002
+    name: "EchoButtonVerificationTest"
+    description: "Simulates traversal without recording any Echo to confirm puzzle cannot be bypassed."
+    asserts:
+      - "Player cannot reach LevelExit without spawning required Echo."

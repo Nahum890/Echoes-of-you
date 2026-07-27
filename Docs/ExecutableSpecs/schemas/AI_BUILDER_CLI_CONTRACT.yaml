@@ -1,0 +1,57 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-CLI-001"
+# AI_BUILDER_CLI_CONTRACT.yaml
+# Schema defining standard exit codes, error JSON payloads, and
+# log output standards for autonomous AI build agents.
+
+exit_codes:
+  0: "SUCCESS — Build completed and all validations passed."
+  1: "VALIDATION_FAILURE — LevelValidator.cs returned ValidationResult.Failed."
+  2: "SPEC_CONFLICT — Unresolvable contradiction detected between two authority documents."
+  3: "MISSING_ASSET — Required prefab or ScriptableObject not found at specified path."
+  4: "SCHEMA_VIOLATION — YAML/JSON blueprint failed pre-validator schema check."
+  5: "HALT_REQUIRED — AI builder encountered an undocumented ambiguity; human review required."
+  6: "BUILD_ERROR — Unity C# compilation error raised during scene build."
+  99: "UNKNOWN_ERROR — Unhandled exception. See log output for stack trace."
+
+error_payload_schema:
+  # JSON schema for error payloads written to stdout on any non-zero exit
+  type: "object"
+  required: ["exit_code", "error_code", "message", "spec_id", "timestamp_utc"]
+  properties:
+    exit_code:
+      type: "integer"
+      description: "Exit code from the above table"
+    error_code:
+      type: "string"
+      pattern: "^FAIL-[A-Z]{2,4}-[0-9]{2}$"
+      description: "Spec error code e.g. FAIL-LGT-02, FAIL-PUZ-01"
+    message:
+      type: "string"
+      description: "Human-readable description of the failure"
+    spec_id:
+      type: "string"
+      description: "The Spec ID of the violating document e.g. SPEC-105"
+    file_path:
+      type: "string"
+      description: "Absolute path to the file causing the error, if applicable"
+    timestamp_utc:
+      type: "string"
+      format: "date-time"
+      description: "ISO 8601 UTC timestamp of the error"
+
+log_output_standards:
+  format: "JSON Lines (one JSON object per line)"
+  log_levels: ["DEBUG", "INFO", "WARN", "ERROR", "FATAL"]
+  required_fields_per_line: ["timestamp_utc", "level", "message"]
+  output_destination: "stdout"     # Stderr reserved for unexpected exceptions only
+
+example_error_payload: |
+  {
+    "exit_code": 1,
+    "error_code": "FAIL-LGT-02",
+    "message": "Light 'Fluorescent_Corridor_03' uses SoftShadows. Must be LightShadows.Hard.",
+    "spec_id": "SPEC-105",
+    "file_path": "Assets/Scenes/Level_03.unity",
+    "timestamp_utc": "2026-07-25T21:00:00Z"
+  }

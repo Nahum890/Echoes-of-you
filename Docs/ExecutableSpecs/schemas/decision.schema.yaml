@@ -1,0 +1,29 @@
+schema_version: "1.0"
+schema_type: decision
+required:
+  - id
+  - title
+  - status
+  - authority
+  - implementation_status
+  - execution_note
+properties:
+  id:
+    type: string
+    pattern: "^DEC-[A-Z0-9-]+$"
+  title:
+    type: string
+  status:
+    type: enum
+    values: [active, draft, deprecated, blocked]
+  authority:
+    type: string
+  implementation_status:
+    type: enum
+    values: [implemented, partial, unverified, violated, blocked]
+  migration_required:
+    type: boolean
+  affected_levels:
+    type: string_or_array
+  execution_note:
+    type: string

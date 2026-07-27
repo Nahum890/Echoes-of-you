@@ -11,6 +11,9 @@ public class LightFlicker : MonoBehaviour
     public float minIntensity = 0.2f;
     public float maxIntensity = 1.2f;
     public float flickerSpeed = 0.08f;
+    public float intensityVariance = 0.4f;
+
+    public System.Action<float> OnIntensityChange;
     
     [Header("Audio Settings")]
     public float maxHumVolume = 0.15f;
@@ -38,6 +41,7 @@ public class LightFlicker : MonoBehaviour
             // Genera una intensidad fluctuante para simular mal contacto eléctrico o desgaste
             float noise = Random.Range(minIntensity, maxIntensity);
             targetLight.intensity = baseIntensity * noise;
+            OnIntensityChange?.Invoke(targetLight.intensity);
             
             // Si hay un zumbido de audio, sincroniza su volumen con la intensidad
             if (audioSource != null && audioSource.isPlaying)

@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "echoes-of-you/blueprint.schema.json",
+  "title": "Echoes of You LevelBlueprint mirror",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["levelName", "nextLevel", "actNumber", "archetype", "echoEnabled", "maxEchoes", "maxRecordSeconds", "modules"],
+  "properties": {
+    "levelName": {"type": "string", "minLength": 1},
+    "nextLevel": {"type": "string", "minLength": 1},
+    "actNumber": {"type": "integer", "minimum": 1, "maximum": 6},
+    "archetype": {"type": "string"},
+    "echoEnabled": {"type": "boolean"},
+    "maxEchoes": {"type": "integer", "minimum": 0, "maximum": 3},
+    "maxRecordSeconds": {"type": "number", "minimum": 1, "maximum": 30},
+    "echoMode": {"type": "string"},
+    "recordFuture": {"type": "boolean"},
+    "degradationPerReplay": {"type": "number", "minimum": 0, "maximum": 1},
+    "lockEchoSlots": {"type": "boolean"},
+    "lockedSlotIndices": {"type": "array", "items": {"type": "integer", "minimum": 0}},
+    "cameraProfile": {"type": ["string", "null"]},
+    "lightingProfile": {"type": ["string", "null"]},
+    "activeParadoxes": {"type": "array", "items": {"type": "string"}},
+    "fogColor": {"$ref": "#/$defs/color"},
+    "fogDensity": {"type": "number", "minimum": 0, "maximum": 0.1},
+    "skyColor": {"$ref": "#/$defs/color"},
+    "ambientColor": {"$ref": "#/$defs/color"},
+    "directionalLightRotation": {"$ref": "#/$defs/vector3"},
+    "directionalLightColor": {"$ref": "#/$defs/color"},
+    "directionalLightIntensity": {"type": "number", "minimum": 0, "maximum": 8},
+    "narrativeIntroTitle": {"type": "string"},
+    "narrativeIntroDesc": {"type": "string"},
+    "narrativeIntroDuration": {"type": "number", "minimum": 0, "maximum": 60},
+    "puzzleObjectiveText": {"type": "string"},
+    "puzzleActiveText": {"type": "string"},
+    "puzzleCompleteText": {"type": "string"},
+    "pathHints": {"type": "array", "items": {"$ref": "#/$defs/vector3"}},
+    "modules": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/modulePlacement"}}
+  },
+  "$defs": {
+    "vector3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y", "z"],
+      "properties": {"x": {"type": "number"}, "y": {"type": "number"}, "z": {"type": "number"}}
+    },
+    "color": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["r", "g", "b", "a"],
+      "properties": {
+        "r": {"type": "number", "minimum": 0, "maximum": 1},
+        "g": {"type": "number", "minimum": 0, "maximum": 1},
+        "b": {"type": "number", "minimum": 0, "maximum": 1},
+        "a": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "modulePlacement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type", "position", "rotation", "scale", "customData", "targetSignals"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "type": {"type": "string", "minLength": 1},
+        "position": {"$ref": "#/$defs/vector3"},
+        "rotation": {"$ref": "#/$defs/vector3"},
+        "scale": {"$ref": "#/$defs/vector3"},
+        "customData": {"type": "string"},
+        "targetSignals": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

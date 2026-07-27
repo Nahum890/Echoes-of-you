@@ -67,18 +67,54 @@ public class ThirdPersonCamera : MonoBehaviour
         return FindAnyObjectByType<ThirdPersonCamera>();
     }
 
+    void OnEnable()
+    {
+        CheckAndDisableIfCinemachineActive();
+    }
+
+    public bool CheckAndDisableIfCinemachineActive()
+    {
+        if (IsCinemachineActiveInScene())
+        {
+            enabled = false;
+            return true;
+        }
+        return false;
+    }
+
+    public bool IsCinemachineActiveInScene()
+    {
+        if (GetComponent<Unity.Cinemachine.CinemachineBrain>() != null && GetComponent<Unity.Cinemachine.CinemachineBrain>().enabled)
+            return true;
+
+        var brain = FindAnyObjectByType<Unity.Cinemachine.CinemachineBrain>();
+        if (brain != null && brain.enabled)
+            return true;
+
+        var vcam = FindAnyObjectByType<Unity.Cinemachine.CinemachineCamera>();
+        if (vcam != null && vcam.enabled && vcam.gameObject.activeInHierarchy)
+            return true;
+
+        System.Type vcamV2Type = System.Type.GetType("Cinemachine.CinemachineVirtualCamera, Cinemachine")
+                              ?? System.Type.GetType("Cinemachine.CinemachineVirtualCamera");
+        if (vcamV2Type != null)
+        {
+            var vcamObj = FindAnyObjectByType(vcamV2Type) as MonoBehaviour;
+            if (vcamObj != null && vcamObj.enabled && vcamObj.gameObject.activeInHierarchy)
+                return true;
+        }
+
+        return false;
+    }
+
     void Start()
     {
         _cameraShake = GetComponent<CameraShake>();
         _camera = GetComponent<Camera>();
 
-        // If a CinemachineBrain is controlling this camera, ThirdPersonCamera should
-        // not run — both would write the camera transform simultaneously.
-        if (GetComponent<Unity.Cinemachine.CinemachineBrain>() != null)
-        {
-            enabled = false;
+        // If Cinemachine is active in scene, ThirdPersonCamera must disable itself automatically
+        if (CheckAndDisableIfCinemachineActive())
             return;
-        }
 
         // Auto-resolve target if not assigned in inspector
         if (target == null)
@@ -109,6 +145,8 @@ public class ThirdPersonCamera : MonoBehaviour
 
     void LateUpdate()
     {
+        if (CheckAndDisableIfCinemachineActive())
+            return;
         // Re-resolve target if lost (destroyed, scene change, etc.)
         if (target == null)
         {

@@ -1,0 +1,63 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-GEO-001"
+# PROCEDURAL_ROOM_MESH_SCHEMA.yaml
+# Complete mesh generation spec: winding, UV, tangents, collision, vertex attributes.
+
+mesh_generation:
+  winding_order: "CCW"
+  uv_mapping:
+    floor: "planar_y"
+    walls: "triplanar"
+    ceiling: "planar_y"
+  normal_generation: "area_weighted"
+  tangent_generation: "mikktspace"
+  collision_mesh:
+    simplification_ratio: 0.1
+    convex_decomposition: true
+    max_hulls_per_mesh: 12
+  vertex_attributes:
+    - "Position"
+    - "Normal"
+    - "Tangent"
+    - "UV0"
+    - "UV1_Lightmap"
+
+topology:
+  wall_thickness_m: 0.30
+  door_cutout_dimensions: {width_m: 1.2, height_m: 2.4}
+  door_frame_recess_m: 0.05
+  floor_thickness_m: 0.20
+  ceiling_thickness_m: 0.20
+  uv_tiling_scale: {u_per_meter: 1.0, v_per_meter: 1.0}
+
+vertex_generation_rules:
+  mesh_type: "SubdividedBoxMesh"
+  subdivision_step_m: 1.0
+  generate_normals: true
+  generate_tangents: true
+  calculate_uv2_lightmaps: true
+
+room_templates_geometry:
+  SchoolCorridor:
+    width_m: 4.5
+    height_m: 3.2
+    depth_m: 24.0
+    wall_material_index: 0
+    floor_material_index: 1
+    ceiling_material_index: 2
+
+  SchoolClassroom:
+    width_m: 10.0
+    height_m: 3.8
+    depth_m: 10.0
+    wall_material_index: 0
+    floor_material_index: 1
+    ceiling_material_index: 2
+
+  SchoolEntrance:
+    width_m: 4.5
+    height_m: 3.8
+    depth_m: 6.0
+    wall_material_index: 0
+    floor_material_index: 1
+    ceiling_material_index: 2

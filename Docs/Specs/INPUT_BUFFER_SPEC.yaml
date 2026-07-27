@@ -1,0 +1,55 @@
+# Docs/Specs/INPUT_BUFFER_SPEC.yaml (SPEC-129)
+# VERSION 2.0 — FRAMERATE-INDEPENDENT (ms-based)
+# Ref: FRAME_RATE_INDEPENDENCE_SPEC.yaml (SPEC-142)
+spec_id: SPEC-129
+version: "2.0"
+
+# [RULE-INPUT-001] Frame-Rate Independence
+# The input buffer NEVER uses: "if (frameCounter > 6) { ... }"
+# The input buffer ALWAYS uses: "if (Time.time - pressTime <= windowSeconds) { ... }"
+# This guarantees identical behavior at 30Hz, 60Hz, 120Hz, and 240Hz.
+
+physics_fixed_timestep_ms: 16.666  # Unity default: 0.02s = 50Hz FixedUpdate
+# NOTE: Input buffer operates in FixedUpdate (50Hz), NOT in Update (variable).
+# This guarantees framerate independence — the buffer does NOT change at 240Hz.
+
+buffers:
+  jump:
+    window_ms: 100.0    # 100ms pre-ground grace period
+    coyote_ms: 120.0    # 120ms (~= CONSTANTS_REGISTRY locomotion.coyote_time_s)
+    # At 50Hz fixed: 100ms ≈ 5 fixed frames (informational only — do NOT use frame count)
+    implementation: >
+      Store as: float lastJumpPressTime = Time.time;
+      Valid if: (Time.time - lastJumpPressTime) <= 0.100f
+
+  interact:
+    window_ms: 66.0
+    require_grounded: false
+    implementation: >
+      Store as: float lastInteractPressTime = Time.time;
+      Valid if: (Time.time - lastInteractPressTime) <= 0.066f
+
+  record_echo_start:
+    window_ms: 33.0     # 33ms — echo start must be precise
+    cooldown_ms: 1500.0 # 1.5s cooldown between recordings
+    require_grounded: false
+    implementation: >
+      Store as: float lastEchoPressTime = Time.time;
+      Valid if: (Time.time - lastEchoPressTime) <= 0.033f
+               AND (Time.time - lastEchoRecordEnd) >= 1.500f
+
+  soft_reset:
+    window_ms: 16.0     # Instantaneous — 1 fixed-frame tolerance
+    hold_ms: 500.0      # Must be held 500ms to confirm
+    implementation: >
+      Store as: float softResetHoldStart = Time.time;
+      Fire if: Input.GetButton("SoftReset")
+               AND (Time.time - softResetHoldStart) >= 0.500f
+
+# Informational reference (do NOT use these values in code — use ms above):
+frame_equivalents_at_60fps:
+  jump_window_frames: 6        # 100ms / 16.67ms ≈ 6 frames
+  coyote_frames: 7             # 120ms / 16.67ms ≈ 7 frames
+  interact_frames: 4           # 66ms / 16.67ms ≈ 4 frames
+  record_echo_frames: 2        # 33ms / 16.67ms ≈ 2 frames
+  soft_reset_hold_frames: 30   # 500ms / 16.67ms = 30 frames

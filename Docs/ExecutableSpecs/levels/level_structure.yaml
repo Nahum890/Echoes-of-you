@@ -1,0 +1,53 @@
+schema_version: "1.0"
+catalog_type: level_structure
+
+required_zones:
+  - id: entry
+    required: true
+    purpose: "Spawn, orientation and first readable landmark"
+    risk: none
+  - id: teaching
+    required: true
+    purpose: "Observation and safe experimentation"
+    risk: low
+  - id: core_puzzle
+    required: true
+    purpose: "Echo-dependent execution"
+    risk: design_defined
+  - id: payoff
+    required: true
+    purpose: "Spatial, mechanical or narrative consequence"
+    risk: none
+  - id: exit
+    required: true
+    purpose: "Completion and transition"
+    risk: none
+
+level_contract:
+  required:
+    - level_id
+    - intent
+    - emotional_arc
+    - puzzle_spec
+    - blueprint_asset
+    - required_zones
+    - acceptance_criteria
+  first_time_target_minutes: {minimum: 2, maximum: 6}
+  score_target: 80
+  player_can_complete_without_external_text: true
+
+rules:
+  - id: LVL-VAL-001
+    type: validation
+    status: active
+    severity: error
+    scope: [level]
+    rule: "Every level must declare all five required zones"
+    validator: validators/blueprint_validator.yaml#level_zones
+  - id: LVL-VAL-002
+    type: constraint
+    status: active
+    severity: error
+    scope: [level]
+    rule: "Expected first-time completion must be between 2 and 6 minutes unless an exception is documented"
+    validator: validators/level_validator.yaml#playtime_target

@@ -1,0 +1,83 @@
+# Docs/ExecutableSpecs/ui/ui_layout_breakpoints.yaml
+# UI Layout Breakpoints - Responsive Design Configuration
+# SPEC-EXEC-UI-BP | Authority: Level 3 (Runtime Data Contract)
+
+ui_layout_breakpoints:
+  aspect_ratios:
+    - "16:9"
+    - "16:10"
+    - "21:9"
+    - "4:3"
+
+  safe_area_inset_px: 48
+
+  font_scale_per_ratio:
+    "16:9": 1.0
+    "16:10": 1.02
+    "21:9": 0.9
+    "4:3": 1.1
+
+  reference_resolution:
+    width: 1920
+    height: 1080
+
+  scale_mode: "ScaleWithScreenSize"
+  match_width_or_height: 0.5
+
+  breakpoints:
+    - name: "Mobile_Portrait"
+      min_width: 0
+      max_width: 768
+      scale_factor: 0.85
+      font_size_multiplier: 0.9
+
+    - name: "Mobile_Landscape"
+      min_width: 769
+      max_width: 1024
+      scale_factor: 0.9
+      font_size_multiplier: 0.95
+
+    - name: "Tablet"
+      min_width: 1025
+      max_width: 1366
+      scale_factor: 1.0
+      font_size_multiplier: 1.0
+
+    - name: "Desktop_Standard"
+      min_width: 1367
+      max_width: 1920
+      scale_factor: 1.0
+      font_size_multiplier: 1.0
+
+    - name: "Desktop_Wide"
+      min_width: 1921
+      max_width: 2560
+      scale_factor: 1.1
+      font_size_multiplier: 1.05
+
+    - name: "Ultrawide"
+      min_width: 2561
+      max_width: 9999
+      scale_factor: 1.2
+      font_size_multiplier: 1.1
+
+  hud_anchors:
+    top_left:
+      offset_x: 48
+      offset_y: 48
+    top_right:
+      offset_x: -48
+      offset_y: 48
+    bottom_left:
+      offset_x: 48
+      offset_y: -48
+    bottom_right:
+      offset_x: -48
+      offset_y: -48
+    center:
+      offset_x: 0
+      offset_y: 0
+
+  validation:
+    assert_safe_area_respected: true
+    assert_font_scale_in_range: [0.8, 1.3]

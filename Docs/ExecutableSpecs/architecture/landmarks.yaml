@@ -1,0 +1,62 @@
+schema_version: "1.0"
+catalog_type: landmark_catalog
+
+categories:
+  navigation: "Orientates route or zone"
+  story: "Carries environmental narrative"
+  structural: "Identifies the architecture"
+  liminal: "Signals temporal or spatial abnormality"
+
+landmarks:
+  - id: LAND-001
+    name: MainStairs
+    prefab: Assets/Prefabs/Architecture/Arch_Stairs.prefab
+    category: navigation
+    allowed_rooms: [SchoolHall, SchoolStairwell]
+    visibility_range: 25.0
+  - id: LAND-002
+    name: CourtyardTree
+    prefab: Assets/Prefabs/Architecture/Arch_Tree.prefab
+    category: structural
+    allowed_rooms: [SchoolCourtyard]
+    visibility_range: 30.0
+  - id: LAND-003
+    name: RecordsBoard
+    prefab: Assets/Prefabs/Props/Narrative/Prop_RecordsBoard.prefab
+    category: navigation
+    allowed_rooms: [SchoolHall, SchoolCorridor]
+    visibility_range: 15.0
+  - id: LAND-004
+    name: LyraDesk
+    prefab: Assets/Prefabs/Props/MochilaLyra.prefab
+    category: story
+    allowed_rooms: [SchoolLyraClassroom]
+    visibility_range: 12.0
+  - id: LAND-005
+    name: StoppedClock
+    prefab: Assets/Prefabs/Props/Narrative/Prop_StoppedClock.prefab
+    category: story
+    allowed_rooms: [SchoolHall, SchoolCorridor, SchoolClassroom, SchoolOffice]
+    visibility_range: 10.0
+  - id: LAND-006
+    name: TemporalBridge
+    module_type: TemporalBridge
+    category: liminal
+    allowed_rooms: [SchoolLibrary, SchoolLiminalClassroom]
+    visibility_range: 20.0
+
+rules:
+  - id: LAND-VAL-001
+    type: constraint
+    status: active
+    severity: warning
+    scope: [corridor, room, landmark]
+    rule: "No primary path segment may exceed 18m without a navigation or story landmark"
+    validator: validators/level_validator.yaml#landmark_spacing
+  - id: LAND-VAL-002
+    type: validation
+    status: active
+    severity: error
+    scope: [landmark]
+    rule: "A required landmark must have clear line of sight from its declared approach"
+    validator: validators/level_validator.yaml#landmark_visibility

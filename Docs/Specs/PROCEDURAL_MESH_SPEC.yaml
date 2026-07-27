@@ -1,0 +1,32 @@
+schema_version: "1.0"
+spec_id: "SPEC-134"
+# PROCEDURAL_MESH_SPEC.yaml
+# Wall geometry generation rules, vertex layout, UV unwrapping formulas.
+
+mesh_pipeline:
+  vertex_layout:
+    position_format: "Vector3"
+    normal_format: "Vector3"
+    uv0_format: "Vector2"
+    uv2_format: "Vector2"        # Lightmap UVs
+  subdivision_step_m: 1.0
+
+wall_extrusion_rules:
+  wall_thickness_m: 0.30
+  height_m: 3.8
+  base_bevel_m: 0.05
+  corner_cap_type: "SquareMitre"
+  uv_unwrap_scale: {u_per_meter: 1.0, v_per_meter: 1.0}
+
+door_cutout_rules:
+  width_m: 1.2
+  height_m: 2.4
+  frame_depth_m: 0.35
+  recess_m: 0.05
+  architrave_width_m: 0.10
+
+ceiling_floor_generation:
+  floor_thickness_m: 0.20
+  ceiling_thickness_m: 0.20
+  skirting_board_height_m: 0.15
+  skirting_board_depth_m: 0.03

@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -16,117 +16,109 @@ MonoBehaviour:
   nextLevel: Level_02
   actNumber: 1
   archetype: 0
-  echoEnabled: 0
-  maxEchoes: 0
-  maxRecordSeconds: 0
-  activeParadoxes:
-  fogColor: {r: 0.110, g: 0.141, b: 0.188, a: 1}
-  fogDensity: 0.016
-  skyColor: {r: 0.06, g: 0.07, b: 0.09, a: 1}
-  ambientColor: {r: 0.04, g: 0.05, b: 0.07, a: 1}
-  directionalLightRotation: {x: 48, y: -25, z: 0}
-  directionalLightColor: {r: 0.72, g: 0.76, b: 0.82, a: 1}
-  directionalLightIntensity: 0.55
-  narrativeIntroTitle: "Nivel 1 \u2014 Desorientaci\u00F3n"
-  narrativeIntroDesc: "El pasado ya ocupa el mundo. Todav\u00EDa no s\u00E9 c\u00F3mo."
-  narrativeIntroDuration: 8
-  puzzleObjectiveText: "Camina hacia el fondo del pasillo."
-  puzzleActiveText: "Algo en este lugar ya ocurri\u00F3."
-  puzzleCompleteText: ""
+  echoEnabled: 1
+  maxEchoes: 1
+  maxRecordSeconds: 12
+  echoMode: 0
+  recordFuture: 0
+  degradationPerReplay: 0
+  imposedEchoData: {fileID: 0}
+  ambientEchoData: {fileID: 0}
+  lockEchoSlots: 0
+  lockedSlotIndices: 
+  cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111101, type: 3}
+  lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111101, type: 3}
+  activeParadoxes: 
+  fogColor: {r: 0.04, g: 0.04, b: 0.05, a: 1}
+  fogDensity: 0.035
+  skyColor: {r: 0.06, g: 0.08, b: 0.12, a: 1}
+  ambientColor: {r: 0.11, g: 0.14, b: 0.19, a: 1}
+  directionalLightRotation: {x: 50, y: -30, z: 0}
+  directionalLightColor: {r: 1, g: 1, b: 1, a: 1}
+  directionalLightIntensity: 1
+  narrativeIntroTitle: "Nivel 1 \u2014 Desorientaci\xF3n"
+  narrativeIntroDesc: Un porche silencioso te da la bienvenida a un pasillo escolar
+    sin fin. La memoria repite su estructura.
+  narrativeIntroDuration: 6
+  puzzleObjectiveText: "Camina a trav\xE9s del umbral de la memoria."
+  puzzleActiveText: "La repetici\xF3n espacial oculta la salida."
+  puzzleCompleteText: "Desorientaci\xF3n superada."
   pathHints:
-  - {x: 0, y: 1.1, z: 4}
-  - {x: 0, y: 1.1, z: 22}
-  - {x: 0, y: 1.1, z: 44}
-  - {x: 0, y: 1.1, z: 58}
+  - {x: 0, y: 0.1, z: -3}
+  - {x: 0, y: 0.1, z: 10}
+  - {x: 0, y: 0.1, z: 30}
+  - {x: 0, y: 0.1, z: 52}
   modules:
+  - name: PorchHall
+    type: 31
+    position: {x: 0, y: 0, z: -3}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 8, y: 3, z: 6}
+    customData: 
+    targetSignals: []
   - name: PlayerStart
     type: 7
-    position: {x: 0, y: 0.1, z: -4}
+    position: {x: 0, y: 0.1, z: -5}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals: []
+  - name: CorridorA
+    type: 32
+    position: {x: 0, y: 0, z: 10}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 6, y: 3, z: 20}
+    customData: flicker=true
+    targetSignals: []
+  - name: PlateA
+    type: 4
+    position: {x: 0, y: 0.05, z: 15}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
-  - name: ZonaA_Porche
-    type: 0
-    position: {x: 0, y: 0, z: -2}
+    customData: 
+    targetSignals: []
+  - name: CorridorB
+    type: 32
+    position: {x: 0, y: 0, z: 30}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 8, y: 0.2, z: 6}
-    customData:
-    targetSignals:
-  - name: ColumnaA1
-    type: 3
-    position: {x: -3, y: 0.1, z: -4}
+    scale: {x: 6, y: 3, z: 20}
+    customData: flicker=false
+    targetSignals: []
+  - name: LiminalThreshold
+    type: 46
+    position: {x: 0, y: 0, z: 48}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0.4, y: 3, z: 0.4}
-    customData:
-    targetSignals:
-  - name: ColumnaA2
-    type: 3
-    position: {x: 0, y: 0.1, z: -4}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0.4, y: 3, z: 0.4}
-    customData:
-    targetSignals:
-  - name: ColumnaA3
-    type: 3
-    position: {x: 3, y: 0.1, z: -4}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0.4, y: 3, z: 0.4}
-    customData:
-    targetSignals:
-  - name: ZonaB_PasilloA
-    type: 27
-    position: {x: 0, y: 0, z: 12}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 4, y: 3, z: 20}
-    customData: WallTeal
-    targetSignals:
-  - name: FluorescenteA_Parpadeo
-    type: 10
-    position: {x: 0, y: 2.8, z: 12}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 1, y: 1, z: 1}
-    customData: 0.8,0.85,0.75|2.5|8.0|flicker
-    targetSignals:
-  - name: ZonaC_PasilloB
-    type: 27
-    position: {x: 0, y: 0, z: 34}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 4, y: 3, z: 20}
-    customData: WallTeal
-    targetSignals:
-  - name: FluorescenteB_Normal
-    type: 10
-    position: {x: 0, y: 2.8, z: 34}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 1, y: 1, z: 1}
-    customData: 0.8,0.85,0.75|2.5|8.0
-    targetSignals:
-  - name: ZonaD_Umbral
-    type: 29
+    scale: {x: 8, y: 3.5, z: 8}
+    customData: 
+    targetSignals: []
+  - name: ExitGate
+    type: 5
     position: {x: 0, y: 0, z: 52}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 6, y: 3, z: 4}
-    customData: open
+    scale: {x: 4, y: 3, z: 0.5}
+    customData: 
     targetSignals:
+    - PlateA
   - name: LevelExit_Area
     type: 6
-    position: {x: 0, y: 1.1, z: 56}
+    position: {x: 0, y: 0.1, z: 54}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: Level_02
-    targetSignals:
+    targetSignals: []
   - name: LevelGoal
     type: 13
-    position: {x: 0, y: 1.1, z: 56}
+    position: {x: 0, y: 0.1, z: 54}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 1, y: 1, z: 1}
-    customData: "Camina hacia el fondo.|El eco ya est\u00E1 aqu\u00ED.|."
+    scale: {x: 0, y: 0, z: 0}
+    customData: "Camina a trav\xE9s del pasillo y abre el umbral con tu eco.|La repetici\xF3n
+      espacial oculta la salida.|Desorientaci\xF3n superada."
     targetSignals:
+    - PlateA
   - name: LevelRuntime
     type: 14
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 1, y: 1, z: 1}
-    customData: "Camina hacia el fondo del pasillo.|Algo en este lugar ya ocurri\u00F3.|."
-    targetSignals:
+    scale: {x: 0, y: 0, z: 0}
+    customData: Avanza por el pasillo.|El pasado se duplica.|Salida alcanzada.
+    targetSignals: []

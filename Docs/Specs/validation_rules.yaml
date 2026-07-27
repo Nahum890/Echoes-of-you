@@ -1,0 +1,64 @@
+schema_version: "1.2"
+spec_type: validation_rules
+id_prefix: "VAL-"
+
+rules:
+  - id: VAL-ROOM-001
+    target_spec: room_types.yaml
+    severity: fatal
+    description: "All level module placement types must reference a valid ModuleType enum integer (0..46)"
+    validator: "BlueprintValidator.ValidateModuleTypes"
+
+  - id: VAL-ROOM-002
+    target_spec: room_types.yaml
+    severity: fatal
+    description: "Every level blueprint must contain exactly one PlayerStart module (type 7)"
+    validator: "BlueprintValidator.ValidatePlayerStartCount"
+
+  - id: VAL-ROOM-003
+    target_spec: room_types.yaml
+    severity: fatal
+    description: "Every level blueprint must contain at least one LevelExit or LevelGoal module (type 6 or 13)"
+    validator: "BlueprintValidator.ValidateLevelExit"
+
+  - id: VAL-CAM-001
+    target_spec: camera_profiles.yaml
+    severity: fatal
+    description: "Every production level blueprint must serialize a non-null cameraProfile asset reference"
+    validator: "BlueprintValidator.ValidateCameraProfile"
+
+  - id: VAL-CAM-002
+    target_spec: camera_profiles.yaml
+    severity: error
+    description: "Camera profile fieldOfView must be constrained between 30 and 90 degrees"
+    validator: "CameraProfileValidator.ValidateFOV"
+
+  - id: VAL-LIGHT-001
+    target_spec: lighting_profiles.yaml
+    severity: error
+    description: "Every production level blueprint must serialize a non-null lightingProfile asset reference"
+    validator: "BlueprintValidator.ValidateLightingProfile"
+
+  - id: VAL-LIGHT-002
+    target_spec: lighting_profiles.yaml
+    severity: warning
+    description: "Lighting profile intensity must be non-negative"
+    validator: "LightingProfileValidator.ValidateIntensity"
+
+  - id: VAL-PUZZ-001
+    target_spec: puzzle_mechanics.yaml
+    severity: error
+    description: "Level maxRecordSeconds must be defined and within 1..30 seconds range"
+    validator: "BlueprintValidator.ValidateRecordDuration"
+
+  - id: VAL-PUZZ-002
+    target_spec: puzzle_mechanics.yaml
+    severity: error
+    description: "Signal target bindings must map to valid existing module names in blueprint"
+    validator: "BlueprintValidator.ValidateSignalWiring"
+
+  - id: VAL-ID-001
+    target_spec: all
+    severity: fatal
+    description: "All specification entity IDs must be globally unique across all YAML files"
+    validator: "ExecutableSpecValidator.CheckDuplicateIds"

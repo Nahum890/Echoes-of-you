@@ -33,42 +33,46 @@ public static class EchoesBlueprintExporter
         bp.maxEchoes = 1;
         bp.maxRecordSeconds = 12f;
 
-        bp.fogColor = new Color(0.12f, 0.14f, 0.2f, 1f);
-        bp.fogDensity = 0.008f;
-        bp.skyColor = new Color(0.2f, 0.22f, 0.28f, 1f);
+        bp.fogColor = new Color(0.04f, 0.04f, 0.05f, 1f); // void-black
+        bp.fogDensity = 0.035f;
+        bp.skyColor = new Color(0.06f, 0.08f, 0.12f, 1f);
+        bp.ambientColor = new Color(0.11f, 0.14f, 0.19f, 1f);
 
-        bp.narrativeIntroTitle = "Nivel 1 — Despertar Simétrico";
-        bp.narrativeIntroDesc = "Baja por la rampa al nivel inferior. Graba un eco parado sobre la placa para abrir la compuerta superior. Regresa rápido y crúzala mientras tu eco mantiene el portón abierto.";
-        bp.narrativeIntroDuration = 10f;
-        bp.puzzleObjectiveText = "Activa la placa inferior proyectando un eco y cruza antes de que baje la compuerta.";
-        bp.puzzleActiveText = "El eco del portal responde en la simulación.";
-        bp.puzzleCompleteText = "Fractura simétrica superada.";
+        bp.narrativeIntroTitle = "Nivel 1 — Desorientación";
+        bp.narrativeIntroDesc = "Un porche silencioso te da la bienvenida a un pasillo escolar sin fin. La memoria repite su estructura.";
+        bp.narrativeIntroDuration = 6f;
+        bp.puzzleObjectiveText = "Camina a través del umbral de la memoria.";
+        bp.puzzleActiveText = "La repetición espacial oculta la salida.";
+        bp.puzzleCompleteText = "Desorientación superada.";
 
         bp.pathHints = new[] {
-            new Vector3(0f, 7.1f, -1f),
-            new Vector3(0f, 1.1f, 18f),
-            new Vector3(0f, 7.1f, -6f)
+            new Vector3(0f, 0.1f, -3f),
+            new Vector3(0f, 0.1f, 10f),
+            new Vector3(0f, 0.1f, 30f),
+            new Vector3(0f, 0.1f, 52f)
         };
 
         bp.modules = new List<ModulePlacement>
         {
-            new ModulePlacement { name = "StartPlatform", type = ModuleType.StandardPlatform, position = new Vector3(0f, 6f, 0f), scale = new Vector3(8f, 0.5f, 8f) },
-            new ModulePlacement { name = "BarrierStart_L", type = ModuleType.BarrierWall, position = new Vector3(-3.8f, 7.5f, 0f), scale = new Vector3(0.4f, 3f, 8f) },
-            new ModulePlacement { name = "BarrierStart_R", type = ModuleType.BarrierWall, position = new Vector3(3.8f, 7.5f, 0f), scale = new Vector3(0.4f, 3f, 8f) },
-            new ModulePlacement { name = "RampDown", type = ModuleType.RampPlatform, position = new Vector3(0f, 3f, 8f), scale = new Vector3(4f, 0.5f, 10f), rotation = new Vector3(22f, 0f, 0f) },
-            new ModulePlacement { name = "LowerPlatform", type = ModuleType.StandardPlatform, position = new Vector3(0f, 0f, 18f), scale = new Vector3(10f, 0.5f, 10f) },
-            new ModulePlacement { name = "Plate1", type = ModuleType.PressurePlate, position = new Vector3(0f, 0.33f, 18f), scale = Vector3.one },
-            new ModulePlacement { name = "ExitGate", type = ModuleType.Door, position = new Vector3(0f, 7.5f, -3.8f), scale = new Vector3(4f, 3f, 0.5f), targetSignals = new[] { "Plate1" } },
-            new ModulePlacement { name = "ExitPlatform", type = ModuleType.StandardPlatform, position = new Vector3(0f, 6f, -7f), scale = new Vector3(6f, 0.5f, 6f) },
-            new ModulePlacement { name = "LevelExit_Area", type = ModuleType.LevelExit, position = new Vector3(0f, 7.25f, -6f), scale = Vector3.one, customData = "Level_02" },
-            new ModulePlacement { name = "PlayerStart", type = ModuleType.PlayerStart, position = new Vector3(0f, 7.1f, -1f) },
-            new ModulePlacement { name = "Tut_L01_Simetria", type = ModuleType.TutorialTrigger, position = new Vector3(0f, 7f, -1f), scale = new Vector3(8f, 3f, 4f), customData = "Nivel 1 — Despertar Simétrico|Baja por la rampa al nivel inferior. Graba un eco parado sobre la placa para abrir la compuerta superior. Regresa rápido y crúzala mientras tu eco mantiene el portón abierto." },
-            new ModulePlacement { name = "Light_LowerPlate", type = ModuleType.PointLight, position = new Vector3(0f, 3f, 18f), customData = "40C0FF,4,10" },
-            new ModulePlacement { name = "Light_Exit", type = ModuleType.PointLight, position = new Vector3(0f, 9f, -6f), customData = "2699FF,5,10" },
-            new ModulePlacement { name = "DistantArch", type = ModuleType.DistantArchitecture, position = new Vector3(0f, 0f, 12f) },
-            new ModulePlacement { name = "AmbientParticles", type = ModuleType.AmbientParticles, position = new Vector3(0f, 2f, 8f), scale = new Vector3(18f, 8f, 18f) },
-            new ModulePlacement { name = "LevelGoal", type = ModuleType.LevelGoal, position = new Vector3(0f, 7.25f, -6f), targetSignals = new[] { "Plate1" }, customData = "Activa la placa inferior proyectando un eco y cruza antes de que baje la compuerta.|El eco del portal responde en la simulación.|Fractura simétrica superada." },
-            new ModulePlacement { name = "LevelRuntime", type = ModuleType.LevelRuntime, customData = "Proyecta tu eco a la placa inferior y cruza la compuerta.|El eco es tu llave del pasado.|El primer enlace se ha completado." }
+            // Zona A - Porche Entrada (z: -6 a 0)
+            new ModulePlacement { name = "PorchHall", type = ModuleType.SchoolHall, position = new Vector3(0f, 0f, -3f), scale = new Vector3(8f, 3f, 6f) },
+            new ModulePlacement { name = "PlayerStart", type = ModuleType.PlayerStart, position = new Vector3(0f, 0.1f, -5f) },
+            
+            // Zona B - Pasillo A (z: 0 a 20) — WallTealMat & Flicker
+            new ModulePlacement { name = "CorridorA", type = ModuleType.SchoolCorridor, position = new Vector3(0f, 0f, 10f), scale = new Vector3(6f, 3f, 20f), customData = "flicker=true" },
+            new ModulePlacement { name = "PlateA", type = ModuleType.PressurePlate, position = new Vector3(0f, 0.05f, 15f), scale = Vector3.one },
+            
+            // Zona C - Pasillo B (z: 20 a 40) — Idéntico geom, sin flicker
+            new ModulePlacement { name = "CorridorB", type = ModuleType.SchoolCorridor, position = new Vector3(0f, 0f, 30f), scale = new Vector3(6f, 3f, 20f), customData = "flicker=false" },
+            
+            // Zona D - Umbral Final (z: 52)
+            new ModulePlacement { name = "LiminalThreshold", type = ModuleType.TransitionSpace, position = new Vector3(0f, 0f, 48f), scale = new Vector3(8f, 3.5f, 8f) },
+            new ModulePlacement { name = "ExitGate", type = ModuleType.Door, position = new Vector3(0f, 0f, 52f), scale = new Vector3(4f, 3f, 0.5f), targetSignals = new[] { "PlateA" } },
+            new ModulePlacement { name = "LevelExit_Area", type = ModuleType.LevelExit, position = new Vector3(0f, 0.1f, 54f), scale = Vector3.one, customData = "Level_02" },
+            
+            // Runtime & Goals
+            new ModulePlacement { name = "LevelGoal", type = ModuleType.LevelGoal, position = new Vector3(0f, 0.1f, 54f), targetSignals = new[] { "PlateA" }, customData = "Camina a través del pasillo y abre el umbral con tu eco.|La repetición espacial oculta la salida.|Desorientación superada." },
+            new ModulePlacement { name = "LevelRuntime", type = ModuleType.LevelRuntime, customData = "Avanza por el pasillo.|El pasado se duplica.|Salida alcanzada." }
         };
 
         SaveBlueprint(bp, "Level_01_Blueprint");
@@ -80,43 +84,55 @@ public static class EchoesBlueprintExporter
         bp.levelName = "Level_02";
         bp.nextLevel = "Level_03";
         bp.actNumber = 1;
-        bp.archetype = LevelArchetype.MovingCity;
+        bp.archetype = LevelArchetype.Standard;
         bp.maxEchoes = 2;
         bp.maxRecordSeconds = 14f;
 
         bp.fogColor = new Color(0.04f, 0.05f, 0.08f, 1f);
-        bp.fogDensity = 0.043f;
+        bp.fogDensity = 0.03f;
         bp.skyColor = new Color(0.04f, 0.05f, 0.08f, 1f);
+        bp.ambientColor = new Color(0.1f, 0.12f, 0.16f, 1f);
 
-        bp.narrativeIntroTitle = "Nivel 2 — Plataformas Cruzadas";
-        bp.narrativeIntroDesc = "Sincroniza tus ecos en las placas cruzadas para elevar las plataformas y cruzar el puente superior.";
-        bp.narrativeIntroDuration = 10f;
-        bp.puzzleObjectiveText = "Sincroniza tus ecos en las placas cruzadas para elevar las plataformas y cruzar el puente.";
-        bp.puzzleActiveText = "El contrapeso de la memoria está listo.";
-        bp.puzzleCompleteText = "Enlace completado.";
+        bp.narrativeIntroTitle = "Nivel 2 — Repetición";
+        bp.narrativeIntroDesc = "Tres aulas consecutivas. Mismo espacio, pero la desorganización de la memoria altera sus mecanismos.";
+        bp.narrativeIntroDuration = 6f;
+        bp.puzzleObjectiveText = "Coordina las placas de presión en las aulas progresivas.";
+        bp.puzzleActiveText = "La repetición exige mayor sincronización.";
+        bp.puzzleCompleteText = "Repetición superada.";
 
         bp.pathHints = new[] {
-            new Vector3(0f, 1.1f, 0f),
-            new Vector3(-6f, 7.1f, 12f)
+            new Vector3(0f, 0.1f, 0f),
+            new Vector3(0f, 0.1f, 16f),
+            new Vector3(0f, 0.1f, 32f),
+            new Vector3(0f, 0.1f, 48f)
         };
 
         bp.modules = new List<ModulePlacement>
         {
-            new ModulePlacement { name = "StartPlatform", type = ModuleType.StandardPlatform, position = new Vector3(0f, 0f, 0f), scale = new Vector3(14f, 0.5f, 8f) },
-            new ModulePlacement { name = "LeftTower", type = ModuleType.StandardPlatform, position = new Vector3(-6f, 6f, 12f), scale = new Vector3(4f, 0.5f, 4f) },
-            new ModulePlacement { name = "RightTower", type = ModuleType.StandardPlatform, position = new Vector3(6f, 6f, 12f), scale = new Vector3(4f, 0.5f, 4f) },
-            new ModulePlacement { name = "PlateA", type = ModuleType.PressurePlate, position = new Vector3(-4f, 0.33f, 0f) },
-            new ModulePlacement { name = "PlateB", type = ModuleType.PressurePlate, position = new Vector3(4f, 0.33f, 0f) },
-            new ModulePlacement { name = "PlateC", type = ModuleType.PressurePlate, position = new Vector3(6f, 6.33f, 12f) },
-            new ModulePlacement { name = "ElevLeft", type = ModuleType.MovingPlatform, position = new Vector3(-6f, 0f, 6f), scale = new Vector3(3f, 0.5f, 3f), targetSignals = new[] { "PlateB" }, customData = "0,0,0|0,6,0|6" },
-            new ModulePlacement { name = "ElevRight", type = ModuleType.MovingPlatform, position = new Vector3(6f, 0f, 6f), scale = new Vector3(3f, 0.5f, 3f), targetSignals = new[] { "PlateA" }, customData = "0,0,0|0,6,0|6" },
-            new ModulePlacement { name = "BridgeDoor", type = ModuleType.Door, position = new Vector3(0f, 7.5f, 12f), scale = new Vector3(4f, 3f, 0.5f), targetSignals = new[] { "PlateC" } },
-            new ModulePlacement { name = "BridgeHigh", type = ModuleType.BridgePlatform, position = new Vector3(0f, 6f, 12f), scale = new Vector3(8f, 0.5f, 3f) },
-            new ModulePlacement { name = "LevelExit_Area", type = ModuleType.LevelExit, position = new Vector3(-6f, 7.25f, 12f), customData = "Level_03" },
-            new ModulePlacement { name = "PlayerStart", type = ModuleType.PlayerStart, position = new Vector3(0f, 1.1f, 0f) },
-            new ModulePlacement { name = "DistantArch", type = ModuleType.DistantArchitecture, position = new Vector3(0f, 0f, 12f) },
-            new ModulePlacement { name = "LevelGoal", type = ModuleType.LevelGoal, position = new Vector3(-6f, 7.25f, 12f), targetSignals = new[] { "PlateC" }, customData = "Sincroniza tus ecos en las placas cruzadas para elevar las plataformas y cruzar el puente superior.|El contrapeso de la memoria está listo.|Enlace completado." },
-            new ModulePlacement { name = "LevelRuntime", type = ModuleType.LevelRuntime, customData = "Sincroniza tus ecos en las placas cruzadas.|El contrapeso de la memoria está listo.|Enlace completado." }
+            // Hall Entrada (z: 0)
+            new ModulePlacement { name = "EntranceHall", type = ModuleType.SchoolHall, position = new Vector3(0f, 0f, 0f), scale = new Vector3(10f, 3f, 8f) },
+            new ModulePlacement { name = "PlayerStart", type = ModuleType.PlayerStart, position = new Vector3(0f, 0.1f, -2f) },
+
+            // Aula 1 — Ordenada (z: 16) — 1 placa
+            new ModulePlacement { name = "Classroom1", type = ModuleType.SchoolClassroom, position = new Vector3(0f, 0f, 16f), scale = new Vector3(10f, 3f, 12f), customData = "style=ordered" },
+            new ModulePlacement { name = "Plate1", type = ModuleType.PressurePlate, position = new Vector3(-2f, 0.05f, 16f) },
+            new ModulePlacement { name = "Door1", type = ModuleType.Door, position = new Vector3(0f, 0f, 22f), scale = new Vector3(4f, 3f, 0.5f), targetSignals = new[] { "Plate1" } },
+
+            // Aula 2 — Corrida (z: 32) — 2 placas simultáneas
+            new ModulePlacement { name = "Classroom2", type = ModuleType.SchoolClassroom, position = new Vector3(0f, 0f, 32f), scale = new Vector3(10f, 3f, 12f), customData = "style=disarray" },
+            new ModulePlacement { name = "Plate2A", type = ModuleType.PressurePlate, position = new Vector3(-3f, 0.05f, 32f) },
+            new ModulePlacement { name = "Plate2B", type = ModuleType.PressurePlate, position = new Vector3(3f, 0.05f, 32f) },
+            new ModulePlacement { name = "Door2", type = ModuleType.Door, position = new Vector3(0f, 0f, 38f), scale = new Vector3(4f, 3f, 0.5f), targetSignals = new[] { "Plate2A", "Plate2B" } },
+
+            // Aula 3 — Desordenada (z: 48) — Timing
+            new ModulePlacement { name = "Classroom3", type = ModuleType.SchoolClassroom, position = new Vector3(0f, 0f, 48f), scale = new Vector3(10f, 3f, 12f), customData = "style=chaos" },
+            new ModulePlacement { name = "Plate3", type = ModuleType.PressurePlate, position = new Vector3(0f, 0.05f, 48f) },
+            new ModulePlacement { name = "ExitGate", type = ModuleType.Door, position = new Vector3(0f, 0f, 54f), scale = new Vector3(4f, 3f, 0.5f), targetSignals = new[] { "Plate3" } },
+            new ModulePlacement { name = "LevelExit_Area", type = ModuleType.LevelExit, position = new Vector3(0f, 0.1f, 56f), customData = "Level_03" },
+
+            // Goals
+            new ModulePlacement { name = "LevelGoal", type = ModuleType.LevelGoal, position = new Vector3(0f, 0.1f, 56f), targetSignals = new[] { "Plate3" }, customData = "Coordina las tres aulas.|El ritmo de la memoria de Lyra se sostiene.|Repetición superada." },
+            new ModulePlacement { name = "LevelRuntime", type = ModuleType.LevelRuntime, customData = "Avanza por las tres aulas.|Coordina tu pasado.|Aula final alcanzada." }
         };
 
         SaveBlueprint(bp, "Level_02_Blueprint");
@@ -301,6 +317,62 @@ public static class EchoesBlueprintExporter
         };
 
         SaveBlueprint(bp, "Level_05_Blueprint");
+    }
+
+    private static void ExportLevel06()
+    {
+        LevelBlueprint bp = ScriptableObject.CreateInstance<LevelBlueprint>();
+        bp.levelName = "Level_06";
+        bp.nextLevel = "Level_07";
+        bp.actNumber = 3;
+        bp.archetype = LevelArchetype.Standard;
+        bp.maxEchoes = 1;
+        bp.maxRecordSeconds = 12f;
+        bp.degradationPerReplay = 0.02f;
+
+        bp.fogColor = new Color(0.04f, 0.06f, 0.05f, 1f); // sage-green dark fog
+        bp.fogDensity = 0.035f;
+        bp.skyColor = new Color(0.06f, 0.08f, 0.07f, 1f);
+        bp.ambientColor = new Color(0.1f, 0.14f, 0.12f, 1f);
+
+        bp.narrativeIntroTitle = "Nivel 6 — Negación / Salto de Fe";
+        bp.narrativeIntroDesc = "La biblioteca se fragmenta ante un abismo de 8 metros. El puente solo se materializa en el plano temporal del eco.";
+        bp.narrativeIntroDuration = 6f;
+        bp.puzzleObjectiveText = "Materializa el puente espectral mediante el eco para cruzar el abismo.";
+        bp.puzzleActiveText = "El puente temporal sostiene la pisada del presente.";
+        bp.puzzleCompleteText = "Salto de fe completado.";
+
+        bp.pathHints = new[] {
+            new Vector3(0f, 0.1f, 0f),
+            new Vector3(0f, 0.1f, 12f),
+            new Vector3(0f, 0.1f, 24f)
+        };
+
+        bp.modules = new List<ModulePlacement>
+        {
+            // Zona A - Entrada Biblioteca (z: 0)
+            new ModulePlacement { name = "LibraryEntrance", type = ModuleType.SchoolLibrary, position = new Vector3(0f, 0f, 0f), scale = new Vector3(8f, 3.5f, 6f) },
+            new ModulePlacement { name = "PlayerStart", type = ModuleType.PlayerStart, position = new Vector3(0f, 0.1f, -2f) },
+
+            // Zona B - Pasillo Estanterías / Learning Zone (z: 10) — Abismo 2m seguro
+            new ModulePlacement { name = "LibraryShelfZone", type = ModuleType.SchoolLibrary, position = new Vector3(0f, 0f, 10f), scale = new Vector3(8f, 3.5f, 6f) },
+            new ModulePlacement { name = "SmallChasmBridge", type = ModuleType.TemporalBridge, position = new Vector3(0f, 0f, 13f), scale = new Vector3(3f, 0.5f, 2f) },
+
+            // Zona C - Abismo Principal / Puzzle Real (z: 20) — Abismo 8m + TemporalBridge
+            new ModulePlacement { name = "MainChasmBridge", type = ModuleType.TemporalBridge, position = new Vector3(0f, 0f, 22f), scale = new Vector3(4f, 0.5f, 8f) },
+            new ModulePlacement { name = "BridgePlate", type = ModuleType.PressurePlate, position = new Vector3(4f, 0.05f, 18f) },
+
+            // Zona D - Llegada / Espejo (z: 32)
+            new ModulePlacement { name = "LibraryArrival", type = ModuleType.SchoolLibrary, position = new Vector3(0f, 0f, 32f), scale = new Vector3(8f, 3.5f, 6f) },
+            new ModulePlacement { name = "ExitGate", type = ModuleType.Door, position = new Vector3(0f, 0f, 35f), scale = new Vector3(4f, 3f, 0.5f), targetSignals = new[] { "BridgePlate" } },
+            new ModulePlacement { name = "LevelExit_Area", type = ModuleType.LevelExit, position = new Vector3(0f, 0.1f, 37f), customData = "Level_07" },
+
+            // Goals
+            new ModulePlacement { name = "LevelGoal", type = ModuleType.LevelGoal, position = new Vector3(0f, 0.1f, 37f), targetSignals = new[] { "BridgePlate" }, customData = "Cruza el abismo utilizando el puente espectral.|La estructura temporal responde.|Salto de fe completado." },
+            new ModulePlacement { name = "LevelRuntime", type = ModuleType.LevelRuntime, customData = "Graba tu movimiento para proyectar el puente.|Confía en la memoria.|Abismo cruzado." }
+        };
+
+        SaveBlueprint(bp, "Level_06_Blueprint");
     }
 
     private static LevelBlueprint ScriptObjectCreateInstance()

@@ -1,0 +1,14 @@
+example_type: invalid
+schema: catalogs/room_templates.yaml
+room_type: SchoolClassroom
+template_id: ROOM-TMPL-003
+dimensions: {width: 5.0, depth: 4.0, height: 2.2}
+clearance: {central_aisle: 0.5, perimeter: 0.3}
+required_props: [PupitreDoble]
+camera_profile: null
+lighting_profile: null
+expected_failure:
+  - rule_id: SCALE-001
+    code: ROOM_CLEARANCE_TOO_SMALL
+  - rule_id: ROOM-VAL-002
+    code: REQUIRED_TEMPLATE_DATA_MISSING

@@ -1,0 +1,64 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-ANIM-PARAM-001"
+# ANIMATOR_PARAMETER_SCHEMA.yaml
+# Exhaustive schema mapping every player/echo animation state to exact
+# Animator Controller parameter hashes and clip names.
+
+# Unity Animator hash: Animator.StringToHash("parameterName")
+parameters:
+  floats:
+    - name: "Speed"
+      hash: 1943595068           # Animator.StringToHash("Speed")
+      default_value: 0.0
+      description: "Locomotion blend tree speed parameter (0.0=Idle, 2.8=Walk, 4.2=Run)"
+    - name: "VerticalSpeed"
+      hash: -1536643064
+      default_value: 0.0
+      description: "Vertical velocity for jump/fall blending"
+
+  booleans:
+    - name: "IsGrounded"
+      hash: -1521498440
+      default_value: true
+      description: "True when CharacterController.isGrounded"
+    - name: "IsJumping"
+      hash: 2042549943
+      default_value: false
+      description: "True during jump ascent phase"
+    - name: "IsInteracting"
+      hash: -1623100596
+      default_value: false
+      description: "True during E key press interaction"
+    - name: "IsCrouching"
+      hash: 432891524
+      default_value: false
+      description: "True while crouch input is held"
+
+  triggers:
+    - name: "TriggerRespawn"
+      hash: -1012857861
+      description: "Fired on player respawn to play respawn animation"
+    - name: "TriggerEchoMaterialize"
+      hash: 994587204
+      description: "Fired on Echo playback start to trigger ghost materialize effect"
+
+state_full_path_hashes:
+  # Hashes are from the base layer (index 0)
+  Idle: -62438599              # Animator.StringToHash("Base Layer.Idle")
+  LocomotionBlendTree: 498591   # Animator.StringToHash("Base Layer.LocomotionBlendTree")
+  Jump: 1052788694
+  Fall: -1836980803
+  Land: 1913416200
+  Interact: -620100498
+  Respawn: 209901879
+  EchoMaterialize: 897456203    # On Echo GameObject's animator
+
+echo_animator_mirror_parameters:
+  # Echo ghost replays these parameters sampled from EchoRecordFrame
+  - "Speed"
+  - "IsGrounded"
+  - "IsJumping"
+  - "IsInteracting"
+  - "IsCrouching"
+  - "animatorStateHash"       # From EchoRecordFrame.animatorStateHash
+  - "animatorNormalizedTime"  # From EchoRecordFrame.animatorNormalizedTime

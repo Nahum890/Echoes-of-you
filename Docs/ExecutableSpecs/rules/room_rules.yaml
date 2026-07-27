@@ -1,0 +1,24 @@
+schema_version: "1.0"
+rule_set: rooms
+rules:
+  - id: ROOM-001
+    type: mapping
+    status: active
+    severity: fatal
+    scope: [room, blueprint]
+    rule: "Room type must map to a ModuleType and room template"
+    validator: validators/static_validator.yaml#room_module_mapping
+  - id: ROOM-002
+    type: constraint
+    status: active
+    severity: error
+    scope: [room]
+    rule: "Room dimensions must remain within template minimum and maximum bounds"
+    validator: validators/level_validator.yaml#room_dimensions
+  - id: ROOM-003
+    type: constraint
+    status: active
+    severity: error
+    scope: [room]
+    rule: "All required props and landmarks must be present"
+    validator: validators/level_validator.yaml#room_requirements

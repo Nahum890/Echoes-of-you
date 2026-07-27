@@ -1,0 +1,24 @@
+schema_version: "1.0"
+rule_set: transitions
+rules:
+  - id: TRANS-001
+    type: mapping
+    status: active
+    severity: fatal
+    scope: [transition]
+    rule: "Origin and destination room types must be compatible in architecture/transitions.yaml"
+    validator: validators/static_validator.yaml#transition_compatibility
+  - id: TRANS-002
+    type: constraint
+    status: active
+    severity: error
+    scope: [transition]
+    rule: "Transition dimensions must satisfy its transition type"
+    validator: validators/level_validator.yaml#transition_dimensions
+  - id: TRANS-003
+    type: validation
+    status: active
+    severity: warning
+    scope: [transition]
+    rule: "A transition should define lighting, fog and audio changes"
+    validator: validators/static_validator.yaml#transition_presentation

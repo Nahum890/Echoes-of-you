@@ -1,0 +1,31 @@
+schema_version: "1.0"
+rule_set: blueprints
+rules:
+  - id: BLU-001
+    type: validation
+    status: active
+    severity: fatal
+    scope: [blueprint]
+    rule: "Exactly one PlayerStart and at least one LevelExit or LevelGoal are required"
+    validator: validators/blueprint_validator.yaml#required_modules
+  - id: BLU-002
+    type: validation
+    status: active
+    severity: fatal
+    scope: [blueprint]
+    rule: "cameraProfile and lightingProfile must resolve in production"
+    validator: validators/blueprint_validator.yaml#profile_references
+  - id: BLU-003
+    type: validation
+    status: active
+    severity: error
+    scope: [blueprint]
+    rule: "All targetSignals must resolve to declared signal endpoints"
+    validator: validators/blueprint_validator.yaml#signals
+  - id: BLU-004
+    type: mapping
+    status: active
+    severity: error
+    scope: [blueprint]
+    rule: "Every module type must resolve to catalogs/modules.yaml"
+    validator: validators/static_validator.yaml#module_mapping

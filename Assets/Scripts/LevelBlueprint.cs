@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -17,7 +17,7 @@ public enum ParadoxType
 }
 
 /// <summary>
-/// Tipos de módulos arquitectónicos del vocabulario y legacy.
+/// Tipos de mÃ³dulos arquitectÃ³nicos del vocabulario y legacy.
 /// </summary>
 public enum ModuleType
 {
@@ -78,7 +78,7 @@ public enum ModuleType
 }
 
 /// <summary>
-/// Configuración de posicionamiento e interconexión de un módulo en la escena.
+/// ConfiguraciÃ³n de posicionamiento e interconexiÃ³n de un mÃ³dulo en la escena.
 /// </summary>
 [System.Serializable]
 public struct ModulePlacement
@@ -89,15 +89,15 @@ public struct ModulePlacement
     public Vector3 rotation;
     public Vector3 scale;
     
-    [Tooltip("Valores extra de configuración en formato key=value o texto libre.")]
+    [Tooltip("Valores extra de configuraciÃ³n en formato key=value o texto libre.")]
     public string customData;
     
-    [Tooltip("Nombres de señales que este objeto emite o a las que reacciona.")]
+    [Tooltip("Nombres de seÃ±ales que este objeto emite o a las que reacciona.")]
     public string[] targetSignals;
 }
 
 /// <summary>
-/// Asset de configuración que describe un nivel completo de forma declarativa.
+/// Asset de configuraciÃ³n que describe un nivel completo de forma declarativa.
 /// </summary>
 [CreateAssetMenu(fileName = "NewLevelBlueprint", menuName = "Echoes of You/Level Blueprint", order = 1)]
 public class LevelBlueprint : ScriptableObject
@@ -108,10 +108,19 @@ public class LevelBlueprint : ScriptableObject
     public int actNumber = 1;
     public LevelArchetype archetype = LevelArchetype.Standard;
     
-    [Header("Echo Limits")]
+    [Header("Echo Limits & Advanced Modes")]
     public bool echoEnabled = true;
     public int maxEchoes = 1;
     public float maxRecordSeconds = 12f;
+    public EchoPlaybackMode echoMode = EchoPlaybackMode.Standard;
+    public bool recordFuture = false;
+    public float degradationPerReplay = 0.0f;
+    public EchoRecordingData imposedEchoData;
+    public EchoRecordingData ambientEchoData;
+    public bool lockEchoSlots = false;
+    public int[] lockedSlotIndices;
+    public CameraProfile cameraProfile;
+    public LightingProfile lightingProfile;
 
     [Header("Paradox Systems")]
     public ParadoxType[] activeParadoxes;
@@ -126,9 +135,9 @@ public class LevelBlueprint : ScriptableObject
     public float directionalLightIntensity = 1f;
 
     [Header("Narrative Texts")]
-    public string narrativeIntroTitle = "Nivel — Título";
+    public string narrativeIntroTitle = "Nivel â€” TÃ­tulo";
     [TextArea(3, 5)]
-    public string narrativeIntroDesc = "Descripción larga del nivel y su significado.";
+    public string narrativeIntroDesc = "DescripciÃ³n larga del nivel y su significado.";
     public float narrativeIntroDuration = 10f;
     public string puzzleObjectiveText = "Proyecta tu eco.";
     public string puzzleActiveText = "El eco es tu llave del pasado.";

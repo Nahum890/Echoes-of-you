@@ -17,7 +17,9 @@ public static class EchoesLightingBakePipeline
         EchoesURPConfigurator.SetupSSAOAndGraphics();
 
         // Buscar escenas de niveles
-        string[] levelScenes = Directory.GetFiles(SceneRoot, "Level_*.unity");
+        string[] levelScenes = System.Array.FindAll(
+            Directory.GetFiles(SceneRoot, "Level_*.unity"),
+            p => !p.Contains("TEST") && !p.Contains("SchoolGreybox"));
         if (levelScenes == null || levelScenes.Length == 0)
         {
             Debug.LogError("[Echoes Bake Pipeline] No se encontraron escenas de niveles en " + SceneRoot);
@@ -77,7 +79,7 @@ public static class EchoesLightingBakePipeline
 
         string reportPath = "Assets/Reports/Lighting_Optimization_Report.txt";
         Directory.CreateDirectory("Assets/Reports");
-        File.WriteAllText(reportPath, report.ToString());
+        File.WriteAllText(reportPath, report.ToString(), System.Text.Encoding.UTF8);
         AssetDatabase.Refresh();
 
         Debug.Log($"[Echoes Bake Pipeline] ¡Todos los niveles fueron horneados correctamente! Informe escrito en {reportPath}");

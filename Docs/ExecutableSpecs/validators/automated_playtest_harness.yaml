@@ -1,0 +1,48 @@
+# AUTOMATED HEADLESS PLAYTEST HARNESS SPECIFICATION — Echoes of You 2.0
+spec_id: SPEC-EXEC-TST-001
+version: "1.0"
+authority: "Docs/Authority/SOURCE_OF_TRUTH.md"
+
+playtest_runner:
+  mode: "Headless"
+  time_scale: 5.0
+  max_seconds_per_level: 60.0
+
+level_input_sequences:
+  level_01:
+    actions:
+      - frame: 0
+        input: "MoveForward(3.5s)"
+      - frame: 210
+        input: "Interact()"
+      - frame: 250
+        input: "MoveRight(2.0s)"
+      - frame: 370
+        input: "TriggerExit()"
+
+  level_02:
+    actions:
+      - frame: 0
+        input: "RecordEchoStart()"
+      - frame: 10
+        input: "MoveForward(4.0s)"
+      - frame: 250
+        input: "RecordEchoStop()"
+      - frame: 260
+        input: "PlaybackEcho(0)"
+      - frame: 280
+        input: "MoveForwardToExit()"
+
+  level_03: { actions: [{ frame: 0, input: "SolveSequence_03()" }] }
+  level_04: { actions: [{ frame: 0, input: "SolveSequence_04()" }] }
+  level_05: { actions: [{ frame: 0, input: "SolveSequence_05()" }] }
+  level_06: { actions: [{ frame: 0, input: "SolveSequence_06()" }] }
+  level_07: { actions: [{ frame: 0, input: "SolveSequence_07()" }] }
+  level_08: { actions: [{ frame: 0, input: "SolveSequence_08()" }] }
+  level_09: { actions: [{ frame: 0, input: "SolveSequence_09()" }] }
+  level_10: { actions: [{ frame: 0, input: "SolveSequence_10()" }] }
+  level_11: { actions: [{ frame: 0, input: "SolveSequence_11()" }] }
+  level_12: { actions: [{ frame: 0, input: "SolveSequence_12()" }] }
+  level_13: { actions: [{ frame: 0, input: "SolveSequence_13()" }] }
+  level_14: { actions: [{ frame: 0, input: "SolveSequence_14()" }] }
+  level_15: { actions: [{ frame: 0, input: "SolveSequence_15()" }] }

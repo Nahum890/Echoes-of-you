@@ -158,6 +158,25 @@ public class LevelRuntimeController : MonoBehaviour
 
         _recorder?.ClearAllEchoes(false);
 
+        PlayerController player = FindAnyObjectByType<PlayerController>();
+        if (player != null)
+        {
+            // Try LevelSpawnMarker first, then PlayerStart tag
+            LevelSpawnMarker spawnMarker = FindAnyObjectByType<LevelSpawnMarker>();
+            if (spawnMarker != null)
+            {
+                player.Teleport(spawnMarker.transform.position, spawnMarker.transform.rotation);
+            }
+            else
+            {
+                GameObject spawnPoint = GameObject.FindWithTag("PlayerStart");
+                if (spawnPoint != null)
+                {
+                    player.Teleport(spawnPoint.transform.position, spawnPoint.transform.rotation);
+                }
+            }
+        }
+
         MonoBehaviour[] behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude);
         for (int i = 0; i < behaviours.Length; i++)
         {
@@ -165,7 +184,7 @@ public class LevelRuntimeController : MonoBehaviour
                 resettable.ResetLevelState();
         }
 
-        _hud?.ShowToast("Ecos limpiados", new Color(0.48f, 0.94f, 0.78f, 1f), 1.1f);
+        _hud?.ShowToast("SoftReset: Posición y Ecos reiniciados", new Color(0.48f, 0.94f, 0.78f, 1f), 1.1f);
         _hud?.SetObjective(ResolveObjective());
     }
 

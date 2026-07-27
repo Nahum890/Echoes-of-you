@@ -1,0 +1,50 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-AUD-SPAT-001"
+# AUDIO_SPATIALIZATION_SPEC.yaml
+# 3D sound attenuation curves, occlusion masks, and rolloff metrics.
+
+spatial_defaults:
+  spatial_blend: 1.0              # 1.0 = fully 3D
+  min_distance_m: 1.0
+  max_distance_m: 30.0
+  rolloff_mode: "Logarithmic"     # UnityEngine.AudioRolloffMode.Logarithmic
+  doppler_level: 0.0              # Disabled — PS1 aesthetic
+  spread: 0.0                     # Point source
+
+occlusion:
+  enabled: true
+  layer_mask: "Architecture,Environment"
+  low_pass_cutoff_hz_occluded: 800.0    # Hz cutoff when fully occluded
+  low_pass_cutoff_hz_open: 22000.0      # Hz cutoff when fully open
+  occlusion_lerp_speed: 4.0             # seconds
+
+event_spatial_overrides:
+  SFX_Footstep:
+    min_distance_m: 1.0
+    max_distance_m: 12.0
+    rolloff_mode: "Logarithmic"
+    spatial_blend: 1.0
+
+  SFX_PressurePlate_Click:
+    min_distance_m: 1.0
+    max_distance_m: 18.0
+    rolloff_mode: "Logarithmic"
+    spatial_blend: 1.0
+
+  SFX_Door_Open:
+    min_distance_m: 0.5
+    max_distance_m: 20.0
+    rolloff_mode: "Logarithmic"
+    spatial_blend: 1.0
+
+  SFX_Echo_Materialize:
+    min_distance_m: 1.0
+    max_distance_m: 25.0
+    rolloff_mode: "Logarithmic"
+    spatial_blend: 0.7    # Slightly 2D for ghostly clarity
+
+  MUS_Ambient:
+    min_distance_m: 0.0
+    max_distance_m: 999.0
+    rolloff_mode: "Linear"
+    spatial_blend: 0.0    # Fully 2D ambient music

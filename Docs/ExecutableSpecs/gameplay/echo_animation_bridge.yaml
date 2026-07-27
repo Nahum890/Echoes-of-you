@@ -1,0 +1,25 @@
+# ECHO ANIMATION BRIDGE EXECUTABLE SPECIFICATION — Echoes of You 2.0
+spec_id: SPEC-EXEC-ECHO-ANIM-001
+version: "1.0"
+authority: "Docs/Authority/SOURCE_OF_TRUTH.md"
+
+animator_parameters:
+  Speed:
+    type: "float"
+    min: 0.0
+    max: 4.2
+    default: 0.0
+  IsGrounded:
+    type: "bool"
+    default: true
+  IsRecording:
+    type: "bool"
+    default: false
+  IsPlayback:
+    type: "bool"
+    default: false
+
+animation_playback_caps:
+  playback_framerate_cap: 15.0 # fps cap for liminal echo visual feel
+  start_latency_seconds: 0.0 # instantaneous start on trigger
+  animation_delay_max_seconds: 0.05 # max animation state sync delay

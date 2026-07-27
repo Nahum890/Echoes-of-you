@@ -1,0 +1,84 @@
+schema_version: "1.2"
+spec_type: puzzle_mechanics
+id_prefix: "PUZZ-"
+
+patterns:
+  - id: PUZZ-001
+    name: PlateDoor
+    description: "Echo stands on pressure plate while main player passes through door"
+    inputs: [PressurePlate]
+    outputs: [Door]
+    max_echo_recording_seconds: 12.0
+    required_echoes: 1
+
+  - id: PUZZ-002
+    name: TemporalBridge
+    description: "Echo activates bridge generator, holding bridge open across time"
+    inputs: [PressurePlate, PuzzleSignal]
+    outputs: [BridgePlatform]
+    max_echo_recording_seconds: 15.0
+    required_echoes: 1
+
+  - id: PUZZ-003
+    name: FutureEcho
+    description: "Player records future trajectory to trigger delayed mechanism"
+    inputs: [PerspectiveAnchor]
+    outputs: [MovingPlatform]
+    max_echo_recording_seconds: 20.0
+    required_echoes: 1
+
+  - id: PUZZ-004
+    name: MultiPlateSync
+    description: "Multiple Echoes activate independent pressure plates simultaneously"
+    inputs: [PressurePlate, PressurePlate]
+    outputs: [Door, HazardField]
+    max_echo_recording_seconds: 15.0
+    required_echoes: 2
+
+  - id: PUZZ-005
+    name: MomentumRelay
+    description: "Echo triggers velocity booster while player is airborne"
+    inputs: [MomentumRelay]
+    outputs: [LevelExit]
+    max_echo_recording_seconds: 10.0
+    required_echoes: 1
+
+  - id: PUZZ-006
+    name: HazardShielding
+    description: "Echo intercepts incoming hazard pulse to allow player safe passage"
+    inputs: [PuzzleSignal]
+    outputs: [HazardField]
+    max_echo_recording_seconds: 12.0
+    required_echoes: 1
+
+  - id: PUZZ-007
+    name: ChronoSequential
+    description: "Echoes trigger switches in strict sequence within time window"
+    inputs: [PuzzleSignal, PuzzleSignal, PuzzleSignal]
+    outputs: [Door]
+    max_echo_recording_seconds: 25.0
+    required_echoes: 2
+
+  - id: PUZZ-008
+    name: ResonancePulse
+    description: "Echo matches movement frequency with acoustic chamber nodes"
+    inputs: [ResonanceChamber]
+    outputs: [LevelGoal]
+    max_echo_recording_seconds: 18.0
+    required_echoes: 1
+
+  - id: PUZZ-009
+    name: InversionTrap
+    description: "Echo operates inverted gravity controls from observation ledge"
+    inputs: [ConflictTrap]
+    outputs: [MotorPlatform]
+    max_echo_recording_seconds: 14.0
+    required_echoes: 1
+
+  - id: PUZZ-010
+    name: MemoryReconstruction
+    description: "Player aligns spatial perspective with past Echo memory ghost"
+    inputs: [PerspectiveAnchor]
+    outputs: [LiminalThreshold]
+    max_echo_recording_seconds: 30.0
+    required_echoes: 1

@@ -1,0 +1,101 @@
+schema_version: "1.0"
+validator_id: LEVEL-SPEC-001
+type: unity_scene_validator
+runtime: UnityEditor_and_PlayMode
+output_schema: schemas/report.schema.yaml
+
+checks:
+  connectivity:
+    id: LEVEL-001
+    severity: fatal
+    action: "Find PlayerStart and LevelExit; test navigable connectivity with physics queries"
+  forbidden_connections:
+    id: LEVEL-002
+    severity: error
+    action: "Detect direct forbidden room-to-room edges"
+  clearance:
+    id: LEVEL-003
+    severity: fatal
+    action: "Sweep primary routes and test minimum 1.2m clearance"
+  door_clearance:
+    id: LEVEL-004
+    severity: error
+    action: "Measure doorway collider and opening dimensions"
+  stairs:
+    id: LEVEL-005
+    severity: error
+    action: "Measure stair rise and run"
+  spawn_clearance:
+    id: LEVEL-006
+    severity: fatal
+    action: "Overlap test PlayerStart with environment colliders"
+  prop_overlaps:
+    id: LEVEL-007
+    severity: error
+    action: "Detect prop collider intersections and navigation obstructions"
+  critical_overlap:
+    id: LEVEL-008
+    severity: fatal
+    action: "Check PlayerStart, Exit, plates and doors for blocking props"
+  room_dimensions:
+    id: LEVEL-009
+    severity: error
+    action: "Compare generated room bounds to room template"
+  room_requirements:
+    id: LEVEL-010
+    severity: error
+    action: "Check required props and landmarks"
+  transition_dimensions:
+    id: LEVEL-011
+    severity: error
+    action: "Check transition geometry against architecture/transitions.yaml"
+  landmark_spacing:
+    id: LEVEL-012
+    severity: warning
+    action: "Measure distance along primary route between landmarks"
+  landmark_visibility:
+    id: LEVEL-013
+    severity: error
+    action: "Raycast from declared approach positions to landmarks"
+  turn_landmarks:
+    id: LEVEL-014
+    severity: warning
+    action: "Check 90-degree path turns for visible landmarks"
+  light_count:
+    id: LEVEL-015
+    severity: warning
+    action: "Count point and spot lights; fail above 48 without exception"
+  echo_determinism:
+    id: LEVEL-016
+    severity: error
+    action: "Play runtime Echo recording twice and compare trajectory samples"
+  echo_runtime_evidence:
+    id: LEVEL-017
+    severity: error
+    action: "Require runtime evidence for latency and residual claims"
+  echo_irreversibility:
+    id: LEVEL-018
+    severity: fatal
+    action: "Detect in-place Echo clear without scene reload"
+  playtime_target:
+    id: LEVEL-019
+    severity: warning
+    action: "Compare playtest completion time to level target"
+  emotional_consistency:
+    id: LEVEL-020
+    severity: advisory
+    action: "Review assigned visual/audio profiles against emotional arc"
+  visual_evidence:
+    id: LEVEL-021
+    severity: advisory
+    action: "Require screenshots for manual composition claims"
+  shape_presence:
+    id: LEVEL-022
+    severity: advisory
+    action: "Require declared chapter shape in visual evidence"
+
+status_policy:
+  any_fatal: blocked
+  any_error: needs_review
+  warnings_only: approved_with_warnings
+  no_failures: approved

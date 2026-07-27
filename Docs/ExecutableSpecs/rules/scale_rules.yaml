@@ -1,0 +1,31 @@
+schema_version: "1.0"
+rule_set: scale
+rules:
+  - id: SCALE-001
+    type: constraint
+    status: active
+    severity: fatal
+    scope: [level, room, corridor]
+    rule: "Primary navigation clearance must be >= catalogs/scale.yaml.clearance.navigation_minimum"
+    validator: validators/level_validator.yaml#clearance
+  - id: SCALE-002
+    type: constraint
+    status: active
+    severity: error
+    scope: [door, transition]
+    rule: "Door width and height must satisfy the selected transition type"
+    validator: validators/level_validator.yaml#door_clearance
+  - id: SCALE-003
+    type: constraint
+    status: active
+    severity: error
+    scope: [prop]
+    rule: "A prop must use catalog scale unless an explicit variance is declared"
+    validator: validators/static_validator.yaml#prop_scale
+  - id: SCALE-004
+    type: prohibition
+    status: active
+    severity: fatal
+    scope: [level]
+    rule: "No player spawn may overlap an environment collider"
+    validator: validators/level_validator.yaml#spawn_clearance

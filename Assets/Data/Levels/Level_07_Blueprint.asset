@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -19,20 +19,30 @@ MonoBehaviour:
   echoEnabled: 1
   maxEchoes: 1
   maxRecordSeconds: 14
-  activeParadoxes:
+  echoMode: 0
+  recordFuture: 1
+  degradationPerReplay: 0
+  imposedEchoData: {fileID: 0}
+  ambientEchoData: {fileID: 0}
+  lockEchoSlots: 0
+  lockedSlotIndices: 
+  cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111107, type: 3}
+  lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111102, type: 3}
+  activeParadoxes: 
   fogColor: {r: 0.078, g: 0.102, b: 0.141, a: 1}
   fogDensity: 0.018
   skyColor: {r: 0.06, g: 0.07, b: 0.09, a: 1}
   ambientColor: {r: 0.04, g: 0.05, b: 0.07, a: 1}
   directionalLightRotation: {x: 42, y: -28, z: 0}
-  directionalLightColor: {r: 0.60, g: 0.64, b: 0.72, a: 1}
-  directionalLightIntensity: 0.50
-  narrativeIntroTitle: "Nivel 7 \u2014 Evasi\u00F3n"
-  narrativeIntroDesc: "No grabo lo que hice. Grabo lo que voy a necesitar que mi pasado haya hecho."
+  directionalLightColor: {r: 0.6, g: 0.64, b: 0.72, a: 1}
+  directionalLightIntensity: 0.5
+  narrativeIntroTitle: "Nivel 7 \u2014 Evasi\xF3n"
+  narrativeIntroDesc: No grabo lo que hice. Grabo lo que voy a necesitar que mi pasado
+    haya hecho.
   narrativeIntroDuration: 8
-  puzzleObjectiveText: "Graba antes de que el ciclo comience."
-  puzzleActiveText: "El eco est\u00E1 en posici\u00F3n."
-  puzzleCompleteText: ""
+  puzzleObjectiveText: Graba antes de que el ciclo comience.
+  puzzleActiveText: "El eco est\xE1 en posici\xF3n."
+  puzzleCompleteText: 
   pathHints:
   - {x: 0, y: 1.1, z: -8}
   - {x: 0, y: 1.1, z: 8}
@@ -43,91 +53,91 @@ MonoBehaviour:
     position: {x: 0, y: 0.1, z: -8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaA_CorredorEmergencia
     type: 27
     position: {x: 0, y: 0, z: -2}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 3, y: 3, z: 12}
     customData: WallTeal
-    targetSignals:
+    targetSignals: []
   - name: LuzEmergenciaRoja
     type: 10
     position: {x: 0, y: 2.5, z: -2}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.7,0.1,0.1|1.8|6.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaB_PatioTrasero_Suelo
     type: 0
     position: {x: 0, y: 0, z: 10}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 12, y: 0.2, z: 12}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaB_ParedIzq
     type: 3
     position: {x: -6, y: 0, z: 10}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0.3, y: 4, z: 12}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaB_ParedDer
     type: 3
     position: {x: 6, y: 0, z: 10}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0.3, y: 4, z: 12}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaB_ParedFondo
     type: 3
     position: {x: 0, y: 0, z: 16}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 12, y: 4, z: 0.3}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ElementoTemporal_Persiana
     type: 8
     position: {x: 0, y: 0.2, z: 16}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 4, y: 0.15, z: 2}
     customData: 0,0,0|0,3.5,0|5
-    targetSignals:
+    targetSignals: []
   - name: PlacaActivacion
     type: 4
     position: {x: 0, y: 0.1, z: 12}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaC_Almacen
     type: 24
     position: {x: 0, y: 0, z: 24}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 8, y: 3, z: 6}
     customData: WallMustard
-    targetSignals:
+    targetSignals: []
   - name: LuzAmberSalida
     type: 10
     position: {x: 0, y: 2.5, z: 26}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.65,0.52,0.25|1.8|8.0
-    targetSignals:
+    targetSignals: []
   - name: LevelExit_Area
     type: 6
     position: {x: 0, y: 1.1, z: 28}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: Level_08
-    targetSignals:
+    targetSignals: []
   - name: LevelGoal
     type: 13
     position: {x: 0, y: 1.1, z: 28}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "Graba antes de que el ciclo comience.|El eco est\u00E1 en posici\u00F3n.|."
+    customData: "Graba antes de que el ciclo comience.|El eco est\xE1 en posici\xF3n.|."
     targetSignals:
     - PlacaActivacion
   - name: LevelRuntime
@@ -135,6 +145,5 @@ MonoBehaviour:
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "Graba antes de que el ciclo comience.|El eco est\u00E1 en posici\u00F3n.|."
-    targetSignals:
-
+    customData: "Graba antes de que el ciclo comience.|El eco est\xE1 en posici\xF3n.|."
+    targetSignals: []

@@ -1,0 +1,157 @@
+schema_version: "1.0"
+catalog_type: level_puzzle_specifications
+implementation_status_policy: "design_target until runtime evidence is attached"
+
+puzzles:
+  N01:
+    id: PUZ-N01
+    archetype: teaching
+    core_idea: "An Echo is a deterministic physical trace of a past action"
+    echo_required: true
+    button_test: pass_required
+    stages: [observe_echo, record_short_path, activate_first_condition, reach_exit]
+    required_components: [EchoRecorder, EchoPlayback, PressurePlate, LevelExit]
+    failure_recovery: re_record_before_playback
+  N02:
+    id: PUZ-N02
+    archetype: experimentation
+    core_idea: "A past action can remain active while the present performs another task"
+    echo_required: true
+    button_test: pass_required
+    stages: [single_plate_teaching, two_plate_variation, parallel_route, payoff]
+    required_components: [EchoRecorder, PressurePlate, PuzzleSignal, DoorController]
+    failure_recovery: re_record_or_scene_reload
+  N03:
+    id: PUZ-N03
+    archetype: experimentation
+    core_idea: "The same action can create different consequences depending on route choice"
+    echo_required: true
+    button_test: pass_required
+    stages: [mirror_observation, route_discovery, echo_route_choice, exit]
+    required_components: [EchoRecorder, PressurePlate, PuzzleCondition]
+    failure_recovery: re_record_or_scene_reload
+  N04:
+    id: PUZ-N04
+    archetype: teaching
+    core_idea: "Timing is read and planned, not reacted to"
+    echo_required: true
+    button_test: pass_required
+    stages: [observe_vertical_cycle, safe_timing, echo_timing, payoff]
+    required_components: [EchoRecorder, TimedMovingPlatform, PressurePlate]
+    failure_recovery: re_record
+  N05:
+    id: PUZ-N05
+    archetype: experimentation
+    core_idea: "A recorded route can become an obstacle as well as a solution"
+    echo_required: true
+    button_test: pass_required
+    stages: [route_observation, obstruction_discovery, timed_crossing, payoff]
+    required_components: [EchoRecorder, EchoPlayback, PuzzleCondition]
+    failure_recovery: re_record_or_scene_reload
+  N06:
+    id: PUZ-N06
+    archetype: twist
+    core_idea: "The Echo reveals a bridge that does not exist for the present"
+    echo_required: true
+    button_test: pass_required
+    stages: [library_observation, absent_path, bridge_reveal, crossing, narrative_payoff]
+    required_components: [EchoRecorder, TemporalBridge, EchoPlayback]
+    implementation_status: partial
+    failure_recovery: re_record
+  N07:
+    id: PUZ-N07
+    archetype: twist
+    core_idea: "The player must prepare a future action before its condition exists"
+    echo_required: true
+    button_test: pass_required
+    stages: [future_hint, record_future_setup, condition_creation, future_echo_payoff]
+    required_components: [EchoRecorder, LevelRuntimeController]
+    implementation_status: partial
+    failure_recovery: scene_reload
+  N08:
+    id: PUZ-N08
+    archetype: combination
+    core_idea: "Two past decisions can cooperate or sabotage one another"
+    echo_required: true
+    button_test: pass_required
+    stages: [single_echo_recap, second_echo_variation, conflict, coordination, payoff]
+    required_components: [EchoRecorder, EchoConflictTrap, PuzzleWire]
+    implementation_status: partial
+    failure_recovery: scene_reload
+  N09:
+    id: PUZ-N09
+    archetype: combination
+    core_idea: "Control is not the same as safety in an open space"
+    echo_required: true
+    button_test: pass_required
+    stages: [open_space_reading, route_control, echo_exposure, exit]
+    required_components: [EchoRecorder, SchoolCourtyard, LevelExit]
+    failure_recovery: re_record
+  N10:
+    id: PUZ-N10
+    archetype: mastery
+    core_idea: "The Echo carries a memory that belongs to someone else"
+    echo_required: true
+    button_test: pass_required
+    stages: [lyra_room_observation, ambient_echo_reveal, memory_alignment, payoff]
+    required_components: [ambientEchoData, NarrativeProp, EchoPlayback]
+    implementation_status: unverified
+    failure_recovery: scene_reload
+  N11:
+    id: PUZ-N11
+    archetype: combination
+    core_idea: "Connection requires coordinating two heights and two moments"
+    echo_required: true
+    button_test: pass_required
+    stages: [stair_reading, lower_route, upper_route, synchronization, exit]
+    required_components: [EchoRecorder, SchoolStairwell, PressurePlate]
+    failure_recovery: re_record
+  N12:
+    id: PUZ-N12
+    archetype: twist
+    core_idea: "Contradictory Echoes create consequences instead of progress"
+    echo_required: true
+    button_test: pass_required
+    stages: [conflict_teaching, two_echo_setup, contradiction, safe_resolution, payoff]
+    required_components: [EchoConflictTrap, PuzzleCondition, EchoRecorder]
+    implementation_status: partial
+    failure_recovery: scene_reload
+  N13:
+    id: PUZ-N13
+    archetype: mastery
+    core_idea: "Truth requires accepting one irreversible recording"
+    echo_required: true
+    button_test: pass_required
+    stages: [fragment_observation, single_record_constraint, execution, truth_reveal]
+    required_components: [EchoRecorder, EchoRecordingData, SchoolLiminalClassroom]
+    implementation_status: unverified
+    failure_recovery: scene_reload
+  N14:
+    id: PUZ-N14
+    archetype: mastery
+    core_idea: "Acceptance means following a past path without controlling it"
+    echo_required: true
+    button_test: pass_required
+    stages: [void_observation, echo_path, follow_without_control, landing]
+    required_components: [EchoRecorder, GravityZone, EchoPathHint]
+    implementation_status: partial
+    failure_recovery: scene_reload
+  N15:
+    id: PUZ-N15
+    archetype: mastery
+    core_idea: "Integration is returning to the beginning with a different choice"
+    echo_required: true
+    button_test: pass_required
+    stages: [recognize_n01, integrate_learned_rules, final_echo, exit]
+    required_components: [EchoRecorder, LevelExit, narrative_payoff]
+    implementation_status: partial
+    failure_recovery: scene_reload
+
+validation:
+  - id: PUZ-MAT-001
+    type: validation
+    status: active
+    severity: error
+    scope: [level, puzzle]
+    rule: "Every level must have one puzzle spec and one Blueprint asset"
+    validator: validators/blueprint_validator.yaml#puzzle_mapping

@@ -1,0 +1,52 @@
+# Docs/ExecutableSpecs/visual/post_processing_lut_registry.yaml
+# Post-Processing LUT Registry - Color Grading Lookup Tables
+# SPEC-EXEC-PP-LUT | Authority: Level 3 (Runtime Data Contract)
+
+post_processing_lut_registry:
+  lut_assets:
+    - chapter: "I"
+      name: "LUT_Ch1_Persistencia"
+      guid: "00000000000000000000000000000001"
+      intensity_range: [0.0, 1.0]
+      blend_mode: "linear"
+
+    - chapter: "II"
+      name: "LUT_Ch2_Coordinacion"
+      guid: "00000000000000000000000000000002"
+      intensity_range: [0.0, 1.0]
+      blend_mode: "linear"
+
+    - chapter: "III"
+      name: "LUT_Ch3_Confianza"
+      guid: "00000000000000000000000000000003"
+      intensity_range: [0.0, 1.0]
+      blend_mode: "linear"
+
+    - chapter: "IV"
+      name: "LUT_Ch4_Optimizacion"
+      guid: "00000000000000000000000000000004"
+      intensity_range: [0.0, 1.0]
+      blend_mode: "linear"
+
+    - chapter: "V"
+      name: "LUT_Ch5_Consecuencia"
+      guid: "00000000000000000000000000000005"
+      intensity_range: [0.0, 1.0]
+      blend_mode: "linear"
+
+    - chapter: "VI"
+      name: "LUT_Ch6_Integracion"
+      guid: "00000000000000000000000000000006"
+      intensity_range: [0.0, 1.0]
+      blend_mode: "linear"
+
+  global_settings:
+    blend_mode: "linear"
+    intensity_range: [0.0, 1.0]
+    lut_resolution: 32
+    format: "RGB8"
+
+  validation:
+    assert_all_luts_present: true
+    assert_guid_match: true
+    assert_no_missing_references: true

@@ -1,0 +1,32 @@
+# DOOR_MODULE_CONNECTOR_SPEC.yaml
+# Spec ID: SPEC-140
+# Version: 1.0
+spec_id: SPEC-140
+version: "1.0"
+authority: "Docs/ExecutableSpecs/registry/decisions.yaml"
+
+# Door Geometry & Module Connection Specification — Echoes of You
+
+door_geometry:
+  opening_width_m: 1.20
+  opening_height_m: 2.40
+  frame_thickness_m: 0.05
+  frame_inset_m: 0.05      # Frame is recessed 5cm into wall thickness
+  pivot_position: "left"   # Frame rotates from the left side looking down corridor
+
+module_connection:
+  overlap_m: 0.02           # Modules overlap 2cm to avoid visual seams/black lines
+  alignment_axis: "z"       # Modules connect along Z axis (direction of forward travel)
+  seam_material: "Mat_Floor" # Seam material matches floor material
+
+door_animation:
+  open_rotation_y_deg: 90.0   # Opens 90 degrees in Y
+  animation_duration_s: 1.2   # Default — overridden by customData speed property
+  easing: "EaseInOut"
+  # customData "speed=2.0" multiplies animation speed × 2
+  speed_multiplier_key: "speed"
+  speed_default: 1.0
+
+# [RULE-DOOR-001] A door NEVER closes after opening.
+# Door is unidirectional: PressurePlate ON → Door OPEN. No closure.
+door_closure_allowed: false

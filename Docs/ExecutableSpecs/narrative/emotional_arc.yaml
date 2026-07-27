@@ -1,0 +1,35 @@
+schema_version: "1.0"
+catalog_type: emotional_arc_catalog
+
+levels:
+  N01: {start: disorientation, exploration: uncertainty, puzzle: persistence, failure: repetition, resolution: curiosity}
+  N02: {start: repetition, exploration: recognition, puzzle: coordination, failure: frustration, resolution: understanding}
+  N03: {start: indecision, exploration: doubt, puzzle: choice, failure: self_doubt, resolution: commitment}
+  N04: {start: waiting, exploration: anticipation, puzzle: timing, failure: impatience, resolution: patience}
+  N05: {start: guilt, exploration: avoidance, puzzle: consequence, failure: entrapment, resolution: responsibility}
+  N06: {start: denial, exploration: evidence, puzzle: revelation, failure: refusal, resolution: acknowledgement}
+  N07: {start: avoidance, exploration: distance, puzzle: future_recording, failure: evasion, resolution: approach}
+  N08: {start: self_sabotage, exploration: contradiction, puzzle: multi_echo, failure: conflict, resolution: honesty}
+  N09: {start: control, exploration: exposure, puzzle: open_space, failure: overcontrol, resolution: trust}
+  N10: {start: memories, exploration: recognition, puzzle: ambient_echo, failure: attachment, resolution: clarity}
+  N11: {start: connection, exploration: ascent, puzzle: vertical_coordination, failure: separation, resolution: alignment}
+  N12: {start: conflict, exploration: confrontation, puzzle: paradox, failure: contradiction, resolution: consequence}
+  N13: {start: truth, exploration: fragmentation, puzzle: one_recording, failure: denial, resolution: acceptance_beginning}
+  N14: {start: acceptance, exploration: surrender, puzzle: follow_echo, failure: falling, resolution: release}
+  N15: {start: integration, exploration: return, puzzle: final_exit, failure: temptation_to_repeat, resolution: continuation}
+
+validation:
+  - id: EMO-VAL-001
+    type: constraint
+    status: active
+    severity: error
+    scope: [level, narrative]
+    rule: "Every level must define all five emotional beats"
+    validator: validators/blueprint_validator.yaml#emotional_arc
+  - id: EMO-VAL-002
+    type: validation
+    status: active
+    severity: advisory
+    scope: [level]
+    rule: "Visual and audio profile should reference the declared emotional arc"
+    validator: validators/level_validator.yaml#emotional_consistency

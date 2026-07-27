@@ -1,0 +1,41 @@
+schema_version: "1.0"
+schema_type: ai_task
+required:
+  - task_id
+  - objective
+  - scope
+  - context_pack
+  - allowed_operations
+  - forbidden_operations
+  - acceptance_criteria
+  - required_evidence
+
+fields:
+  task_id: {type: string, pattern: "^TASK-[A-Z0-9-]+$"}
+  objective: {type: string}
+  scope: {type: string_or_array}
+  context_pack: {type: array, items: string}
+  allowed_files: {type: array, items: string}
+  forbidden_files: {type: array, items: string}
+  allowed_operations: {type: array, items: string}
+  forbidden_operations: {type: array, items: string}
+  acceptance_criteria: {type: array, items: string}
+  rule_ids: {type: array, items: string}
+  required_evidence: {type: array, items: string}
+  validation_commands: {type: array, items: string}
+  rollback_plan: {type: string}
+  human_decision_required: {type: array, items: string}
+
+execution_order:
+  - load_manifest
+  - resolve_authority
+  - inspect_context_pack
+  - inspect_allowed_files
+  - identify_blockers
+  - propose_changes
+  - apply_changes
+  - run_validators
+  - collect_evidence
+  - emit_report
+
+status_values: [proposed, executing, blocked, needs_review, approved, rejected]

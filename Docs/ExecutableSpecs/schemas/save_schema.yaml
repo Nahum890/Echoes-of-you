@@ -1,0 +1,55 @@
+# SAVE SCHEMA EXECUTABLE SPECIFICATION — Echoes of You 2.0
+$schema: "http://json-schema.org/draft-07/schema#"
+title: "SaveStateSchema"
+type: "object"
+required:
+  - "version"
+  - "currentLevelIndex"
+  - "unlockedMemories"
+  - "recordedEchoFrames"
+
+properties:
+  version:
+    type: "string"
+    example: "1.0"
+
+  currentLevelIndex:
+    type: "integer"
+    minimum: 1
+    maximum: 15
+    example: 1
+
+  unlockedMemories:
+    type: "array"
+    items:
+      type: "string"
+    example: ["MEM_L01_01", "MEM_L01_02"]
+
+  recordedEchoFrames:
+    type: "array"
+    maxItems: 1200
+    description: "Supports up to 20.0s narrative recording duration at 60Hz (1200 frames)"
+    items:
+      type: "object"
+      required:
+        - "timestamp"
+        - "position"
+        - "rotation"
+        - "interactState"
+      properties:
+        timestamp:
+          type: "number"
+        position:
+          type: "array"
+          items:
+            type: "number"
+          minItems: 3
+          maxItems: 3
+        rotation:
+          type: "array"
+          items:
+            type: "number"
+          minItems: 4
+          maxItems: 4
+        interactState:
+          type: "boolean"

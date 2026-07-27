@@ -1,0 +1,91 @@
+# CANONICAL DECISIONS REGISTRY — Echoes of You v3.0
+# Every IA agent MUST resolve contradictions against this file.
+# Fields with status "unverified" block autonomous execution until validated.
+
+project: echoes_of_you
+version: "3.0"
+last_updated: "2026-07-25"
+
+decisions:
+
+  - id: DEC-ECHO-001-duration
+    title: "Echo recording duration"
+    status: resolved_and_verified
+    authority: "SOURCE_OF_TRUTH.md + ECHOES_BIBLE.md"
+    resolved:
+      default_record_seconds: 12.0
+      special_level_max_seconds: 20.0
+      hard_limit_seconds: 20.0    # CORRECTED per DECISION-ECH-DURATION — 30.0 was invalid
+      min_record_seconds: 1.0
+    implementation_status: "verified"
+    execution_note: |
+      LevelBlueprint.maxRecordSeconds is the runtime authority (12.0s default).
+
+  - id: DEC-ECHO-002-residual
+    title: "Echo residual state duration"
+    status: resolved_and_verified
+    authority: "ECHO_GRAMMAR.md"
+    resolved:
+      residual_duration_seconds: 2.5
+      fade_start_percent: 80
+      fade_to_alpha: 0.0
+    implementation_status: "verified"
+    execution_note: |
+      Residual state target 2.5s is verified and canonical across all executable specs.
+
+  - id: DEC-ECHO-003-latency
+    title: "Echo playback start latency"
+    status: resolved_and_verified
+    authority: "ECHOES_BIBLE.md"
+    resolved:
+      start_latency_seconds: 0.0
+      animation_delay_max_seconds: 0.05
+    implementation_status: "verified"
+    execution_note: |
+      Echo playback starts instantaneously (0.0s latency upon keypress) with animation delay cap of 0.05s.
+
+  - id: DEC-CAM-001-profiles
+    title: "Camera profiles in production Blueprints"
+    status: resolved_and_verified
+    authority: "CAMERA_SPEC.md"
+    resolved:
+      camera_profiles_assigned: true
+    implementation_status: "verified"
+    execution_note: |
+      Camera profiles registered and verified via camera_profiles.yaml executable spec.
+
+  - id: DEC-ECHO-004-reset
+    title: "SoftReset vs Echo irreversibility"
+    status: resolved_and_verified
+    authority: "ECHOES_BIBLE.md"
+    resolved:
+      soft_reset_allowed: true
+      soft_reset_key: "Q"
+      soft_reset_meaning: "Resets player position and echo slots without resetting level progress state"
+    implementation_status: "verified"
+    execution_note: |
+      Pressing Q triggers SoftReset resetting player position and echo slots while preserving level progress.
+
+  - id: DECISION-ECH-DURATION
+    title: "Echo recording duration — canonical resolution"
+    status: resolved_and_verified
+    authority: "decisions.yaml (self — highest priority per authority.yaml)"
+    resolved_value:
+      standard_max_s: 12.0    # All levels by default
+      narrative_max_s: 20.0   # Only when blueprint.isNarrativeLevel == true
+      absolute_max_s: 20.0    # No blueprint may exceed this value
+    rationale: >
+      PROJECT_CONTEXT.md (current technical evidence) says 20s.
+      SOURCE_OF_TRUTH.md (design intent) says 12s standard.
+      Resolution: 12s as canonical design value for puzzles;
+      20s as technical ceiling for narrative levels marked explicitly.
+      30s in BLUEPRINT_SPEC.md VAL-BLU-003 was INCORRECT — corrected to 20.0f.
+      DEC-ECHO-001-duration hard_limit_seconds corrected from 30.0 to 20.0.
+    files_updated:
+      - "Docs/ExecutableSpecs/registry/decisions.yaml: DEC-ECHO-001-duration hard_limit_seconds → 20.0"
+      - "Docs/Specs/BLUEPRINT_SPEC.md L117: maxRecordSeconds superior limit → 20.0f"
+      - "Docs/Technical/PROJECT_CONTEXT.md L18: '20 segundos' → '12 segundos (estándar), 20 segundos (narrativo)'"
+    implementation_status: "verified"
+    execution_note: >
+      Any agent finding a value > 20.0 for maxRecordSeconds in any blueprint
+      MUST emit FAIL-ECH-DURATION-001 and refuse to build that level.

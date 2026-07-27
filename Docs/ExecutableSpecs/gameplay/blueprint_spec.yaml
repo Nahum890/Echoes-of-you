@@ -1,0 +1,78 @@
+schema_version: "1.0"
+catalog_type: level_blueprint_contract
+code_source: Assets/Scripts/LevelBlueprint.cs
+serialization: Unity_ScriptableObject
+yaml_role: "machine-readable mirror; not directly imported by Unity"
+
+fields:
+  - {name: levelName, type: string, required: true, source_line: 104}
+  - {name: nextLevel, type: string, required: true, source_line: 105}
+  - {name: actNumber, type: integer, required: true, minimum: 1, maximum: 6, source_line: 106}
+  - {name: archetype, type: LevelArchetype, required: true, source_line: 107}
+  - {name: echoEnabled, type: boolean, required: true, source_line: 111}
+  - {name: maxEchoes, type: integer, required: true, minimum: 0, maximum: 3, source_line: 112}
+  - {name: maxRecordSeconds, type: number, required: true, minimum: 1.0, maximum: 30.0, source_line: 113}
+  - {name: echoMode, type: EchoPlaybackMode, required: true, source_line: 114}
+  - {name: recordFuture, type: boolean, required: true, source_line: 115}
+  - {name: degradationPerReplay, type: number, required: true, minimum: 0.0, maximum: 1.0, source_line: 116}
+  - {name: imposedEchoData, type: EchoRecordingData_reference, required: false, source_line: 117}
+  - {name: ambientEchoData, type: EchoRecordingData_reference, required: false, source_line: 118}
+  - {name: lockEchoSlots, type: boolean, required: true, source_line: 119}
+  - {name: lockedSlotIndices, type: integer_array, required: false, source_line: 120}
+  - {name: cameraProfile, type: CameraProfile_reference, required: true_in_production, source_line: 121}
+  - {name: lightingProfile, type: LightingProfile_reference, required: true_in_production, source_line: 122}
+  - {name: activeParadoxes, type: ParadoxType_array, required: true, source_line: 125}
+  - {name: fogColor, type: Color, required: true, source_line: 128}
+  - {name: fogDensity, type: number, required: true, minimum: 0.0, maximum: 0.1, source_line: 129}
+  - {name: skyColor, type: Color, required: true, source_line: 130}
+  - {name: ambientColor, type: Color, required: true, source_line: 131}
+  - {name: directionalLightRotation, type: Vector3, required: true, source_line: 132}
+  - {name: directionalLightColor, type: Color, required: true, source_line: 133}
+  - {name: directionalLightIntensity, type: number, required: true, minimum: 0.0, maximum: 8.0, source_line: 134}
+  - {name: narrativeIntroTitle, type: string, required: true, source_line: 138}
+  - {name: narrativeIntroDesc, type: multiline_string, required: true, source_line: 140}
+  - {name: narrativeIntroDuration, type: number, required: true, minimum: 0.0, maximum: 60.0, source_line: 141}
+  - {name: puzzleObjectiveText, type: string, required: true, source_line: 142}
+  - {name: puzzleActiveText, type: string, required: true, source_line: 143}
+  - {name: puzzleCompleteText, type: string, required: true, source_line: 144}
+  - {name: pathHints, type: Vector3_array, required: false, source_line: 147}
+  - {name: modules, type: ModulePlacement_array, required: true, minimum_items: 2, source_line: 150}
+
+module_placement:
+  required_fields: [name, type, position, rotation, scale, customData, targetSignals]
+  custom_data:
+    type: string
+    syntax: "key=value;key=value"
+    parser_status: pending
+  target_signals:
+    type: string_array
+    resolution: exact_name_match
+    unresolved_behavior: error
+
+extensions:
+  puzzle_spec: "Docs/ExecutableSpecs/levels/puzzle_specs/"
+  narrative_spec: "Docs/ExecutableSpecs/narrative/level_beats.yaml"
+  note: "These are external execution specs until corresponding fields are added to LevelBlueprint.cs"
+
+validation:
+  - id: BLU-VAL-001
+    type: validation
+    status: active
+    severity: fatal
+    scope: [blueprint]
+    rule: "Every production Blueprint must contain exactly one PlayerStart and at least one LevelExit or LevelGoal module"
+    validator: validators/blueprint_validator.yaml#required_modules
+  - id: BLU-VAL-002
+    type: validation
+    status: active
+    severity: fatal
+    scope: [blueprint]
+    rule: "cameraProfile and lightingProfile must resolve to non-null assets in production"
+    validator: validators/blueprint_validator.yaml#profile_references
+  - id: BLU-VAL-003
+    type: validation
+    status: active
+    severity: error
+    scope: [blueprint]
+    rule: "Every target signal must resolve to a declared receiver"
+    validator: validators/blueprint_validator.yaml#signals

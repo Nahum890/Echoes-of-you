@@ -1,0 +1,31 @@
+schema_version: "1.0"
+rule_set: puzzles
+rules:
+  - id: PUZ-001
+    type: validation
+    status: active
+    severity: fatal
+    scope: [puzzle, level]
+    rule: "Puzzle must fail the generic-box substitution test"
+    validator: validators/blueprint_validator.yaml#button_test
+  - id: PUZ-002
+    type: constraint
+    status: active
+    severity: error
+    scope: [puzzle]
+    rule: "Puzzle must declare teaching, discovery, execution and payoff"
+    validator: validators/blueprint_validator.yaml#puzzle_stages
+  - id: PUZ-003
+    type: constraint
+    status: active
+    severity: error
+    scope: [puzzle]
+    rule: "Puzzle must declare a recovery path for every intentional failure state"
+    validator: validators/blueprint_validator.yaml#recovery_paths
+  - id: PUZ-004
+    type: prohibition
+    status: active
+    severity: fatal
+    scope: [puzzle]
+    rule: "No puzzle may depend on unverified Echo latency or residual behavior"
+    validator: validators/blueprint_validator.yaml#unverified_dependency

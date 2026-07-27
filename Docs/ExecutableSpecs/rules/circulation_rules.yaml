@@ -1,0 +1,24 @@
+schema_version: "1.0"
+rule_set: circulation
+rules:
+  - id: ARCH-001
+    type: validation
+    status: active
+    severity: fatal
+    scope: [level, architecture]
+    rule: "PlayerStart to LevelExit must be connected by a navigable graph"
+    validator: validators/level_validator.yaml#connectivity
+  - id: ARCH-002
+    type: prohibition
+    status: active
+    severity: error
+    scope: [architecture, transition]
+    rule: "Direct SchoolClassroom to SchoolClassroom connection is forbidden"
+    validator: validators/level_validator.yaml#forbidden_connections
+  - id: ARCH-003
+    type: constraint
+    status: active
+    severity: warning
+    scope: [level]
+    rule: "Every 90-degree route turn should have a visible navigation landmark"
+    validator: validators/level_validator.yaml#turn_landmarks

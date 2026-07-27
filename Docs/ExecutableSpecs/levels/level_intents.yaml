@@ -1,0 +1,20 @@
+schema_version: "1.0"
+catalog_type: level_intent_catalog
+source: Docs/GameDesign/BRIEF_ESPACIAL_15_NIVELES.md
+
+levels:
+  N01: {title: Desorientacion, emotion: desorientation, chapter: I_Persistence, primary_rooms: [SchoolHall, SchoolCorridor], puzzle: echo_introduction}
+  N02: {title: Repetition, emotion: repetition, chapter: I_Persistence, primary_rooms: [SchoolCorridor, SchoolClassroom], puzzle: simultaneous_plates}
+  N03: {title: Indecision, emotion: indecision, chapter: I_Persistence, primary_rooms: [SchoolCorridor, SchoolClassroom], puzzle: mirrored_choice}
+  N04: {title: Espera, emotion: waiting, chapter: II_Coordination, primary_rooms: [SchoolClassroom], puzzle: vertical_timing}
+  N05: {title: Culpa, emotion: guilt, chapter: II_Coordination, primary_rooms: [SchoolCorridor], puzzle: horizontal_timing_maze}
+  N06: {title: Negacion, emotion: denial, chapter: III_Confidence, primary_rooms: [SchoolLibrary], puzzle: temporal_bridge}
+  N07: {title: Evasion, emotion: avoidance, chapter: III_Confidence, primary_rooms: [SchoolCourtyard], puzzle: record_future}
+  N08: {title: Autosabotaje, emotion: self_sabotage, chapter: II_Coordination, primary_rooms: [SchoolStaffRoom], puzzle: two_echo_conflict}
+  N09: {title: Control, emotion: control, chapter: III_Confidence, primary_rooms: [SchoolCourtyard], puzzle: open_space_control}
+  N10: {title: Recuerdos, emotion: memories, chapter: IV_Optimization, primary_rooms: [SchoolLyraClassroom], puzzle: ambient_lyra_echo}
+  N11: {title: Conexion, emotion: connection, chapter: IV_Optimization, primary_rooms: [SchoolStairwell], puzzle: vertical_coordination}
+  N12: {title: Conflicto, emotion: conflict, chapter: V_Consequence, primary_rooms: [SchoolGym, SchoolLab], puzzle: echo_conflict}
+  N13: {title: Verdad, emotion: truth, chapter: V_Consequence, primary_rooms: [SchoolLyraClassroom, SchoolLiminalClassroom], puzzle: single_recording_fragmented_room}
+  N14: {title: Aceptacion, emotion: acceptance, chapter: VI_Acceptance, primary_rooms: [SchoolLiminalClassroom], puzzle: follow_echo_path}
+  N15: {title: Integracion, emotion: integration, chapter: VI_Acceptance, primary_rooms: [SchoolCorridor, SchoolHall], puzzle: final_return}

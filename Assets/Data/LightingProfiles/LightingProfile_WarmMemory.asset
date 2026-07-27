@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e60a3292b404e2d499255c4b1e6c6434, type: 3}
+  m_Name: LightingProfile_WarmMemory
+  m_EditorClassIdentifier: Assembly-CSharp::LightingProfile
+  archetype: 5
+  dominantColor: {r: 0.92, g: 0.72, b: 0.4, a: 1}
+  intensity: 2.8
+  flickerProbability: 0.3
+  flickerSpeed: 0.2
+  intensityVariance: 0.4
+  cookieTexture: {fileID: 0}
+  cookieSize: 10
+  castsShadows: 1
+  shadowSoftness: 0.5
+  anomalousColorBleed: 0
+  subsurfaceGlow: 0

@@ -1,0 +1,48 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-UI-USS-001"
+# UITK_STYLESHEET_SCHEMA.yaml
+# USS visual state rules, pseudo-classes, font asset addressables.
+
+addressable_font_guids:
+  inconsolata_regular: "a9d8f7e6c5b4a32109876543210fedc"
+  inconsolata_semibold: "b1c2d3e4f5a60789876543210fedcba"
+
+pseudoclasses:
+  button:
+    default:
+      background_color: "#1C2430"
+      border_color: "#4FC3E8"
+      border_width_px: 1
+      color: "#E8EAF0"
+      font_size_px: 16
+    hover:
+      background_color: "#2C384A"
+      border_color: "#FFBF00"
+      color: "#FFFFFF"
+    active:
+      background_color: "#4FC3E8"
+      color: "#0F141A"
+    focus:
+      border_color: "#FFBF00"
+      border_width_px: 2
+
+  panel:
+    background_color: "#0F141A"
+    opacity: 0.92
+    border_color: "#1C2430"
+    border_width_px: 2
+    padding_px: 16
+
+  echo_slot_indicator:
+    empty:
+      border_color: "#404858"
+      background_color: "transparent"
+    recording:
+      border_color: "#FF2222"
+      background_color: "#441111"
+    ready:
+      border_color: "#4FC3E8"
+      background_color: "#103040"
+    active:
+      border_color: "#FFBF00"
+      background_color: "#403010"

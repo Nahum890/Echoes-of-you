@@ -1,0 +1,33 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-ECH-SER-001"
+# ECHO_SERIALIZATION_SCHEMA.yaml
+# Exact binary/float layout specification per frame for Echo recording state buffers.
+
+frame_buffer_layout:
+  sample_rate_hz: 30.0          # 1 sample frame per 33.33ms
+  max_record_seconds: 12.0      # Standard maximum
+  max_frames_per_slot: 360      # 12.0s * 30Hz
+  bytes_per_frame: 43           # Exact frame payload byte count
+
+binary_field_offsets:
+  # Offset in bytes within single frame 43-byte block
+  0:  {name: "timestamp", type: "float32", bytes: 4}
+  4:  {name: "posX", type: "float32", bytes: 4}
+  8:  {name: "posY", type: "float32", bytes: 4}
+  12: {name: "posZ", type: "float32", bytes: 4}
+  16: {name: "rotX", type: "float32", bytes: 4}
+  20: {name: "rotY", type: "float32", bytes: 4}
+  24: {name: "rotZ", type: "float32", bytes: 4}
+  28: {name: "rotW", type: "float32", bytes: 4}
+  32: {name: "animatorSpeed", type: "float32", bytes: 4}
+  36: {name: "animatorStateHash", type: "int32", bytes: 4}
+  40: {name: "animatorNormalizedTime", type: "uint8", bytes: 1}  # Quantized to 0..255 (0.0..1.0)
+  41: {name: "characterStateFlags", type: "uint8", bytes: 1}     # Bitmask: Crouch, Carry, Push, Grounded
+  42: {name: "inputActionFlags", type: "uint8", bytes: 1}        # Bitmask: JumpPressed, InteractPressed, ResetPressed
+
+slot_memory_budget:
+  frame_bytes: 43
+  slot_capacity_frames: 360
+  slot_bytes: 15480             # ~15.1 KB per slot
+  max_active_slots: 3
+  total_buffer_bytes: 46440     # ~45.3 KB total VRAM/RAM overhead

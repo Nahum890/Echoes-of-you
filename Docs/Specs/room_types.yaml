@@ -1,0 +1,333 @@
+schema_version: "1.2"
+spec_type: room_types
+id_prefix: "ROOM-MOD-"
+
+modules:
+  - id: ROOM-MOD-000
+    enum_value: 0
+    name: StandardPlatform
+    category: legacy_base
+    dimensions: { width: 8.0, height: 0.5, depth: 8.0 }
+    connectivity: [North, South, East, West]
+
+  - id: ROOM-MOD-001
+    enum_value: 1
+    name: BridgePlatform
+    category: legacy_base
+    dimensions: { width: 4.0, height: 0.5, depth: 12.0 }
+    connectivity: [North, South]
+
+  - id: ROOM-MOD-002
+    enum_value: 2
+    name: RampPlatform
+    category: legacy_base
+    dimensions: { width: 4.0, height: 2.0, depth: 8.0 }
+    connectivity: [North, South]
+
+  - id: ROOM-MOD-003
+    enum_value: 3
+    name: BarrierWall
+    category: legacy_base
+    dimensions: { width: 8.0, height: 4.0, depth: 0.5 }
+    connectivity: []
+
+  - id: ROOM-MOD-004
+    enum_value: 4
+    name: PressurePlate
+    category: legacy_base
+    dimensions: { width: 2.0, height: 0.2, depth: 2.0 }
+    connectivity: [Top]
+
+  - id: ROOM-MOD-005
+    enum_value: 5
+    name: Door
+    category: legacy_base
+    dimensions: { width: 3.0, height: 4.0, depth: 0.5 }
+    connectivity: [North, South]
+
+  - id: ROOM-MOD-006
+    enum_value: 6
+    name: LevelExit
+    category: legacy_base
+    dimensions: { width: 4.0, height: 4.0, depth: 4.0 }
+    connectivity: [South]
+
+  - id: ROOM-MOD-007
+    enum_value: 7
+    name: PlayerStart
+    category: legacy_base
+    dimensions: { width: 2.0, height: 2.0, depth: 2.0 }
+    connectivity: [North, South, East, West]
+
+  - id: ROOM-MOD-008
+    enum_value: 8
+    name: MovingPlatform
+    category: legacy_base
+    dimensions: { width: 4.0, height: 0.5, depth: 4.0 }
+    connectivity: [Dynamic]
+
+  - id: ROOM-MOD-009
+    enum_value: 9
+    name: TutorialTrigger
+    category: legacy_base
+    dimensions: { width: 6.0, height: 3.0, depth: 6.0 }
+    connectivity: []
+
+  - id: ROOM-MOD-010
+    enum_value: 10
+    name: PointLight
+    category: legacy_base
+    dimensions: { width: 1.0, height: 1.0, depth: 1.0 }
+    connectivity: []
+
+  - id: ROOM-MOD-011
+    enum_value: 11
+    name: AmbientParticles
+    category: legacy_base
+    dimensions: { width: 10.0, height: 5.0, depth: 10.0 }
+    connectivity: []
+
+  - id: ROOM-MOD-012
+    enum_value: 12
+    name: DistantArchitecture
+    category: legacy_base
+    dimensions: { width: 20.0, height: 20.0, depth: 20.0 }
+    connectivity: []
+
+  - id: ROOM-MOD-013
+    enum_value: 13
+    name: LevelGoal
+    category: legacy_base
+    dimensions: { width: 4.0, height: 4.0, depth: 4.0 }
+    connectivity: [South]
+
+  - id: ROOM-MOD-014
+    enum_value: 14
+    name: LevelRuntime
+    category: legacy_base
+    dimensions: { width: 0.0, height: 0.0, depth: 0.0 }
+    connectivity: []
+
+  - id: ROOM-MOD-015
+    enum_value: 15
+    name: PuzzleSignal
+    category: legacy_base
+    dimensions: { width: 1.0, height: 1.0, depth: 1.0 }
+    connectivity: []
+
+  - id: ROOM-MOD-016
+    enum_value: 16
+    name: PuzzleCondition
+    category: legacy_base
+    dimensions: { width: 1.0, height: 1.0, depth: 1.0 }
+    connectivity: []
+
+  - id: ROOM-MOD-017
+    enum_value: 17
+    name: HazardField
+    category: legacy_base
+    dimensions: { width: 6.0, height: 4.0, depth: 2.0 }
+    connectivity: []
+
+  - id: ROOM-MOD-018
+    enum_value: 18
+    name: ConflictTrap
+    category: legacy_base
+    dimensions: { width: 4.0, height: 2.0, depth: 4.0 }
+    connectivity: []
+
+  - id: ROOM-MOD-019
+    enum_value: 19
+    name: MomentumRelay
+    category: legacy_base
+    dimensions: { width: 3.0, height: 3.0, depth: 3.0 }
+    connectivity: []
+
+  - id: ROOM-MOD-020
+    enum_value: 20
+    name: MotorPlatform
+    category: legacy_base
+    dimensions: { width: 4.0, height: 0.5, depth: 4.0 }
+    connectivity: [Dynamic]
+
+  - id: ROOM-MOD-021
+    enum_value: 21
+    name: ObservationChamber
+    category: phase_3
+    dimensions: { width: 12.0, height: 6.0, depth: 12.0 }
+    connectivity: [North, South, East, West]
+
+  - id: ROOM-MOD-022
+    enum_value: 22
+    name: TemporalBridge
+    category: phase_3
+    dimensions: { width: 4.0, height: 0.5, depth: 16.0 }
+    connectivity: [North, South]
+
+  - id: ROOM-MOD-023
+    enum_value: 23
+    name: PerspectiveAnchor
+    category: phase_3
+    dimensions: { width: 2.0, height: 4.0, depth: 2.0 }
+    connectivity: []
+
+  - id: ROOM-MOD-024
+    enum_value: 24
+    name: MemoryCorridor
+    category: phase_3
+    dimensions: { width: 4.0, height: 4.0, depth: 20.0 }
+    connectivity: [North, South]
+
+  - id: ROOM-MOD-025
+    enum_value: 25
+    name: ParadoxArena
+    category: phase_3
+    dimensions: { width: 20.0, height: 8.0, depth: 20.0 }
+    connectivity: [North, South, East, West]
+
+  - id: ROOM-MOD-026
+    enum_value: 26
+    name: ErosionVault
+    category: phase_3
+    dimensions: { width: 14.0, height: 6.0, depth: 14.0 }
+    connectivity: [North, South]
+
+  - id: ROOM-MOD-027
+    enum_value: 27
+    name: ResonanceChamber
+    category: phase_3
+    dimensions: { width: 10.0, height: 6.0, depth: 10.0 }
+    connectivity: [North, South, East]
+
+  - id: ROOM-MOD-028
+    enum_value: 28
+    name: LiminalThreshold
+    category: phase_3
+    dimensions: { width: 6.0, height: 5.0, depth: 6.0 }
+    connectivity: [North, South]
+
+  - id: ROOM-MOD-029
+    enum_value: 29
+    name: ChronologicalSpire
+    category: phase_3
+    dimensions: { width: 8.0, height: 16.0, depth: 8.0 }
+    connectivity: [Vertical]
+
+  - id: ROOM-MOD-030
+    enum_value: 30
+    name: VoidGallery
+    category: phase_3
+    dimensions: { width: 16.0, height: 6.0, depth: 16.0 }
+    connectivity: [North, East, West]
+
+  - id: ROOM-MOD-031
+    enum_value: 31
+    name: SchoolHall
+    category: school_architecture
+    dimensions: { width: 16.0, height: 6.0, depth: 24.0 }
+    connectivity: [North, South, East, West]
+
+  - id: ROOM-MOD-032
+    enum_value: 32
+    name: SchoolCorridor
+    category: school_architecture
+    dimensions: { width: 4.0, height: 4.0, depth: 16.0 }
+    connectivity: [North, South]
+
+  - id: ROOM-MOD-033
+    enum_value: 33
+    name: SchoolClassroom
+    category: school_architecture
+    dimensions: { width: 10.0, height: 4.0, depth: 12.0 }
+    connectivity: [East, West]
+
+  - id: ROOM-MOD-034
+    enum_value: 34
+    name: SchoolStairwell
+    category: school_architecture
+    dimensions: { width: 6.0, height: 8.0, depth: 6.0 }
+    connectivity: [Vertical, South]
+
+  - id: ROOM-MOD-035
+    enum_value: 35
+    name: SchoolBathroom
+    category: school_architecture
+    dimensions: { width: 8.0, height: 4.0, depth: 8.0 }
+    connectivity: [North]
+
+  - id: ROOM-MOD-036
+    enum_value: 36
+    name: SchoolStaffRoom
+    category: school_architecture
+    dimensions: { width: 10.0, height: 4.0, depth: 10.0 }
+    connectivity: [West]
+
+  - id: ROOM-MOD-037
+    enum_value: 37
+    name: SchoolLibrary
+    category: school_architecture
+    dimensions: { width: 18.0, height: 6.0, depth: 20.0 }
+    connectivity: [North, South, East, West]
+
+  - id: ROOM-MOD-038
+    enum_value: 38
+    name: SchoolCourtyard
+    category: school_architecture
+    dimensions: { width: 24.0, height: 12.0, depth: 24.0 }
+    connectivity: [North, South, East, West]
+
+  - id: ROOM-MOD-039
+    enum_value: 39
+    name: SchoolGym
+    category: school_architecture
+    dimensions: { width: 20.0, height: 8.0, depth: 30.0 }
+    connectivity: [North, South]
+
+  - id: ROOM-MOD-040
+    enum_value: 40
+    name: SchoolLab
+    category: school_architecture
+    dimensions: { width: 12.0, height: 4.0, depth: 14.0 }
+    connectivity: [East]
+
+  - id: ROOM-MOD-041
+    enum_value: 41
+    name: SchoolMaintenanceCorridor
+    category: school_architecture
+    dimensions: { width: 3.0, height: 3.5, depth: 14.0 }
+    connectivity: [North, South]
+
+  - id: ROOM-MOD-042
+    enum_value: 42
+    name: SchoolEmergencyCorridor
+    category: school_architecture
+    dimensions: { width: 3.0, height: 3.5, depth: 18.0 }
+    connectivity: [North, South]
+
+  - id: ROOM-MOD-043
+    enum_value: 43
+    name: SchoolLyraClassroom
+    category: school_architecture
+    dimensions: { width: 10.0, height: 4.0, depth: 12.0 }
+    connectivity: [South]
+
+  - id: ROOM-MOD-044
+    enum_value: 44
+    name: SchoolOffice
+    category: school_architecture
+    dimensions: { width: 8.0, height: 4.0, depth: 8.0 }
+    connectivity: [West]
+
+  - id: ROOM-MOD-045
+    enum_value: 45
+    name: SchoolLiminalClassroom
+    category: school_architecture
+    dimensions: { width: 12.0, height: 5.0, depth: 14.0 }
+    connectivity: [North, South]
+
+  - id: ROOM-MOD-046
+    enum_value: 46
+    name: TransitionSpace
+    category: school_architecture
+    dimensions: { width: 6.0, height: 4.0, depth: 6.0 }
+    connectivity: [North, South, East, West]

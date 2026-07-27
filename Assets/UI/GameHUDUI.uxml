@@ -14,17 +14,17 @@
              o ruedas de cinta (slots) en modo eco activo.
              ======================================================== -->
         <ui:VisualElement name="hud-record-panel" class="hud-record-panel hidden" picking-mode="Ignore">
-            <!-- Punto de grabaciÃ³n (rojo, pulsa) -->
+            <!-- Punto de grabación (rojo, pulsa) -->
             <ui:VisualElement name="hud-record-dot" class="hud-record-dot hidden" picking-mode="Ignore" />
             <!-- Icono de eco (cuadrado verde apagado) -->
             <ui:VisualElement name="hud-echo-icon" class="hud-echo-icon hidden" picking-mode="Ignore" />
-            <!-- Barra de progreso de grabaciÃ³n (Reel) -->
+            <!-- Barra de progreso de grabación (Reel) -->
             <ui:VisualElement name="hud-record-bar-bg" class="hud-record-bar-bg hidden" picking-mode="Ignore">
                 <ui:VisualElement name="hud-record-bar-fill" class="hud-record-bar-fill" picking-mode="Ignore" />
             </ui:VisualElement>
             <!-- Etiqueta de eco (hidden, solo para compatibilidad de script) -->
             <ui:Label name="hud-echo-label" text="" class="hud-echo-label hidden" picking-mode="Ignore" />
-            <!-- Contenedor de slots de eco (generado dinÃ¡micamente por C#) -->
+            <!-- Contenedor de slots de eco (generado dinámicamente por C#) -->
             <ui:VisualElement name="hud-echo-slots" class="hud-echo-slots-container" picking-mode="Ignore" />
         </ui:VisualElement>
 

@@ -7,7 +7,8 @@ public static class EchoesURPConfigurator
     [MenuItem("Echoes of You/URP/Setup SSAO and Graphics")]
     public static void SetupSSAOAndGraphics()
     {
-        string rendererDataPath = "Assets/UnityTechnologies/ParticlePack/URP_Renderer.asset";
+        EchoesUrpSetup.EnsureUrpAsset();
+        string rendererDataPath = EchoesUrpSetup.RendererAssetPath;
         UniversalRendererData rendererData = AssetDatabase.LoadAssetAtPath<UniversalRendererData>(rendererDataPath);
         if (rendererData == null)
         {

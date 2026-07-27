@@ -1,0 +1,13 @@
+example_type: valid
+schema: catalogs/room_templates.yaml
+room_type: SchoolCorridor
+template_id: ROOM-TMPL-002
+dimensions: {width: 4.5, depth: 24.0, height: 4.0}
+clearance: {primary: 3.2, secondary: 1.2}
+required_props: [Arch_Locker, Arch_Trashcan]
+landmarks: [RecordsBoard]
+camera_profile: Exploration
+lighting_profile: Corridor
+validation:
+  expected: approved
+  checks: [ROOM-VAL-001, SCALE-001, LAND-RULE-001]

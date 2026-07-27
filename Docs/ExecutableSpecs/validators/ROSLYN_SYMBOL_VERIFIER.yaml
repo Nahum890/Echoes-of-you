@@ -1,0 +1,32 @@
+schema_version: "1.0"
+spec_id: "SPEC-EXEC-VAL-ROS-001"
+# ROSLYN_SYMBOL_VERIFIER.yaml
+# AST symbol compliance verification for C# code compilation.
+
+required_csharp_symbols:
+  classes:
+    - {name: "EchoRecorder", namespace: "Echoes.Gameplay"}
+    - {name: "EchoPlayback", namespace: "Echoes.Gameplay"}
+    - {name: "EchoRecordFrame", namespace: "Echoes.Gameplay"}
+    - {name: "LevelValidator", namespace: "Echoes.Validation"}
+    - {name: "LevelScorecard", namespace: "Echoes.Validation"}
+    - {name: "EchoesNewProductionBuilder", namespace: "Echoes.Editor"}
+    - {name: "CameraProfileApplier", namespace: "Echoes.Visual"}
+    - {name: "LevelLightingSettings", namespace: "Echoes.Visual"}
+    - {name: "PuzzleWire", namespace: "Echoes.Puzzle"}
+    - {name: "PressurePlate", namespace: "Echoes.Puzzle"}
+
+  methods:
+    - {class: "EchoRecorder", name: "StartRecording", return_type: "void"}
+    - {class: "EchoRecorder", name: "StopRecording", return_type: "EchoRecordingData"}
+    - {class: "EchoPlayback", name: "PlayEcho", return_type: "void"}
+    - {class: "LevelValidator", name: "RunAllChecks", return_type: "ValidationResult"}
+    - {class: "CameraProfileApplier", name: "ApplyProfile", return_type: "void"}
+
+verification_protocol:
+  parser: "Microsoft.CodeAnalysis.CSharp (Roslyn)"
+  source_path: "Assets/Scripts/**/*.cs"
+  on_missing_symbol:
+    action: "RaiseError"
+    fail_code: "FAIL-SYS-02"
+    message_format: "Required C# class/method '{symbol}' not found in assembly AST."

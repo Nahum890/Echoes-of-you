@@ -1,0 +1,52 @@
+schema_version: "1.0"
+catalog_type: transition_catalog
+
+transition_types:
+  open_threshold:
+    minimum_width: 2.4
+    required_elements: [floor_threshold, visual_axis]
+  single_door:
+    minimum_width: 1.2
+    minimum_height: 2.2
+    required_elements: [door_frame, floor_threshold]
+  double_door:
+    minimum_width: 2.4
+    minimum_height: 2.4
+    required_elements: [double_door_frame, floor_threshold]
+  transition_space:
+    minimum_depth: 4.0
+    required_elements: [compression, lighting_step, fog_step]
+  liminal_threshold:
+    minimum_depth: 2.0
+    required_elements: [liminal_material, visual_discontinuity]
+
+compatibility:
+  - {from: SchoolHall, to: SchoolCorridor, allowed: [open_threshold]}
+  - {from: SchoolHall, to: SchoolStairwell, allowed: [open_threshold]}
+  - {from: SchoolCorridor, to: SchoolClassroom, allowed: [single_door, transition_space]}
+  - {from: SchoolCorridor, to: SchoolLibrary, allowed: [double_door, transition_space]}
+  - {from: SchoolCorridor, to: SchoolCourtyard, allowed: [double_door, transition_space]}
+  - {from: SchoolLyraClassroom, to: SchoolLiminalClassroom, allowed: [liminal_threshold, transition_space]}
+
+rules:
+  - id: TRANS-VAL-001
+    type: constraint
+    status: active
+    severity: fatal
+    scope: [transition]
+    rule: "Every transition must use a type listed in transition_types"
+    validator: validators/static_validator.yaml#transition_types
+  - id: TRANS-VAL-002
+    type: constraint
+    status: active
+    severity: error
+    scope: [transition]
+    rule: "Every transition must satisfy the minimum dimensions of its type"
+    validator: validators/level_validator.yaml#transition_dimensions
+  - id: TRANS-VAL-003
+    type: prohibition
+    status: active
+    severity: error
+    scope: [transition]
+    rule: "A Classroom to Classroom connection without Corridor or TransitionSpace is forbidden"
+    validator: validators/level_validator.yaml#forbidden_connections

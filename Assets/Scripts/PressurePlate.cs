@@ -46,6 +46,7 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
 
     void Awake()
     {
+        gameObject.layer = LayerMask.NameToLayer("PressurePlate"); // Layer 11
         BoxCollider boxCol = GetComponent<BoxCollider>();
         if (boxCol == null)
         {

@@ -1,0 +1,85 @@
+# RULE SCHEMA — Canonical structure for every rule in Echoes of You
+# Every rule file MUST validate against this schema before being used by an IA.
+# Version 1.0
+
+rule_schema_version: "1.0"
+
+required_fields:
+  - id
+  - type
+  - status
+  - severity
+  - scope
+  - rule
+
+optional_fields:
+  - title
+  - preconditions
+  - parameters
+  - action
+  - failure_message
+  - failure_code
+  - evidence_source
+  - validator_implementation
+  - supersedes
+  - migration_required
+  - notes
+
+allowed_types:
+  invariant: "Must always be true; never changes"
+  constraint: "Value must stay within a bounded range"
+  mapping: "Links a document field to a code artifact"
+  procedure: "Steps an IA agent must execute"
+  prohibition: "Something that must never occur"
+  validation: "An automated check"
+  decision: "A frozen design decision"
+  status: "Verifiable implementation status against code"
+
+allowed_statuses:
+  active: "Rule is enforced; violation blocks execution"
+  draft: "Rule is proposed; violation yields warning only"
+  deprecated: "Rule is retired; only for historical reference"
+  blocked: "Rule cannot be enforced due to unresolved dependencies"
+
+allowed_severities:
+  fatal: "Execution MUST stop; cannot proceed"
+  error: "Level or task is invalid; must fix before approval"
+  warning: "Quality concern; should fix before release"
+  advisory: "Recommendation; optional for approval"
+
+scope_values:
+  - project
+  - chapter
+  - level
+  - room
+  - corridor
+  - classroom
+  - puzzle
+  - echo
+  - camera
+  - lighting
+  - material
+  - prop
+  - blueprint
+  - transition
+  - landmark
+  - narrative
+  - audio
+  - ui
+  - performance
+  - documentation
+  - ai
+
+evidence_source_types:
+  - code_snapshot
+  - asset_inspection
+  - runtime_test
+  - unity_console
+  - playtest_log
+  - screenshot
+
+validator_implementation_states:
+  - implemented
+  - pending
+  - needs_code_change
+  - manual_only
