@@ -17,7 +17,9 @@ public static class EchoesLightingBakePipeline
         EchoesURPConfigurator.SetupSSAOAndGraphics();
 
         // Buscar escenas de niveles
-        string[] levelScenes = Directory.GetFiles(SceneRoot, "Level_*.unity");
+        string[] levelScenes = System.Array.FindAll(
+            Directory.GetFiles(SceneRoot, "Level_*.unity"),
+            p => !p.Contains("TEST") && !p.Contains("SchoolGreybox"));
         if (levelScenes == null || levelScenes.Length == 0)
         {
             Debug.LogError("[Echoes Bake Pipeline] No se encontraron escenas de niveles en " + SceneRoot);

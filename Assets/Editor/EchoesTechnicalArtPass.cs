@@ -138,7 +138,9 @@ public static class EchoesTechnicalArtPass
     public static int ParseLevelNumber(string sceneName)
     {
         if (sceneName == null || !sceneName.StartsWith("Level_")) return -1;
-        if (sceneName.Contains("TEST")) return -1;
+        // Escenas de prueba y greybox fase 1 quedan fuera del pase de arte:
+        // el greybox es arquitectura pura sin props/luces por diseño.
+        if (sceneName.Contains("TEST") || sceneName.Contains("SchoolGreybox")) return -1;
         return int.TryParse(sceneName.Substring(6, 2), out int n) ? n : -1;
     }
 

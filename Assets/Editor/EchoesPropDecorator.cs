@@ -78,11 +78,22 @@ public static class EchoesPropDecorator
         // Resolución de posición: las coordenadas de la Tabla 8.2 son locales
         // al módulo declarado. Si el módulo existe en la escena, se colocan
         // relativas a él; si no, se usan como posición de mundo (y se anota).
+        // NOTA post-greybox: los blueprints nuevos nombran módulos de forma
+        // semántica (ZonaA_*, Placa*), así que el fallback de mundo es la vía
+        // habitual — el snap al suelo de abajo evita props flotando/enterrados.
         Transform module = FindModule(entry.module);
         Vector3 worldPos = module != null
             ? module.TransformPoint(entry.propPos)
             : entry.propPos;
         string anchorNote = module != null ? $"módulo '{module.name}'" : "MUNDO (módulo no encontrado)";
+
+        // Snap al suelo: conserva la altura de la Tabla 8.2 como offset sobre
+        // el piso real encontrado por raycast.
+        if (Physics.Raycast(new Vector3(worldPos.x, worldPos.y + 10f, worldPos.z),
+                Vector3.down, out RaycastHit hit, 40f))
+        {
+            worldPos.y = hit.point.y + entry.propPos.y;
+        }
 
         // Prop narrativo amber — exactamente 1 por nivel (VAL-ENV-001)
         string usedName = entry.prefab;

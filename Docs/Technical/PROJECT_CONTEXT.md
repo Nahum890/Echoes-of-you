@@ -81,6 +81,20 @@ desactivados hoy):**
 y destruye tanto las ediciones manuales de las 15 escenas como **todos los
 props colocados por el Environment Pass** (ver abajo).
 
+**Greybox escolar (fase 1, desde 2026-07-26):**
+`SchoolGreyboxProductionBuilder.cs` (menú `Echoes of You/Production/Build
+All School Greybox Levels`) genera las 15 escenas paralelas
+`Level_XX_SchoolGreybox.unity` — solo arquitectura + NavMesh, sin puzzles,
+props, luces ni cámara, con validación automática a
+`Reports/generated/greybox_validation.json`. ⚠ Estado actual: los 15
+niveles FALLAN (`FAIL-ARC-RHYTHM`, `FAIL-NAV-ROUTE`, `FAIL-NAV-COVERAGE`).
+`BuildSchoolGreyboxLevels.cs` es un builder auxiliar del mismo commit.
+El enum `ModuleType` fue renumerado (31–44): ya no existen
+`SchoolBathroom`/`SchoolMaintenanceCorridor`/`SchoolEmergencyCorridor`/
+`SchoolOffice`; se añadieron `SchoolEntrance` y `GhostBridge`. Hay una
+carpeta nueva `Assets/Scripts/Puzzle/` (AmbientEchoData, ImposedEchoData,
+InversionCamera, PressurePlateEchoOnly, RecordFutureExit).
+
 **Environment Pass (colocación de props — pipeline separado y posterior
 al builder):**
 `EnvironmentPassDataGenerator` (genera `LevelDataSO` en
@@ -179,9 +193,9 @@ GoalTrigger → LevelGoal (todos satisfechos) → LevelEscapeSequence (persecuci
    → siguiente escena
 ```
 
-⚠️ `LevelExit` tiene el chequeo de desbloqueo **bypaseado** en código
-("Puzzle resolution check bypassed", `BindGoal` fuerza `SetUnlocked(true)`).
-Verificar antes de asumir que los exits respetan el estado del puzzle.
+⚠️ `LevelExit` respeta el estado del puzzle desde el merge con la arquitectura
+greybox (2026-07-27): `BindGoal` consulta `goal.IsReady` y `OnTriggerEnter`
+rechaza si `!_isUnlocked`. (El bypass histórico quedó eliminado.)
 
 ### Render pipeline
 
@@ -291,9 +305,10 @@ distance 40 m, máx. 48 luces por escena.
 ## 4 — ESTADO DE LOS NIVELES
 
 **En disco:** 15 escenas `Level_01..15` + `MainMenu.unity` +
-`Level_04_TEST.unity` (escena de prueba, **no documentada en la campaña**;
-`CameraPassQA` la excluye pero `EchoesLightingBakePipeline` NO la filtra y
-la hornearía). **No existe ninguna escena de hub** — `HubSceneController`
+`Level_04_TEST.unity` (prueba) + 15 escenas `Level_XX_SchoolGreybox.unity`
+(fase 1 greybox, sin luces/props por diseño). `CameraPassQA` excluye TEST;
+`EchoesLightingBakePipeline` y el pase de arte técnico filtran TEST y
+greybox. **No existe ninguna escena de hub** — `HubSceneController`
 y `HubPortal` son código huérfano.
 
 Organización por capítulos emocionales:
