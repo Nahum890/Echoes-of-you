@@ -1,151 +1,150 @@
-# ECHO_GRAMMAR.md — Echo Mechanic Technical Specification
-## Spec ID: SPEC-107
-## Version: 4.0 (AI-Executable)
+# ECHO GRAMMAR — Canonical Timing & State Specification
+
+**Source of truth**: derived from `Docs/GameDesign/ECHOES_BIBLE.md` (§5 "Sistema del Eco")
+and verified against `Assets/Scripts/EchoRecorder.cs`, `Assets/Scripts/EchoPlayback.cs`,
+`Assets/Scripts/RecordFrame.cs`. Any discrepancy: code wins for runtime, this doc wins for design intent.
 
 ---
 
-### 1. PURPOSE
-Specifies technical parameters, execution state machines, latencies, physical collider bounds, and collision rules for the Echo mechanic in *Echoes of You 2.0*. Regulates `EchoRecorder.cs`, `EchoPlayback.cs`, and `EchoKineticBody.cs`.
+## 1. Canonical Numerical Constants
 
-### 2. SCOPE
-Applies to `EchoRecorder.cs`, `EchoPlayback.cs`, `EchoRecordingData.cs`, `EchoDisintegrationZone.cs`, and `EchoKineticZone.cs`. Excludes standard player locomotion without recording.
+| Constant | Value | Source | Enforced by |
+|---|---|---|---|
+| `MAX_RECORD_SECONDS` | 12.0 s | ECHOES_BIBLE §5 / prompt table | `LevelBlueprint.maxRecordSeconds = 12f` (LevelBlueprint.cs:114) |
+| `ECHO_LATENCY` | 0.8 s | ECHOES_BIBLE §5 "Latencia de inicio" | hard-coded in `EchoPlayback` startup; surfaced to designers via `customData` of `TimedMovingPlatform` and `PuzzleSignal.requiresEcho` windows |
+| `RESIDUAL_DURATION` | 2.5 s | ECHOES_BIBLE §5 "Residual" | `EchoPlayback` post-playback coroutine |
+| `SYNC_FLOOR` | 0.4 s | prompt / ECHOES_BIBLE §6 (timing of reading) | `LevelBlueprint.timingFloor`, enforced by `PuzzleLevelValidator.TimingFloorSatisfied` |
+| `PROJECTION_STEP_UP` | 0.4 m | `EchoRecorder.cs:26` | `maxProjectionStepUp` field |
 
-### 3. AUTHORITY
-Nivel 3 (Especificación Ejecutable). Subordinate to `SOURCE_OF_TRUTH.md` (`SPEC-000`) and `ECHOES_BIBLE.md` (`SPEC-101`).
+All times are real-time seconds. They are **deterministic** by design (ECHOES_BIBLE §5: "su imperfección no es aleatoria").
 
-### 4. DEFINITIONS
-- `Echo`: A deterministic, frame-by-frame physical re-enactment of recorded player inputs ($12.0\text{s}$ max duration) stored in `EchoRecordingData.cs`.
-- `Playback Latency`: Fixed delay $T_{latency} = 0.8\text{s}$ between recording end and movement playback start.
-- `Residual Duration`: Fixed duration $T_{residual} = 2.5\text{s}$ where the Echo remains a solid physical obstacle after completing playback.
+---
 
-### 5. INPUTS
-- [ECHOES_BIBLE.md](file:///c:/Users/lol xdd/OneDrive/Documentos/Colegio/Echoes of you/Docs/GameDesign/ECHOES_BIBLE.md) `[SPEC-101]`
-- [SCALE_GUIDE.md](file:///c:/Users/lol xdd/OneDrive/Documentos/Colegio/Echoes of you/Docs/Specs/SCALE_GUIDE.md) `[SPEC-106]`
+## 2. Echo Lifecycle States
 
-### 6. OUTPUTS
-- Recorded frame buffer in `EchoRecordingData.cs`.
-- Physical Echo GameObject instantiated by `EchoPlayback.cs`.
+The Echo progresses through 4 states. Each has mechanical consequences (not cosmetic):
 
-### 7. RULES
+| # | State | Visual | Collision | Duration | Transition |
+|---|---|---|---|---|---|
+| 0 | **Absent** | None | Off | — | Player holds Record key → state 1 |
+| 1 | **Recording** | Player gets cyan rim light; Echo does not exist visually (it is "in the future"); optional projection pilot | Off | ≤ 12 s (auto-stops at cap) | Player releases key OR `RecordingElapsed >= MAX_RECORD_SECONDS` → state 2 |
+| 2 | **Playing** | Cyan translucent, alpha 0.45; in last 20 % of recording time alpha decays to 0.1 | **On** | Exactly `RecordingElapsed` (≤12 s) | Playback elapsed ≥ recorded duration → state 3 |
+| 3 | **Residual** | Alpha 0.3 → 0 (ease-in) | **On** (mechanical: usable as platform, blocker, plate-holder) | 2.5 s fixed | After 2.5 s → state 0 (despawn) |
 
-- `[RULE-ECH-001]`: **Record Duration Boundaries**:
-  - Standard Maximum Duration: $T_{max} = 12.0\text{ s} \pm 0.0$ (configurable to $20.0\text{s}$ max in narrative levels).
-  - Minimum Valid Duration: $T_{min} = 1.0\text{ s}$.
-  - Playback Start Latency: $T_{latency} = 0.8\text{ s} \pm 0.0$.
-  - Residual Solid Duration: $T_{residual} = 2.5\text{ s} \pm 0.0$.
-- `[RULE-ECH-002]`: **Echo Physical Collider**: Instantiated Echo MUST possess a `CapsuleCollider` ($H=1.80\text{m}, R=0.35\text{m}$) assigned to layer `Echo`. It MUST collide with Player, Environment, PressurePlates, and KineticBlocks.
-- `[RULE-ECH-003]`: **Visual Material Token**: Echo mesh MUST use material `Mat_Token_echo-cyan` (`#4FC3E8`) with opacity alpha $\alpha \in [0.20, 0.80]$.
-- `[RULE-ECH-004]`: **Irreversibility Enforcement**: An Echo in state `Playback` CANNOT be cancelled or deleted before completing its full cycle ($12.0\text{s} + 2.5\text{s}$), except via collision with `EchoDisintegrationZone`.
-- `[RULE-ECH-005]`: **SoftReset Behavior** — The `Q` key (`SoftReset` action, `Player/SoftReset` binding) MUST execute the following actions in STRICT ORDER:
-  1. Detiene y destruye todos los Ecos activos (SLOTS → IDLE).
-  2. Teletransporta al Player al último Checkpoint (NO recarga la escena).
-  3. Preserva el estado del puzzle (`PuzzleSignal`s permanecen en su estado actual).
-  4. Preserva el progreso de nivel (no resetea el nivel completo).
-  - **Not a violation** of the Irreversibilidad pillar: SoftReset is a player tool, not a narrative action. Echo actions are irreversible; the player's own meta-reset is not.
+### 2.1 Residual is mechanical
 
-### 8. ALGORITHMS
+> "El estado residual es mecánico, no solo estético. Un eco en estado residual puede usarse como plataforma, bloqueador, o punto de apoyo. Los niveles deben diseñarse aprovechando esta ventana."
+> — ECHOES_BIBLE §5
 
-#### Algorithm 8.0: Player Prefab Contract (HALT-1)
+Designers MUST design at least one level puzzle that uses the 2.5s residual window explicitly (see LEVEL_SPEC_03 "Echo exits before trap" / LEVEL_SPEC_06 "Record crossing before visible" / LEVEL_SPEC_10 "MemoryPlatforms revealed only during residual").
 
-```yaml
-player_prefab:
-  addressable_key: "Assets/Prefabs/Player/Player.prefab"
-  character_controller:
-    radius: 0.35       # metros
-    height: 1.80       # metros
-    center: [0.0, 0.90, 0.0]
-    step_offset: 0.30  # metros
-    slope_limit: 45.0  # grados
-    skin_width: 0.08   # metros
-  initial_camera_euler: [0.0, 0.0, 0.0]
-  spawn_facing_north: true
-```
+### 2.2 Recording start latency
 
-#### Algorithm 8.1: Echo Execution State Machine
-```mermaid
-stateDiagram-v2
-    [*] --> IDLE : Scene Ready
-    IDLE --> RECORDING : Player Presses 'R'
-    RECORDING --> LATENCY : Player Releases 'R' OR T >= 12.0s
-    LATENCY --> PLAYBACK : T_latency >= 0.8s (Alpha = 0.2)
-    PLAYBACK --> RESIDUAL : Frame Buffer Completed (Alpha 0.45 -> 0.30)
-    RESIDUAL --> DESTROYED : T_residual >= 2.5s (Alpha 0.30 -> 0.0)
-    PLAYBACK --> DESTROYED : Enter EchoDisintegrationZone
-    DESTROYED --> IDLE : Slot Released
-```
+Player triggers Record key:
+- t = 0.0s  → first frame added at player's current position
+- t = 0.0s..12.0s → frames appended at FixedUpdate cadence
+- t = stop  → playback created, starts with t' = 0 internal timer
 
-#### Table 8.1: Echo Lifecycle States & Properties
+Playback's first motion has a **0.8s fixed latency** from when `BeginPlayback` is called to when the Echo body actually starts translating along its frame track. This window is exactly what Level 04's `TimedMovingPlatform(0.8s latency)` exploits, and what `PuzzleCondition.TimedHold` MUST subtract from its `holdDuration` when plate is Echo-pressed (so `holdDuration_effective = holdDuration - 0.8`).
 
-| State Index | State Name | Duration (s) | Opacity Alpha ($\alpha$) | Rim Light Color | Collider Status | Enabled Interactions |
-|---|---|---|---|---|---|---|
-| **1** | `Recording` | $1.0\text{s} \text{ to } 12.0\text{s}$ | $0.00$ (Invisible) | Cyan `#4FC3E8` | Disabled | Input Frame Logging |
-| **2** | `Latency` | $0.8\text{s}$ Fixed | $0.20$ | Cyan `#4FC3E8` | Frozen Point | Spawn Point Anchored |
-| **3** | `Playback` | $1.0\text{s} \text{ to } 12.0\text{s}$ | $0.45 \rightarrow 0.30$ | Cyan `#4FC3E8` | Active Dynamic | Plates, Blocks, Collision |
-| **4** | `Residual` | $2.5\text{s}$ Fixed | $0.30 \rightarrow 0.00$ | Alpha Fade | Static Fixed | Platform, Counterweight |
+---
 
-### 9. CONSTRAINTS
-- `[CONS-ECH-001]`: Prohibido reactive AI algorithms that alter the recorded trajectory frame data during playback.
-- `[CONS-ECH-002]`: Prohibido real-time "Undo" actions during the `Playback` state.
+## 3. Acceptance Source Rules
 
-### 10. VALIDATION
-- `[VAL-ECH-001]`: Automated test asserts `EchoRecorder.maxRecordSeconds == 12.0f` and `startLatencySeconds == 0.8f`.
-- `[VAL-ECH-002]`: Physics integration test confirms Echo triggers `PressurePlate` and `PressurePlate_EchoOnly`.
+| Tag | Detected By | PressurePlate.accept* flag |
+|---|---|---|
+| `Player` | `PressurePlate.IsAcceptedActor` | `acceptPlayer = true` (default) |
+| `Echo` | `PressurePlate.IsAcceptedActor` | `acceptEcho = true` (default) |
+| `EchoProjection` | `PressurePlate.IsAcceptedActor` | `acceptEchoProjection = true` (default) |
+| `KineticBlock` | `KineticPushableBlock` GetComponentInParent | always (no flag) |
 
-### 11. EXAMPLES
+A plate flagged `EchoOnly` (via `PressurePlateEchoOnly` subclass, created in Phase 2) has `acceptPlayer=false, acceptEcho=true, acceptEchoProjection=true` — but never `KineticBlock`. This is the mechanism for LEVEL_SPEC_01's "Plate requires Echo" test.
 
-#### Example 11.1: Echo Frame Data Buffer Structure in C# (HALT-2)
+---
+
+## 4. The Button Test (Prueba del Botón)
+
+> "¿Puede este puzzle resolverse exactamente igual con una caja empujable genérica en lugar del eco? Si la respuesta es sí, el puzzle no pertenece a este juego. Rediseñar."
+> — ECHOES_BIBLE §6
+
+**Operationalized** by `PuzzleLevelValidator.EchoButtonTest` (Phase 3):
+
+1. Build the signal graph from `blueprint.modules`:
+   - Every puzzle component is a graph node.
+   - An entry's `targetSignals[i]` creates a directed edge: that name's node → this node (signal source drives signal target).
+   - Every `PressurePlate` (or `PressurePlateEchoOnly`) whose `acceptEcho == true && acceptPlayer == false` is marked `requiresEcho = true`.
+2. Find the `LevelExit` node.
+3. BFS backward from the exit through all signal edges.
+4. **PASS** iff at least one `requiresEcho == true` node lies on a reachable path to the exit.
+
+This is the single accept/reject gate for every level.
+
+---
+
+## 5. Rule of Irreversibility
+
+> "Una grabación reproducida no puede deshacerse excepto re-grabando desde cero."
+> — ECHOES_BIBLE §5
+
+Operationalized as:
+
+- Calling `EchoPlayback.BeginPlayback` cannot be cancelled once started.
+- Calling `EchoRecorder.ClearAllEchoes` despawns the Echo + frames; to get another Echo the player must record from scratch.
+- `ImposedEchoData` (Level 13) extends this: it disables the Record key entirely; the only Echo available is one pre-baked by the designer into `Assets/Data/Solutions/Level_13.solution.asset`.
+
+---
+
+## 6. Sync Floor
+
+For any puzzle requiring simultaneous or sequential buttons within a tolerance window:
+
+- `PuzzleCondition.ConditionType.AllPlatesSimultaneous` requires all referenced plates to read `IsPressed == true` in the same `FixedUpdate` frame. If two actors press the plates within 0.4 s of each other (one typical latência-triggered slip), the window has not been met — the puzzle should re-evaluate next frame, not latch.
+- Minimum snap window between two temporally-ordered signal activations is 0.4 s. Below this, `PuzzleLevelValidator.TimingFloorSatisfied` flags `FAIL-PUZ-03`.
+- `PuzzleWire.Connection.responseDelay` of 0 s disables the timing floor for that wire. Any non-zero `responseDelay` ≥ 0.4 s is permissible; below 0.4 s is a `FAIL-PUZ-03` soft-only (warning) since the timing floor is about multi-actor puzzles, not single-actor button debouncing.
+
+---
+
+## 7. Recording Capacity Constraints
+
+- Default: 1 Echo slot (ECHOES_BIBLE campaign Chapter I).
+- Level 08 Combination: 2 Echo slots (selection conflict enforced by `EchoConflictTrap`).
+- Level 14 Acceptance: 0 Echo slots (`maxEchoes = 0` — `EchoRecorder.Update` short-circuits at line 87).
+- Any level with `recordFuture = true` (Level 07): the Echo must be recorded **before** the trigger is activated; otherwise the 5 s window consumes the writer's future-tense capability without success.
+
+---
+
+## 8. Filesystem Encoding
+
+Optimal solution replays are stored as `Assets/Data/Solutions/Level_XX.solution.asset` (ScriptableObject). Each asset contains:
+
 ```csharp
-[System.Serializable]
-public struct EchoRecordFrame
-{
-    public float timestamp;                // segundos desde inicio de grabación (0.0 a 12.0)
-    public Vector3 worldPosition;          // posición en espacio mundo (3 floats = 12 bytes)
-    public Quaternion worldRotation;       // rotación en espacio mundo (4 floats = 16 bytes)
-    public bool isJumping;                 // estado de salto
-    public bool isInteracting;             // estado de interacción (E key)
-    public float animatorSpeed;            // float para Animator.speed blend
-    // v5.0 additions — required for accurate Echo ghost animator replay:
-    public int animatorStateHash;          // Animator.GetCurrentAnimatorStateInfo(0).fullPathHash
-    public float animatorNormalizedTime;   // Animator.GetCurrentAnimatorStateInfo(0).normalizedTime
-    public CharacterStateFlags stateFlags; // packed bool flags for crouching, carrying, pushing
-}
-
-[System.Flags]
-public enum CharacterStateFlags : byte
-{
-    None         = 0,
-    IsCrouching  = 1 << 0,
-    IsCarrying   = 1 << 1,
-    IsPushing    = 1 << 2,
-    IsGrounded   = 1 << 3,
-}
-// Frecuencia de sampleo: 30 Hz (1 frame cada 0.0333s)
-// Buffer máximo: 12.0s × 30 Hz = 360 frames por slot
-// Tamaño de buffer por slot: 360 × (12+16+1+1+4+4+4+1) bytes = 360 × 43 bytes ≈ 15.5 KB
-// Máximo de slots simultáneos: 3 → Memoria máxima de Echo buffer ≈ 46.5 KB
-```
-
-#### Example 11.2: Echo Position Interpolation Algorithm (Cubic Hermite Spline)
-```csharp
-// Algoritmo de Interpolación de Eco (Cubic Hermite Spline)
-public static Vector3 EvaluateEchoPosition(EchoFrame p0, EchoFrame p1, EchoFrame m0, EchoFrame m1, float t)
-{
-    float t2 = t * t;
-    float t3 = t2 * t;
-    return (2f*t3 - 3f*t2 + 1f)*p0.position + (t3 - 2f*t2 + t)*m0.position + (-2f*t3 + 3f*t2)*p1.position + (t3 - t2)*m1.position;
+public sealed class EchoSolutionAsset : ScriptableObject {
+    public RecordFrame[] frames;        // optimal player path
+    public RecordFrame[] echoFrames;    // optimal echo recording
+    public float        echoStartTime;  // t when Echo should start playing back (latency offset aware)
+    public float        expectedDurationSeconds;
+    public int          expectedSoftlocks;
+    public int          expectedSequenceBreaks;
 }
 ```
 
-### 12. FAILURE CASES
-- `[FAIL-ECH-001]`: **Record Duration Exceeded**: Recorder exceeds max threshold ($T > 12.0\text{s}$). Result: `EchoRecorder` automatically cuts recording and triggers `Latency` state.
-- `[FAIL-ECH-002]`: **Collider Mismatch**: Echo collider height differs from player height ($H \ne 1.80\text{m}$). Result: `LevelValidator` flags `FAIL-ECH-02`.
+The headless EditMode playtest loader:
+1. Spawns a `NavMeshAgent` actor at `frames[0].position`.
+2. Walks the agent through frames at fixed 0.1 s step.
+3. At `echoStartTime`, creates an Echo body and feeds `echoFrames` to `EchoPlayback.BeginPlayback`.
+4. Asserts `LevelExit` is reached within `expectedDurationSeconds`.
+5. Asserts no Update cycle kept the actor outside within 1 m of any frame for more than 30 s (softlock check).
+6. Asserts the only path to `LevelExit.IsReady` was via the `LevelGoal.EvaluateState` chain — i.e. no sequence break.
 
-### 13. CROSS REFERENCES
-- [ECHOES_BIBLE.md](file:///c:/Users/lol xdd/OneDrive/Documentos/Colegio/Echoes of you/Docs/GameDesign/ECHOES_BIBLE.md) `[SPEC-101]`
-- [PUZZLE_GRAMMAR.md](file:///c:/Users/lol xdd/OneDrive/Documentos/Colegio/Echoes of you/Docs/Specs/PUZZLE_GRAMMAR.md) `[SPEC-104]`
+---
 
-### 14. CHANGE HISTORY
-- **v1.0 (2025-02-18)**: Core Echo mechanic draft.
-- **v2.0 (2026-07-20)**: Quantified 12.0s duration and 0.8s latency.
-- **v3.0 (2026-07-25)**: Full refactor into 14-section AI-Executable canonical format.
-- **v4.0 (2026-07-25)**: HALT-1 resolved — player_prefab CharacterController contract added (Algorithm 8.0). HALT-2 resolved — EchoRecordFrame struct upgraded with animatorSpeed and buffer sizing math. RULE-ECH-005 added — SoftReset Q-key behavior defined.
+## 9. Echo First Frame Stability
+
+`EchoRecorder.FixedUpdate` (line 126–130) duplicates the first frame at `t=0` for interpolation stability. Any `EchoSolutionAsset.frames` created by the generator MUST also duplicate frame 0:
+
+```
+frames[0] = (t=0, position=frames[0].position, rotation=frames[0].rotation)
+frames[1] = (t=0.1, ...)
+```
+
+This guarantees `RecordFrame.Evaluate` (line 30) returns a valid pose immediately at playback start, before the 0.8 s latency bootstrap.

@@ -43,7 +43,11 @@ public class LevelExit : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        Debug.Log($"[LevelExit] OnTriggerEnter: {other.name} tag={other.tag} (Puzzle resolution check bypassed)");
+        if (!_isUnlocked)
+        {
+            Debug.Log($"[LevelExit] Exit locked. Objective incomplete.");
+            return;
+        }
 
         if (_triggered)
             return;
@@ -71,8 +75,7 @@ public class LevelExit : MonoBehaviour
     public void BindGoal(LevelGoal goal)
     {
         _goal = goal;
-        // La salida siempre está desbloqueada para permitir el progreso libre
-        SetUnlocked(true);
+        SetUnlocked(_goal != null ? _goal.IsReady : true);
     }
 
     public void SetUnlocked(bool unlocked)

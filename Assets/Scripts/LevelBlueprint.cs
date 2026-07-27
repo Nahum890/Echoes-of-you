@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -17,66 +17,68 @@ public enum ParadoxType
 }
 
 /// <summary>
-/// Tipos de módulos arquitectónicos del vocabulario y legacy.
+/// Tipos de mÃ³dulos arquitectÃ³nicos del vocabulario y legacy.
 /// </summary>
 public enum ModuleType
 {
-    // Legacy / Base (0-20)
-    StandardPlatform = 0,
-    BridgePlatform = 1,
-    RampPlatform = 2,
-    BarrierWall = 3,
-    PressurePlate = 4,
-    Door = 5,
-    LevelExit = 6,
-    PlayerStart = 7,
-    MovingPlatform = 8,
-    TutorialTrigger = 9,
-    PointLight = 10,
-    AmbientParticles = 11,
-    DistantArchitecture = 12,
-    LevelGoal = 13,
-    LevelRuntime = 14,
-    PuzzleSignal = 15,
-    PuzzleCondition = 16,
-    HazardField = 17,
-    ConflictTrap = 18,
-    MomentumRelay = 19,
-    MotorPlatform = 20,
+    // Legacy / Base
+    StandardPlatform,
+    BridgePlatform,
+    RampPlatform,
+    BarrierWall,
+    PressurePlate,
+    Door,
+    LevelExit,
+    PlayerStart,
+    MovingPlatform,
+    TutorialTrigger,
+    PointLight,
+    AmbientParticles,
+    DistantArchitecture,
+    LevelGoal,
+    LevelRuntime,
+    PuzzleSignal,
+    PuzzleCondition,
+    HazardField,
+    ConflictTrap,
+    MomentumRelay,
+    MotorPlatform,
+    
+    // New Architectural Vocabulary
+    ObservationChamber,
+    TemporalBridge,
+    PerspectiveAnchor,
+    MemoryCorridor,
+    ParadoxArena,
+    ErosionVault,
+    ResonanceChamber,
+    LiminalThreshold,
+    ChronologicalSpire,
+    VoidGallery,
 
-    // Phase 3 (21-30)
-    ObservationChamber = 21,
-    TemporalBridge = 22,
-    PerspectiveAnchor = 23,
-    MemoryCorridor = 24,
-    ParadoxArena = 25,
-    ErosionVault = 26,
-    ResonanceChamber = 27,
-    LiminalThreshold = 28,
-    ChronologicalSpire = 29,
-    VoidGallery = 30,
-
-    // VOCABULARIO ARQUITECTÓNICO ESCOLAR (31-46) — USADOS EN BLUEPRINTS
+// School greybox vocabulary. Explicit values preserve the serialized
+    // legacy blueprint values above while reserving the requested 31+ range.
     SchoolHall = 31,
-    SchoolCorridor = 32,
-    SchoolClassroom = 33,
-    SchoolStairwell = 34,
-    SchoolBathroom = 35,
-    SchoolStaffRoom = 36,
-    SchoolLibrary = 37,
-    SchoolCourtyard = 38,
-    SchoolGym = 39,
-    SchoolLab = 40,
-    SchoolMaintenanceCorridor = 41,
-    SchoolEmergencyCorridor = 42,
-    SchoolLyraClassroom = 43,
-    SchoolOffice = 44,
-    SchoolLiminalClassroom = 45,
-    TransitionSpace = 46
+    SchoolCorridor,
+    SchoolClassroom,
+    SchoolStairwell,
+    SchoolLibrary,
+    SchoolGym,
+    SchoolLab,
+    SchoolLyraClassroom,
+    SchoolLiminalClassroom,
+    TransitionSpace,
+    SchoolEntrance,
+    SchoolStaffRoom,
+    SchoolCourtyard,
+
+    // Phase 2 puzzle vocabulary. Explicit values preserve existing serialized
+    // blueprint assets (SchoolCourtyard=43 implicit, so 44+ is safe).
+    GhostBridge = 44
 }
 
 /// <summary>
-/// Configuración de posicionamiento e interconexión de un módulo en la escena.
+/// ConfiguraciÃ³n de posicionamiento e interconexiÃ³n de un mÃ³dulo en la escena.
 /// </summary>
 [System.Serializable]
 public struct ModulePlacement
@@ -87,15 +89,15 @@ public struct ModulePlacement
     public Vector3 rotation;
     public Vector3 scale;
     
-    [Tooltip("Valores extra de configuración en formato key=value o texto libre.")]
+    [Tooltip("Valores extra de configuraciÃ³n en formato key=value o texto libre.")]
     public string customData;
     
-    [Tooltip("Nombres de señales que este objeto emite o a las que reacciona.")]
+    [Tooltip("Nombres de seÃ±ales que este objeto emite o a las que reacciona.")]
     public string[] targetSignals;
 }
 
 /// <summary>
-/// Asset de configuración que describe un nivel completo de forma declarativa.
+/// Asset de configuraciÃ³n que describe un nivel completo de forma declarativa.
 /// </summary>
 [CreateAssetMenu(fileName = "NewLevelBlueprint", menuName = "Echoes of You/Level Blueprint", order = 1)]
 public class LevelBlueprint : ScriptableObject
@@ -133,9 +135,9 @@ public class LevelBlueprint : ScriptableObject
     public float directionalLightIntensity = 1f;
 
     [Header("Narrative Texts")]
-    public string narrativeIntroTitle = "Nivel — Título";
+    public string narrativeIntroTitle = "Nivel â€” TÃ­tulo";
     [TextArea(3, 5)]
-    public string narrativeIntroDesc = "Descripción larga del nivel y su significado.";
+    public string narrativeIntroDesc = "DescripciÃ³n larga del nivel y su significado.";
     public float narrativeIntroDuration = 10f;
     public string puzzleObjectiveText = "Proyecta tu eco.";
     public string puzzleActiveText = "El eco es tu llave del pasado.";
@@ -143,6 +145,18 @@ public class LevelBlueprint : ScriptableObject
 
     [Header("Visual Guides & Pacing")]
     public Vector3[] pathHints;
+
+    [Header("Puzzle Constraints (Phase 2)")]
+    [Tooltip("If true, the LevelExit only unlocks during a 5s window after an Echo recording completes.")]
+    public bool recordFuture;
+    [Tooltip("If true, an ambient Lyra ghost walks the level revealing hidden MemoryPlatforms. Player cannot record.")]
+    public bool ambientEchoData;
+    [Tooltip("If true, the EchoRecorder is locked and a pre-baked RecordFrame[] is fed to playback.")]
+    public bool imposedEchoData;
+    [Tooltip("If true, the camera mirrors around the XZ plane and player horizontal input is inverted.")]
+    public bool inversionCamera;
+    [Tooltip("Minimum synchronization window (seconds) for multi-actor puzzles. Enforced by PuzzleLevelValidator.")]
+    public float timingFloor = 0.4f;
 
     [Header("Placed Modules")]
     public List<ModulePlacement> modules = new List<ModulePlacement>();
