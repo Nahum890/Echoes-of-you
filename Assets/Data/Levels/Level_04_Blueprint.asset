@@ -29,13 +29,13 @@ MonoBehaviour:
   cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111104, type: 3}
   lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111103, type: 3}
   activeParadoxes: 
-  fogColor: {r: 0.1, g: 0.12, b: 0.18, a: 1}
+  fogColor: {r: 0.18039216, g: 0.1882353, b: 0.14117648, a: 1}
   fogDensity: 0.01
   skyColor: {r: 0.18, g: 0.2, b: 0.28, a: 1}
-  ambientColor: {r: 0.06, g: 0.08, b: 0.12, a: 1}
+  ambientColor: {r: 0.101960786, g: 0.10980392, b: 0.078431375, a: 1}
   directionalLightRotation: {x: 50, y: -30, z: 0}
-  directionalLightColor: {r: 1, g: 1, b: 1, a: 1}
-  directionalLightIntensity: 1
+  directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
+  directionalLightIntensity: 0.85
   narrativeIntroTitle: "Nivel 4 \u2014 La Jaula de Presi\xF3n"
   narrativeIntroDesc: "Las placas deben ser pisadas en un orden espec\xEDfico (A
     -> B -> C). Coordina tus grabaciones secuenciales."
@@ -49,6 +49,8 @@ MonoBehaviour:
   - {x: -6, y: 1.1, z: 10}
   - {x: 6, y: 1.1, z: 15}
   - {x: -6, y: 1.1, z: 20}
+  inversionCamera: 0
+  timingFloor: 0.4
   modules:
   - name: StartPlatform
     type: 0

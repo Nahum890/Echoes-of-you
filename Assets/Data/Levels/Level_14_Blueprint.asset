@@ -19,14 +19,23 @@ MonoBehaviour:
   echoEnabled: 0
   maxEchoes: 0
   maxRecordSeconds: 20
+  echoMode: 0
+  recordFuture: 0
+  degradationPerReplay: 0
+  imposedEchoData: {fileID: 0}
+  ambientEchoData: {fileID: 0}
+  lockEchoSlots: 0
+  lockedSlotIndices: 
+  cameraProfile: {fileID: 0}
+  lightingProfile: {fileID: 0}
   activeParadoxes: 
-  fogColor: {r: 0.039, g: 0.039, b: 0.051, a: 1}
-  fogDensity: 0.014
+  fogColor: {r: 0.039215688, g: 0.039215688, b: 0.050980393, a: 1}
+  fogDensity: 0.002
   skyColor: {r: 0.02, g: 0.02, b: 0.03, a: 1}
-  ambientColor: {r: 0.01, g: 0.01, b: 0.02, a: 1}
-  directionalLightRotation: {x: 55, y: -35, z: 0}
-  directionalLightColor: {r: 0.5, g: 0.5, b: 0.6, a: 1}
-  directionalLightIntensity: 0.35
+  ambientColor: {r: 1, g: 1, b: 1, a: 1}
+  directionalLightRotation: {x: 50, y: -30, z: 0}
+  directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
+  directionalLightIntensity: 0.85
   narrativeIntroTitle: "Nivel 14 \u2014 Aceptaci\xF3n"
   narrativeIntroDesc: El eco lidera. Yo sigo.
   narrativeIntroDuration: 8
@@ -37,9 +46,6 @@ MonoBehaviour:
   - {x: 8, y: 1.1, z: 4}
   - {x: 0, y: 1.1, z: 10}
   - {x: 0, y: 1.1, z: 14}
-  recordFuture: 0
-  ambientEchoData: 0
-  imposedEchoData: 0
   inversionCamera: 1
   timingFloor: 0.4
   modules:

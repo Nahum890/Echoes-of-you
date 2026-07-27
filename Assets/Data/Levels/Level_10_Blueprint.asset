@@ -19,14 +19,23 @@ MonoBehaviour:
   echoEnabled: 1
   maxEchoes: 1
   maxRecordSeconds: 15
+  echoMode: 0
+  recordFuture: 0
+  degradationPerReplay: 0
+  imposedEchoData: {fileID: 11400000, guid: 5b3449348e40a9049861eb659a11ee61, type: 2}
+  ambientEchoData: {fileID: 11400000, guid: 4b2e49383f263c048a8505a142cee6f5, type: 2}
+  lockEchoSlots: 0
+  lockedSlotIndices: 
+  cameraProfile: {fileID: 0}
+  lightingProfile: {fileID: 0}
   activeParadoxes: 
-  fogColor: {r: 0.125, g: 0.118, b: 0.133, a: 1}
-  fogDensity: 0.02
+  fogColor: {r: 0.23137255, g: 0.1882353, b: 0.14117648, a: 1}
+  fogDensity: 0.015
   skyColor: {r: 0.08, g: 0.07, b: 0.09, a: 1}
-  ambientColor: {r: 0.05, g: 0.04, b: 0.05, a: 1}
-  directionalLightRotation: {x: 44, y: -22, z: 0}
-  directionalLightColor: {r: 0.75, g: 0.72, b: 0.8, a: 1}
-  directionalLightIntensity: 0.55
+  ambientColor: {r: 0.11764706, g: 0.09411765, b: 0.07058824, a: 1}
+  directionalLightRotation: {x: 50, y: -30, z: 0}
+  directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
+  directionalLightIntensity: 0.85
   narrativeIntroTitle: "Nivel 10 \u2014 Recuerdos"
   narrativeIntroDesc: "Necesito el punto de vista de alguien que ya no est\xE1 para
     ver el camino."
@@ -39,9 +48,6 @@ MonoBehaviour:
   - {x: 0, y: 1.1, z: 8}
   - {x: 8, y: 1.1, z: 8}
   - {x: 0, y: 1.1, z: 22}
-  recordFuture: 0
-  ambientEchoData: 1
-  imposedEchoData: 0
   inversionCamera: 0
   timingFloor: 0.4
   modules:

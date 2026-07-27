@@ -1,0 +1,411 @@
+{
+    "generated_utc": "2026-07-27T15:30:17.3681648Z",
+    "note": "SSIM/pixel-diff solo válidos con baseline previa en Docs/Art/ReferenceFrames",
+    "levels": [
+        {
+            "scene": "Level_01",
+            "light_count": 11,
+            "lights_ok": true,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "puzzle",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "exit",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                }
+            ]
+        },
+        {
+            "scene": "Level_02",
+            "light_count": 22,
+            "lights_ok": true,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "puzzle",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "exit",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                }
+            ]
+        },
+        {
+            "scene": "Level_03",
+            "light_count": 16,
+            "lights_ok": true,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "puzzle",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "exit",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                }
+            ]
+        },
+        {
+            "scene": "Level_04",
+            "light_count": 12,
+            "lights_ok": true,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "puzzle",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "exit",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                }
+            ]
+        },
+        {
+            "scene": "Level_05",
+            "light_count": 21,
+            "lights_ok": true,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "puzzle",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "exit",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                }
+            ]
+        },
+        {
+            "scene": "Level_06",
+            "light_count": 17,
+            "lights_ok": true,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "puzzle",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "exit",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                }
+            ]
+        },
+        {
+            "scene": "Level_07",
+            "light_count": 11,
+            "lights_ok": true,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "puzzle",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "exit",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                }
+            ]
+        },
+        {
+            "scene": "Level_08",
+            "light_count": 14,
+            "lights_ok": true,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "puzzle",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "exit",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                }
+            ]
+        },
+        {
+            "scene": "Level_09",
+            "light_count": 16,
+            "lights_ok": true,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "puzzle",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "exit",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                }
+            ]
+        },
+        {
+            "scene": "Level_10",
+            "light_count": 16,
+            "lights_ok": true,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "puzzle",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "exit",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                }
+            ]
+        },
+        {
+            "scene": "Level_11",
+            "light_count": 12,
+            "lights_ok": true,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "puzzle",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "exit",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                }
+            ]
+        },
+        {
+            "scene": "Level_12",
+            "light_count": 12,
+            "lights_ok": true,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "puzzle",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "exit",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                }
+            ]
+        },
+        {
+            "scene": "Level_13",
+            "light_count": 13,
+            "lights_ok": true,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "puzzle",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "exit",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                }
+            ]
+        },
+        {
+            "scene": "Level_14",
+            "light_count": 12,
+            "lights_ok": true,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "puzzle",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "exit",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                }
+            ]
+        },
+        {
+            "scene": "Level_15",
+            "light_count": 14,
+            "lights_ok": true,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "puzzle",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                },
+                {
+                    "view": "exit",
+                    "status": "baseline_created",
+                    "pixel_diff_pct": -1.0,
+                    "ssim": -1.0
+                }
+            ]
+        }
+    ]
+}

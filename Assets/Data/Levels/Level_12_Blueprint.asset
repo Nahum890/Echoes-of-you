@@ -19,14 +19,23 @@ MonoBehaviour:
   echoEnabled: 1
   maxEchoes: 2
   maxRecordSeconds: 14
+  echoMode: 0
+  recordFuture: 0
+  degradationPerReplay: 0
+  imposedEchoData: {fileID: 0}
+  ambientEchoData: {fileID: 0}
+  lockEchoSlots: 0
+  lockedSlotIndices: 
+  cameraProfile: {fileID: 0}
+  lightingProfile: {fileID: 0}
   activeParadoxes: 
-  fogColor: {r: 0.094, g: 0.102, b: 0.133, a: 1}
-  fogDensity: 0.028
+  fogColor: {r: 0.101960786, g: 0.0627451, b: 0.1254902, a: 1}
+  fogDensity: 0.02
   skyColor: {r: 0.06, g: 0.06, b: 0.08, a: 1}
-  ambientColor: {r: 0.03, g: 0.03, b: 0.05, a: 1}
+  ambientColor: {r: 0.047058824, g: 0.03137255, b: 0.0627451, a: 1}
   directionalLightRotation: {x: 50, y: -30, z: 0}
-  directionalLightColor: {r: 0.62, g: 0.64, b: 0.72, a: 1}
-  directionalLightIntensity: 0.45
+  directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
+  directionalLightIntensity: 0.85
   narrativeIntroTitle: "Nivel 12 \u2014 Conflicto"
   narrativeIntroDesc: "Dos versiones del pasado no pueden coexistir. Decido cu\xE1l
     costo pago."
@@ -38,9 +47,6 @@ MonoBehaviour:
   - {x: 0, y: 1.1, z: -4}
   - {x: 0, y: 1.1, z: 8}
   - {x: 0, y: 3.1, z: 20}
-  recordFuture: 0
-  ambientEchoData: 0
-  imposedEchoData: 0
   inversionCamera: 0
   timingFloor: 0.4
   modules:
