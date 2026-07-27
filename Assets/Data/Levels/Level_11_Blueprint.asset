@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -19,136 +19,142 @@ MonoBehaviour:
   echoEnabled: 1
   maxEchoes: 1
   maxRecordSeconds: 10
-  activeParadoxes:
+  activeParadoxes: 
   fogColor: {r: 0.118, g: 0.133, b: 0.173, a: 1}
   fogDensity: 0.024
-  skyColor: {r: 0.07, g: 0.08, b: 0.10, a: 1}
+  skyColor: {r: 0.07, g: 0.08, b: 0.1, a: 1}
   ambientColor: {r: 0.04, g: 0.05, b: 0.07, a: 1}
   directionalLightRotation: {x: 48, y: -28, z: 0}
-  directionalLightColor: {r: 0.70, g: 0.74, b: 0.82, a: 1}
+  directionalLightColor: {r: 0.7, g: 0.74, b: 0.82, a: 1}
   directionalLightIntensity: 0.52
-  narrativeIntroTitle: "Nivel 11 \u2014 Conexi\u00f3n"
-  narrativeIntroDesc: "No todo puede quedar en el eco. Elijo qu\u00e9 parte del pasado conservo."
+  narrativeIntroTitle: "Nivel 11 \u2014 Conexi\xF3n"
+  narrativeIntroDesc: "No todo puede quedar en el eco. Elijo qu\xE9 parte del pasado
+    conservo."
   narrativeIntroDuration: 8
-  puzzleObjectiveText: "La grabaci\u00f3n no alcanza para todo. Elige."
-  puzzleActiveText: "El eco sube."
-  puzzleCompleteText: ""
+  puzzleObjectiveText: "La grabaci\xF3n no alcanza para todo. Elige."
+  puzzleActiveText: El eco sube.
+  puzzleCompleteText: 
   pathHints:
   - {x: 0, y: 1.1, z: 0}
   - {x: 0, y: 3, z: 14}
   - {x: 0, y: 6.1, z: 28}
+  recordFuture: 0
+  ambientEchoData: 0
+  imposedEchoData: 0
+  inversionCamera: 0
+  timingFloor: 0.4
   modules:
   - name: PlayerStart
     type: 7
     position: {x: 0, y: 0.1, z: -2}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaA_HallBase
     type: 0
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 6, y: 0.2, z: 6}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: LuzBase
     type: 10
     position: {x: 0, y: 2.8, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.72,0.76,0.82|2.5|10.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaB_EscaleraIda
     type: 1
     position: {x: 0, y: 0, z: 6}
     rotation: {x: 18, y: 0, z: 0}
     scale: {x: 3, y: 0.15, z: 8}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: BarandaIzq
     type: 3
     position: {x: -1.5, y: 1, z: 6}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0.1, y: 1, z: 8}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: BarandaDer
     type: 3
     position: {x: 1.5, y: 1, z: 6}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0.1, y: 1, z: 8}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: LuzEscalera1
     type: 10
     position: {x: 0, y: 3, z: 10}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.70,0.74,0.80|2.2|8.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaC_Descansillo
     type: 0
     position: {x: 0, y: 3, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 4, y: 0.2, z: 4}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: PlacaDescanso
     type: 4
     position: {x: 0, y: 3.1, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: LuzDescansillo
     type: 10
     position: {x: 0, y: 5.8, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.68,0.72,0.78|2.0|8.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaD_EscaleraContinua
     type: 1
     position: {x: 0, y: 3, z: 18}
     rotation: {x: 18, y: 0, z: 0}
     scale: {x: 3, y: 0.15, z: 8}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: LuzEscalera2
     type: 10
     position: {x: 0, y: 6, z: 22}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.55,0.60,0.68|1.5|8.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaE_PasilloSuperior
     type: 24
     position: {x: 0, y: 6, z: 26}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 4, y: 3, z: 8}
     customData: WallMustard
-    targetSignals:
+    targetSignals: []
   - name: LuzSuperior
     type: 10
     position: {x: 0, y: 8.8, z: 26}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.70,0.74,0.80|2.5|10.0
-    targetSignals:
+    targetSignals: []
   - name: LevelExit_Area
     type: 6
     position: {x: 0, y: 6.1, z: 32}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: Level_12
-    targetSignals:
+    targetSignals: []
   - name: LevelGoal
     type: 13
     position: {x: 0, y: 6.1, z: 32}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "La grabaci\u00f3n no alcanza para todo. Elige.|El eco sube.|."
+    customData: "La grabaci\xF3n no alcanza para todo. Elige.|El eco sube.|."
     targetSignals:
     - PlacaDescanso
   - name: LevelRuntime
@@ -156,5 +162,5 @@ MonoBehaviour:
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "La grabaci\u00f3n no alcanza para todo. Elige.|El eco sube.|."
-    targetSignals:
+    customData: "La grabaci\xF3n no alcanza para todo. Elige.|El eco sube.|."
+    targetSignals: []

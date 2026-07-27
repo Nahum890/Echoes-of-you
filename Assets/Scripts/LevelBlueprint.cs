@@ -54,7 +54,27 @@ public enum ModuleType
     ResonanceChamber,
     LiminalThreshold,
     ChronologicalSpire,
-    VoidGallery
+    VoidGallery,
+
+// School greybox vocabulary. Explicit values preserve the serialized
+    // legacy blueprint values above while reserving the requested 31+ range.
+    SchoolHall = 31,
+    SchoolCorridor,
+    SchoolClassroom,
+    SchoolStairwell,
+    SchoolLibrary,
+    SchoolGym,
+    SchoolLab,
+    SchoolLyraClassroom,
+    SchoolLiminalClassroom,
+    TransitionSpace,
+    SchoolEntrance,
+    SchoolStaffRoom,
+    SchoolCourtyard,
+
+    // Phase 2 puzzle vocabulary. Explicit values preserve existing serialized
+    // blueprint assets (SchoolCourtyard=43 implicit, so 44+ is safe).
+    GhostBridge = 44
 }
 
 /// <summary>
@@ -116,6 +136,18 @@ public class LevelBlueprint : ScriptableObject
 
     [Header("Visual Guides & Pacing")]
     public Vector3[] pathHints;
+
+    [Header("Puzzle Constraints (Phase 2)")]
+    [Tooltip("If true, the LevelExit only unlocks during a 5s window after an Echo recording completes.")]
+    public bool recordFuture;
+    [Tooltip("If true, an ambient Lyra ghost walks the level revealing hidden MemoryPlatforms. Player cannot record.")]
+    public bool ambientEchoData;
+    [Tooltip("If true, the EchoRecorder is locked and a pre-baked RecordFrame[] is fed to playback.")]
+    public bool imposedEchoData;
+    [Tooltip("If true, the camera mirrors around the XZ plane and player horizontal input is inverted.")]
+    public bool inversionCamera;
+    [Tooltip("Minimum synchronization window (seconds) for multi-actor puzzles. Enforced by PuzzleLevelValidator.")]
+    public float timingFloor = 0.4f;
 
     [Header("Placed Modules")]
     public List<ModulePlacement> modules = new List<ModulePlacement>();

@@ -19,7 +19,7 @@ MonoBehaviour:
   echoEnabled: 1
   maxEchoes: 2
   maxRecordSeconds: 14
-  activeParadoxes:
+  activeParadoxes: 
   fogColor: {r: 0.094, g: 0.102, b: 0.133, a: 1}
   fogDensity: 0.028
   skyColor: {r: 0.06, g: 0.06, b: 0.08, a: 1}
@@ -28,71 +28,77 @@ MonoBehaviour:
   directionalLightColor: {r: 0.62, g: 0.64, b: 0.72, a: 1}
   directionalLightIntensity: 0.45
   narrativeIntroTitle: "Nivel 12 \u2014 Conflicto"
-  narrativeIntroDesc: "Dos versiones del pasado no pueden coexistir. Decido cu\u00e1l costo pago."
+  narrativeIntroDesc: "Dos versiones del pasado no pueden coexistir. Decido cu\xE1l
+    costo pago."
   narrativeIntroDuration: 8
-  puzzleObjectiveText: "Un eco abre. El otro te bloquea. Decide."
-  puzzleActiveText: "Un camino solo puede existir si el otro cede."
-  puzzleCompleteText: ""
+  puzzleObjectiveText: Un eco abre. El otro te bloquea. Decide.
+  puzzleActiveText: Un camino solo puede existir si el otro cede.
+  puzzleCompleteText: 
   pathHints:
   - {x: 0, y: 1.1, z: -4}
   - {x: 0, y: 1.1, z: 8}
   - {x: 0, y: 3.1, z: 20}
+  recordFuture: 0
+  ambientEchoData: 0
+  imposedEchoData: 0
+  inversionCamera: 0
+  timingFloor: 0.4
   modules:
   - name: PlayerStart
     type: 7
     position: {x: 0, y: 1.1, z: -4}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaA_AccesoGimnasio
     type: 28
     position: {x: 0, y: 0, z: -4}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 5, y: 4, z: 2}
     customData: open
-    targetSignals:
+    targetSignals: []
   - name: LuzAcceso
     type: 10
     position: {x: 0, y: 3.5, z: -4}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.65,0.65,0.72|2.0|8.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaB_GimnasioSuelo
     type: 25
     position: {x: 0, y: 0, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 20, y: 0.2, z: 16}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaB_TrampaConflicto
     type: 18
     position: {x: 0, y: 1, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 18, y: 6, z: 14}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: PlacaEcoA
     type: 4
     position: {x: -6, y: 0.1, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: PlacaEcoB
     type: 4
     position: {x: 6, y: 0.1, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: PuertaGym
     type: 5
     position: {x: 0, y: 0.1, z: 4}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 2, y: 3.5, z: 0.2}
-    customData:
+    customData: 
     targetSignals:
     - PlacaEcoA
   - name: LuzGimnasio
@@ -101,55 +107,56 @@ MonoBehaviour:
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.65,0.65,0.72|4.5|24.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaC_Almacen
     type: 21
     position: {x: -10, y: 0, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 6, y: 4, z: 6}
     customData: Arch
-    targetSignals:
+    targetSignals: []
   - name: LuzAlmacen
     type: 10
     position: {x: -10, y: 3.5, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.60,0.60,0.68|2.0|10.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaD_PlataformaElevada
     type: 1
     position: {x: 0, y: 3, z: 18}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 6, y: 0.2, z: 4}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: EscaleraSubida
     type: 3
     position: {x: 0, y: 0, z: 16}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 3, y: 3.2, z: 0.3}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: LuzElevada
     type: 10
     position: {x: 0, y: 4.5, z: 18}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.62,0.62,0.70|2.2|10.0
-    targetSignals:
+    targetSignals: []
   - name: LevelExit_Area
     type: 6
     position: {x: 0, y: 3.1, z: 22}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: Level_13
-    targetSignals:
+    targetSignals: []
   - name: LevelGoal
     type: 13
     position: {x: 0, y: 3.1, z: 22}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "Un eco abre. El otro te bloquea. Decide.|Un camino solo puede existir si el otro cede.|."
+    customData: Un eco abre. El otro te bloquea. Decide.|Un camino solo puede existir
+      si el otro cede.|.
     targetSignals:
     - PlacaEcoA
   - name: LevelRuntime
@@ -157,5 +164,6 @@ MonoBehaviour:
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "Un eco abre. El otro te bloquea. Decide.|Un camino solo puede existir si el otro cede.|."
-    targetSignals:
+    customData: Un eco abre. El otro te bloquea. Decide.|Un camino solo puede existir
+      si el otro cede.|.
+    targetSignals: []

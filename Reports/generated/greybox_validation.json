@@ -1,0 +1,199 @@
+{
+    "generatedUtc": "2026-07-26T23:41:18.2253875Z",
+    "levels": [
+        {
+            "scene": "Assets/Scenes/Level_01.unity",
+            "level": "Level_01",
+            "pass": false,
+            "architecturePass": false,
+            "navigationPass": false,
+            "navMeshCoverage": 0.0,
+            "failures": [
+                "FAIL-ARC-RHYTHM",
+                "FAIL-NAV-ROUTE",
+                "FAIL-NAV-COVERAGE"
+            ]
+        },
+        {
+            "scene": "Assets/Scenes/Level_02.unity",
+            "level": "Level_02",
+            "pass": false,
+            "architecturePass": false,
+            "navigationPass": false,
+            "navMeshCoverage": 0.0,
+            "failures": [
+                "FAIL-ARC-RHYTHM",
+                "FAIL-NAV-ROUTE",
+                "FAIL-NAV-COVERAGE"
+            ]
+        },
+        {
+            "scene": "Assets/Scenes/Level_03.unity",
+            "level": "Level_03",
+            "pass": false,
+            "architecturePass": false,
+            "navigationPass": false,
+            "navMeshCoverage": 0.0,
+            "failures": [
+                "FAIL-ARC-RHYTHM",
+                "FAIL-NAV-ROUTE",
+                "FAIL-NAV-COVERAGE"
+            ]
+        },
+        {
+            "scene": "Assets/Scenes/Level_04.unity",
+            "level": "Level_04",
+            "pass": false,
+            "architecturePass": false,
+            "navigationPass": false,
+            "navMeshCoverage": 0.0,
+            "failures": [
+                "FAIL-ARC-RHYTHM",
+                "FAIL-NAV-ROUTE",
+                "FAIL-NAV-COVERAGE"
+            ]
+        },
+        {
+            "scene": "Assets/Scenes/Level_05.unity",
+            "level": "Level_05",
+            "pass": false,
+            "architecturePass": false,
+            "navigationPass": false,
+            "navMeshCoverage": 0.0,
+            "failures": [
+                "FAIL-ARC-RHYTHM",
+                "FAIL-NAV-ROUTE",
+                "FAIL-NAV-COVERAGE"
+            ]
+        },
+        {
+            "scene": "Assets/Scenes/Level_06.unity",
+            "level": "Level_06",
+            "pass": false,
+            "architecturePass": false,
+            "navigationPass": false,
+            "navMeshCoverage": 0.0,
+            "failures": [
+                "FAIL-ARC-RHYTHM",
+                "FAIL-NAV-ROUTE",
+                "FAIL-NAV-COVERAGE"
+            ]
+        },
+        {
+            "scene": "Assets/Scenes/Level_07.unity",
+            "level": "Level_07",
+            "pass": false,
+            "architecturePass": false,
+            "navigationPass": false,
+            "navMeshCoverage": 0.0,
+            "failures": [
+                "FAIL-ARC-RHYTHM",
+                "FAIL-NAV-ROUTE",
+                "FAIL-NAV-COVERAGE"
+            ]
+        },
+        {
+            "scene": "Assets/Scenes/Level_08.unity",
+            "level": "Level_08",
+            "pass": false,
+            "architecturePass": false,
+            "navigationPass": false,
+            "navMeshCoverage": 0.0,
+            "failures": [
+                "FAIL-ARC-RHYTHM",
+                "FAIL-NAV-ROUTE",
+                "FAIL-NAV-COVERAGE"
+            ]
+        },
+        {
+            "scene": "Assets/Scenes/Level_09.unity",
+            "level": "Level_09",
+            "pass": false,
+            "architecturePass": false,
+            "navigationPass": false,
+            "navMeshCoverage": 0.0,
+            "failures": [
+                "FAIL-ARC-RHYTHM",
+                "FAIL-NAV-ROUTE",
+                "FAIL-NAV-COVERAGE"
+            ]
+        },
+        {
+            "scene": "Assets/Scenes/Level_10.unity",
+            "level": "Level_10",
+            "pass": false,
+            "architecturePass": false,
+            "navigationPass": false,
+            "navMeshCoverage": 0.0,
+            "failures": [
+                "FAIL-ARC-RHYTHM",
+                "FAIL-NAV-ROUTE",
+                "FAIL-NAV-COVERAGE"
+            ]
+        },
+        {
+            "scene": "Assets/Scenes/Level_11.unity",
+            "level": "Level_11",
+            "pass": false,
+            "architecturePass": false,
+            "navigationPass": false,
+            "navMeshCoverage": 0.0,
+            "failures": [
+                "FAIL-ARC-RHYTHM",
+                "FAIL-NAV-ROUTE",
+                "FAIL-NAV-COVERAGE"
+            ]
+        },
+        {
+            "scene": "Assets/Scenes/Level_12.unity",
+            "level": "Level_12",
+            "pass": false,
+            "architecturePass": true,
+            "navigationPass": false,
+            "navMeshCoverage": 0.0,
+            "failures": [
+                "FAIL-NAV-ROUTE",
+                "FAIL-NAV-COVERAGE"
+            ]
+        },
+        {
+            "scene": "Assets/Scenes/Level_13.unity",
+            "level": "Level_13",
+            "pass": false,
+            "architecturePass": false,
+            "navigationPass": false,
+            "navMeshCoverage": 0.0,
+            "failures": [
+                "FAIL-ARC-RHYTHM",
+                "FAIL-NAV-ROUTE",
+                "FAIL-NAV-COVERAGE"
+            ]
+        },
+        {
+            "scene": "Assets/Scenes/Level_14.unity",
+            "level": "Level_14",
+            "pass": false,
+            "architecturePass": false,
+            "navigationPass": false,
+            "navMeshCoverage": 0.0,
+            "failures": [
+                "FAIL-ARC-RHYTHM",
+                "FAIL-NAV-ROUTE",
+                "FAIL-NAV-COVERAGE"
+            ]
+        },
+        {
+            "scene": "Assets/Scenes/Level_15.unity",
+            "level": "Level_15",
+            "pass": false,
+            "architecturePass": false,
+            "navigationPass": false,
+            "navMeshCoverage": 0.0,
+            "failures": [
+                "FAIL-ARC-RHYTHM",
+                "FAIL-NAV-ROUTE",
+                "FAIL-NAV-COVERAGE"
+            ]
+        }
+    ]
+}

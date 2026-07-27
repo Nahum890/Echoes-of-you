@@ -1,0 +1,1238 @@
+{
+    "report_id": "RPT-SPECS-20260726035915",
+    "generated_at": "2026-07-26T03:59:15.4178359Z",
+    "subject": "Echoes of You executable specification system",
+    "validator_version": "1.0",
+    "status": "blocked",
+    "summary": {
+        "fatal": 28,
+        "errors": 16,
+        "warnings": 0,
+        "passed": 78
+    },
+    "checks": [
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/manifest.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/manifest.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/rules/authority.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/rules/authority.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/registry/decisions.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/registry/decisions.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/registry/documents.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/registry/documents.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/schemas/rule.schema.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/schemas/rule.schema.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/schemas/blueprint.schema.json",
+            "evidence": [
+                "Docs/ExecutableSpecs/schemas/blueprint.schema.json"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/schemas/ai-task.schema.json",
+            "evidence": [
+                "Docs/ExecutableSpecs/schemas/ai-task.schema.json"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/schemas/validator-report.schema.json",
+            "evidence": [
+                "Docs/ExecutableSpecs/schemas/validator-report.schema.json"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/catalogs/scale.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/catalogs/scale.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/catalogs/props.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/catalogs/props.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/catalogs/room_templates.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/catalogs/room_templates.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/catalogs/modules.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/catalogs/modules.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/architecture/school_graph.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/architecture/school_graph.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/gameplay/echo_states.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/gameplay/echo_states.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/gameplay/puzzle_archetypes.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/gameplay/puzzle_archetypes.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/gameplay/blueprint_spec.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/gameplay/blueprint_spec.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/levels/level_structure.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/levels/level_structure.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/levels/level_intents.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/levels/level_intents.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/levels/puzzle_specs.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/levels/puzzle_specs.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/visual/camera_profiles.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/visual/camera_profiles.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/visual/lighting_profiles.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/visual/lighting_profiles.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/visual/materials.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/visual/materials.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/validators/static_validator.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/validators/static_validator.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/validators/level_validator.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/validators/level_validator.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/validators/blueprint_validator.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/validators/blueprint_validator.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/validators/documentation_validator.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/validators/documentation_validator.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/ai/task_schema.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/ai/task_schema.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-001",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/ai/report_schema.yaml",
+            "evidence": [
+                "Docs/ExecutableSpecs/ai/report_schema.yaml"
+            ],
+            "remediation": "Create or restore the required file."
+        },
+        {
+            "rule_id": "DOC-VAL-002",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "duplicate_ids",
+            "evidence": [
+                "Scanned executable YAML files"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "MAT-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "urp_only",
+            "evidence": [
+                "No Shader.Find(\"Standard\") reference found."
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "MODULE-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "code_source",
+            "evidence": [
+                "LevelBlueprint.cs exists."
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "MODULE-002",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "code_source",
+            "evidence": [
+                "EchoesModuleFactory.cs exists."
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLUEPRINT-000",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "blueprint_exists",
+            "evidence": [
+                "Assets/Data/Levels/Level_01_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "CAM-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "camera_profile",
+            "evidence": [
+                "Assets/Data/Levels/Level_01_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "LIGHT-001",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
+            "evidence": [
+                "Assets/Data/Levels/Level_01_Blueprint.asset"
+            ],
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "player_start",
+            "evidence": [
+                "Assets/Data/Levels/Level_01_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "level_exit",
+            "evidence": [
+                "Assets/Data/Levels/Level_01_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "ECHO-002",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint maxRecordSeconds is missing or outside 1..30 seconds.",
+            "evidence": [
+                "Assets/Data/Levels/Level_01_Blueprint.asset"
+            ],
+            "remediation": "Set a canonical per-level record duration."
+        },
+        {
+            "rule_id": "BLUEPRINT-000",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "blueprint_exists",
+            "evidence": [
+                "Assets/Data/Levels/Level_02_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "CAM-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "camera_profile",
+            "evidence": [
+                "Assets/Data/Levels/Level_02_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "LIGHT-001",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
+            "evidence": [
+                "Assets/Data/Levels/Level_02_Blueprint.asset"
+            ],
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "player_start",
+            "evidence": [
+                "Assets/Data/Levels/Level_02_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "level_exit",
+            "evidence": [
+                "Assets/Data/Levels/Level_02_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "ECHO-002",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "echo_duration",
+            "evidence": [
+                "Assets/Data/Levels/Level_02_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLUEPRINT-000",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "blueprint_exists",
+            "evidence": [
+                "Assets/Data/Levels/Level_03_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "CAM-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "camera_profile",
+            "evidence": [
+                "Assets/Data/Levels/Level_03_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "LIGHT-001",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
+            "evidence": [
+                "Assets/Data/Levels/Level_03_Blueprint.asset"
+            ],
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "player_start",
+            "evidence": [
+                "Assets/Data/Levels/Level_03_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "level_exit",
+            "evidence": [
+                "Assets/Data/Levels/Level_03_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "ECHO-002",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "echo_duration",
+            "evidence": [
+                "Assets/Data/Levels/Level_03_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLUEPRINT-000",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "blueprint_exists",
+            "evidence": [
+                "Assets/Data/Levels/Level_04_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "CAM-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "camera_profile",
+            "evidence": [
+                "Assets/Data/Levels/Level_04_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "LIGHT-001",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
+            "evidence": [
+                "Assets/Data/Levels/Level_04_Blueprint.asset"
+            ],
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "player_start",
+            "evidence": [
+                "Assets/Data/Levels/Level_04_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "level_exit",
+            "evidence": [
+                "Assets/Data/Levels/Level_04_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "ECHO-002",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "echo_duration",
+            "evidence": [
+                "Assets/Data/Levels/Level_04_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLUEPRINT-000",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "blueprint_exists",
+            "evidence": [
+                "Assets/Data/Levels/Level_05_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "CAM-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "camera_profile",
+            "evidence": [
+                "Assets/Data/Levels/Level_05_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "LIGHT-001",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
+            "evidence": [
+                "Assets/Data/Levels/Level_05_Blueprint.asset"
+            ],
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "player_start",
+            "evidence": [
+                "Assets/Data/Levels/Level_05_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "level_exit",
+            "evidence": [
+                "Assets/Data/Levels/Level_05_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "ECHO-002",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "echo_duration",
+            "evidence": [
+                "Assets/Data/Levels/Level_05_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLUEPRINT-000",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "blueprint_exists",
+            "evidence": [
+                "Assets/Data/Levels/Level_06_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "CAM-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "camera_profile",
+            "evidence": [
+                "Assets/Data/Levels/Level_06_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "LIGHT-001",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
+            "evidence": [
+                "Assets/Data/Levels/Level_06_Blueprint.asset"
+            ],
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "player_start",
+            "evidence": [
+                "Assets/Data/Levels/Level_06_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "level_exit",
+            "evidence": [
+                "Assets/Data/Levels/Level_06_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "ECHO-002",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "echo_duration",
+            "evidence": [
+                "Assets/Data/Levels/Level_06_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLUEPRINT-000",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "blueprint_exists",
+            "evidence": [
+                "Assets/Data/Levels/Level_07_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "CAM-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "camera_profile",
+            "evidence": [
+                "Assets/Data/Levels/Level_07_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "LIGHT-001",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
+            "evidence": [
+                "Assets/Data/Levels/Level_07_Blueprint.asset"
+            ],
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "player_start",
+            "evidence": [
+                "Assets/Data/Levels/Level_07_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "level_exit",
+            "evidence": [
+                "Assets/Data/Levels/Level_07_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "ECHO-002",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "echo_duration",
+            "evidence": [
+                "Assets/Data/Levels/Level_07_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLUEPRINT-000",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "blueprint_exists",
+            "evidence": [
+                "Assets/Data/Levels/Level_08_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "CAM-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "camera_profile",
+            "evidence": [
+                "Assets/Data/Levels/Level_08_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "LIGHT-001",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
+            "evidence": [
+                "Assets/Data/Levels/Level_08_Blueprint.asset"
+            ],
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "player_start",
+            "evidence": [
+                "Assets/Data/Levels/Level_08_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "level_exit",
+            "evidence": [
+                "Assets/Data/Levels/Level_08_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "ECHO-002",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "echo_duration",
+            "evidence": [
+                "Assets/Data/Levels/Level_08_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLUEPRINT-000",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "blueprint_exists",
+            "evidence": [
+                "Assets/Data/Levels/Level_09_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "CAM-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "camera_profile",
+            "evidence": [
+                "Assets/Data/Levels/Level_09_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "LIGHT-001",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
+            "evidence": [
+                "Assets/Data/Levels/Level_09_Blueprint.asset"
+            ],
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "player_start",
+            "evidence": [
+                "Assets/Data/Levels/Level_09_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "level_exit",
+            "evidence": [
+                "Assets/Data/Levels/Level_09_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "ECHO-002",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "echo_duration",
+            "evidence": [
+                "Assets/Data/Levels/Level_09_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLUEPRINT-000",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "blueprint_exists",
+            "evidence": [
+                "Assets/Data/Levels/Level_10_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "CAM-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "camera_profile",
+            "evidence": [
+                "Assets/Data/Levels/Level_10_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "LIGHT-001",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
+            "evidence": [
+                "Assets/Data/Levels/Level_10_Blueprint.asset"
+            ],
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "player_start",
+            "evidence": [
+                "Assets/Data/Levels/Level_10_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "level_exit",
+            "evidence": [
+                "Assets/Data/Levels/Level_10_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "ECHO-002",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "echo_duration",
+            "evidence": [
+                "Assets/Data/Levels/Level_10_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLUEPRINT-000",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "blueprint_exists",
+            "evidence": [
+                "Assets/Data/Levels/Level_11_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "CAM-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "camera_profile",
+            "evidence": [
+                "Assets/Data/Levels/Level_11_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "LIGHT-001",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
+            "evidence": [
+                "Assets/Data/Levels/Level_11_Blueprint.asset"
+            ],
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "player_start",
+            "evidence": [
+                "Assets/Data/Levels/Level_11_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "level_exit",
+            "evidence": [
+                "Assets/Data/Levels/Level_11_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "ECHO-002",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "echo_duration",
+            "evidence": [
+                "Assets/Data/Levels/Level_11_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLUEPRINT-000",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "blueprint_exists",
+            "evidence": [
+                "Assets/Data/Levels/Level_12_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "CAM-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "camera_profile",
+            "evidence": [
+                "Assets/Data/Levels/Level_12_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "LIGHT-001",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
+            "evidence": [
+                "Assets/Data/Levels/Level_12_Blueprint.asset"
+            ],
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "player_start",
+            "evidence": [
+                "Assets/Data/Levels/Level_12_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "level_exit",
+            "evidence": [
+                "Assets/Data/Levels/Level_12_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "ECHO-002",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "echo_duration",
+            "evidence": [
+                "Assets/Data/Levels/Level_12_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLUEPRINT-000",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "blueprint_exists",
+            "evidence": [
+                "Assets/Data/Levels/Level_13_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "CAM-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "camera_profile",
+            "evidence": [
+                "Assets/Data/Levels/Level_13_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "LIGHT-001",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
+            "evidence": [
+                "Assets/Data/Levels/Level_13_Blueprint.asset"
+            ],
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "player_start",
+            "evidence": [
+                "Assets/Data/Levels/Level_13_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "level_exit",
+            "evidence": [
+                "Assets/Data/Levels/Level_13_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "ECHO-002",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "echo_duration",
+            "evidence": [
+                "Assets/Data/Levels/Level_13_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLUEPRINT-000",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "blueprint_exists",
+            "evidence": [
+                "Assets/Data/Levels/Level_14_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "CAM-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "camera_profile",
+            "evidence": [
+                "Assets/Data/Levels/Level_14_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "LIGHT-001",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
+            "evidence": [
+                "Assets/Data/Levels/Level_14_Blueprint.asset"
+            ],
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "player_start",
+            "evidence": [
+                "Assets/Data/Levels/Level_14_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "level_exit",
+            "evidence": [
+                "Assets/Data/Levels/Level_14_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "ECHO-002",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "echo_duration",
+            "evidence": [
+                "Assets/Data/Levels/Level_14_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLUEPRINT-000",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "blueprint_exists",
+            "evidence": [
+                "Assets/Data/Levels/Level_15_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "CAM-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "camera_profile",
+            "evidence": [
+                "Assets/Data/Levels/Level_15_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "LIGHT-001",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
+            "evidence": [
+                "Assets/Data/Levels/Level_15_Blueprint.asset"
+            ],
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "player_start",
+            "evidence": [
+                "Assets/Data/Levels/Level_15_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "BLU-001",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "level_exit",
+            "evidence": [
+                "Assets/Data/Levels/Level_15_Blueprint.asset"
+            ],
+            "remediation": ""
+        },
+        {
+            "rule_id": "ECHO-002",
+            "status": "passed",
+            "severity": "advisory",
+            "message": "echo_duration",
+            "evidence": [
+                "Assets/Data/Levels/Level_15_Blueprint.asset"
+            ],
+            "remediation": ""
+        }
+    ],
+    "next_actions": [
+        "Resolve every fatal check before autonomous level generation."
+    ]
+}

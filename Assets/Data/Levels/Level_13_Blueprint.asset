@@ -17,131 +17,137 @@ MonoBehaviour:
   actNumber: 5
   archetype: 1
   echoEnabled: 1
-  maxEchoes: 1
+  maxEchoes: 0
   maxRecordSeconds: 12
-  activeParadoxes:
-  fogColor: {r: 0.110, g: 0.102, b: 0.125, a: 1}
+  activeParadoxes: 
+  fogColor: {r: 0.11, g: 0.102, b: 0.125, a: 1}
   fogDensity: 0.022
   skyColor: {r: 0.07, g: 0.06, b: 0.08, a: 1}
   ambientColor: {r: 0.04, g: 0.04, b: 0.05, a: 1}
   directionalLightRotation: {x: 52, y: -32, z: 0}
-  directionalLightColor: {r: 0.62, g: 0.60, b: 0.70, a: 1}
+  directionalLightColor: {r: 0.62, g: 0.6, b: 0.7, a: 1}
   directionalLightIntensity: 0.45
   narrativeIntroTitle: "Nivel 13 \u2014 Verdad"
-  narrativeIntroDesc: "Trabajo con la grabaci\u00f3n que hay, aunque no sea la que habr\u00eda elegido."
+  narrativeIntroDesc: "Trabajo con la grabaci\xF3n que hay, aunque no sea la que
+    habr\xEDa elegido."
   narrativeIntroDuration: 8
-  puzzleObjectiveText: "Solo hay una grabaci\u00f3n posible. Trabaja con ella."
-  puzzleActiveText: "El eco ya decidi\u00f3."
-  puzzleCompleteText: ""
+  puzzleObjectiveText: "Solo hay una grabaci\xF3n posible. Trabaja con ella."
+  puzzleActiveText: "El eco ya decidi\xF3."
+  puzzleCompleteText: 
   pathHints:
   - {x: 0, y: 1.1, z: -4}
   - {x: 0, y: 1.1, z: 8}
   - {x: 0, y: 1.1, z: 18}
+  recordFuture: 0
+  ambientEchoData: 0
+  imposedEchoData: 1
+  inversionCamera: 0
+  timingFloor: 0.4
   modules:
   - name: PlayerStart
     type: 7
     position: {x: 0, y: 1.1, z: -4}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaA_UmbralRoto
     type: 28
     position: {x: 0, y: 0, z: -4}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 3, y: 3, z: 2}
     customData: tilted
-    targetSignals:
+    targetSignals: []
   - name: LuzUmbralRoto
     type: 10
     position: {x: 0, y: 2.5, z: -4}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.55,0.52,0.62|1.5|6.0
-    targetSignals:
+    targetSignals: []
   - name: ZonaB_AulaFragmentada
     type: 21
     position: {x: 0, y: 0, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 12, y: 3, z: 10}
     customData: WallRose
-    targetSignals:
+    targetSignals: []
   - name: PupitresFlotantes
     type: 22
     position: {x: 0, y: 0.3, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 10, y: 0.15, z: 8}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: LuzAulaFragmentada
     type: 10
     position: {x: 0, y: 2.8, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.60,0.58,0.68|2.5|14.0
-    targetSignals:
+    targetSignals: []
   - name: VentanaOscura
     type: 3
     position: {x: 6, y: 0, z: 8}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0.2, y: 3, z: 10}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaC_EspacioConversacion
     type: 0
     position: {x: 0, y: 0, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 6, y: 0.2, z: 4}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: VozLyraFinal
     type: 27
     position: {x: 0, y: 0, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 4, y: 3, z: 4}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: LuzConversacion
     type: 10
     position: {x: 0, y: 2.8, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.78,0.75,0.80|3.0|8.0
-    targetSignals:
+    targetSignals: []
   - name: PlacaVerdad
     type: 4
     position: {x: 0, y: 0.1, z: 16}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaD_SalidaImposible
     type: 28
     position: {x: 0, y: 0, z: 20}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 4, y: 3, z: 2}
     customData: impossible
-    targetSignals:
+    targetSignals: []
   - name: LuzSalidaImposible
     type: 10
     position: {x: 0, y: 2.8, z: 20}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.55,0.52,0.62|1.8|8.0
-    targetSignals:
+    targetSignals: []
   - name: LevelExit_Area
     type: 6
     position: {x: 0, y: 1.1, z: 22}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: Level_14
-    targetSignals:
+    targetSignals: []
   - name: LevelGoal
     type: 13
     position: {x: 0, y: 1.1, z: 22}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "Solo hay una grabaci\u00f3n posible. Trabaja con ella.|El eco ya decidi\u00f3.|."
+    customData: "Solo hay una grabaci\xF3n posible. Trabaja con ella.|El eco ya decidi\xF3.|."
     targetSignals:
     - PlacaVerdad
   - name: LevelRuntime
@@ -149,5 +155,5 @@ MonoBehaviour:
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "Solo hay una grabaci\u00f3n posible. Trabaja con ella.|El eco ya decidi\u00f3.|."
-    targetSignals:
+    customData: "Solo hay una grabaci\xF3n posible. Trabaja con ella.|El eco ya decidi\xF3.|."
+    targetSignals: []

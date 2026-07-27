@@ -73,7 +73,7 @@ public static class EchoesModuleFactory
                 obj = MakeBarrierWall(placement.name, placement.position, placement.scale, parent);
                 break;
             case ModuleType.PressurePlate:
-                obj = MakePressurePlate(placement.name, placement.position, parent);
+                obj = MakePressurePlate(placement.name, placement.position, parent, placement.customData);
                 break;
             case ModuleType.Door:
                 obj = MakeDoor(placement.name, placement.position, placement.scale, parent, placement.targetSignals);
@@ -151,6 +151,47 @@ public static class EchoesModuleFactory
                 break;
             case ModuleType.VoidGallery:
                 obj = MakeVoidGallery(placement.name, placement.position, placement.scale, parent);
+                break;
+
+            // School Greybox Architecture (Phase 1)
+            case ModuleType.SchoolHall:
+                obj = MakeSchoolHall(placement.name, placement.position, placement.scale, placement.rotation, parent, placement.customData);
+                break;
+            case ModuleType.SchoolCorridor:
+                obj = MakeSchoolCorridor(placement.name, placement.position, placement.scale, placement.rotation, parent, placement.customData);
+                break;
+            case ModuleType.SchoolClassroom:
+                obj = MakeSchoolClassroom(placement.name, placement.position, placement.scale, placement.rotation, parent, placement.customData);
+                break;
+            case ModuleType.SchoolStairwell:
+                obj = MakeSchoolStairwell(placement.name, placement.position, placement.scale, placement.rotation, parent, placement.customData);
+                break;
+            case ModuleType.SchoolLibrary:
+                obj = MakeSchoolLibrary(placement.name, placement.position, placement.scale, placement.rotation, parent, placement.customData);
+                break;
+            case ModuleType.SchoolGym:
+                obj = MakeSchoolGym(placement.name, placement.position, placement.scale, placement.rotation, parent, placement.customData);
+                break;
+            case ModuleType.SchoolLab:
+                obj = MakeSchoolLab(placement.name, placement.position, placement.scale, placement.rotation, parent, placement.customData);
+                break;
+            case ModuleType.SchoolLyraClassroom:
+                obj = MakeSchoolLyraClassroom(placement.name, placement.position, placement.scale, placement.rotation, parent, placement.customData);
+                break;
+            case ModuleType.SchoolLiminalClassroom:
+                obj = MakeSchoolLiminalClassroom(placement.name, placement.position, placement.scale, placement.rotation, parent, placement.customData);
+                break;
+            case ModuleType.TransitionSpace:
+                obj = MakeTransitionSpace(placement.name, placement.position, placement.scale, placement.rotation, parent, placement.customData);
+                break;
+            case ModuleType.SchoolEntrance:
+                obj = MakeSchoolEntrance(placement.name, placement.position, placement.scale, placement.rotation, parent, placement.customData);
+                break;
+            case ModuleType.SchoolStaffRoom:
+                obj = MakeSchoolStaffRoom(placement.name, placement.position, placement.scale, placement.rotation, parent, placement.customData);
+                break;
+            case ModuleType.SchoolCourtyard:
+                obj = MakeSchoolCourtyard(placement.name, placement.position, placement.scale, placement.rotation, parent, placement.customData);
                 break;
         }
 
@@ -241,7 +282,7 @@ public static class EchoesModuleFactory
         return obj;
     }
 
-    private static GameObject MakePressurePlate(string name, Vector3 pos, Transform parent)
+    private static GameObject MakePressurePlate(string name, Vector3 pos, Transform parent, string customData = null)
     {
         GameObject root = new GameObject(name);
         root.transform.SetParent(parent, false);
@@ -257,6 +298,13 @@ public static class EchoesModuleFactory
         EchoesLevelShell.SpawnPointLight(name + "_Glow", pos + new Vector3(0f, 1.2f, 0f), new Color(0.24f, 0.56f, 0.74f, 1f), 0.55f, 4f, root.transform);
 
         PressurePlate plate = root.AddComponent<PressurePlate>();
+        if (!string.IsNullOrEmpty(customData) && customData.Contains("EchoOnly"))
+        {
+            PressurePlateEchoOnly echoOnly = root.AddComponent<PressurePlateEchoOnly>();
+            plate.acceptPlayer = false;
+            plate.acceptEcho = true;
+            plate.acceptEchoProjection = true;
+        }
         if (name.Contains("Eco"))
             root.AddComponent<PressurePlateAlignment>();
 
@@ -1369,5 +1417,453 @@ public static class EchoesModuleFactory
         }
 
         return anchor;
+    }
+
+    // =========================================================================
+    // SCHOOL GREYBOX ARCHITECTURE FACTORY METHODS (ModuleType 31-46)
+    // =========================================================================
+
+    private const float WallThickness = 0.2f;
+
+    private static GameObject MakeSchoolModuleBase(string name, Vector3 pos, Vector3 scale, Vector3 rotation, Transform parent, float height, string materialKey, bool openFront = true, bool openBack = true, bool openLeft = false, bool openRight = false)
+    {
+        GameObject root = new GameObject(name);
+        root.transform.SetParent(parent, false);
+        root.transform.position = pos;
+        root.transform.rotation = Quaternion.Euler(rotation);
+
+        GreyboxModule module = root.AddComponent<GreyboxModule>();
+        module.moduleType = ModuleType.SchoolHall; // will be overridden by caller
+        module.dimensions = new Vector3(scale.x, height, scale.z);
+        module.clearance = 1.2f;
+
+        // Floor slab
+        MakePlatform("Floor", new Vector3(0f, -0.1f, 0f), new Vector3(scale.x, 0.2f, scale.z), root.transform, GetMaterial(materialKey), SchoolFloorModule);
+
+        float halfX = scale.x * 0.5f;
+        float halfZ = scale.z * 0.5f;
+
+        // Walls - only create if not open
+        if (!openBack) 
+            CreateBox("Wall_Back", root.transform, new Vector3(0f, height * 0.5f, -halfZ + WallThickness * 0.5f), new Vector3(scale.x, height, WallThickness), GetMaterial(materialKey));
+        if (!openFront) 
+            CreateBox("Wall_Front", root.transform, new Vector3(0f, height * 0.5f, halfZ - WallThickness * 0.5f), new Vector3(scale.x, height, WallThickness), GetMaterial(materialKey));
+        if (!openLeft) 
+            CreateBox("Wall_Left", root.transform, new Vector3(-halfX + WallThickness * 0.5f, height * 0.5f, 0f), new Vector3(WallThickness, height, scale.z), GetMaterial(materialKey));
+        if (!openRight) 
+            CreateBox("Wall_Right", root.transform, new Vector3(halfX - WallThickness * 0.5f, height * 0.5f, 0f), new Vector3(WallThickness, height, scale.z), GetMaterial(materialKey));
+
+        return root;
+    }
+
+    private static Material GetMaterial(string key)
+    {
+        switch (key)
+        {
+            case "WallTeal": return EchoesMaterialLibrary.WallTealMat;
+            case "WallMustard": return EchoesMaterialLibrary.WallMustardMat;
+            case "WallRose": return EchoesMaterialLibrary.WallRoseMat;
+            case "WallSage": return EchoesMaterialLibrary.WallSageMat;
+            case "Arch": return EchoesMaterialLibrary.ArchMat;
+            case "Floor": return EchoesMaterialLibrary.FloorMat;
+            case "Door": return EchoesMaterialLibrary.DoorMat;
+            default: return EchoesMaterialLibrary.WallTealMat;
+        }
+    }
+
+    private static GameObject CreateBox(string name, Transform parent, Vector3 localPosition, Vector3 scale, Material mat)
+    {
+        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.name = name;
+        cube.transform.SetParent(parent, false);
+        cube.transform.localPosition = localPosition;
+        cube.transform.localScale = scale;
+        cube.GetComponent<MeshRenderer>().sharedMaterial = mat;
+        cube.layer = GroundLayer;
+        return cube;
+    }
+
+    private static GameObject MakeSchoolHall(string name, Vector3 pos, Vector3 scale, Vector3 rotation, Transform parent, string customData)
+    {
+        // SchoolHall: 5.0m height, large open space
+        var module = MakeSchoolModuleBase(name, pos, new Vector2(scale.x, scale.z), rotation, parent, 5f, "WallTeal", true, true);
+        module.GetComponent<GreyboxModule>().moduleType = ModuleType.SchoolHall;
+        
+        // Add columns for large halls
+        float halfX = scale.x * 0.5f;
+        float halfZ = scale.z * 0.5f;
+        Vector3[] columns = {
+            new Vector3(-halfX * 0.5f, 0f, -halfZ * 0.5f),
+            new Vector3(halfX * 0.5f, 0f, -halfZ * 0.5f),
+            new Vector3(-halfX * 0.5f, 0f, halfZ * 0.5f),
+            new Vector3(halfX * 0.5f, 0f, halfZ * 0.5f),
+        };
+        foreach (var colPos in columns)
+        {
+            CreateBox("Column", module.transform, colPos + new Vector3(0f, 2.5f, 0f), new Vector3(0.6f, 5f, 0.6f), EchoesMaterialLibrary.ArchMat);
+        }
+        
+        // Ceiling lights
+        AddCeilingLights(module.transform, scale, 5f);
+        return module;
+    }
+
+    private static GameObject MakeSchoolCorridor(string name, Vector3 pos, Vector3 scale, Vector3 rotation, Transform parent, string customData)
+    {
+        // SchoolCorridor: 3.2m height, long and narrow
+        var module = MakeSchoolModuleBase(name, pos, new Vector2(scale.x, scale.z), rotation, parent, 3.2f, "WallTeal", true, true);
+        module.GetComponent<GreyboxModule>().moduleType = ModuleType.SchoolCorridor;
+        
+        // Add lockers along walls if long enough
+        if (scale.z > 10f)
+        {
+            float halfX = scale.x * 0.5f;
+            float step = 4f;
+            for (float z = -scale.z * 0.4f; z <= scale.z * 0.4f; z += step)
+            {
+                // Left lockers
+                Instantiate3DModel(SchoolLockerModule, $"Locker_L_{z:0.0}", new Vector3(-halfX + 0.5f, 0.1f, z), new Vector3(0.6f, 1.8f, 0.8f), Quaternion.Euler(0f, 90f, 0f), module.transform, EchoesMaterialLibrary.ArchMat);
+                // Right lockers (offset)
+                Instantiate3DModel(SchoolLockerModule, $"Locker_R_{z:0.0}", new Vector3(halfX - 0.5f, 0.1f, z + step * 0.5f), new Vector3(0.6f, 1.8f, 0.8f), Quaternion.Euler(0f, -90f, 0f), module.transform, EchoesMaterialLibrary.ArchMat);
+            }
+        }
+        
+        AddCeilingLights(module.transform, scale, 3.2f);
+        return module;
+    }
+
+    private static GameObject MakeSchoolClassroom(string name, Vector3 pos, Vector3 scale, Vector3 rotation, Transform parent, string customData)
+    {
+        // SchoolClassroom: 3.8m height
+        var module = MakeSchoolModuleBase(name, pos, new Vector2(scale.x, scale.z), rotation, parent, 3.8f, "WallMustard", true, true);
+        module.GetComponent<GreyboxModule>().moduleType = ModuleType.SchoolClassroom;
+        
+        // Add desks in rows
+        AddDesks(module.transform, scale);
+        AddCeilingLights(module.transform, scale, 3.8f);
+        return module;
+    }
+
+    private static GameObject MakeSchoolStairwell(string name, Vector3 pos, Vector3 scale, Vector3 rotation, Transform parent, string customData)
+    {
+        // SchoolStairwell: 7.6m height, vertical space
+        var module = MakeSchoolModuleBase(name, pos, new Vector2(scale.x, scale.z), rotation, parent, 7.6f, "WallTeal", true, true);
+        module.GetComponent<GreyboxModule>().moduleType = ModuleType.SchoolStairwell;
+        
+        // Add stair flights
+        float halfX = scale.x * 0.5f;
+        float halfZ = scale.z * 0.5f;
+        
+        // Lower landing
+        MakePlatform("Landing_Lower", new Vector3(0f, -0.1f, -halfZ * 0.5f), new Vector3(scale.x, 0.2f, scale.z * 0.5f), module.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
+        
+        // Stairs up
+        Instantiate3DModel(SchoolStairsModule, "Stairs_Up1", new Vector3(0f, 0f, -halfZ * 0.25f), new Vector3(scale.x * 0.8f, 3.8f, scale.z * 0.5f), Quaternion.identity, module.transform, EchoesMaterialLibrary.ArchMat);
+        
+        // Mid landing
+        MakePlatform("Landing_Mid", new Vector3(0f, 3.8f, halfZ * 0.25f), new Vector3(scale.x, 0.2f, scale.z * 0.5f), module.transform, EchoesMaterialLibrary.BridgeMat, SchoolFloorModule);
+        
+        // Stairs up (reversed)
+        Instantiate3DModel(SchoolStairsModule, "Stairs_Up2", new Vector3(0f, 3.8f, halfZ * 0.5f), new Vector3(scale.x * 0.8f, 3.8f, scale.z * 0.5f), Quaternion.Euler(0f, 180f, 0f), module.transform, EchoesMaterialLibrary.ArchMat);
+        
+        // Upper landing
+        MakePlatform("Landing_Upper", new Vector3(0f, 7.6f, halfZ), new Vector3(scale.x, 0.2f, scale.z * 0.5f), module.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
+        
+        AddCeilingLights(module.transform, scale, 7.6f);
+        return module;
+    }
+
+    private static GameObject MakeSchoolLibrary(string name, Vector3 pos, Vector3 scale, Vector3 rotation, Transform parent, string customData)
+    {
+        // SchoolLibrary: 5.0m height, shelves
+        var module = MakeSchoolModuleBase(name, pos, new Vector2(scale.x, scale.z), rotation, parent, 5f, "WallSage", true, true);
+        module.GetComponent<GreyboxModule>().moduleType = ModuleType.SchoolLibrary;
+        
+        // Add bookshelves
+        float halfX = scale.x * 0.5f;
+        float halfZ = scale.z * 0.5f;
+        float shelfSpacing = 4f;
+        
+        for (float z = -halfZ + 2f; z <= halfZ - 2f; z += shelfSpacing)
+        {
+            // Left shelves
+            Instantiate3DModel(SchoolShelfModule, $"Shelf_L_{z:0.0}", new Vector3(-halfX + 0.5f, 0.1f, z), new Vector3(0.6f, 2.5f, 2f), Quaternion.Euler(0f, 90f, 0f), module.transform, EchoesMaterialLibrary.WallSageMat);
+            // Right shelves
+            Instantiate3DModel(SchoolShelfModule, $"Shelf_R_{z:0.0}", new Vector3(halfX - 0.5f, 0.1f, z), new Vector3(0.6f, 2.5f, 2f), Quaternion.Euler(0f, -90f, 0f), module.transform, EchoesMaterialLibrary.WallSageMat);
+        }
+        
+        // Reading tables in center
+        for (float z = -halfZ * 0.3f; z <= halfZ * 0.3f; z += 3f)
+        {
+            Instantiate3DModel(SchoolDeskModule, $"Table_{z:0.0}", new Vector3(0f, 0.1f, z), new Vector3(2f, 1f, 1.5f), Quaternion.identity, module.transform, EchoesMaterialLibrary.MemoryMat);
+        }
+        
+        AddCeilingLights(module.transform, scale, 5f, warm: true);
+        return module;
+    }
+
+    private static GameObject MakeSchoolGym(string name, Vector3 pos, Vector3 scale, Vector3 rotation, Transform parent, string customData)
+    {
+        // SchoolGym: 6.0m height, open space
+        var module = MakeSchoolModuleBase(name, pos, new Vector2(scale.x, scale.z), rotation, parent, 6f, "WallTeal", true, true);
+        module.GetComponent<GreyboxModule>().moduleType = ModuleType.SchoolGym;
+        
+        // Basketball hoops on walls
+        float halfX = scale.x * 0.5f;
+        float halfZ = scale.z * 0.5f;
+        
+        // Court lines would be texture, but we add visual markers
+        CreateBox("Court_Center", module.transform, new Vector3(0f, 0.11f, 0f), new Vector3(6f, 0.02f, 4f), EchoesMaterialLibrary.ArchMat);
+        
+        AddCeilingLights(module.transform, scale, 6f, high: true);
+        return module;
+    }
+
+    private static GameObject MakeSchoolLab(string name, Vector3 pos, Vector3 scale, Vector3 rotation, Transform parent, string customData)
+    {
+        // SchoolLab: 3.8m height, technical space
+        var module = MakeSchoolModuleBase(name, pos, new Vector2(scale.x, scale.z), rotation, parent, 3.8f, "Arch", true, true);
+        module.GetComponent<GreyboxModule>().moduleType = ModuleType.SchoolLab;
+        
+        // Lab benches along walls
+        float halfX = scale.x * 0.5f;
+        float halfZ = scale.z * 0.5f;
+        
+        for (float z = -halfZ + 1.5f; z <= halfZ - 1.5f; z += 2.5f)
+        {
+            // Left bench
+            MakePlatform($"Bench_L_{z:0.0}", new Vector3(-halfX + 1f, 0.9f, z), new Vector3(1.5f, 0.1f, 2f), module.transform, EchoesMaterialLibrary.ArchMat, SchoolFloorModule);
+            // Right bench
+            MakePlatform($"Bench_R_{z:0.0}", new Vector3(halfX - 2.5f, 0.9f, z), new Vector3(1.5f, 0.1f, 2f), module.transform, EchoesMaterialLibrary.ArchMat, SchoolFloorModule);
+        }
+        
+        AddCeilingLights(module.transform, scale, 3.8f, cool: true);
+        return module;
+    }
+
+    private static GameObject MakeSchoolLyraClassroom(string name, Vector3 pos, Vector3 scale, Vector3 rotation, Transform parent, string customData)
+    {
+        // SchoolLyraClassroom: 3.8m height, semicircle desk arrangement, WallRose
+        var module = MakeSchoolModuleBase(name, pos, new Vector2(scale.x, scale.z), rotation, parent, 3.8f, "WallRose", true, true);
+        module.GetComponent<GreyboxModule>().moduleType = ModuleType.SchoolLyraClassroom;
+        
+        // Desks in semicircle
+        AddDesksSemicircle(module.transform, scale);
+        
+        // Special desk (Lyra's) in memory-amber
+        Instantiate3DModel(SchoolDeskModule, "LyraDesk", new Vector3(0f, 0.1f, scale.z * 0.3f), new Vector3(1.2f, 1f, 0.8f), Quaternion.identity, module.transform, EchoesMaterialLibrary.MemoryMat);
+        Instantiate3DModel(SchoolChairModule, "LyraChair", new Vector3(0f, 0.1f, scale.z * 0.3f - 0.7f), new Vector3(0.9f, 0.9f, 0.9f), Quaternion.Euler(0f, 180f, 0f), module.transform, EchoesMaterialLibrary.ArchMat);
+        
+        AddCeilingLights(module.transform, scale, 3.8f, warm: true);
+        return module;
+    }
+
+    private static GameObject MakeSchoolLiminalClassroom(string name, Vector3 pos, Vector3 scale, Vector3 rotation, Transform parent, string customData)
+    {
+        // SchoolLiminalClassroom: 3.8m height, fragmented/broken geometry
+        var module = MakeSchoolModuleBase(name, pos, new Vector2(scale.x, scale.z), rotation, parent, 3.8f, "WallRose", true, true);
+        module.GetComponent<GreyboxModule>().moduleType = ModuleType.SchoolLiminalClassroom;
+        
+        // Floating desks (broken geometry)
+        AddDesksFloating(module.transform, scale);
+        
+        // Broken wall section
+        float halfX = scale.x * 0.5f;
+        CreateBox("Wall_Broken", module.transform, new Vector3(halfX - 1f, 1.9f, 0f), new Vector3(2f, 3.8f, 0.2f), EchoesMaterialLibrary.ArchMat);
+        
+        AddCeilingLights(module.transform, scale, 3.8f, flicker: true);
+        return module;
+    }
+
+    private static GameObject MakeTransitionSpace(string name, Vector3 pos, Vector3 scale, Vector3 rotation, Transform parent, string customData)
+    {
+        // TransitionSpace: 3.2m height, corridor-like connector
+        var module = MakeSchoolModuleBase(name, pos, new Vector2(scale.x, scale.z), rotation, parent, 3.2f, "WallTeal", true, true);
+        module.GetComponent<GreyboxModule>().moduleType = ModuleType.TransitionSpace;
+        
+        // Minimal - just a connector
+        AddCeilingLights(module.transform, scale, 3.2f);
+        return module;
+    }
+
+    private static GameObject MakeSchoolEntrance(string name, Vector3 pos, Vector3 scale, Vector3 rotation, Transform parent, string customData)
+    {
+        // SchoolEntrance: 5.0m height, porch with columns
+        var module = MakeSchoolModuleBase(name, pos, new Vector2(scale.x, scale.z), rotation, parent, 5f, "WallTeal", true, false); // back wall closed
+        module.GetComponent<GreyboxModule>().moduleType = ModuleType.SchoolEntrance;
+        
+        // Porch columns
+        float halfX = scale.x * 0.5f;
+        float halfZ = scale.z * 0.5f;
+        Vector3[] cols = {
+            new Vector3(-halfX * 0.6f, 0f, halfZ),
+            new Vector3(0f, 0f, halfZ),
+            new Vector3(halfX * 0.6f, 0f, halfZ),
+        };
+        foreach (var cp in cols)
+        {
+            CreateBox("Column", module.transform, cp + new Vector3(0f, 2.5f, 0f), new Vector3(0.5f, 5f, 0.5f), EchoesMaterialLibrary.ArchMat);
+        }
+        
+        // Door opening in back wall
+        // (handled by openBack=false in base, but we add a door frame)
+        CreateBox("Door_Header", module.transform, new Vector3(0f, 4.2f, -halfZ + WallThickness * 0.5f), new Vector3(3f, 0.8f, WallThickness), EchoesMaterialLibrary.DoorMat);
+        
+        AddCeilingLights(module.transform, scale, 5f);
+        return module;
+    }
+
+    private static GameObject MakeSchoolStaffRoom(string name, Vector3 pos, Vector3 scale, Vector3 rotation, Transform parent, string customData)
+    {
+        // SchoolStaffRoom: 3.8m height, teacher desks
+        var module = MakeSchoolModuleBase(name, pos, new Vector2(scale.x, scale.z), rotation, parent, 3.8f, "WallMustard", true, true);
+        module.GetComponent<GreyboxModule>().moduleType = ModuleType.SchoolStaffRoom;
+        
+        // Individual teacher desks
+        float halfX = scale.x * 0.5f;
+        float halfZ = scale.z * 0.5f;
+        for (float x = -halfX + 2f; x <= halfX - 2f; x += 3f)
+        {
+            for (float z = -halfZ + 2f; z <= halfZ - 2f; z += 3f)
+            {
+                Instantiate3DModel(SchoolDeskModule, $"TeacherDesk_{x:0.0}_{z:0.0}", new Vector3(x, 0.1f, z), new Vector3(1.2f, 1f, 0.8f), Quaternion.identity, module.transform, EchoesMaterialLibrary.MemoryMat);
+                Instantiate3DModel(SchoolChairModule, $"TeacherChair_{x:0.0}_{z:0.0}", new Vector3(x, 0.1f, z - 0.7f), new Vector3(0.9f, 0.9f, 0.9f), Quaternion.Euler(0f, 180f, 0f), module.transform, EchoesMaterialLibrary.ArchMat);
+            }
+        }
+        
+        AddCeilingLights(module.transform, scale, 3.8f, warm: true);
+        return module;
+    }
+
+    private static GameObject MakeSchoolCourtyard(string name, Vector3 pos, Vector3 scale, Vector3 rotation, Transform parent, string customData)
+    {
+        // SchoolCourtyard: open space, no roof, fence perimeter
+        GameObject root = new GameObject(name);
+        root.transform.SetParent(parent, false);
+        root.transform.position = pos;
+        root.transform.rotation = Quaternion.Euler(rotation);
+
+        GreyboxModule module = root.AddComponent<GreyboxModule>();
+        module.moduleType = ModuleType.SchoolCourtyard;
+        module.dimensions = new Vector3(scale.x, 0.2f, scale.z); // ground only
+        module.clearance = 1.2f;
+
+        // Ground slab
+        MakePlatform("CourtyardFloor", new Vector3(0f, -0.1f, 0f), new Vector3(scale.x, 0.2f, scale.z), root.transform, EchoesMaterialLibrary.FloorMat, SchoolFloorModule);
+
+        // Perimeter fence
+        float halfX = scale.x * 0.5f;
+        float halfZ = scale.z * 0.5f;
+        string fenceMat = "Arch";
+        
+        // Front/back fences
+        for (float x = -halfX; x <= halfX; x += 3f)
+        {
+            Instantiate3DModel(SchoolFenceModule, $"Fence_Front_{x:0.0}", new Vector3(x, 0.1f, -halfZ), new Vector3(1.2f, 1.2f, 0.2f), Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
+            Instantiate3DModel(SchoolFenceModule, $"Fence_Back_{x:0.0}", new Vector3(x, 0.1f, halfZ), new Vector3(1.2f, 1.2f, 0.2f), Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
+        }
+        // Left/right fences
+        for (float z = -halfZ; z <= halfZ; z += 3f)
+        {
+            Instantiate3DModel(SchoolFenceModule, $"Fence_Left_{z:0.0}", new Vector3(-halfX, 0.1f, z), new Vector3(0.2f, 1.2f, 1.2f), Quaternion.Euler(0f, 90f, 0f), root.transform, EchoesMaterialLibrary.ArchMat);
+            Instantiate3DModel(SchoolFenceModule, $"Fence_Right_{z:0.0}", new Vector3(halfX, 0.1f, z), new Vector3(0.2f, 1.2f, 1.2f), Quaternion.Euler(0f, 90f, 0f), root.transform, EchoesMaterialLibrary.ArchMat);
+        }
+
+        // Center dead tree
+        Instantiate3DModel(SchoolDeadTreeModule, "CenterTree", Vector3.zero, new Vector3(1.5f, 1.5f, 1.5f), Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
+
+        // Bench perimeter
+        for (float x = -halfX + 2f; x <= halfX - 2f; x += 4f)
+        {
+            Instantiate3DModel(SchoolDeskModule, $"Bench_Front_{x:0.0}", new Vector3(x, 0.1f, -halfZ + 1.5f), new Vector3(2f, 0.5f, 0.6f), Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
+            Instantiate3DModel(SchoolDeskModule, $"Bench_Back_{x:0.0}", new Vector3(x, 0.1f, halfZ - 1.5f), new Vector3(2f, 0.5f, 0.6f), Quaternion.identity, root.transform, EchoesMaterialLibrary.ArchMat);
+        }
+
+        return root;
+    }
+
+    // Helper methods
+    private static void AddCeilingLights(Transform parent, Vector3 scale, float height, bool warm = false, bool cool = false, bool flicker = false, bool high = false)
+    {
+        float mult;
+        bool addFlicker;
+        Color capColor = GetChapterColor(out mult, out addFlicker);
+        
+        if (warm) ColorUtility.TryParseHtmlString("#E8B262", out capColor);
+        if (cool) ColorUtility.TryParseHtmlString("#A4C2E0", out capColor);
+        if (flicker || addFlicker) flicker = true;
+
+        float spacing = Mathf.Max(3f, Mathf.Min(scale.x, scale.z) * 0.3f);
+        float zStart = -scale.z * 0.4f;
+        float zEnd = scale.z * 0.4f;
+        float lightHeight = height - 0.3f;
+
+        for (float z = zStart; z <= zEnd + 0.1f; z += spacing)
+        {
+            for (float x = -scale.x * 0.3f; x <= scale.x * 0.3f + 0.1f; x += spacing)
+            {
+                Light l = EchoesLevelShell.SpawnPointLight($"Light_{x:0.0}_{z:0.0}", new Vector3(x, lightHeight, z), capColor, (high ? 6f : 4f) * mult, high ? 20f : 12f, parent, LightmapBakeType.Baked, LightShadows.Soft);
+                if (flicker)
+                {
+                    var f = l.gameObject.AddComponent<LightFlicker>();
+                    f.baseIntensity = (high ? 6f : 4f) * mult;
+                }
+            }
+        }
+    }
+
+    private static void AddDesks(Transform parent, Vector3 scale)
+    {
+        float halfX = scale.x * 0.5f;
+        float halfZ = scale.z * 0.5f;
+        float deskSpacingX = 2.5f;
+        float deskSpacingZ = 2.8f;
+        
+        int row = 0;
+        for (float z = -halfZ + 1.5f; z <= halfZ - 1.5f; z += deskSpacingZ)
+        {
+            for (float x = -halfX + 1.5f; x <= halfX - 1.5f; x += deskSpacingX)
+            {
+                string name = $"Desk_R{row}_X{x:0.0}";
+                GameObject d = Instantiate3DModel(SchoolDeskModule, name, new Vector3(x, 0.1f, z), new Vector3(1.2f, 1f, 0.8f), Quaternion.identity, parent, EchoesMaterialLibrary.MemoryMat);
+                Instantiate3DModel(SchoolChairModule, name + "_Chair", new Vector3(x, 0.1f, z - 0.7f), new Vector3(0.9f, 0.9f, 0.9f), Quaternion.Euler(0f, 180f, 0f), parent, EchoesMaterialLibrary.ArchMat);
+            }
+            row++;
+        }
+    }
+
+    private static void AddDesksSemicircle(Transform parent, Vector3 scale)
+    {
+        float radius = Mathf.Min(scale.x, scale.z) * 0.35f;
+        int count = 12;
+        
+        for (int i = 0; i < count; i++)
+        {
+            float angle = -Mathf.PI * 0.5f + (Mathf.PI * i / (count - 1));
+            float x = Mathf.Cos(angle) * radius;
+            float z = Mathf.Sin(angle) * radius + scale.z * 0.2f;
+            
+            GameObject d = Instantiate3DModel(SchoolDeskModule, $"Desk_Semi_{i}", new Vector3(x, 0.1f, z), new Vector3(1.2f, 1f, 0.8f), Quaternion.Euler(0f, -angle * Mathf.Rad2Deg, 0f), parent, EchoesMaterialLibrary.MemoryMat);
+            Instantiate3DModel(SchoolChairModule, $"Chair_Semi_{i}", new Vector3(x + Mathf.Sin(angle) * 0.7f, 0.1f, z - Mathf.Cos(angle) * 0.7f), new Vector3(0.9f, 0.9f, 0.9f), Quaternion.Euler(0f, (-angle + Mathf.PI) * Mathf.Rad2Deg, 0f), parent, EchoesMaterialLibrary.ArchMat);
+        }
+    }
+
+    private static void AddDesksFloating(Transform parent, Vector3 scale)
+    {
+        float halfX = scale.x * 0.5f;
+        float halfZ = scale.z * 0.5f;
+        
+        // 3 floating desks at slightly different heights
+        Vector3[] positions = {
+            new Vector3(-halfX * 0.3f, 0.3f, -halfZ * 0.2f),
+            new Vector3(0f, 0.5f, 0f),
+            new Vector3(halfX * 0.3f, 0.2f, halfZ * 0.2f),
+        };
+        
+        for (int i = 0; i < positions.Length; i++)
+        {
+            GameObject d = Instantiate3DModel(SchoolDeskModule, $"Desk_Float_{i}", positions[i], new Vector3(1.2f, 1f, 0.8f), Quaternion.Euler(0f, Random.Range(-15f, 15f), Random.Range(-5f, 5f)), parent, EchoesMaterialLibrary.MemoryMat);
+            Instantiate3DModel(SchoolChairModule, $"Chair_Float_{i}", positions[i] + new Vector3(0f, 0f, -0.7f), new Vector3(0.9f, 0.9f, 0.9f), Quaternion.Euler(0f, 180f + Random.Range(-10f, 10f), Random.Range(-5f, 5f)), parent, EchoesMaterialLibrary.ArchMat);
+        }
     }
 }

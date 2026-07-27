@@ -1,0 +1,197 @@
+# SIGNAL_CIRCUIT_SCHEMA — Truth Tables for Echoes of You Puzzle Circuits
+#
+# Source of truth: inferred from `Assets/Scripts/PuzzleSignal.cs`,
+# `PuzzleWire.cs`, `PuzzleCondition.cs`, `DoorController.cs`.
+# All gates operate on the boolean IsSatisfied / IsPressed state of upstream
+# nodes. Edges are declared on a module's `targetSignals` field (string match).
+
+version: 1.0
+gate_namespace: EchoesOfYou.SignalCircuit
+
+# ----------------------------------------------------------------------------
+# Node kinds. Each kind declares which state field is its "output".
+# ----------------------------------------------------------------------------
+nodes:
+  PressurePlate:
+    output_field: IsPressed
+    event: PressedChanged(bool)
+    requiresEcho:
+      # If true, this plate contributes to the Echo Button Test BFS gate.
+      # Determined at validation time: true iff acceptPlayer=false AND
+      # acceptEcho=true (i.e. PressurePlateEchoOnly, or a PressurePlate whose
+      # customData="EchoOnly").
+      computed: true
+  PressurePlateEchoOnly:
+    extends: PressurePlate
+    fixed_settings: { acceptPlayer: false, acceptEcho: true, acceptEchoProjection: true }
+    requiresEcho: true
+  PuzzleSignal:
+    output_field: IsSatisfied
+    event: SignalChanged(PuzzleSignal, bool)
+    accumulateOnce: true       # once satisfied, never falsifies
+    requiresEcho:
+      computed: true            # iff all upstream plates are requiresEcho
+  PuzzleCondition:
+    output_field: IsMet
+    event: ConditionChanged(bool)
+    kind: aggregator
+  DoorController:
+    output_field: IsOpen
+    event: DoorStateChanged(bool)
+    kind: sink
+    latchOpen: false            # default; PuzzleWire/Connection can override
+    requiresEcho: false
+  HazardField:
+    output_field: IsActive      # via EchoShieldField
+    requiresEcho: true           # always — Hazards are Echo-actor triggers
+  ConflictTrap:
+    output_field: IsActive
+    requiresEcho: true           # always — traps arm only when Echo overlaps
+  TemporalBridge:
+    output_field: IsActive       # collider.enabled
+    requiresEcho: true           # solified only when Echo overlaps
+  GhostBridge:
+    output_field: IsActive       # collider.enabled w/ PuzzleSignal input
+    requiresEcho:
+      computed: true             # iff upstream signal has requiresEcho=true
+    trigger: PuzzleSignal.IsSatisfied
+  TimedMovingPlatform:
+    output_field: AtActiveLocal
+    requiresEcho: true            # plate that drives it must be Echo-only
+    trigger: PressurePlate.IsPressed
+  LevelGoal:
+    output_field: IsReady
+    requiresEcho:
+      computed: true             # true iff at least one GoalTrigger upstream is requiresEcho
+  LevelExit:
+    output_field: IsUnlocked     # gated on LevelGoal.IsReady in Phase 2 patch
+    requiresEcho: computed
+
+# ----------------------------------------------------------------------------
+# GATES. Each gate is a logical primitive with inputs and an output rule.
+# ----------------------------------------------------------------------------
+gates:
+  AND:
+    cname: PuzzleWire.Connection.logic=AND
+    inputs: [PressurePlate+]                 # 1..N
+    output: DoorController
+    truth_table:
+      # in_0, in_1, ..., in_N -> out
+      any_false: false
+      all_true: true
+    latching:
+      default: false
+      when_latchOpen_true: true     # once true, stays true
+    delay: responseDelay             # 0 default; forcing <0.4s triggers FAIL-PUZ-03 soft
+    sync_floor: 0.4                  # only enforced when >=2 inputs
+
+  OR:
+    cname: PuzzleWire.Connection.logic=OR
+    inputs: [PressurePlate+]
+    output: DoorController
+    truth_table:
+      any_true: true
+      all_false: false
+    latching: { default: false, when_latchOpen_true: true }
+    delay: responseDelay
+    sync_floor: 0.4                  # only enforced when >=2 inputs and they must arrive together
+
+  LATCH:
+    cname: DoorController.latchOpen=true
+    inputs: [single PressurePlate OR PuzzleCondition.IsMet]
+    output: DoorController
+    truth_table:
+      rising_edge: true              # when input goes true, output locks true
+      falling_edge: stays true       # never returns to false
+    sync_floor: 0.0                  # not applicable
+
+  DELAY:
+    cname: PuzzleWire.Connection.responseDelay > 0
+    inputs: [single upstream]
+    output: DoorController (after coroutine)
+    truth_table:
+      rising_edge_passed: true after responseDelay seconds
+      falling_edge_passed: false after responseDelay seconds
+    sync_floor: 0.4
+    enforced_by: PlayMode test (`yield WaitForSeconds`)
+
+  COUNT:
+    cname: PuzzleCondition.ConditionType=PlateCount
+    inputs: [PressurePlate+]
+    output: IsMet
+    parameters:
+      requiredCount: int
+    truth_table:
+      count_inputs_pressed: N
+      N >= requiredCount -> true
+      else                  -> false
+    sync_floor: 0.4                  # only when requiredCount >= 2
+
+  ALLPLATES:
+    cname: PuzzleCondition.ConditionType=AllPlatesSimultaneous
+    inputs: [PressurePlate+]
+    output: IsMet
+    truth_table:
+      all_true_same_fixedupdate: true
+      any_false_anywhen: false
+    sync_floor: 0.4
+    notes: simultaneous means same FixedUpdate frame; <0.4s arrival delta flagged FAIL-PUZ-03 hard
+
+  SEQUENCE:
+    cname: PuzzleCondition.ConditionType=SequentialOrder
+    inputs: [PressurePlate+ in ordinal order]
+    output: IsMet
+    truth_table:
+      pressed_in_order: advancements append, when length reached -> true
+      out_of_order_press: restart from 0
+    sync_floor: 0.4                  # minimum cadence between sequence buttons
+
+  TIMEDHOLD:
+    cname: PuzzleCondition.ConditionType=TimedHold
+    inputs: [single PressurePlate]
+    output: IsMet
+    parameters:
+      holdDuration: float
+      holdDuration_effective: holdDuration - 0.8 # if input is Echo-pressed, subtract echo latency
+    truth_table:
+      pressed_for >= holdDuration_effective: true
+      released_before: false + show failMessage if set
+    sync_floor: 0.0                  # one-input; not subject to sync floor
+
+# ----------------------------------------------------------------------------
+# Wiring serializaton — what blueprint authors declare vs what builder resolves.
+# ----------------------------------------------------------------------------
+wiring:
+  declaration: module.targetSignals = ["SignalSourceName1", "SignalSourceName2", ...]
+  resolution: exact_string_match_against_module_dot_name
+  executor: EchoesNewProductionBuilder.WireSignals (lines 189-392)
+  fallback: nameLookup.TryGetValue -> skip with Debug.LogWarning when unresolved
+
+# ----------------------------------------------------------------------------
+# Validator integration — Group B in LevelValidator.
+# ----------------------------------------------------------------------------
+validation:
+  FAIL_PUZ_01:
+    description: "Echo Button Test failed — no requiresEcho==true node lies on any BFS path from LevelExit"
+    severity: fatal
+    check_fn: PuzzleLevelValidator.EchoButtonTest(LevelBlueprint, Dictionary<string,GameObject>)
+
+  FAIL_PUZ_02:
+    description: "Signal wiring incomplete — at least one targetSignals entry did not resolve to a runtime instance"
+    severity: fatal
+    check_fn: PuzzleLevelValidator.AllWiresConnected(LevelBlueprint, List<InstantiatedModule>)
+
+  FAIL_PUZ_03:
+    description: "Timing floor violation — either blueprint.timingFloor < 0.4f, or a PuzzleWire.connection.responseDelay in (0, 0.4) with multi-input AND/OR gate, or COUNT/ALLPLATES/SEQUENCE requiredCount >= 2 and timingFloor < 0.4f"
+    severity: hard (blocks PASS)
+    check_fn: PuzzleLevelValidator.TimingFloorSatisfied(LevelBlueprint, List<InstantiatedModule>)
+
+  FAIL_PUZ_04:
+    description: "Softlock detected — headless NavMeshAgent actor stayed > 30s more than 1m from any solution frame"
+    severity: hard (blocks PASS)
+    check_fn: EditMode NavMesh playtest harness
+
+  FAIL_PUZ_05:
+    description: "Sequence break — LevelExit.IsUnlocked went true without the complete LevelGoal.EvaluateState chain firing"
+    severity: fatal
+    check_fn: EditMode NavMesh playtest harness

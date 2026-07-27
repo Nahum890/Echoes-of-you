@@ -17,125 +17,131 @@ MonoBehaviour:
   actNumber: 6
   archetype: 1
   echoEnabled: 1
-  maxEchoes: 1
+  maxEchoes: 2
   maxRecordSeconds: 12
-  activeParadoxes:
-  fogColor: {r: 0.110, g: 0.141, b: 0.188, a: 1}
+  activeParadoxes: 
+  fogColor: {r: 0.11, g: 0.141, b: 0.188, a: 1}
   fogDensity: 0.015
   skyColor: {r: 0.06, g: 0.07, b: 0.09, a: 1}
   ambientColor: {r: 0.04, g: 0.05, b: 0.07, a: 1}
   directionalLightRotation: {x: 48, y: -25, z: 0}
   directionalLightColor: {r: 0.72, g: 0.76, b: 0.82, a: 1}
   directionalLightIntensity: 0.55
-  narrativeIntroTitle: "Nivel 15 \u2014 Integraci\u00f3n"
-  narrativeIntroDesc: "Todo lo que aprend\u00ed, usado una vez m\u00e1s, con el peso de haberlo aprendido."
+  narrativeIntroTitle: "Nivel 15 \u2014 Integraci\xF3n"
+  narrativeIntroDesc: "Todo lo que aprend\xED, usado una vez m\xE1s, con el peso
+    de haberlo aprendido."
   narrativeIntroDuration: 8
-  puzzleObjectiveText: "Una \u00faltima vez. Simple. Elegante."
-  puzzleActiveText: "El eco recuerda."
-  puzzleCompleteText: ""
+  puzzleObjectiveText: "Una \xFAltima vez. Simple. Elegante."
+  puzzleActiveText: El eco recuerda.
+  puzzleCompleteText: 
   pathHints:
   - {x: 0, y: 1.1, z: 0}
   - {x: 0, y: 1.1, z: 10}
   - {x: 0, y: 1.1, z: 22}
   - {x: 0, y: 1.1, z: 30}
+  recordFuture: 0
+  ambientEchoData: 1
+  imposedEchoData: 0
+  inversionCamera: 1
+  timingFloor: 0.4
   modules:
   - name: PlayerStart
     type: 7
     position: {x: 0, y: 1.1, z: 2}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaA_PasilloN1
     type: 24
     position: {x: 0, y: 0, z: 10}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 4, y: 3, z: 20}
     customData: WallTeal
-    targetSignals:
+    targetSignals: []
   - name: FluorescenteParpadeo
     type: 10
     position: {x: 0, y: 2.8, z: 10}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.80,0.85,0.75|2.5|8.0|flicker
-    targetSignals:
+    targetSignals: []
   - name: Puzzle1_Suelo
     type: 0
     position: {x: 4, y: 0, z: 6}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 3, y: 0.2, z: 3}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: PlacaSimple1
     type: 4
     position: {x: 4, y: 0.1, z: 6}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: Puzzle2_EscaleraCorta
     type: 1
     position: {x: -4, y: 0, z: 12}
     rotation: {x: 20, y: 0, z: 0}
     scale: {x: 3, y: 0.15, z: 4}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: Puzzle2_PlataformaTemp
     type: 8
     position: {x: -4, y: 2, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 2, y: 0.2, z: 2}
     customData: 0,0,0|0,1.5,0|3
-    targetSignals:
+    targetSignals: []
   - name: PlacaSimple2
     type: 4
     position: {x: -4, y: 2.1, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: Puzzle3_AulaPequena
     type: 21
     position: {x: 5, y: 0, z: 18}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 5, y: 3, z: 4}
     customData: WallTeal
-    targetSignals:
+    targetSignals: []
   - name: PlacaSimple3
     type: 4
     position: {x: 5, y: 0.1, z: 18}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData:
-    targetSignals:
+    customData: 
+    targetSignals: []
   - name: ZonaC_SalidaFinal
     type: 28
     position: {x: 0, y: 0, z: 28}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 6, y: 3, z: 2}
     customData: final
-    targetSignals:
+    targetSignals: []
   - name: LuzSalidaFinal
     type: 10
     position: {x: 0, y: 2.8, z: 28}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: 0.90,0.88,0.82|4.0|12.0
-    targetSignals:
+    targetSignals: []
   - name: LevelExit_Area
     type: 6
     position: {x: 0, y: 1.1, z: 30}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
     customData: MainMenu
-    targetSignals:
+    targetSignals: []
   - name: LevelGoal
     type: 13
     position: {x: 0, y: 1.1, z: 30}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "Una \u00faltima vez. Simple. Elegante.|El eco recuerda.|."
+    customData: "Una \xFAltima vez. Simple. Elegante.|El eco recuerda.|."
     targetSignals:
     - PlacaSimple1
     - PlacaSimple2
@@ -145,5 +151,5 @@ MonoBehaviour:
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: "Una \u00faltima vez. Simple. Elegante.|El eco recuerda.|."
-    targetSignals:
+    customData: "Una \xFAltima vez. Simple. Elegante.|El eco recuerda.|."
+    targetSignals: []
