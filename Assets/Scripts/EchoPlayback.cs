@@ -15,11 +15,21 @@ public class EchoPlayback : MonoBehaviour
     const string VisualChildName = "Visual";
     const string ResourcesPrefabPath = "EchoesCharacterVisual";
 
+    // Ciclo de vida visual del eco (ECHO_GRAMMAR Tabla 8.1 / CONSTANTS_REGISTRY primitives.echo):
+    // Latency 0.8s (alpha 0.20, congelado) → Playback (alpha 0.45) → Residual 2.5s (AnalogGhost, 0.30→0).
+    const float LatencySeconds = 0.8f;
+    const float LatencyAlpha = 0.2f;
+    const float DefaultPlaybackAlpha = 0.45f;
+    const float ResidualSeconds = 2.5f;
+    const float ResidualStartAlpha = 0.3f;
+
     CharacterController _cc;
     readonly List<RecordFrame> _frames = new List<RecordFrame>();
     float _duration;
     float _time;
     bool _playing;
+    float _latencyRemaining;
+    AudioClip _pendingVoiceClip;
 
     Animator _anim;
     AudioSource _audioSource;
@@ -88,42 +98,43 @@ public class EchoPlayback : MonoBehaviour
             _audioSource.outputAudioMixerGroup = audioMgr.FindGroup("Echo");
         }
 
-        Shader ghostShader = Shader.Find("Hidden/AnalogGhost");
-        if (ghostShader != null)
-        {
-            Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
-            foreach (var r in renderers)
-            {
-                if (r != null)
-                {
-                    Material m = new Material(ghostShader) { name = "Mat_Echo_AnalogGhost" };
-                    m.SetColor("_Color", new Color(0.31f, 0.765f, 0.91f, 0.45f));
-                    m.SetColor("_EmissionColor", new Color(0.0f, 0.5f, 0.65f, 1.0f));
-                    r.material = m;
-                }
-            }
-        }
     }
 
     void Start()
     {
-        ApplySavedEchoOpacity();
+        // No pisar el alpha 0.2 del estado Latency (Start llega un frame
+        // después de BeginPlayback).
+        if (_latencyRemaining <= 0f)
+            ApplySavedEchoOpacity();
     }
 
     public void ApplySavedEchoOpacity()
     {
-        float opacity = PlayerPrefs.GetFloat("EchoOpacity", 0.6f);
+        SetEchoAlpha(PlayerPrefs.GetFloat("EchoOpacity", DefaultPlaybackAlpha));
+    }
+
+    /// Alpha del estado de reproducción (preferencia del jugador, default 0.45).
+    float PlaybackAlpha => PlayerPrefs.GetFloat("EchoOpacity", DefaultPlaybackAlpha);
+
+    void SetEchoAlpha(float opacity)
+    {
         Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
         foreach (var r in renderers)
         {
             if (r.sharedMaterial != null)
             {
                 Material mat = r.material;
+                if (mat.HasProperty("_BaseColor"))
+                {
+                    Color baseCol = mat.GetColor("_BaseColor");
+                    baseCol.a = opacity;
+                    mat.SetColor("_BaseColor", baseCol);
+                }
                 if (mat.HasProperty("_Color"))
                 {
-                    Color col = mat.color;
+                    Color col = mat.GetColor("_Color");
                     col.a = opacity;
-                    mat.color = col;
+                    mat.SetColor("_Color", col);
                 }
                 if (mat.HasProperty("_Surface"))
                 {
@@ -177,21 +188,32 @@ public class EchoPlayback : MonoBehaviour
         transform.SetPositionAndRotation(position, rotation);
         _cc.enabled = true;
 
+        // Estado Latency: 0.8s congelado a alpha 0.2 antes de empezar a moverse.
+        _latencyRemaining = LatencySeconds;
+        SetEchoAlpha(LatencyAlpha);
+        if (_anim != null)
+            _anim.speed = 0f;
+
         if (mode != EchoPlaybackMode.Standard)
             ApplyAnalogAudioFilters();
 
+        _pendingVoiceClip = voiceClip;
         if (_audioSource != null)
         {
             _audioSource.clip = voiceClip;
             ConfigureSpatialVoicePlayback();
             if (mode == EchoPlaybackMode.Standard)
                 RemoveVoiceDegradingFilters();
-
-            if (voiceClip != null)
-            {
-                _audioSource.Play();
-            }
+            // La voz arranca al terminar la latencia, junto con el movimiento.
         }
+    }
+
+    void EndLatency()
+    {
+        _latencyRemaining = 0f;
+        SetEchoAlpha(PlaybackAlpha);
+        if (_audioSource != null && _pendingVoiceClip != null)
+            _audioSource.Play();
     }
 
     void ConfigureSpatialVoicePlayback()
@@ -236,7 +258,7 @@ public class EchoPlayback : MonoBehaviour
             _audioSource.Stop();
     }
 
-    public void FadeOutAndDestroy(float fadeSeconds = 0.55f)
+    public void FadeOutAndDestroy(float fadeSeconds = ResidualSeconds)
     {
         if (_destroying)
             return;
@@ -254,6 +276,12 @@ public class EchoPlayback : MonoBehaviour
 
     IEnumerator FadeOutAndDestroyRoutine(float fadeSeconds)
     {
+        // Estado Residual: el eco deja de moverse, cambia a AnalogGhost
+        // (dithering Bayer + cap 15 FPS) y se desvanece de alpha 0.3 a 0.
+        // No usar StopPlayback() aquí: cortaría la voz en seco en vez de fundirla.
+        _playing = false;
+        SwapToResidualMaterials();
+
         float startVolume = _audioSource != null ? _audioSource.volume : 0f;
         float elapsed = 0f;
 
@@ -263,11 +291,31 @@ public class EchoPlayback : MonoBehaviour
             float t = Mathf.Clamp01(elapsed / fadeSeconds);
             if (_audioSource != null)
                 _audioSource.volume = Mathf.Lerp(startVolume, 0f, t);
+            SetEchoAlpha(Mathf.Lerp(ResidualStartAlpha, 0f, t));
             yield return null;
         }
 
-        StopPlayback();
         Destroy(gameObject);
+    }
+
+    void SwapToResidualMaterials()
+    {
+        Shader ghost = Shader.Find("Echoes/AnalogGhost");
+        if (ghost == null)
+            return; // Sin el shader, el fade de alpha sigue funcionando sobre el material actual
+
+        Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+        foreach (var r in renderers)
+        {
+            if (r == null)
+                continue;
+
+            Material m = new Material(ghost) { name = "Mat_Echo_Residual" };
+            m.SetColor("_Color", new Color(0.31f, 0.765f, 0.91f, ResidualStartAlpha));
+            m.SetColor("_EmissionColor", new Color(0f, 0.5f, 0.65f, 1f));
+            m.SetFloat("_FPS", 15f);
+            r.material = m;
+        }
     }
 
     public EchoPlaybackMode playbackMode = EchoPlaybackMode.Standard;
@@ -289,6 +337,14 @@ public class EchoPlayback : MonoBehaviour
     {
         if (!_playing || _frames.Count == 0)
             return;
+
+        if (_latencyRemaining > 0f)
+        {
+            _latencyRemaining -= Time.deltaTime;
+            if (_latencyRemaining > 0f)
+                return;
+            EndLatency();
+        }
 
         _time += Time.deltaTime;
         if (_time >= _duration)
@@ -338,6 +394,12 @@ public class EchoPlayback : MonoBehaviour
     {
         if (!_playing || _frames.Count == 0 || _anim == null || _anim.runtimeAnimatorController == null)
             return;
+
+        if (_latencyRemaining > 0f)
+        {
+            _anim.speed = 0f; // Modelo congelado durante la latencia
+            return;
+        }
 
         RecordFrame.Evaluate(_frames, _time, out Vector3 currentPosition, out _);
         RecordFrame.Evaluate(_frames, _time + Time.deltaTime, out Vector3 nextPosition, out _);

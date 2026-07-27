@@ -143,23 +143,25 @@ public class PostProcessingSetup : MonoBehaviour
 
         _runtimeProfile = ScriptableObject.CreateInstance<VolumeProfile>();
 
+        // Valores canónicos del pase de arte técnico (POST_PROCESSING_SPEC):
+        // GameFeelController modula sobre estas mismas bases — mantener sincronizados.
         Bloom bloom = _runtimeProfile.Add<Bloom>(true);
-        bloom.intensity.Override(0.85f);
-        bloom.threshold.Override(1.2f);
-        bloom.scatter.Override(0.6f);
+        bloom.intensity.Override(0.25f);
+        bloom.threshold.Override(0.9f);
+        bloom.scatter.Override(0.7f);
 
         Tonemapping tonemapping = _runtimeProfile.Add<Tonemapping>(true);
         tonemapping.mode.Override(TonemappingMode.None);
 
         ColorAdjustments grading = _runtimeProfile.Add<ColorAdjustments>(true);
-        grading.postExposure.Override(1.0f);
-        grading.contrast.Override(5f);
-        grading.saturation.Override(-12f);
+        grading.postExposure.Override(-0.5f);
+        grading.contrast.Override(15f);
+        grading.saturation.Override(-8f);
 
         Vignette vignette = _runtimeProfile.Add<Vignette>(true);
-        vignette.intensity.Override(0.08f);
-        vignette.smoothness.Override(0.75f);
-        vignette.color.Override(Color.black);
+        vignette.intensity.Override(0.35f);
+        vignette.smoothness.Override(0.4f);
+        vignette.color.Override(new Color(0.051f, 0.051f, 0.102f)); // #0D0D1A
 
         ChromaticAberration ca = _runtimeProfile.Add<ChromaticAberration>(true);
         ca.intensity.Override(0.08f);

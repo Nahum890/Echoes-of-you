@@ -252,17 +252,20 @@ public class GameFeelController : MonoBehaviour
         _vignetteImpulse = Mathf.MoveTowards(_vignetteImpulse, 0f, Time.unscaledDeltaTime * 1.2f);
         _exposureImpulse = Mathf.MoveTowards(_exposureImpulse, 0f, Time.unscaledDeltaTime * 1.1f);
 
+        // Bases alineadas con PostProcessingSetup (vignette 0.35, exposure -0.5) —
+        // este controlador escribe .value cada frame, así que las bases del
+        // VolumeProfile solo sobreviven si coinciden con estas.
         float targetCA = 0.08f + _postProcessImpulse * 0.42f;
         float targetLD = -_postProcessImpulse * 22f;
-        float targetVignette = 0.08f + _vignetteImpulse * 0.28f;
-        float targetExposure = 1.0f + _exposureImpulse * 0.32f;
+        float targetVignette = 0.35f + _vignetteImpulse * 0.28f;
+        float targetExposure = -0.5f + _exposureImpulse * 0.32f;
 
         if (isRecording)
         {
             targetCA = Mathf.Max(targetCA, 0.42f + Mathf.PingPong(Time.unscaledTime * 5f, 0.1f));
             targetLD = 0f; // Disabled lens distortion to prevent disorienting fish-eye/FOV warping
             targetVignette = Mathf.Max(targetVignette, 0.52f);
-            targetExposure = Mathf.Min(targetExposure, -0.22f);
+            targetExposure = Mathf.Min(targetExposure, -0.75f); // oscurecer respecto a la base -0.5
         }
         else if (hasEchoes)
         {
@@ -289,7 +292,7 @@ public class GameFeelController : MonoBehaviour
             if (profile.TryGet<ColorAdjustments>(out var grading))
             {
                 grading.postExposure.value = Mathf.MoveTowards(grading.postExposure.value, targetExposure, Time.unscaledDeltaTime * 1.5f);
-                float targetSaturation = isRecording ? -28f : -12f;
+                float targetSaturation = isRecording ? -28f : -8f;
                 grading.saturation.value = Mathf.MoveTowards(grading.saturation.value, targetSaturation, Time.unscaledDeltaTime * (isRecording ? 28f : 8f));
             }
             if (profile.TryGet<FilmGrain>(out var grain))

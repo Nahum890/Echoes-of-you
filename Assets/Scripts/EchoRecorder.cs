@@ -44,6 +44,12 @@ public class EchoRecorder : MonoBehaviour
     float _nextRecordTime;
     float _recordInterval = 1f / 30f; // 30Hz recording
 
+    // Estado Recording (ECHO_GRAMMAR Tabla 8.1): rim light echo-cyan #4FC3E8 solo en el jugador.
+    static readonly Color RimCyan = new Color(0.31f, 0.765f, 0.91f, 1f);
+    Light _recordingRimLight;
+    MaterialPropertyBlock _rimBlock;
+    readonly List<Renderer> _rimRenderers = new List<Renderer>();
+
     public bool IsRecording => _recording;
     public int EchoCount => _echoes.Count;
     public int MaxEchoes => maxEchoes;
@@ -198,6 +204,7 @@ public class EchoRecorder : MonoBehaviour
             _anim.SetBool("IsRecording", true);
             SetAnimatorTriggerIfExists("RecordStart");
         }
+        EnableRecordingRim();
         RecordingStarted?.Invoke();
         GameFeelController.Instance?.PlayRecordStart(transform.position, transform.up);
         GameStateController.Instance?.SetRecording(true, transform.position, transform.up);
@@ -211,6 +218,7 @@ public class EchoRecorder : MonoBehaviour
             return;
 
         _recording = false;
+        DisableRecordingRim();
         float elapsed = Time.time - _recordStartTime;
         _lastRecordDuration = elapsed;
         GameStateController.Instance?.SetRecording(false, transform.position, transform.up);
@@ -304,13 +312,14 @@ public class EchoRecorder : MonoBehaviour
             EchoPlayback oldest = _echoes[trimIndex];
             _echoes.RemoveAt(trimIndex);
             if (oldest != null)
-                oldest.FadeOutAndDestroy(0.65f);
+                oldest.FadeOutAndDestroy(); // Residual 2.5s (AnalogGhost, alpha 0.3→0)
         }
     }
 
     public void ClearAllEchoes(bool showFeedback = true)
     {
         _recording = false;
+        DisableRecordingRim();
         _frames.Clear();
         _lastRecordDuration = 0f;
         _playerController?.SetInputLocked(false);
@@ -453,7 +462,53 @@ public class EchoRecorder : MonoBehaviour
     public void ForceUnlockPlayer()
     {
         _recording = false;
+        DisableRecordingRim();
         _playerController?.SetInputLocked(false);
+    }
+
+    void EnableRecordingRim()
+    {
+        if (_recordingRimLight == null)
+        {
+            GameObject rimObject = new GameObject("RecordingRimLight");
+            rimObject.transform.SetParent(transform, false);
+            rimObject.transform.localPosition = new Vector3(0f, 1.4f, 0f);
+            _recordingRimLight = rimObject.AddComponent<Light>();
+            _recordingRimLight.type = LightType.Point;
+            _recordingRimLight.color = RimCyan;
+            _recordingRimLight.intensity = 1.6f;
+            _recordingRimLight.range = 3.5f;
+            _recordingRimLight.shadows = LightShadows.None;
+        }
+        _recordingRimLight.enabled = true;
+
+        // Emisión cyan sutil vía MaterialPropertyBlock — no instancia materiales
+        // y se limpia al soltar la tecla. Solo afecta al jugador, nunca a los ecos.
+        if (_rimBlock == null)
+            _rimBlock = new MaterialPropertyBlock();
+        _rimRenderers.Clear();
+        GetComponentsInChildren(true, _rimRenderers);
+        foreach (var rendererRef in _rimRenderers)
+        {
+            if (rendererRef == null || rendererRef.GetComponent<Light>() != null)
+                continue;
+            rendererRef.GetPropertyBlock(_rimBlock);
+            _rimBlock.SetColor("_EmissionColor", RimCyan * 0.35f);
+            rendererRef.SetPropertyBlock(_rimBlock);
+        }
+    }
+
+    void DisableRecordingRim()
+    {
+        if (_recordingRimLight != null)
+            _recordingRimLight.enabled = false;
+
+        foreach (var rendererRef in _rimRenderers)
+        {
+            if (rendererRef != null)
+                rendererRef.SetPropertyBlock(null);
+        }
+        _rimRenderers.Clear();
     }
 
     void SetAnimatorTriggerIfExists(string parameterName)

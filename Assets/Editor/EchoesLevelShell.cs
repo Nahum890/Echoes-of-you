@@ -34,7 +34,9 @@ public static class EchoesLevelShell
         // Usa los valores reales del blueprint. Sin esto, los 15 niveles
         // comparten la misma atmósfera sin importar qué se les configure.
         RenderSettings.fogColor = blueprint.fogColor;
-        RenderSettings.fogDensity = Mathf.Clamp(blueprint.fogDensity, 0.012f, 0.04f);
+        // Rango ampliado a [0.002, 0.04]: los perfiles por capítulo de
+        // LIGHTING_GRAMMAR usan 0.002 (Cap. VI) a 0.020 (Cap. V).
+        RenderSettings.fogDensity = Mathf.Clamp(blueprint.fogDensity, 0.002f, 0.04f);
 
         // Ambient plano, no Trilight — PS1 no suaviza el contraste entre
         // superficies con tres colores direccionales. Un solo tono de piso,
@@ -70,7 +72,7 @@ public static class EchoesLevelShell
         lightRef.type = LightType.Directional;
         lightRef.color = blueprint.directionalLightColor;
         lightRef.intensity = blueprint.directionalLightIntensity;
-        lightRef.shadows = LightShadows.Soft; // Sombras suaves
+        lightRef.shadows = LightShadows.Hard; // LIGHTING_GRAMMAR: soft shadows prohibidas (0 Soft Shadows)
         lightRef.shadowStrength = 0.85f;
         lightRef.lightmapBakeType = LightmapBakeType.Mixed; // Modo mixto para personajes dinámicos y geometría estática
         lightObject.transform.rotation = Quaternion.Euler(blueprint.directionalLightRotation);

@@ -7,10 +7,11 @@ public static class EchoesMaterialLibrary
 {
     public const string MaterialRoot = "Assets/Materials/Echoes";
 
-    // NUEVOS SHADERS LIMINALES
-    public const string kLiminalSurface = "Echoes/LiminalSurface";
-    public const string kLiminalFogVolume = "Echoes/LiminalFogVolume";
-    public const string kEchoLiminal = "Echoes/EchoLiminal";
+    // SHADERS LIMINALES (CONSTANTS_REGISTRY primitives.shaders)
+    public const string kLiminalSurface = "Echoes/LiminalSurface";   // Arquitectura
+    public const string kLiminalFogVolume = "Echoes/LiminalFogVolume"; // Volúmenes de niebla
+    public const string kEchoLiminal = "Echoes/EchoLiminal";         // Eco en playback
+    public const string kAnalogGhost = "Echoes/AnalogGhost";         // Residual / legacy fantasma
     public const string kRetroFlatLit = "Echoes/RetroFlatLit"; // Legacy fallback
 
     private static readonly Dictionary<string, Material> _materials = new();
@@ -166,7 +167,8 @@ public static class EchoesMaterialLibrary
                 case "memory-amber":
                     mat.SetFloat("_FluorescentEdge", 0.15f);
                     mat.EnableKeyword("_EMISSION");
-                    mat.SetColor("_EmissionColor", new Color(0.91f, 0.70f, 0.38f) * 1.5f);
+                    // Emission 1.2 (RULE-MAT-001 / ENVIRONMENT_STORYTELLING)
+                    mat.SetColor("_EmissionColor", HexColor("FFBF00") * 1.2f);
                     break;
                 case "fluorescent-sick":
                     mat.EnableKeyword("_EMISSION");
@@ -202,28 +204,31 @@ public static class EchoesMaterialLibrary
             mat.EnableKeyword("_EMISSION");
             Color emissionColor = TokenToColor(token);
             if (token == "echo-cyan") emissionColor = new Color(0f, 0.5f, 0.65f) * 2f;
-            else if (token == "memory-amber") emissionColor = new Color(0.91f, 0.70f, 0.38f) * 1.5f;
+            else if (token == "memory-amber") emissionColor = HexColor("FFBF00") * 1.2f;
             else if (token == "fluorescent-sick") emissionColor = new Color(0.79f, 0.83f, 0.69f) * 1.2f;
             else if (token == "wrongness-red") emissionColor = new Color(0.70f, 0.23f, 0.23f) * 1.5f;
             mat.SetColor("_EmissionColor", emissionColor);
         }
     }
 
+    // HEX canónicos de CONSTANTS_REGISTRY.yaml (primitives.colors) — el registro
+    // manda sobre cualquier otro doc (RULE-SOT-001B). materials.yaml decía
+    // #E8B262 para memory-amber: PROHIBIDO por CONS-MAT-001, el canon es #FFBF00.
     public static Color TokenToColor(string token)
     {
         return token switch
         {
-            "void-black"         => new Color(0.04f, 0.04f, 0.05f, 1f),
-            "corridor-navy"      => new Color(0.11f, 0.14f, 0.19f, 1f),
-            "fluorescent-sick"   => new Color(0.79f, 0.83f, 0.69f, 1f),
-            "memory-amber"       => new Color(0.91f, 0.70f, 0.38f, 1f),
-            "echo-cyan"          => new Color(0.31f, 0.765f, 0.91f, 0.45f),
-            "wrongness-red"      => new Color(0.70f, 0.23f, 0.23f, 1f),
-            "institutional-teal" => new Color(0.17f, 0.29f, 0.29f, 1f),
-            "faded-mustard"      => new Color(0.35f, 0.29f, 0.18f, 1f),
-            "sage-green"         => new Color(0.23f, 0.29f, 0.22f, 1f),
-            "dusty-rose"         => new Color(0.29f, 0.20f, 0.22f, 1f),
-            _                    => new Color(0.11f, 0.14f, 0.19f, 1f)
+            "void-black"         => HexColor("0A0A0D"),          // #0A0A0D
+            "corridor-navy"      => HexColor("1C2430"),          // #1C2430
+            "fluorescent-sick"   => HexColor("C9D4B0"),          // #C9D4B0
+            "memory-amber"       => HexColor("FFBF00"),          // #FFBF00 (registro, NO #E8B262)
+            "echo-cyan"          => HexColor("4FC3E8", 0.45f),   // #4FC3E8, alpha playback 0.45
+            "wrongness-red"      => HexColor("B23A3A"),          // #B23A3A
+            "institutional-teal" => HexColor("2B4A4A"),          // #2B4A4A
+            "faded-mustard"      => HexColor("5A4A2E"),          // #5A4A2E
+            "sage-green"         => HexColor("3A4A38"),          // #3A4A38
+            "dusty-rose"         => HexColor("4A3438"),          // #4A3438
+            _                    => HexColor("1C2430")
         };
     }
 
@@ -274,8 +279,19 @@ public static class EchoesMaterialLibrary
         mat.color = HexColor("1C2430");
         if (mat.HasProperty("_FogColor")) mat.SetColor("_FogColor", HexColor("1C2430"));
         if (mat.HasProperty("_FogDensity")) mat.SetFloat("_FogDensity", 0.02f);
+        ApplyFogVolumeDefaults(mat);
         EditorUtility.SetDirty(mat);
         return mat;
+    }
+
+    /// Parámetros canónicos de los fog volumes (pase de arte técnico §3.3).
+    public static void ApplyFogVolumeDefaults(Material mat)
+    {
+        if (mat == null) return;
+        if (mat.HasProperty("_CornerAccumulation")) mat.SetFloat("_CornerAccumulation", 0.35f);
+        if (mat.HasProperty("_LightScatter")) mat.SetFloat("_LightScatter", 0.25f);
+        if (mat.HasProperty("_NoiseScale")) mat.SetFloat("_NoiseScale", 0.5f);
+        if (mat.HasProperty("_NoiseSpeed")) mat.SetFloat("_NoiseSpeed", 0.05f);
     }
 
     public static Material GetOrCreateMaterial(string name, Color color, bool emissive = false)
