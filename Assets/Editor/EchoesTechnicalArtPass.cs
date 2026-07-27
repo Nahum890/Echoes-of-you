@@ -365,7 +365,7 @@ public static class EchoesTechnicalArtPass
     [MenuItem("Echoes of You/Technical Art/Configure URP (Hard Shadows, 40m)", false, 404)]
     public static void ConfigureUrpHardShadows()
     {
-        QualitySettings.shadows = ShadowQuality.HardOnly;
+        QualitySettings.shadows = UnityEngine.ShadowQuality.HardOnly;
         QualitySettings.shadowDistance = 40f;
 
         var pipeline = GraphicsSettings.defaultRenderPipeline as UniversalRenderPipelineAsset;
