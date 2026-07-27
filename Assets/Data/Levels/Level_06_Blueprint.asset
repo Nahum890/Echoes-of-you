@@ -29,13 +29,13 @@ MonoBehaviour:
   cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111106, type: 3}
   lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111101, type: 3}
   activeParadoxes: 
-  fogColor: {r: 0.086, g: 0.11, b: 0.094, a: 1}
-  fogDensity: 0.03
+  fogColor: {r: 0.16470589, g: 0.11764706, b: 0.11764706, a: 1}
+  fogDensity: 0.012
   skyColor: {r: 0.05, g: 0.06, b: 0.05, a: 1}
-  ambientColor: {r: 0.04, g: 0.05, b: 0.04, a: 1}
-  directionalLightRotation: {x: 60, y: -40, z: 0}
-  directionalLightColor: {r: 0.55, g: 0.62, b: 0.58, a: 1}
-  directionalLightIntensity: 0.45
+  ambientColor: {r: 0.078431375, g: 0.05490196, b: 0.05490196, a: 1}
+  directionalLightRotation: {x: 50, y: -30, z: 0}
+  directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
+  directionalLightIntensity: 0.85
   narrativeIntroTitle: "Nivel 6 \u2014 Negaci\xF3n"
   narrativeIntroDesc: Debo cruzar antes de ver que puedo cruzar.
   narrativeIntroDuration: 8

@@ -29,13 +29,13 @@ MonoBehaviour:
   cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111107, type: 3}
   lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111102, type: 3}
   activeParadoxes: 
-  fogColor: {r: 0.078, g: 0.102, b: 0.141, a: 1}
-  fogDensity: 0.018
+  fogColor: {r: 0.16470589, g: 0.11764706, b: 0.11764706, a: 1}
+  fogDensity: 0.012
   skyColor: {r: 0.06, g: 0.07, b: 0.09, a: 1}
-  ambientColor: {r: 0.04, g: 0.05, b: 0.07, a: 1}
-  directionalLightRotation: {x: 42, y: -28, z: 0}
-  directionalLightColor: {r: 0.6, g: 0.64, b: 0.72, a: 1}
-  directionalLightIntensity: 0.5
+  ambientColor: {r: 0.078431375, g: 0.05490196, b: 0.05490196, a: 1}
+  directionalLightRotation: {x: 50, y: -30, z: 0}
+  directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
+  directionalLightIntensity: 0.85
   narrativeIntroTitle: "Nivel 7 \u2014 Evasi\xF3n"
   narrativeIntroDesc: No grabo lo que hice. Grabo lo que voy a necesitar que mi pasado
     haya hecho.

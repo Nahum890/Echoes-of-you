@@ -188,7 +188,7 @@ public static class EchoesTechnicalArtPass
 
         // Luz direccional del capítulo + sombras duras en TODAS las luces
         int softFixed = 0;
-        foreach (Light light in Object.FindObjectsByType<Light>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        foreach (Light light in Object.FindObjectsByType<Light>(FindObjectsInactive.Include))
         {
             if (light.type == LightType.Directional)
             {
@@ -359,7 +359,7 @@ public static class EchoesTechnicalArtPass
     [MenuItem("Echoes of You/Technical Art/Configure URP (Hard Shadows, 40m)", false, 404)]
     public static void ConfigureUrpHardShadows()
     {
-        QualitySettings.shadows = ShadowQuality.HardOnly;
+        QualitySettings.shadows = global::UnityEngine.ShadowQuality.HardOnly;
         QualitySettings.shadowDistance = 40f;
 
         var pipeline = GraphicsSettings.defaultRenderPipeline as UniversalRenderPipelineAsset;

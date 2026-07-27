@@ -22,20 +22,20 @@ MonoBehaviour:
   echoMode: 0
   recordFuture: 0
   degradationPerReplay: 0
-  imposedEchoData: {fileID: 0}
+  imposedEchoData: {fileID: 11400000, guid: 03501e6ff8ad7de41ad92df122f927e0, type: 2}
   ambientEchoData: {fileID: 0}
   lockEchoSlots: 0
   lockedSlotIndices: 
   cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111105, type: 3}
   lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111104, type: 3}
   activeParadoxes: 
-  fogColor: {r: 0.015, g: 0.02, b: 0.03, a: 1}
-  fogDensity: 0.06
+  fogColor: {r: 0.18039216, g: 0.1882353, b: 0.14117648, a: 1}
+  fogDensity: 0.01
   skyColor: {r: 0.015, g: 0.02, b: 0.03, a: 1}
-  ambientColor: {r: 0.06, g: 0.08, b: 0.12, a: 1}
+  ambientColor: {r: 0.101960786, g: 0.10980392, b: 0.078431375, a: 1}
   directionalLightRotation: {x: 50, y: -30, z: 0}
-  directionalLightColor: {r: 1, g: 1, b: 1, a: 1}
-  directionalLightIntensity: 1
+  directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
+  directionalLightIntensity: 0.85
   narrativeIntroTitle: "Nivel 5 \u2014 La Cortina Inestable"
   narrativeIntroDesc: "Sube a la cornisa izquierda de control y proyecta tu eco a
     trav\xE9s de la barrera roja. Usa el impulso cin\xE9tico."

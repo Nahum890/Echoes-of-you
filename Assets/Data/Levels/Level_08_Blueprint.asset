@@ -29,13 +29,13 @@ MonoBehaviour:
   cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111108, type: 3}
   lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111103, type: 3}
   activeParadoxes: 
-  fogColor: {r: 0.11, g: 0.118, b: 0.149, a: 1}
-  fogDensity: 0.026
+  fogColor: {r: 0.18039216, g: 0.1882353, b: 0.14117648, a: 1}
+  fogDensity: 0.01
   skyColor: {r: 0.06, g: 0.06, b: 0.09, a: 1}
-  ambientColor: {r: 0.04, g: 0.04, b: 0.06, a: 1}
-  directionalLightRotation: {x: 48, y: -28, z: 0}
-  directionalLightColor: {r: 0.68, g: 0.7, b: 0.78, a: 1}
-  directionalLightIntensity: 0.5
+  ambientColor: {r: 0.101960786, g: 0.10980392, b: 0.078431375, a: 1}
+  directionalLightRotation: {x: 50, y: -30, z: 0}
+  directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
+  directionalLightIntensity: 0.85
   narrativeIntroTitle: "Nivel 8 \u2014 Autosabotaje"
   narrativeIntroDesc: "El tiempo vac\xEDo en una grabaci\xF3n es una decisi\xF3n,
     no un error."

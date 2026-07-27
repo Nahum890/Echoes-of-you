@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Mat_Token_dec_moisture_line
-  m_Shader: {fileID: 4800000, guid: bca3d458e1278d1489ff5c1d44f3f35f, type: 3}
+  m_Shader: {fileID: 4800000, guid: 3dfb7997268a7ec489415ecb79c85b16, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -23,6 +23,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _BaseTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -34,12 +38,24 @@ Material:
     m_Ints: []
     m_Floats:
     - _Cull: 0
+    - _DepthDistort: 0.005
     - _DstBlend: 0
+    - _FluorescentEdge: 0.1
+    - _FresnelInvert: 0.3
+    - _SpecularAnomaly: 0.15
     - _SrcBlend: 1
+    - _StainNoiseScale: 4
+    - _StainThreshold: 0.7
     - _Surface: 0
+    - _WearHeight: 1.5
+    - _WearNoiseScale: 8
     - _ZWrite: 1
     m_Colors:
+    - _BaseColor: {r: 0.1, g: 0.12, b: 0.15, a: 1}
     - _Color: {r: 0.10980392, g: 0.14117648, b: 0.1882353, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
+    - _StainColor: {r: 0.05, g: 0.08, b: 0.12, a: 1}
+    - _SubsurfaceTint: {r: 0, g: 0.08, b: 0.12, a: 1}
+    - _WearColor: {r: 0.08, g: 0.1, b: 0.14, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

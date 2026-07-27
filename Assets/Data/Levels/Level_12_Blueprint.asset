@@ -29,13 +29,13 @@ MonoBehaviour:
   cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111112, type: 3}
   lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111103, type: 3}
   activeParadoxes: 
-  fogColor: {r: 0.094, g: 0.102, b: 0.133, a: 1}
-  fogDensity: 0.028
+  fogColor: {r: 0.101960786, g: 0.0627451, b: 0.1254902, a: 1}
+  fogDensity: 0.02
   skyColor: {r: 0.06, g: 0.06, b: 0.08, a: 1}
-  ambientColor: {r: 0.03, g: 0.03, b: 0.05, a: 1}
+  ambientColor: {r: 0.047058824, g: 0.03137255, b: 0.0627451, a: 1}
   directionalLightRotation: {x: 50, y: -30, z: 0}
-  directionalLightColor: {r: 0.62, g: 0.64, b: 0.72, a: 1}
-  directionalLightIntensity: 0.45
+  directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
+  directionalLightIntensity: 0.85
   narrativeIntroTitle: "Nivel 12 \u2014 Conflicto"
   narrativeIntroDesc: "Dos versiones del pasado no pueden coexistir. Decido cu\xE1l
     costo pago."

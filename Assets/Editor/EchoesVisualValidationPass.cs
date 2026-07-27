@@ -82,7 +82,7 @@ public static class EchoesVisualValidationPass
         var result = new LevelResult { scene = scene.name };
 
         // Luces
-        var lights = UnityEngine.Object.FindObjectsByType<Light>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        var lights = UnityEngine.Object.FindObjectsByType<Light>(FindObjectsInactive.Exclude);
         result.light_count = lights.Length;
         result.lights_ok = lights.Length <= MaxLightsPerScene;
         foreach (var light in lights)
@@ -90,7 +90,7 @@ public static class EchoesVisualValidationPass
                 result.soft_shadow_lights++;
 
         // Materiales magenta (shader roto o material nulo)
-        foreach (var rendererRef in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+        foreach (var rendererRef in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Exclude))
         {
             foreach (var mat in rendererRef.sharedMaterials)
             {

@@ -19,7 +19,7 @@ public class LevelExit : MonoBehaviour
 #pragma warning restore CS0414
 
     bool _triggered;
-    bool _isUnlocked = true;
+    bool _isUnlocked = false;
     LevelGoal _goal;
     Collider _collider;
     Renderer[] _renderers;
@@ -43,7 +43,13 @@ public class LevelExit : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        Debug.Log($"[LevelExit] OnTriggerEnter: {other.name} tag={other.tag} (Puzzle resolution check bypassed)");
+        if (!_isUnlocked)
+        {
+            Debug.Log("[LevelExit] Locked — resolve the puzzle first.");
+            return;
+        }
+
+        Debug.Log($"[LevelExit] OnTriggerEnter: {other.name} tag={other.tag}");
 
         if (_triggered)
             return;
@@ -71,8 +77,6 @@ public class LevelExit : MonoBehaviour
     public void BindGoal(LevelGoal goal)
     {
         _goal = goal;
-        // La salida siempre está desbloqueada para permitir el progreso libre
-        SetUnlocked(true);
     }
 
     public void SetUnlocked(bool unlocked)

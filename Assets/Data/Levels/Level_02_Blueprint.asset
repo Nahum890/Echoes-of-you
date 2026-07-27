@@ -29,13 +29,13 @@ MonoBehaviour:
   cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111102, type: 3}
   lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111101, type: 3}
   activeParadoxes: 
-  fogColor: {r: 0.04, g: 0.05, b: 0.08, a: 1}
-  fogDensity: 0.03
+  fogColor: {r: 0.10980392, g: 0.14117648, b: 0.1882353, a: 1}
+  fogDensity: 0.008
   skyColor: {r: 0.04, g: 0.05, b: 0.08, a: 1}
-  ambientColor: {r: 0.1, g: 0.12, b: 0.16, a: 1}
+  ambientColor: {r: 0.05882353, g: 0.078431375, b: 0.101960786, a: 1}
   directionalLightRotation: {x: 50, y: -30, z: 0}
-  directionalLightColor: {r: 1, g: 1, b: 1, a: 1}
-  directionalLightIntensity: 1
+  directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
+  directionalLightIntensity: 0.85
   narrativeIntroTitle: "Nivel 2 \u2014 Repetici\xF3n"
   narrativeIntroDesc: "Tres aulas consecutivas. Mismo espacio, pero la desorganizaci\xF3n
     de la memoria altera sus mecanismos."

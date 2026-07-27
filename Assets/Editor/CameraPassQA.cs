@@ -43,13 +43,13 @@ public static class CameraPassQA
     {
         var issues = new List<string>();
 
-        CinemachineBrain[] brains = Object.FindObjectsByType<CinemachineBrain>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        CinemachineBrain[] brains = Object.FindObjectsByType<CinemachineBrain>(FindObjectsInactive.Include);
         if (brains.Length == 0)
             issues.Add("Missing CinemachineBrain on Main Camera");
         if (brains.Length > 1)
             issues.Add($"  - Multiple CinemachineBrains ({brains.Length}) — should be exactly 1");
 
-        CinemachineCamera[] vcams = Object.FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        CinemachineCamera[] vcams = Object.FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include);
         CinemachineCamera playerVCam = null;
         foreach (var vc in vcams)
         {

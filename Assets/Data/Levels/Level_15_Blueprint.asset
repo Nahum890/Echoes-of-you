@@ -29,13 +29,13 @@ MonoBehaviour:
   cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111115, type: 3}
   lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111106, type: 3}
   activeParadoxes: 
-  fogColor: {r: 0.11, g: 0.141, b: 0.188, a: 1}
-  fogDensity: 0.015
+  fogColor: {r: 0.039215688, g: 0.039215688, b: 0.050980393, a: 1}
+  fogDensity: 0.002
   skyColor: {r: 0.06, g: 0.07, b: 0.09, a: 1}
-  ambientColor: {r: 0.04, g: 0.05, b: 0.07, a: 1}
-  directionalLightRotation: {x: 48, y: -25, z: 0}
-  directionalLightColor: {r: 0.72, g: 0.76, b: 0.82, a: 1}
-  directionalLightIntensity: 0.55
+  ambientColor: {r: 1, g: 1, b: 1, a: 1}
+  directionalLightRotation: {x: 50, y: -30, z: 0}
+  directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
+  directionalLightIntensity: 0.85
   narrativeIntroTitle: "Nivel 15 \u2014 Integraci\xF3n"
   narrativeIntroDesc: "Todo lo que aprend\xED, usado una vez m\xE1s, con el peso
     de haberlo aprendido."
