@@ -8,114 +8,237 @@ este archivo contradice una sugerencia externa, este archivo gana.
 Para dirección de diseño, reglas visuales, y filosofía del gameplay, leer
 `ECHOES_BIBLE.md` — este archivo cubre arquitectura técnica.
 
+**Última verificación contra código:** 2026-07-26, rama `ws01-cleanup`
+(auditoría completa de `Assets/Scripts` y `Assets/Editor`).
+
 ---
 
 ## 1 — QUÉ ES EL JUEGO
 
-**Echoes of You** — puzzle 3D narrativo en tercera persona, Universal Render
-Pipeline (URP), Unity 2022+.
+**Echoes of You** — puzzle 3D narrativo en tercera persona.
 
-El jugador graba sus propios movimientos (hasta **12 segundos (estándar), 20 segundos (narrativo)** — ver `DECISION-ECH-DURATION` en `decisions.yaml`, tecla configurable)
+**Stack técnico verificado:**
+- **Unity 6000.4.3f1** (Unity 6)
+- **URP 17.4.0** (`com.unity.render-pipelines.universal`)
+- **Cinemachine 3.1.7** — API 3.x (`Unity.Cinemachine`, `CinemachineCamera`).
+  No usar API 2.x (`CinemachineVirtualCamera`) en código nuevo.
+- **UI Toolkit** (UIDocument + UXML/USS) para todo el UI.
+
+El jugador graba sus propios movimientos (hasta **12 segundos estándar,
+20 segundos narrativo** — ver `DECISION-ECH-DURATION` en `decisions.yaml`)
 y los reproduce como un "eco" — un cuerpo fantasma que repite exactamente lo
 que grabó, con colisión activa. El eco no combate, no improvisa, no se puede
 deshacer una vez reproducido. Esa irreversibilidad es el tema del juego.
 
+**Cómo está implementado el eco (verificado):**
+- `EchoRecorder.maxRecordSeconds = 12f` (serializado, ajustable por
+  blueprint). El tope de 20 s "narrativo" es decisión de diseño por nivel,
+  no un límite distinto en código.
+- Muestreo a **30 Hz en `FixedUpdate`** (`RecordFrame { time, position,
+  rotation }`); la reproducción interpola con **Catmull-Rom** + SLERP, por
+  eso se ve fluida a cualquier framerate.
+- Captura la **voz del micrófono a 48 kHz** durante la grabación y la
+  reproduce con el eco (normalizada a pico 0.82).
+- `EchoRecorder.maxEchoes = 3` por defecto; `LevelBlueprint.maxEchoes = 1`
+  por defecto. Al superar el límite se desvanece el eco más viejo no
+  bloqueado (fade 0.65 s).
+- El eco usa `CharacterController` y hace `Move()` real — empuja bloques y
+  pisa placas. Loop infinito con `degradationPerReplay` (offset temporal
+  acumulado por repetición).
+
 ---
 
-## 2 — ARQUITECTURA ACTUAL (estado verificado, Julio 2026)
+## 2 — ARQUITECTURA ACTUAL (estado verificado, 2026-07-26)
 
-### Pipeline de generación de niveles
+### Pipeline de generación de niveles (Editor)
 
-**Builder activo y único:** `Assets/Editor/EchoesNewProductionBuilder.cs`
-(basado en ScriptableObjects `LevelBlueprint`, directorio `Assets/Data/Levels/`).
+**Builder activo y único:** `Assets/Editor/EchoesNewProductionBuilder.cs`.
+- Menú: `Echoes of You/Production/Build All Blueprint Levels`.
+- Itera **todos** los `LevelBlueprint` (ScriptableObjects) encontrados en
+  `Assets/Data/Levels/` — hoy hay exactamente 15 (`Level_01_Blueprint` a
+  `Level_15_Blueprint`). El conteo es emergente, no hardcodeado.
+- Antes de construir ejecuta `ExecutableSpecValidator.ValidateProject()`
+  contra los YAML de `Docs/ExecutableSpecs/`.
+- Flujo por nivel: materiales → escena nueva → atmósfera → luces → módulos
+  vía `EchoesModuleFactory` → cableado de señales (8 pasadas) → jugador y
+  cámara → UI → runtime → guardar escena.
 
-**Builders eliminados o inactivos:**
-- `EchoesLevelBuilder.cs` — eliminado.
-- `EchoesProductionBuilder.cs` — dividido en clases parciales de referencia
-  (`EchoesProductionBuilder_Levels1_5.cs`, `_Levels6_10.cs`, `_Levels11_15.cs`).
-  No ejecutar — es referencia histórica, no pipeline activo.
+**Builders históricos: ELIMINADOS del repo.** `EchoesLevelBuilder.cs`,
+`EchoesProductionBuilder.cs` y sus parciales (`_Levels1_5`, `_Levels6_10`,
+`_Levels11_15`) **ya no existen en disco**. Solo sobreviven como texto en
+`Tools/Scripts/*.py`, logs y docs viejos. Si un documento los menciona como
+"referencia histórica en el repo", está desactualizado.
 
-**ADVERTENCIA CRÍTICA:** `EchoesQueuedProductionRebuild.cs` tiene un flag
-que puede auto-regenerar los 15 niveles al recompilar Unity si está activo.
-Este flag debe estar desactivado en todo momento. Verificar antes de
-cualquier tarea que modifique escenas.
+**ADVERTENCIA CRÍTICA — auto-rebuild (hay DOS mecanismos, ambos
+desactivados hoy):**
+1. `EchoesQueuedProductionRebuild.cs` — `[InitializeOnLoad]` comentado
+   (línea 7) y sin archivo `.flag` en disco. Disparador manual:
+   `Echoes of You/Production/Queue Rebuild In Open Editor`.
+2. `EchoesAutoBuilderHelper.cs` — mismo patrón, `[InitializeOnLoad]`
+   doblemente comentado ("DISABLED for Environment Pass").
 
-**Scripts Python:** movidos a `Tools/Scripts/`. No ejecutar
-`update_all_production.py` ni ningún script Python sobre archivos `.cs` —
+**No reactivar ninguno de los dos.** Un rebuild hace `NewScene(EmptyScene)`
+y destruye tanto las ediciones manuales de las 15 escenas como **todos los
+props colocados por el Environment Pass** (ver abajo).
+
+**Environment Pass (colocación de props — pipeline separado y posterior
+al builder):**
+`EnvironmentPassDataGenerator` (genera `LevelDataSO` en
+`Assets/ScriptableObjects/EnvironmentPass/`) → `EnvironmentPassDataLoader`
+→ `EnvironmentPassPlacementEngine` (abre escena, respeta zonas de exclusión
+de puzzle, coloca props con raycast al suelo) → `EnvironmentPassValidator`
+(clearance mínimo 1.5 m). Front-ends: `EnvironmentPassPlacer` (menús
+`Tools/Environment Pass/1..8`), `PropPlacementRunner` (headless),
+`AutoFixZoneAndPlace`.
+
+**Prefabs base:** `CreateBasePrefabs` → `PrefabBatchBuilder` (41 prefabs
+desde el Kenney Furniture Kit) + `DecalPrefabGenerator` (4 decals).
+`RoomComposer` (EditorWindow) es la vía manual paralela; exporta
+`RoomTemplate` ScriptableObjects.
+
+**Scripts Python:** `Tools/Scripts/` contiene 11 `.py` **muertos** — la
+mayoría referencia clases ya eliminadas. No ejecutar ninguno sobre `.cs`;
 el pipeline activo es solo C#.
+
+### Arranque de una escena de nivel (runtime)
+
+Orden real de inicialización:
+1. `[BeforeSceneLoad]` — `PlayerAnimationRuntimeBootstrap` carga
+   `Resources/EchoesLocomotionSettings`; `SceneTransitionManager` se
+   auto-inicializa.
+2. `[AfterSceneLoad]` — `LevelEnvironmentBootstrap` (motor de arranque de
+   escena: escala geometría ×2 según `EchoesWorldMetrics.LevelGeometryScale`,
+   limpia dressing legacy, aplica iluminación, inyecta cámara/HUD/perfil);
+   `PostProcessingSetup` crea el Volume global URP en runtime;
+   `CinemachineEventFocus.EnsureExists()`.
+3. `Awake` por `[DefaultExecutionOrder]`: `-40 PlayerAdvancedLocomotion` →
+   `-25 PlayerCharacterVisualSetup` → `-20 PlayerAnimationRuntimeBootstrap`
+   → `-10 PlayerLocomotionAnimator` → `0` resto de sistemas.
+4. Lazy: `EchoesAudioManager.EnsureExists()` al primer uso.
 
 ### Archivos de sistemas core
 
 | Archivo | Responsabilidad |
 |---|---|
-| `EchoesLevelShell.cs` | Atmósfera, cámara, jugador, UI por nivel |
-| `EchoesModuleFactory.cs` | Construcción de geometría y módulos por `ModuleType` |
-| `EchoesMaterialLibrary.cs` | Materiales del proyecto (tokens de color) |
-| `PlayerController.cs` | Clase parcial — movimiento base, input, física de salto |
-| `PlayerController_Gravity.cs` | Gravedad, zonas de gravedad, detección de suelo |
-| `PlayerController_Animation.cs` | Animaciones, triggers, sonido de pisadas |
-| `PlayerController_Visual.cs` | Setup visual, foco Cinemachine, links de avatar |
-| `EchoRecorder.cs` | Grabación de movimientos del jugador |
-| `EchoPlayback.cs` | Reproducción del eco grabado |
+| `Editor/EchoesLevelShell.cs` | Andamiaje de escena en build-time: raíces, atmósfera, luces, jugador, cámara Cinemachine, UI |
+| `Editor/EchoesModuleFactory.cs` | Fábrica de geometría por `ModuleType` (47 tipos: 0-20 base, 21-30 fase 3, 31-46 vocabulario escolar) |
+| `Editor/EchoesMaterialLibrary.cs` | Materiales canónicos por token de paleta (10 tokens), shaders `Echoes/*` |
+| `PlayerController.cs` (+ `_Gravity`, `_Animation`, `_Visual`) | `partial class` en 4 archivos. **`CharacterController`, NO Rigidbody.** Input, salto (buffer 0.10 s + coyote 0.12 s), gravedad con zonas, animación, visual |
+| `PlayerAdvancedLocomotion.cs` | Parkour: slide, ledge grab, wall run/jump, air dash. Lee `EchoesLocomotionSettings` |
+| `EchoRecorder.cs` / `EchoPlayback.cs` | Grabación 30 Hz + reproducción interpolada del eco (ver §1) |
+| `LevelEnvironmentBootstrap.cs` | Bootstrap runtime de escena (escala, iluminación, inyección de cámara/HUD) |
+| `GameStateController.cs` | Máquina de estados de nivel + notificaciones a GameFeel/cámara |
+| `LevelRuntimeController.cs` | Objetivo, **Q = soft reset** (`IResettableLevelObject`), **T (hold 0.5 s) = hard reset**, telemetría |
+| `GameProgress.cs` | Progresión en **PlayerPrefs** (no JSON). ⚠️ Ver §4: solo registra 10 niveles |
+| `SceneTransitionManager.cs` | Fade UI Toolkit + carga de escenas |
+| `GameFeelController.cs` | Singleton de juice: partículas, shake, hitstop, post-proceso por evento |
+| `EchoesAudioManager.cs` | Singleton de audio; AudioMixer con 4 buses: Master/Music/SFX/Echo; volúmenes en PlayerPrefs |
+| `MainMenuController.cs` / `GameHUD.cs` / `PauseMenu.cs` | UI Toolkit (UXML/USS). PauseMenu "hub" apunta a MainMenu |
 
-### Sistemas de puzzle disponibles
+### Sistemas de puzzle — estado real
 
-Estas son las primitivas mecánicas existentes. Úsalas como infraestructura.
-No son puzzles completos por sí solas:
+**Cableados y en uso en las escenas:**
+`PressurePlate` (+`PressurePlateAlignment`), `DoorController`,
+`TimedMovingPlatform`, `PuzzleCondition` (5 modos), `PuzzleSignal` (bus de
+señal genérico), `GoalTrigger` → `LevelGoal` → `LevelEscapeSequence` →
+`LevelExit`, `EchoKineticBody`/`EchoKineticZone`/`EchoKineticRole`,
+`EchoShieldField`, `EchoConflictTrap`, `ChaseHazardMotor`,
+`DynamicTransformMotor`, `KineticPushableBlock`, `CharacterPush`.
 
-`PressurePlate`, `DoorController`, `TimedMovingPlatform`, `GhostBridge`,
-`GravityZone`, `EchoKineticBody`, `EchoShieldField`, `EchoConflictTrap`,
-`EchoDisintegrationZone`, `PuzzleWire` (AND/OR/latch/delay), `PuzzleCondition`
-(contador N, secuencia, hold temporizado), `PuzzleSignal`.
+**Implementados pero SIN instancias en ninguna escena** (lógica viva,
+contenido no construido): `PuzzleWire`, `GravityZone`,
+`MovingPlatformMomentum`, `KillVolume` (solo instanciado por bootstrap),
+`Paradox/ResonanceSystem` + `ResonanceZoneTrigger`, `Paradox/TemporalBridge`
+(único Paradox con ruta desde el pipeline de blueprints, `ModuleType 22`).
+
+**Huérfanos totales** (0 referencias de código y 0 instancias — no asumir
+que funcionan): `GhostBridge`, `MemoryPlatform`, `EchoDisintegrationZone`,
+`Echo/EchoModeController` (nadie llama a `Configure()` — **rompe la cadena
+de modos de eco avanzados** Ambient/Imposed/Inversion/Mirror, que están
+implementados en `EchoPlayback` pero sin ruta de datos que los active),
+`EchoTemporalFragmentBurst`, `Paradox/ErosionSystem`,
+`Paradox/LivingArchitectureSystem`, `HubSceneController` + `HubPortal`
+(no existe escena de hub), `Lighting/LightingApplier` (la luz real la
+maneja `LevelLightingSettings`), `UIBootstrap`, `ParkourPlatformMarker`,
+`EchoPathHint` (`LevelBlueprint.pathHints` nunca se consume en runtime).
+
+Nota: `EchoRecorder.SetMode()` ignora los parámetros `mode` y
+`degradation` — solo aplica `recordFuture` y el bloqueo de slots.
+
+### Cableado de señales (flujo real)
+
+```
+PressurePlate.PressedChanged
+   ├→ DoorController (AND/OR sobre plates[]) → DoorStateChanged
+   ├→ PuzzleCondition (AllPlatesSimultaneous / AnyPlateOnce / SequentialOrder / TimedHold / PlateCount)
+   └→ GoalTrigger
+Eco/Jugador en trigger → EchoKineticZone / EchoShieldField / EchoConflictTrap
+   └→ PuzzleSignal.MarkSatisfied() → GoalTrigger
+GoalTrigger → LevelGoal (todos satisfechos) → LevelEscapeSequence (persecución,
+   20 s límite) → desbloquea LevelExit[] → GameProgress.MarkSceneCompleted()
+   → siguiente escena
+```
+
+⚠️ `LevelExit` tiene el chequeo de desbloqueo **bypaseado** en código
+("Puzzle resolution check bypassed", `BindGoal` fuerza `SetUnlocked(true)`).
+Verificar antes de asumir que los exits respetan el estado del puzzle.
 
 ### Render pipeline
 
-**Universal Render Pipeline (URP).** Pipeline activo confirmado (Julio 2026).
-`EchoesMaterialLibrary.cs` usa `"Universal Render Pipeline/Lit"` como shader base.
-No usar `Shader.Find("Standard")` — resulta en shaders magenta en URP.
-El post-processing usa URP Volume system. `EchoesURPConfigurator.cs` gestiona
-la configuración de URP. `Metallic = 0`, `Smoothness = 0.05` son válidos en URP Lit.
-No crear materiales fuera de `EchoesMaterialLibrary` — nunca materiales raw con shader Standard.
+**URP 17.4.0.** Prohibido `Shader.Find("Standard")` — el
+`ExecutableSpecValidator` (regla `MAT-001`, fatal) lo bloquea en CI.
 
-### Cámara
+**Materiales: exclusivamente vía `EchoesMaterialLibrary`**, que usa
+**shaders custom del proyecto**, no URP/Lit:
+- `Echoes/LiminalSurface` — shader base de geometría
+- `Echoes/EchoLiminal` — el eco (distorsión, aberración cromática, cap 15 fps)
+- `Echoes/LiminalFogVolume` — volúmenes de niebla
+- `Echoes/RetroFlatLit` — fallback legacy
+- `"Universal Render Pipeline/Lit"` solo como fallback de última instancia.
 
-Hay dos sistemas de cámara en el proyecto: Cinemachine (activo en algunos
-niveles) y `ThirdPersonCamera` (custom). Solo uno puede controlar el
-transform en `LateUpdate` en un nivel dado — si ambos están activos al
-mismo tiempo, hay jitter. Verificar que solo uno está activo por escena.
+Los shaders liminales **no exponen Metallic/Smoothness** — sus parámetros
+son `_FresnelInvert`, `_FluorescentEdge`, `_StainNoiseScale`, `_WearHeight`,
+etc. La regla vieja "Metallic = 0, Smoothness = 0.05" aplicaba a URP/Lit y
+ya no describe el pipeline de materiales actual. Para materiales creados
+por código en runtime existe `EchoesUrpMaterials.cs` (URP/Lit y URP/Unlit).
 
-### §3C Camera Lifecycle Contract
+**Post-processing:** `PostProcessingSetup.cs` (runtime, en
+`Assets/Scripts/`) crea un Volume global URP modulado por
+`GameFeelController`. SSAO es Renderer Feature del URP Renderer
+(`EchoesURPConfigurator`: Intensity 1.8, Radius 0.6, Quality Medium).
+El paquete Post-Processing Stack v2 quedó reemplazado.
 
-```csharp
-// [CAM-LIFECYCLE-001] Camera lifecycle contract
-// ThirdPersonCamera.cs and Cinemachine CANNOT be active simultaneously.
-// Activation protocol (called by EchoesLevelShell.cs):
-public static void ActivateCinemachineForLevel(LevelBlueprint blueprint)
-{
-    // STEP 1: Disable ThirdPersonCamera if it exists
-    ThirdPersonCamera tpc = FindObjectOfType<ThirdPersonCamera>();
-    if (tpc != null)
-    {
-        tpc.enabled = false;    // Disable the component (do NOT destroy)
-        // NOT Destroy() — Player prefab may be reused between levels
-    }
+**10 tokens de paleta** en `EchoesMaterialLibrary`: `void-black`,
+`corridor-navy`, `fluorescent-sick`, `memory-amber`, `echo-cyan`,
+`wrongness-red`, `institutional-teal`, `faded-mustard`, `sage-green`,
+`dusty-rose`.
 
-    // STEP 2: Activate the level's Virtual Camera
-    CinemachineVirtualCamera vcam = FindObjectOfType<CinemachineVirtualCamera>();
-    if (vcam == null)
-        throw new System.Exception("FAIL-CAM-01: No CinemachineVirtualCamera found in scene.");
+### Cámara (estado real — Cinemachine 3.x)
 
-    vcam.enabled = true;
-    vcam.Priority = 20;   // Higher priority than any other VCam in the scene
+**Stack activo en Level_01..15 (verificado por GUID en las escenas):**
+- `FixedPuzzleCameraController` — **controlador principal de gameplay**,
+  montado en `Camera.main`; dirige una `CinemachineCamera` +
+  `CinemachineTargetGroup` (pesos player/goal/event/echo).
+- `CinematicCameraDynamics` — capa expresiva encima (FOV por velocidad,
+  dutch, drift de memoria) según `EchoesCameraIdentity` (A–E).
+- `EchoCameraTargetGroupManager` — inyecta el peso de los ecos al grupo.
+- `EventCameraDirector` — secuencias cortas (mirar botón → puerta → volver).
+- `CinemachineEventFocus` — singleton para focos de evento puntuales.
+- Perfiles: `CameraProfile` (ScriptableObject) + `LevelCameraProfiles`
+  (tabla estática por nombre de escena).
 
-    // STEP 3: Apply blueprint profile
-    CameraProfileApplicator.Apply(vcam, blueprint.cameraProfile);
-}
+**`ThirdPersonCamera.cs` existe pero NO está en ninguna escena de
+producción** — solo en backups de `Assets/_Recovery/`. El código de
+coexistencia anti-jitter (`CinemachineRuntimeSetup`, `CameraProfileApplier`
+desactivando la TPC) es actualmente ruta muerta, mantenida por si se
+reintroduce. `CinemachineGameplayDynamics` solo vive en `Level_04_TEST`.
 
-// [CAM-LIFECYCLE-002] Validator check
-// LEVEL_VALIDATOR runs this on each scene before build:
-// Assert: no more than 1 ThirdPersonCamera component with enabled = true in hierarchy
-```
+**El contrato `[CAM-LIFECYCLE-001]` (`ActivateCinemachineForLevel`) que
+figuraba en versiones previas de este documento NUNCA se implementó** — el
+método no existe en ningún `.cs` y su pseudocódigo usaba API de
+Cinemachine 2.x. La regla que sí sigue vigente y sí se cumple:
+**exactamente 1 controlador de cámara activo por escena** (si dos escriben
+el transform en `LateUpdate`, hay jitter).
 
 ---
 
@@ -126,27 +249,53 @@ niebla agresiva, iluminación dura.
 
 **PROHIBIDO:** Modular SciFi MegaKit, Cyberpunk Kit, texturas PBR 2K/4K
 de concreto o metal, monolitos, estética de ciencia ficción. Esta decisión
-fue explícita y deliberada — no revertir.
+fue explícita y deliberada — no revertir. (`EchoesModuleFactory` excluye
+el kit SciFi al resolver modelos.)
 
-**Materiales:** `Metallic = 0`, `Glossiness = 0.05`. Sin normal maps. Sin AO maps.
-Sin reflejos de entorno.
+**Materiales:** solo vía `EchoesMaterialLibrary` (shaders `Echoes/*`, ver
+§2). Sin normal maps, sin AO maps, sin reflejos de entorno
+(`reflectionIntensity = 0`).
 
-**Tokens de color principales:**
+**Tokens de color principales** (hex canónicos de `CONSTANTS_REGISTRY.yaml`,
+que manda sobre cualquier otro doc — `RULE-SOT-001B`):
 - `echo-cyan` `#4FC3E8` — el eco, siempre
-- `memory-amber` `#E8B262` — objetos narrativos, Lyra
+- `memory-amber` `#FFBF00` — objetos narrativos, Lyra (emission 1.2;
+  `#E8B262` está PROHIBIDO por `CONS-MAT-001` aunque aparezca en
+  `materials.yaml`)
 - `corridor-navy` `#1C2430` — base de pasillos
 - `wrongness-red` `#B23A3A` — peligro, uso escaso
 
-**Niebla:** `SetupAtmosphere` DEBE usar los parámetros `blueprint.fogColor`
-y `blueprint.ambientColor` reales. Hay un bug histórico donde estos valores
-se hardcodeaban — verificar que la versión actual los lee. `fogDensity`
-entre 0.012 y 0.04. `AmbientMode.Flat`.
+**Estados visuales del eco** (implementados en `EchoRecorder`/`EchoPlayback`,
+según `ECHO_GRAMMAR` Tabla 8.1): Recording (rim cyan solo jugador) →
+Latency 0.8 s (alpha 0.2, congelado) → Playback (EchoLiminal, alpha 0.45)
+→ Residual 2.5 s (AnalogGhost, alpha 0.3→0, cap 15 fps).
+
+**Pase de arte técnico (Editor):** `EchoesTechnicalArtPass` (menú
+`Echoes of You/Technical Art/…`) aplica iluminación por capítulo a
+blueprints+escenas, fog volumes, props narrativos (`EchoesPropDecorator`)
+y validación visual (`EchoesVisualValidationPass` →
+`Reports/generated/visual_regression_report.json`). No reconstruye escenas
+— respeta el Environment Pass.
+
+**Niebla/atmósfera:** el bug histórico de hardcodear está **corregido** —
+`EchoesLevelShell.SetupAtmosphere` lee `blueprint.fogColor` y
+`blueprint.ambientColor` reales. Matices verificados: `fogDensity` se
+**recorta** a `[0.002, 0.04]` (ampliado para los perfiles por capítulo:
+Cap. VI usa 0.002), `AmbientMode.Flat`, `ExponentialSquared`, skybox null.
+Sombras: **Hard only** (soft prohibidas por `LIGHTING_GRAMMAR`), shadow
+distance 40 m, máx. 48 luces por escena.
 
 ---
 
 ## 4 — ESTADO DE LOS NIVELES
 
-15 escenas en disco. Organización por capítulos emocionales:
+**En disco:** 15 escenas `Level_01..15` + `MainMenu.unity` +
+`Level_04_TEST.unity` (escena de prueba, **no documentada en la campaña**;
+`CameraPassQA` la excluye pero `EchoesLightingBakePipeline` NO la filtra y
+la hornearía). **No existe ninguna escena de hub** — `HubSceneController`
+y `HubPortal` son código huérfano.
+
+Organización por capítulos emocionales:
 
 | # | Emoción | Capítulo | Espacio principal |
 |---|---|---|---|
@@ -166,9 +315,11 @@ entre 0.012 y 0.04. `AmbientMode.Flat`.
 | 14 | Aceptación | VI — Aceptación | Fragmentos flotantes en void-black |
 | 15 | Integración | VI — Aceptación | Pasillo del Nivel 1, ahora con salida real |
 
-**Estado de conteo:** 15 escenas en disco. `GameProgress` y `MainMenu`
-pueden tener conteos distintos — verificar coherencia antes de modificar
-cualquier archivo de progreso.
+**⚠️ Desajuste de conteo CONFIRMADO:** `GameProgress.LevelScenes[]` solo
+lista `Level_01..Level_10` (`TotalLevels == 10`). **Los niveles 11–15
+existen en disco pero están fuera de la progresión, el desbloqueo y la
+selección de nivel del menú.** Resolver antes de tocar cualquier archivo
+de progreso.
 
 ---
 
@@ -177,13 +328,21 @@ cualquier archivo de progreso.
 - **No revertir la dirección visual a brutalismo/sci-fi.** Ya se hizo, ya se
   deshizo. Hay razones concretas documentadas en `ECHOES_BIBLE.md`.
 - **No crear builders adicionales.** Solo `EchoesNewProductionBuilder.cs`.
-- **No ejecutar scripts Python sobre archivos `.cs`.** El pipeline es solo C#.
-- **No usar `Shader.Find("Standard")` ni materiales Built-in.** El pipeline
-  es URP — los materiales deben usar `"Universal Render Pipeline/Lit"`.
-  Todos los materiales se crean exclusivamente vía `EchoesMaterialLibrary`.
+  (Los builders viejos ya fueron eliminados del repo — no restaurarlos.)
+- **No reactivar `[InitializeOnLoad]` en `EchoesQueuedProductionRebuild.cs`
+  ni en `EchoesAutoBuilderHelper.cs`.** Un rebuild automático borra las
+  ediciones manuales de las 15 escenas Y los props del Environment Pass
+  sin aviso.
+- **No ejecutar scripts Python sobre archivos `.cs`.** Los de
+  `Tools/Scripts/` referencian clases que ya no existen.
+- **No usar `Shader.Find("Standard")` ni materiales Built-in.** Todos los
+  materiales se crean exclusivamente vía `EchoesMaterialLibrary`
+  (shaders `Echoes/*`); para materiales runtime por código, usar
+  `EchoesUrpMaterials`.
 - **No usar constantes `SciFi*` en ningún script de producción.**
-- **No activar `EchoesQueuedProductionRebuild` sin ser consciente de que
-  borra ediciones manuales de las 15 escenas sin aviso.**
+- **No asumir que un sistema funciona porque el script existe.** Ver la
+  lista de huérfanos en §2 (hub, Paradox, GhostBridge, EchoModeController,
+  etc.) — mucho código está diseñado pero no cableado.
 - **No renombrar sistemas como sustituto de rediseñarlos.**
 - **No construir más de 3 niveles nuevos antes de validar que los
   primeros 3 funcionan con jugadores reales.**
