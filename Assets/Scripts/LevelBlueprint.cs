@@ -147,12 +147,11 @@ public class LevelBlueprint : ScriptableObject
     public Vector3[] pathHints;
 
     [Header("Puzzle Constraints (Phase 2)")]
-    [Tooltip("If true, the LevelExit only unlocks during a 5s window after an Echo recording completes.")]
-    public bool recordFuture;
-    [Tooltip("If true, an ambient Lyra ghost walks the level revealing hidden MemoryPlatforms. Player cannot record.")]
-    public bool ambientEchoData;
-    [Tooltip("If true, the EchoRecorder is locked and a pre-baked RecordFrame[] is fed to playback.")]
-    public bool imposedEchoData;
+    // recordFuture / imposedEchoData / ambientEchoData viven arriba en
+    // "Echo Limits & Advanced Modes" (bool + EchoRecordingData). El commit
+    // greybox los redeclaró como bool y el merge dejó ambas copias (CS0102).
+    // Los `if (blueprint.imposedEchoData)` del builder siguen funcionando:
+    // UnityEngine.Object convierte implícitamente a bool (asignado = true).
     [Tooltip("If true, the camera mirrors around the XZ plane and player horizontal input is inverted.")]
     public bool inversionCamera;
     [Tooltip("Minimum synchronization window (seconds) for multi-actor puzzles. Enforced by PuzzleLevelValidator.")]

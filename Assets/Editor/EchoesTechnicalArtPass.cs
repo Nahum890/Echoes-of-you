@@ -319,6 +319,10 @@ public static class EchoesTechnicalArtPass
             (5,  "Aiden_Voice_Fragment", null),
             (10, "Lyra_Voice_Fragment",  "Lyra_Ambient_Echo"),
             (13, "Aiden_Forced_Echo",    "Conversation_Fragment"),
+            // L15 tenía ambientEchoData=1 (flag bool del commit greybox);
+            // al volver el campo a EchoRecordingData, el flag se preserva
+            // asignando el eco ambiental de Lyra.
+            (15, null,                   "Lyra_Ambient_Echo"),
         };
 
         foreach (var (level, imposedName, ambientName) in assignments)
