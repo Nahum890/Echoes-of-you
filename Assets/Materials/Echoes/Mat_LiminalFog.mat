@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Mat_LiminalFog
-  m_Shader: {fileID: 0}
+  m_Shader: {fileID: 4800000, guid: aa997d0c5faf8864a9ddcdce3919c69c, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
