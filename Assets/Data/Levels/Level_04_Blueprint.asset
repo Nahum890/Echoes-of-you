@@ -49,6 +49,8 @@ MonoBehaviour:
   - {x: -6, y: 1.1, z: 10}
   - {x: 6, y: 1.1, z: 15}
   - {x: -6, y: 1.1, z: 20}
+  inversionCamera: 0
+  timingFloor: 0.4
   modules:
   - name: StartPlatform
     type: 0

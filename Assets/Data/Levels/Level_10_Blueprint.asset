@@ -19,15 +19,15 @@ MonoBehaviour:
   echoEnabled: 1
   maxEchoes: 1
   maxRecordSeconds: 15
-  echoMode: 2
+  echoMode: 0
   recordFuture: 0
   degradationPerReplay: 0
-  imposedEchoData: {fileID: 11400000, guid: 09542a6dfa951064b843618126116bd5, type: 2}
-  ambientEchoData: {fileID: 11400000, guid: 61b90b1f3f324104790a369a6e8252f5, type: 2}
+  imposedEchoData: {fileID: 11400000, guid: 5b3449348e40a9049861eb659a11ee61, type: 2}
+  ambientEchoData: {fileID: 11400000, guid: 4b2e49383f263c048a8505a142cee6f5, type: 2}
   lockEchoSlots: 0
   lockedSlotIndices: 
-  cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111110, type: 3}
-  lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111105, type: 3}
+  cameraProfile: {fileID: 0}
+  lightingProfile: {fileID: 0}
   activeParadoxes: 
   fogColor: {r: 0.23137255, g: 0.1882353, b: 0.14117648, a: 1}
   fogDensity: 0.015
@@ -48,6 +48,8 @@ MonoBehaviour:
   - {x: 0, y: 1.1, z: 8}
   - {x: 8, y: 1.1, z: 8}
   - {x: 0, y: 1.1, z: 22}
+  inversionCamera: 0
+  timingFloor: 0.4
   modules:
   - name: PlayerStart
     type: 7

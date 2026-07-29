@@ -135,12 +135,41 @@ ignora `mode`/`degradation` (fuera del alcance de este pase).
    0.3→0); el brief decía "0.45 → 0.10" para echo-cyan — divergencia menor
    resuelta a favor del spec canónico.
 
+## 6B — POST-MERGE CON LA ARQUITECTURA GREYBOX (2026-07-27)
+
+El commit `c1f63671` de `main` (posterior al fork de esta rama) introdujo la
+arquitectura nueva y se fusionó a `ws01-cleanup`. Impacto sobre este pase:
+
+- **Compatible sin cambios**: el `EchoesModuleFactory` reescrito sigue
+  consumiendo `EchoesMaterialLibrary` (FloorMat, WallTealMat, MemoryMat…),
+  así que los hex/emisiones corregidos aplican también a la arquitectura
+  nueva. `LevelBlueprint` conserva los campos de atmósfera y
+  `imposedEchoData`/`ambientEchoData` como `EchoRecordingData`.
+- **`LevelExit` corregido en main**: el bypass del chequeo de desbloqueo ya
+  no existe (`BindGoal` consulta `goal.IsReady`). Advertencia retirada.
+- **Enum `ModuleType` renumerado por main** (31–44): desaparecen
+  `SchoolBathroom`, `SchoolMaintenanceCorridor`, `SchoolEmergencyCorridor`
+  y `SchoolOffice`; aparecen `SchoolEntrance` y `GhostBridge = 44`. Los
+  anclajes de la Tabla 8.2 para L09/L11/L12 referencian módulos que ya no
+  existen → siempre usan el fallback de mundo.
+- **Blueprints rediseñados** (L09–L15) nombran módulos de forma semántica
+  (`ZonaA_UmbralInterior`, `PlacaPatio`…): el decorador ancla por posición
+  de mundo con **snap al suelo por raycast** (añadido post-merge).
+- **Escenas greybox** (`Level_XX_SchoolGreybox.unity`, fase 1: solo
+  arquitectura + NavMesh): excluidas del pase de arte y del bake de
+  lightmaps (`EchoesLightingBakePipeline` ahora filtra TEST/greybox).
+- ⚠ **La validación greybox de main falla en los 15 niveles**
+  (`FAIL-ARC-RHYTHM`, `FAIL-NAV-ROUTE`, `FAIL-NAV-COVERAGE` —
+  `Reports/generated/greybox_validation.json`). El greybox está subido
+  como WIP; el pase de arte no depende de él, pero el playthrough final sí.
+
 ## 7 — PENDIENTES (requieren el editor de Unity)
 
 - [ ] Ejecutar `Run Full Pass (All Levels)` y commitear escenas/blueprints/materiales/`.meta` resultantes.
 - [ ] Primera corrida genera la **baseline** en `Docs/Art/ReferenceFrames/` (no existía — las vistas se marcan `baseline_created`; la regresión ≤2 %/SSIM ≥0.98 aplica desde la segunda corrida).
 - [ ] `Reports/generated/visual_regression_report.json` (lo escribe la validación).
-- [ ] Playthrough funcional de los 15 niveles. ⚠ `LevelExit` tiene el chequeo de desbloqueo **bypaseado** en código ("Puzzle resolution check bypassed"): completar un nivel hoy no prueba que el puzzle gatee la salida.
+- [ ] Playthrough funcional de los 15 niveles. (El bypass de `LevelExit` quedó corregido en el merge con main — ahora la salida sí respeta el objetivo.)
+- [ ] Resolver los fallos greybox `FAIL-ARC-RHYTHM` / `FAIL-NAV-ROUTE` / `FAIL-NAV-COVERAGE` en los 15 niveles (`greybox_validation.json`).
 - [ ] Corregir `#E8B262` en `Docs/ExecutableSpecs/visual/materials.yaml` (y los 4 hex divergentes: institutional-teal, faded-mustard, dusty-rose, fluorescent-sick) vía `CHANGE_CONTROL.md`.
 - [ ] Decidir si Cap. VI usa `#0A0A0D` (brief) o `#F0F4FF` (catálogo) para N15.
 - [ ] Crear los 10 prefabs amber canónicos de L06–L15 (elimina las sustituciones).

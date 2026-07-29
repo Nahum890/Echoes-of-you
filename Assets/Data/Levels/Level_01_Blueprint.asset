@@ -48,6 +48,8 @@ MonoBehaviour:
   - {x: 0, y: 0.1, z: 10}
   - {x: 0, y: 0.1, z: 30}
   - {x: 0, y: 0.1, z: 52}
+  inversionCamera: 0
+  timingFloor: 0.4
   modules:
   - name: PorchHall
     type: 31

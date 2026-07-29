@@ -22,7 +22,7 @@ MonoBehaviour:
   echoMode: 0
   recordFuture: 0
   degradationPerReplay: 0
-  imposedEchoData: {fileID: 11400000, guid: 03501e6ff8ad7de41ad92df122f927e0, type: 2}
+  imposedEchoData: {fileID: 11400000, guid: 3876797006887dc44af11a0cc4929201, type: 2}
   ambientEchoData: {fileID: 0}
   lockEchoSlots: 0
   lockedSlotIndices: 
@@ -49,6 +49,8 @@ MonoBehaviour:
   - {x: -8, y: 5.1, z: 6}
   - {x: 0, y: 1.1, z: 8}
   - {x: 0, y: 1.1, z: 26}
+  inversionCamera: 0
+  timingFloor: 0.4
   modules:
   - name: StartPlatform
     type: 0

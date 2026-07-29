@@ -1,0 +1,145 @@
+# RECORD_FUTURE_SCHEMA — Novel Puzzle Constraint Flags
+
+# Source of truth: the four novel puzzle concepts from the task prompt's
+# Level map rows 6/7/10/11/13/14. Encoded as fields on `LevelBlueprint`
+# (added Phase 2, see LevelBlueprint.cs:140-150).
+
+version: 1.0
+namespace: EchoesOfYou.Phase2
+
+# ---------------------------------------------------------------------------
+# recordFuture
+# ---------------------------------------------------------------------------
+recordFuture:
+  applies_to: LevelBlueprint
+  field: recordFuture
+  default: false
+  enabled_on_levels: [7]
+  behavior:
+    summary: "LevelExit unlock is gated on a 5-second window after the player's Echo recording completes."
+    lifecycle:
+      - recorder_starts: as normal, _fixmax EchoRecord shared capacity, up to 12s
+      - recorder_stops (RecordingStopped event fires)
+        - capture_event_time: t_stop = Time.time
+        - exit_window_start: t_stop
+        - exit_window_end:   t_stop + 5.0
+      - during_window: LevelExit._isUnlocked = true
+      - outside_window: LevelExit._isUnlocked = false
+    executor_class: RecordFutureExit (Assets/Scripts/Puzzle/RecordFutureExit.cs)
+    executor_hook: "EchoesNewProductionBuilder.WireSignals() block 8c — when blueprint.levelName=Level_07 OR module.customData=\"recordFuture\", wrap the matched LevelExit component with RecordFutureExit at runtime, then subscribe EchoRecorder.RecordingStopped → start the 5s window."
+    mutex_with: inversionCamera (a level cannot have both)
+  validation:
+    BFS_check: requiresEcho == true (the Exit is echo-dependent)
+    timing_floor: not applicable (single trigger, single exit)
+    playtest: RecordeまずRecorder must complete recording ≥ 1 valid frame; Exit reached within 5s after recording stop
+  failure_modes:
+    recording_too_short:
+      description: "Player releases Record key in < 0.2s — no valid Echo created"
+      fallback: "RecordingStopped fires with bool=false — RecordFutureExit ignores this event"
+    recording_too_long:
+      description: "Player holds Record until 12s cap"
+      fallback: "RecordingStopped fires from EchoRecorder.Update():100 — normal path"
+    recording_already_overlayed_with_future:
+      description: "Player tries to Record during the 5s window"
+      fallback: "EchoRecorder ignores extra StartRecording (existing guard at line 92-96)"
+
+# ---------------------------------------------------------------------------
+# ambientEchoData
+# ---------------------------------------------------------------------------
+ambientEchoData:
+  applies_to: LevelBlueprint
+  field: ambientEchoData
+  default: false
+  enabled_on_levels: [10]
+  behavior:
+    summary: "An ambient 'Lyra' ghost walks the level along a pre-baked RecordFrame[] path. MemoryPlatforms become visible (collider + renderer) only while Lyra is within a proximity threshold."
+    components:
+      LyraGhost:
+        prefab: "Assets/Prefabs/Echo/LyraGhost.prefab"     # inscription required
+        playback_source: Assets/Data/Solutions/Level_10.solution.asset#echoFrames
+        loop: true
+        tag: "Echo"
+        ignore_player_recording: false                      # player is not affected
+      MemoryPlatform:
+        existing_class: MemoryPlatform (Assets/Scripts/MemoryPlatform.cs)
+        collider: enabled
+        renderer: enabled
+        reveal_radius: 3.5                                   # m
+    executor_class: AmbientEchoData (Assets/Scripts/Puzzle/AmbientEchoData.cs)
+    executor_hook: "EchoesNewProductionBuilder.WireSignals() block 8d — when blueprint.ambientEchoData=true, instantiate LyraGhost at PlayerStart, feed echoFrames from solution asset, link MemoryPlatforms to reveal-radius check."
+    narrative: "Lyra walked here before you. Follow her ghost — platforms she passes rise into existence; behind her they sink back into the void."
+  validation:
+    BFS_check: requiresEcho == true (MemoryPlatforms must be on path; Lyra IS an Echo)
+    timing_floor: not applicable
+    playtest: PlayMode NavMeshAgent follows Lyra's path; reaches LevelExit before Lyra loops (Lyra completes trace every (~ echoFrames count × 0.1s))
+  failure_modes:
+    player_outruns_lyra:
+      description: "Player walks ahead to MemoryPlatform before Lyra is within radius"
+      detection: "Collider disabled, Physics.OverlapBox rejects actor"
+      recovery: "Player must wait or backtrack"
+    lyra_loops_forever:
+      description: "Player dawdles and Lyra pathed back"
+      recovery: "Lyra's loop continues forever — no fail, just retry"
+
+# ---------------------------------------------------------------------------
+# imposedEchoData
+# ---------------------------------------------------------------------------
+imposedEchoData:
+  applies_to: LevelBlueprint
+  field: imposedEchoData
+  default: false
+  enabled_on_levels: [13]
+  behavior:
+    summary: "The player cannot record an Echo. A pre-baked Echo recording exists; the player must use it."
+    on_load:
+      - locate EchoRecorder on player via FindAnyObjectByType<EchoRecorder>
+      - read prescribed RecordFrame[] from Assets/Data/Solutions/Level_13.solution.asset#echoFrames
+      - subscribe EchoRecorder.Created and inject the prescribed frames + duration at FIRST call
+      - override maxRecordSeconds to 0 (silently disables Record in EchoRecorder.Update:87)
+      - maxEchoes forced to 1 (single slot)
+    executor_class: ImposedEchoData (Assets/Scripts/Puzzle/ImposedEchoData.cs)
+    executor_hook: "EchoesNewProductionBuilder.WireSignals() block 8d — when blueprint.imposedEchoData=true, attach ImposedEchoData to the player GameObject after SpawnPlayer (EchoesLevelShell), and inject prefab from Assets/Data/Solutions/Level_13.solution.asset."
+    narrative: "Another chose this memory before you. Learn their choreography."
+  validation:
+    BFS_check: requiresEcho == true (the imposed Echo must be on path to exit)
+    timing_floor: not applicable
+    playtest: NavMeshAgent player activates the imposed Echo at the prescribed point; Echo completes path; LevelExit reached
+  failure_modes:
+    player_desyncs_with_imposed:
+      description: "Player activates Echo at wrong moment, or records a corrupt Echo that overwrites"
+      prevention: "Recording is disabled at maxRecordSeconds=0; EchoRecorder.Update line 87 short-circuits before StartRecording is called"
+    imposed_too_short:
+      description: "Imposed Echo has < 2 frames"
+      prevention: "Solution asset pipeline verifies frame count >= 2 before saving"
+
+# ---------------------------------------------------------------------------
+# inversionCamera
+# ---------------------------------------------------------------------------
+inversionCamera:
+  applies_to: LevelBlueprint
+  field: inversionCamera
+  default: false
+  enabled_on_levels: [14]
+  mutex_with: recordFuture (a level cannot have both)
+  behavior:
+    summary: "Camera renders a mirrored view across the XZ plane; player horizontal input is inverted."
+    components:
+      InversionVolume:
+        type: URP Global Volume
+        profile: mirroring profile (color adjustments invert negative on R/G/B channels)
+        weight: 1.0
+      InputInverter:
+        description: "wraps PlayerController FixedUpdate — inverts horizontal axis (left ↔ right) and strafes"
+        inverted_axes: [horizontal, strafe]
+    executor_class: InversionCamera (Assets/Scripts/Puzzle/InversionCamera.cs)
+    executor_hook: "EchoesNewProductionBuilder.WireSignals() block 8d — when blueprint.inversionCamera=true OR blueprint.maxEchoes=0 + level=14, attach InversionCamera to the main camera GameObject, add input inverter component to the player."
+    narrative: "No past, no breathing room — every motion inverted but every truth revealed."
+  validation:
+    BFS_check: requiresEcho == FALSE for level 14 (Acceptance archetype explicitly removes the echo dependency — the Button Test has a SPECIAL-CASE BRANCH for Acceptance levels where requiresEcho is allowed to be false and the gate is inverted)
+    special_case: "LevelValidator accepts Level_14 as Echo-independent (Acceptance archetype rule)"
+    timing_floor: not applicable (real-time mirror)
+    playtest: NavMeshAgent navigates the inverted-input zone to reach LevelExit
+  failure_modes:
+    player_oversteers:
+      description: "Mirrored input causes player to fall off puzzle"
+      recovery: "Player must adjust their own input — no fallback by design (Acceptance rule)"

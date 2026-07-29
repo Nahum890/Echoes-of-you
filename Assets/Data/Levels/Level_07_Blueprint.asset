@@ -47,6 +47,8 @@ MonoBehaviour:
   - {x: 0, y: 1.1, z: -8}
   - {x: 0, y: 1.1, z: 8}
   - {x: 0, y: 1.1, z: 24}
+  inversionCamera: 0
+  timingFloor: 0.4
   modules:
   - name: PlayerStart
     type: 7

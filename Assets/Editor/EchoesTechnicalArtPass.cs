@@ -138,7 +138,9 @@ public static class EchoesTechnicalArtPass
     public static int ParseLevelNumber(string sceneName)
     {
         if (sceneName == null || !sceneName.StartsWith("Level_")) return -1;
-        if (sceneName.Contains("TEST")) return -1;
+        // Escenas de prueba y greybox fase 1 quedan fuera del pase de arte:
+        // el greybox es arquitectura pura sin props/luces por diseño.
+        if (sceneName.Contains("TEST") || sceneName.Contains("SchoolGreybox")) return -1;
         return int.TryParse(sceneName.Substring(6, 2), out int n) ? n : -1;
     }
 
@@ -317,6 +319,10 @@ public static class EchoesTechnicalArtPass
             (5,  "Aiden_Voice_Fragment", null),
             (10, "Lyra_Voice_Fragment",  "Lyra_Ambient_Echo"),
             (13, "Aiden_Forced_Echo",    "Conversation_Fragment"),
+            // L15 tenía ambientEchoData=1 (flag bool del commit greybox);
+            // al volver el campo a EchoRecordingData, el flag se preserva
+            // asignando el eco ambiental de Lyra.
+            (15, null,                   "Lyra_Ambient_Echo"),
         };
 
         foreach (var (level, imposedName, ambientName) in assignments)
@@ -359,7 +365,7 @@ public static class EchoesTechnicalArtPass
     [MenuItem("Echoes of You/Technical Art/Configure URP (Hard Shadows, 40m)", false, 404)]
     public static void ConfigureUrpHardShadows()
     {
-        QualitySettings.shadows = global::UnityEngine.ShadowQuality.HardOnly;
+        QualitySettings.shadows = UnityEngine.ShadowQuality.HardOnly;
         QualitySettings.shadowDistance = 40f;
 
         var pipeline = GraphicsSettings.defaultRenderPipeline as UniversalRenderPipelineAsset;

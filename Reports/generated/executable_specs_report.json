@@ -1,95 +1,95 @@
 {
-    "report_id": "RPT-SPECS-20260727042709",
-    "generated_at": "2026-07-27T04:27:09.7246376Z",
+    "report_id": "RPT-SPECS-20260726035915",
+    "generated_at": "2026-07-26T03:59:15.4178359Z",
     "subject": "Echoes of You executable specification system",
     "validator_version": "1.0",
     "status": "blocked",
     "summary": {
-        "fatal": 1,
-        "errors": 0,
+        "fatal": 28,
+        "errors": 16,
         "warnings": 0,
-        "passed": 240
+        "passed": 78
     },
     "checks": [
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/manifest.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/manifest.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/rules/authority.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/rules/authority.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/registry/decisions.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/registry/decisions.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/registry/documents.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/registry/documents.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/schemas/rule.schema.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/schemas/rule.schema.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/schemas/blueprint.schema.json",
             "evidence": [
                 "Docs/ExecutableSpecs/schemas/blueprint.schema.json"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/schemas/ai-task.schema.json",
             "evidence": [
                 "Docs/ExecutableSpecs/schemas/ai-task.schema.json"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/schemas/validator-report.schema.json",
             "evidence": [
                 "Docs/ExecutableSpecs/schemas/validator-report.schema.json"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
@@ -103,193 +103,193 @@
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/catalogs/props.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/catalogs/props.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/catalogs/room_templates.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/catalogs/room_templates.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/catalogs/modules.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/catalogs/modules.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/architecture/school_graph.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/architecture/school_graph.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/gameplay/echo_states.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/gameplay/echo_states.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/gameplay/puzzle_archetypes.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/gameplay/puzzle_archetypes.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/gameplay/blueprint_spec.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/gameplay/blueprint_spec.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/levels/level_structure.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/levels/level_structure.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/levels/level_intents.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/levels/level_intents.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/levels/puzzle_specs.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/levels/puzzle_specs.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/visual/camera_profiles.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/visual/camera_profiles.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/visual/lighting_profiles.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/visual/lighting_profiles.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/visual/materials.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/visual/materials.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/validators/static_validator.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/validators/static_validator.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/validators/level_validator.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/validators/level_validator.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/validators/blueprint_validator.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/validators/blueprint_validator.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/validators/documentation_validator.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/validators/documentation_validator.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/ai/task_schema.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/ai/task_schema.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "required_file",
+            "status": "failed",
+            "severity": "fatal",
+            "message": "Required executable specification file is missing: Docs/ExecutableSpecs/ai/report_schema.yaml",
             "evidence": [
                 "Docs/ExecutableSpecs/ai/report_schema.yaml"
             ],
-            "remediation": ""
+            "remediation": "Create or restore the required file."
         },
         {
             "rule_id": "DOC-VAL-002",
@@ -298,1196 +298,6 @@
             "message": "duplicate_ids",
             "evidence": [
                 "Scanned executable YAML files"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Architecture/Arch_Stairs.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Architecture/Arch_Tree.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_RecordsBoard.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/MochilaLyra.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_StoppedClock.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Scripts/LevelBlueprint.cs"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Editor/EchoesModuleFactory.cs"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Architecture/Arch_Floor.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Architecture/Arch_Wall.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Architecture/Arch_WallWindow.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Architecture/Arch_Doorway.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Architecture/Arch_Stairs.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Architecture/Arch_Column.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Architecture/Arch_Fence.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Architecture/Arch_Tree.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Architecture/Arch_Shelf.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Architecture/Arch_Locker.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Architecture/Arch_Desk.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Architecture/Arch_Chair.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Architecture/Arch_Bench.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Architecture/Arch_Trashcan.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/PupitreDoble.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/SillaEscolar.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/MesaProfesor.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/MesaRedonda.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/MesaKenney.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/SillaOficina.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Locker.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/LockerPuertaAbierta.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Estanteria.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/EstanteriaCerrada.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Pizarra.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/VentanaMarco.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Perchero.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Radiador.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Fluorescente.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/LamparaTecho.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Cartelera.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Extintor.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Perchero.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/BancoMadera.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Basurero.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/PapeleraKenney.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/CajaCartonCerrada.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/CajaCartonAbierta.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/CarritoConserje.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Mochila.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Libros.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/PlantaMaceta.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Radio.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/RelojPared.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Paraguas.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Casco.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/TazaCafe.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Balon.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/MochilaLyra.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_Coat.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_Notebook.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_StoppedClock.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_TeacherNotebook.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_PhotoFrame.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_Backpack.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_CenterBackpack.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_BlankBook.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_AttendanceList.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_RecordsBoard.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_LibraryStamp.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_JanitorCart.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_DriedFlowers.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_CoffeeCups.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_ChalkGraffiti.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_ChalkDrawing.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_OverturnedDesk.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_SoccerBall.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_Stopwatch.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Decals/dec_humedad.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Decals/dec_tiza_borrada.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Decals/dec_lyra_notes.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Decals/dec_floor_drag.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Decals/dec_grieta.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Decals/dec_arrastre.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Decals/dec_crack_liminal.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Decals/dec_papel_suelo.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Decals/dec_nota_adhesiva.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Decals/dec_foto_borrosa.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Decals/dec_aviso_corcho.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Decals/dec_moisture_lines.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Scripts/LevelBlueprint.cs"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Scripts/LevelBlueprint.cs"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/MochilaLyra.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_Coat.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_StoppedClock.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_Notebook.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Props/Narrative/Prop_ChalkGraffiti.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Prefabs/Decals/dec_foto_borrosa.prefab"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Scripts/CameraProfile.cs"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Scripts/Lighting/LightingProfile.cs"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Editor/EchoesMaterialLibrary.cs"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Shaders/RetroFlatLit.shader"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Shaders/AnalogGhost.shader"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Shaders/LiminalFog.shader"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Shaders/LiminalSurface.shader"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Shaders/LiminalFogVolume.shader"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Shaders/EchoLiminal.shader"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Materials/Echoes/Mat_Floor.mat"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Materials/Echoes/Mat_WallTeal.mat"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Materials/Echoes/Mat_WallMustard.mat"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Materials/Echoes/Mat_WallSage.mat"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Materials/Echoes/Mat_WallRose.mat"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Materials/Echoes/Mat_Echo.mat"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Materials/Echoes/Mat_EchoSuit.mat"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Materials/Echoes/Mat_Bridge.mat"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Materials/Echoes/Mat_Door.mat"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Materials/Echoes/Mat_GravityZone.mat"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Materials/Echoes/Mat_LiminalFog.mat"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Materials/Echoes/Mat_Chalkboard.mat"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Materials/Echoes/Mat_Crack.mat"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Materials/Echoes/Mat_Fluorescent.mat"
-            ],
-            "remediation": ""
-        },
-        {
-            "rule_id": "DOC-VAL-006",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "asset_reference",
-            "evidence": [
-                "Assets/Materials/Echoes/Mat_Exit.mat"
             ],
             "remediation": ""
         },
@@ -1543,13 +353,13 @@
         },
         {
             "rule_id": "LIGHT-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "lighting_profile",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
             "evidence": [
                 "Assets/Data/Levels/Level_01_Blueprint.asset"
             ],
-            "remediation": ""
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
         },
         {
             "rule_id": "BLU-001",
@@ -1573,13 +383,13 @@
         },
         {
             "rule_id": "ECHO-002",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "echo_duration",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint maxRecordSeconds is missing or outside 1..30 seconds.",
             "evidence": [
                 "Assets/Data/Levels/Level_01_Blueprint.asset"
             ],
-            "remediation": ""
+            "remediation": "Set a canonical per-level record duration."
         },
         {
             "rule_id": "BLUEPRINT-000",
@@ -1603,13 +413,13 @@
         },
         {
             "rule_id": "LIGHT-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "lighting_profile",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
             "evidence": [
                 "Assets/Data/Levels/Level_02_Blueprint.asset"
             ],
-            "remediation": ""
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
         },
         {
             "rule_id": "BLU-001",
@@ -1663,13 +473,13 @@
         },
         {
             "rule_id": "LIGHT-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "lighting_profile",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
             "evidence": [
                 "Assets/Data/Levels/Level_03_Blueprint.asset"
             ],
-            "remediation": ""
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
         },
         {
             "rule_id": "BLU-001",
@@ -1723,13 +533,13 @@
         },
         {
             "rule_id": "LIGHT-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "lighting_profile",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
             "evidence": [
                 "Assets/Data/Levels/Level_04_Blueprint.asset"
             ],
-            "remediation": ""
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
         },
         {
             "rule_id": "BLU-001",
@@ -1783,13 +593,13 @@
         },
         {
             "rule_id": "LIGHT-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "lighting_profile",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
             "evidence": [
                 "Assets/Data/Levels/Level_05_Blueprint.asset"
             ],
-            "remediation": ""
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
         },
         {
             "rule_id": "BLU-001",
@@ -1843,13 +653,13 @@
         },
         {
             "rule_id": "LIGHT-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "lighting_profile",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
             "evidence": [
                 "Assets/Data/Levels/Level_06_Blueprint.asset"
             ],
-            "remediation": ""
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
         },
         {
             "rule_id": "BLU-001",
@@ -1903,13 +713,13 @@
         },
         {
             "rule_id": "LIGHT-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "lighting_profile",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
             "evidence": [
                 "Assets/Data/Levels/Level_07_Blueprint.asset"
             ],
-            "remediation": ""
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
         },
         {
             "rule_id": "BLU-001",
@@ -1963,13 +773,13 @@
         },
         {
             "rule_id": "LIGHT-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "lighting_profile",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
             "evidence": [
                 "Assets/Data/Levels/Level_08_Blueprint.asset"
             ],
-            "remediation": ""
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
         },
         {
             "rule_id": "BLU-001",
@@ -2023,13 +833,13 @@
         },
         {
             "rule_id": "LIGHT-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "lighting_profile",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
             "evidence": [
                 "Assets/Data/Levels/Level_09_Blueprint.asset"
             ],
-            "remediation": ""
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
         },
         {
             "rule_id": "BLU-001",
@@ -2083,13 +893,13 @@
         },
         {
             "rule_id": "LIGHT-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "lighting_profile",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
             "evidence": [
                 "Assets/Data/Levels/Level_10_Blueprint.asset"
             ],
-            "remediation": ""
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
         },
         {
             "rule_id": "BLU-001",
@@ -2143,13 +953,13 @@
         },
         {
             "rule_id": "LIGHT-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "lighting_profile",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
             "evidence": [
                 "Assets/Data/Levels/Level_11_Blueprint.asset"
             ],
-            "remediation": ""
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
         },
         {
             "rule_id": "BLU-001",
@@ -2203,13 +1013,13 @@
         },
         {
             "rule_id": "LIGHT-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "lighting_profile",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
             "evidence": [
                 "Assets/Data/Levels/Level_12_Blueprint.asset"
             ],
-            "remediation": ""
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
         },
         {
             "rule_id": "BLU-001",
@@ -2263,13 +1073,13 @@
         },
         {
             "rule_id": "LIGHT-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "lighting_profile",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
             "evidence": [
                 "Assets/Data/Levels/Level_13_Blueprint.asset"
             ],
-            "remediation": ""
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
         },
         {
             "rule_id": "BLU-001",
@@ -2323,13 +1133,13 @@
         },
         {
             "rule_id": "LIGHT-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "lighting_profile",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
             "evidence": [
                 "Assets/Data/Levels/Level_14_Blueprint.asset"
             ],
-            "remediation": ""
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
         },
         {
             "rule_id": "BLU-001",
@@ -2383,13 +1193,13 @@
         },
         {
             "rule_id": "LIGHT-001",
-            "status": "passed",
-            "severity": "advisory",
-            "message": "lighting_profile",
+            "status": "failed",
+            "severity": "error",
+            "message": "Blueprint does not serialize a lightingProfile field.",
             "evidence": [
                 "Assets/Data/Levels/Level_15_Blueprint.asset"
             ],
-            "remediation": ""
+            "remediation": "Assign a LightingProfile or update the contract after verifying the runtime path."
         },
         {
             "rule_id": "BLU-001",

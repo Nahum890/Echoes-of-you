@@ -24,10 +24,10 @@ MonoBehaviour:
   degradationPerReplay: 0
   imposedEchoData: {fileID: 0}
   ambientEchoData: {fileID: 0}
-  lockEchoSlots: 1
-  lockedSlotIndices: 0000000001000000
-  cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111112, type: 3}
-  lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111103, type: 3}
+  lockEchoSlots: 0
+  lockedSlotIndices: 
+  cameraProfile: {fileID: 0}
+  lightingProfile: {fileID: 0}
   activeParadoxes: 
   fogColor: {r: 0.101960786, g: 0.0627451, b: 0.1254902, a: 1}
   fogDensity: 0.02
@@ -47,6 +47,8 @@ MonoBehaviour:
   - {x: 0, y: 1.1, z: -4}
   - {x: 0, y: 1.1, z: 8}
   - {x: 0, y: 3.1, z: 20}
+  inversionCamera: 0
+  timingFloor: 0.4
   modules:
   - name: PlayerStart
     type: 7

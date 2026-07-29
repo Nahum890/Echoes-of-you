@@ -49,8 +49,6 @@ public class LevelExit : MonoBehaviour
             return;
         }
 
-        Debug.Log($"[LevelExit] OnTriggerEnter: {other.name} tag={other.tag}");
-
         if (_triggered)
             return;
 
@@ -77,6 +75,7 @@ public class LevelExit : MonoBehaviour
     public void BindGoal(LevelGoal goal)
     {
         _goal = goal;
+        SetUnlocked(_goal != null ? _goal.IsReady : true);
     }
 
     public void SetUnlocked(bool unlocked)

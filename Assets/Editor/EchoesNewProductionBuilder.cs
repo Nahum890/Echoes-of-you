@@ -3,6 +3,7 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+// Phase2 rebuild trigger
 using UnityEngine.SceneManagement;
 
 public static class EchoesNewProductionBuilder
@@ -14,6 +15,12 @@ public static class EchoesNewProductionBuilder
     public static void BuildAllBlueprintLevels() => BuildAllBlueprints();
 
     public static void BuildAllBlueprints()
+    {
+        BuildLegacyExperienceBlueprints();
+    }
+
+    [MenuItem("Echoes of You/Production/Build Legacy Experience Blueprints", false, 202)]
+    public static void BuildLegacyExperienceBlueprints()
     {
         // 0. Export prefabs to ensure no missing dependencies exist
         // EchoesLevelKitExporter.ExportLevelKitPrefabs();
@@ -85,8 +92,37 @@ public static class EchoesNewProductionBuilder
             }
         }
 
-        // Post-spawn signal wiring
-        WireSignals(instantiated, mechRoot);
+        // Post-spawn signal wiring (DISABLED for Phase 1 - Greybox only)
+        // WireSignals(instantiated, mechRoot);
+
+        // Phase 2 puzzle flags (recordFuture / ambientEchoData / imposedEchoData / inversionCamera)
+        // ApplyPhase2PuzzleFlags(blueprint, instantiated, mechRoot);
+        // ApplyPhase2PuzzleFlagsInline(blueprint, mechRoot);
+        
+        // DIRECT INLINE CODE TO GUARANTEE EXECUTION
+        if (blueprint.ambientEchoData)
+        {
+            GameObject ambGO = new GameObject("AmbientEchoData");
+            ambGO.transform.SetParent(mechRoot, false);
+            ambGO.AddComponent<AmbientEchoData>();
+        }
+        if (blueprint.imposedEchoData)
+        {
+            GameObject impGO = new GameObject("ImposedEchoData");
+            impGO.transform.SetParent(mechRoot, false);
+            impGO.AddComponent<ImposedEchoData>();
+        }
+        if (blueprint.inversionCamera)
+        {
+            GameObject invGO = new GameObject("InversionCamera");
+            invGO.transform.SetParent(mechRoot, false);
+            invGO.AddComponent<InversionCamera>();
+        }
+        if (blueprint.recordFuture)
+        {
+            LevelExit ext = Object.FindAnyObjectByType<LevelExit>();
+            if (ext != null && ext.GetComponent<RecordFutureExit>() == null) ext.gameObject.AddComponent<RecordFutureExit>();
+        }
 
         // Find primary exit / goal for camera target
         LevelExit exit = Object.FindAnyObjectByType<LevelExit>();
@@ -103,14 +139,14 @@ public static class EchoesNewProductionBuilder
         // Spawn Level Runtime Controller
         EchoesLevelShell.SpawnLevelRuntime(mechRoot, blueprint);
 
-        // Spawn Pacing and Experience systems
-        float routeStartZ = -10f;
-        float routeEndZ = 30f;
-        if (exit != null) routeEndZ = exit.transform.position.z;
-        EchoesLevelShell.SpawnExperienceSystems(mechRoot, envRoot, exit, blueprint, routeStartZ, routeEndZ);
+        // Spawn Pacing and Experience systems (DISABLED for Phase 1 - Greybox only)
+        // float routeStartZ = -10f;
+        // float routeEndZ = 30f;
+        // if (exit != null) routeEndZ = exit.transform.position.z;
+        // EchoesLevelShell.SpawnExperienceSystems(mechRoot, envRoot, exit, blueprint, routeStartZ, routeEndZ);
 
-        // Spawn path hint lights from blueprint.pathHints
-        SpawnPathHintLights(envRoot, blueprint, levelNum);
+        // Spawn path hint lights from blueprint.pathHints (DISABLED for Phase 1 - Greybox only)
+        // SpawnPathHintLights(envRoot, blueprint, levelNum);
 
         // Save Scene
         EditorSceneManager.SaveScene(scene, $"{SceneRoot}/{blueprint.levelName}.unity");
@@ -180,6 +216,88 @@ public static class EchoesNewProductionBuilder
         }
 
         Debug.Log($"[Echoes Path Hints] Spawned {blueprint.pathHints.Length} hint lights for {blueprint.levelName} (level {levelNum})");
+    }
+
+
+    private static void ApplyPhase2PuzzleFlagsInline(LevelBlueprint blueprint, Transform mechRoot)
+    {
+        if (blueprint == null) return;
+        Debug.Log($"[Phase2-INLINE] {blueprint.levelName}: amb={blueprint.ambientEchoData} imp={blueprint.imposedEchoData} inv={blueprint.inversionCamera} recF={blueprint.recordFuture}");
+
+        if (blueprint.recordFuture)
+        {
+            RecordFutureExit exit = Object.FindAnyObjectByType<RecordFutureExit>();
+            if (exit == null)
+            {
+                LevelExit levelExit = Object.FindAnyObjectByType<LevelExit>();
+                if (levelExit != null) levelExit.gameObject.AddComponent<RecordFutureExit>();
+            }
+        }
+
+        if (blueprint.ambientEchoData)
+        {
+            GameObject ambient = new GameObject("AmbientEchoData");
+            ambient.transform.SetParent(mechRoot, false);
+            var comp = ambient.AddComponent<AmbientEchoData>();
+            Debug.Log($"[Phase2-INLINE] Created AmbientEchoData: {comp != null}");
+        }
+
+        if (blueprint.imposedEchoData)
+        {
+            GameObject imposed = new GameObject("ImposedEchoData");
+            imposed.transform.SetParent(mechRoot, false);
+            imposed.AddComponent<ImposedEchoData>();
+            Debug.Log($"[Phase2-INLINE] Created ImposedEchoData");
+        }
+
+        if (blueprint.inversionCamera)
+        {
+            GameObject invert = new GameObject("InversionCamera");
+            invert.transform.SetParent(mechRoot, false);
+            invert.AddComponent<InversionCamera>();
+            Debug.Log($"[Phase2-INLINE] Created InversionCamera");
+        }
+    }
+
+
+    private static void ApplyPhase2PuzzleFlags(LevelBlueprint blueprint, List<InstantiatedModule> instantiated, Transform mechRoot)
+    {
+        if (blueprint == null) return;
+        Debug.Log($"[Phase2Flags] {blueprint.levelName}: amb={blueprint.ambientEchoData} imp={blueprint.imposedEchoData} inv={blueprint.inversionCamera} recF={blueprint.recordFuture}");
+
+        // recordFuture: attach RecordFutureExit to the LevelExit
+        if (blueprint.recordFuture)
+        {
+            LevelExit exit = Object.FindAnyObjectByType<LevelExit>();
+            if (exit != null && exit.GetComponent<RecordFutureExit>() == null)
+            {
+                exit.gameObject.AddComponent<RecordFutureExit>();
+            }
+        }
+
+        // ambientEchoData: spawn AmbientEchoData controller
+        if (blueprint.ambientEchoData)
+        {
+            GameObject ambient = new GameObject("AmbientEchoData");
+            ambient.transform.SetParent(mechRoot, false);
+            ambient.AddComponent<AmbientEchoData>();
+        }
+
+        // imposedEchoData: spawn ImposedEchoData controller
+        if (blueprint.imposedEchoData)
+        {
+            GameObject imposed = new GameObject("ImposedEchoData");
+            imposed.transform.SetParent(mechRoot, false);
+            imposed.AddComponent<ImposedEchoData>();
+        }
+
+        // inversionCamera: spawn InversionCamera controller
+        if (blueprint.inversionCamera)
+        {
+            GameObject invert = new GameObject("InversionCamera");
+            invert.transform.SetParent(mechRoot, false);
+            invert.AddComponent<InversionCamera>();
+        }
     }
 
 
