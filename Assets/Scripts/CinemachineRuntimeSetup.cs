@@ -12,9 +12,13 @@ public class CinemachineRuntimeSetup : MonoBehaviour
         if (cameraRef == null || player == null)
             return;
 
-        // ThirdPersonCamera es el sistema canónico de cámara en gameplay.
-        // Si está presente y activo, no inyectar CinemachineBrain: ambos sistemas
-        // escriben el camera transform en LateUpdate simultáneamente → jitter (BUG 1).
+        // SimpleFollowCamera is the canonical camera system (Cinemachine fully replaced).
+        // If present and active, do NOT inject Cinemachine — it would freeze the camera.
+        SimpleFollowCamera sfc = cameraRef.GetComponent<SimpleFollowCamera>();
+        if (sfc != null && sfc.enabled)
+            return;
+
+        // ThirdPersonCamera (legacy fallback) — same guard.
         ThirdPersonCamera tpc = cameraRef.GetComponent<ThirdPersonCamera>();
         if (tpc != null && tpc.enabled)
             return;

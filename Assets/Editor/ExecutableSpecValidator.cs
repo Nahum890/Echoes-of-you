@@ -65,6 +65,7 @@ public static class ExecutableSpecValidator
         CheckReferencedAssets(projectRoot, report);
         CheckSourceContracts(projectRoot, report);
         CheckBlueprints(projectRoot, report);
+        CheckGuidRegistry(projectRoot, report);
 
         if (report.summary.fatal > 0)
         {
@@ -261,6 +262,85 @@ public static class ExecutableSpecValidator
                 Fail(report, "ECHO-002", "error", "Blueprint maxRecordSeconds is missing or outside 1..30 seconds.", relative, "Set a canonical per-level record duration.");
             else
                 Pass(report, "ECHO-002", "echo_duration", relative);
+        }
+    }
+
+    private static void CheckGuidRegistry(string projectRoot, Report report)
+    {
+        // SPEC-126 / ACK-001: every declared `guid:` entry in
+        // Docs/ExecutableSpecs/catalogs/asset_guid_registry.yaml MUST resolve
+        // in AssetDatabase. This prevents silent blueprint corruption caused by
+        // stale/aspirational GUID pointers and enforces the locked Q5 decision
+        // (rooms are composed from modular Arch_* primitives — no phantom named
+        // room prefabs). Entries with an empty `path:` (procedural GameObjects
+        // assembled by code, e.g. the Player) are excluded from the gate.
+        string registryRelative = "Docs/ExecutableSpecs/catalogs/asset_guid_registry.yaml";
+        string registryAbsolute = Path.Combine(projectRoot, registryRelative.Replace('/', Path.DirectorySeparatorChar));
+        if (!File.Exists(registryAbsolute))
+        {
+            Fail(report, "ACK-001", "fatal", "Asset GUID registry is missing.", registryRelative, "Create Docs/ExecutableSpecs/catalogs/asset_guid_registry.yaml.");
+            return;
+        }
+
+        string contents = File.ReadAllText(registryAbsolute);
+        Regex keyBlock = new Regex(@"^\s{2,}([A-Za-z0-9_]+):\s*$", RegexOptions.Multiline);
+        Regex guidLine = new Regex(@"^\s+guid:\s*""?([0-9a-fA-F]{32})""?\s*$", RegexOptions.Multiline);
+        Regex pathLine = new Regex(@"^\s+path:\s*""?([^""]*?)""?\s*$", RegexOptions.Multiline);
+
+        // Collect (alias, path, guid) triples by scanning top-level registry entries.
+        var entries = new List<(string alias, string path, string guid)>();
+        MatchCollection keys = keyBlock.Matches(contents);
+        for (int i = 0; i < keys.Count; i++)
+        {
+            string alias = keys[i].Groups[1].Value;
+            int blockStart = keys[i].Index + keys[i].Length;
+            int blockEnd = (i + 1 < keys.Count) ? keys[i + 1].Index : contents.Length;
+            string block = contents.Substring(blockStart, blockEnd - blockStart);
+
+            Match g = guidLine.Match(block);
+            Match p = pathLine.Match(block);
+            if (g.Success && p.Success)
+            {
+                string guidString = g.Groups[1].Value;
+                string pathString = p.Groups[1].Value.Trim();
+                if (!string.IsNullOrEmpty(pathString))
+                    entries.Add((alias, pathString, guidString));
+            }
+        }
+
+        if (entries.Count == 0)
+        {
+            Pass(report, "ACK-001", "guid_registry_empty", registryRelative);
+            return;
+        }
+
+        int resolved = 0;
+        var unresolved = new List<string>();
+        foreach (var entry in entries)
+        {
+            string resolvedPath = AssetDatabase.GUIDToAssetPath(entry.guid);
+            bool ok = !string.IsNullOrEmpty(resolvedPath)
+                      && resolvedPath.Replace('\\', '/').Equals(entry.path.Replace('\\', '/'), System.StringComparison.OrdinalIgnoreCase);
+            if (ok)
+            {
+                resolved++;
+            }
+            else
+            {
+                string evidence = $"{entry.alias}: guid={entry.guid} path={entry.path} resolved=\"{resolvedPath}\"";
+                unresolved.Add(evidence);
+            }
+        }
+
+        string summaryEvidence = $"{resolved}/{entries.Count} resolved";
+        if (unresolved.Count > 0)
+        {
+            Fail(report, "ACK-001", "fatal", $"GUID registry has {unresolved.Count} unresolved or path-mismatched entries.", summaryEvidence, "Update the registry in Docs/ExecutableSpecs/catalogs/asset_guid_registry.yaml so each guid resolves to its declared path via AssetDatabase.GUIDToAssetPath.");
+            report.checks[report.checks.Count - 1].evidence = unresolved.ToArray();
+        }
+        else
+        {
+            Pass(report, "ACK-001", "guid_registry_resolved", summaryEvidence);
         }
     }
 

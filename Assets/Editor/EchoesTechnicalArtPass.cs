@@ -173,7 +173,7 @@ public static class EchoesTechnicalArtPass
         Debug.Log("[TechnicalArtPass] Iluminación por capítulo aplicada a los 15 blueprints.");
     }
 
-    static void ApplyVisualPassToScene(Scene scene, int level, List<string> report)
+    public static void ApplyVisualPassToScene(Scene scene, int level, List<string> report)
     {
         ChapterProfile profile = Chapters[LevelChapter[level]];
 

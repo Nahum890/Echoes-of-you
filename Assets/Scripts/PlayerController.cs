@@ -26,10 +26,10 @@ public partial class PlayerController : MonoBehaviour
     [Header("Movimiento")]
     public float moveSpeed = 2.8f;
     public float sprintMultiplier = 1.5f;
-    public float acceleration = 36f;
-    public float deceleration = 38f;
+    public float acceleration = 18f;
+    public float deceleration = 20f;
     [Tooltip("Turn damping time constant (seconds). Spec: 0.12s. Sharpness = 1 / dampingTime.")]
-    public float turnDampingSeconds = 0.12f;
+    public float turnDampingSeconds = 0.25f;
     [Range(0.1f, 1f)]
     public float airControlFactor = 0.35f;
 
@@ -41,7 +41,7 @@ public partial class PlayerController : MonoBehaviour
     public float gravityBlendSpeed = 12f;
     public float fallGravityMultiplier = 2.0f;
     public float maxFallSpeed = 25.0f;
-    public bool alignToGroundNormal = true;
+    public bool alignToGroundNormal = false;
 
     /// <summary>Theoretical max jump height calculated from jumpForce and gravity (v²/2g).</summary>
     public float JumpHeight => (jumpForce * jumpForce) / (2f * gravityStrength);

@@ -15,6 +15,11 @@ public class CinemachineEventFocus : MonoBehaviour
     {
         if (Instance != null && Instance._vcam != null) return;
 
+        // SimpleFollowCamera is canonical (Cinemachine replaced). Skip EventFocus vcam injection.
+        Camera main = Camera.main;
+        if (main != null && main.GetComponent<SimpleFollowCamera>() != null && main.GetComponent<SimpleFollowCamera>().enabled)
+            return;
+
         var existing = Object.FindAnyObjectByType<CinemachineEventFocus>();
         if (existing != null && existing._vcam != null)
         {

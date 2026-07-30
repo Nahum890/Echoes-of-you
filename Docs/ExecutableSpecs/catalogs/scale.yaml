@@ -1,0 +1,90 @@
+schema_version: "1.0"
+catalog_type: physical_scale
+unit_system: meters
+canonical_source: Docs/Specs/CONSTANTS_REGISTRY.yaml
+source:
+  - Docs/ExecutableSpecs/catalogs/scale.yaml
+  - Docs/Specs/SCALE_GUIDE.md
+  - Assets/Scripts/PlayerController.cs
+  - Assets/Scripts/LevelBlueprint.cs
+verification_status: design_baseline_aligned_to_constants_registry
+
+player:
+  height: 1.80
+  radius: 0.35
+  eye_height: 1.60
+  step_offset: 0.30
+  walk_speed: 2.8
+  run_speed: 4.2
+  jump_height: 1.2
+  jump_distance: 2.5
+
+camera:
+  pivot_height: 1.5
+  default_distance: 4.5
+  minimum_corridor_clearance: 2.2
+
+architecture:
+  grid_unit: 3.0
+  door_single: {width: 1.20, height: 2.20, depth: 0.10}
+  door_double: {width: 2.40, height: 2.40, depth: 0.10}
+  door_frame_thickness: 0.15
+  corridor:
+    minimum_width: 3.0
+    standard_width: 4.5
+    standard_height: 3.2
+  ceiling:
+    minimum_height: 3.2
+    standard_height: 3.8
+    high_hall_height: 5.5
+  wall:
+    standard_thickness: 0.20
+    structural_thickness: 0.50
+  stair:
+    rise: 0.18
+    run: 0.28
+    flight_width: 2.2
+    landing_depth: 1.8
+    handrail_height: 1.0
+
+props:
+  student_desk_single: {width: 0.7, height: 0.75, depth: 0.5}
+  student_desk_double: {width: 1.3, height: 0.75, depth: 0.5}
+  student_chair: {width: 0.45, height: 0.85, depth: 0.45, seat_height: 0.45}
+  teacher_desk: {width: 1.6, height: 0.75, depth: 0.8}
+  locker: {width: 0.8, height: 1.9, depth: 0.5}
+  bench: {width: 1.6, height: 0.45, depth: 0.5}
+  bookshelf: {width: 1.8, height: 2.4, depth: 0.45}
+  pressure_plate: {width: 1.5, height: 0.08, depth: 1.5}
+  kinetic_block: {width: 1.0, height: 1.0, depth: 1.0}
+  temporal_bridge: {width: 3.0, height: 0.2, depth: 6.0}
+
+clearance:
+  player_minimum: 0.70
+  navigation_minimum: 1.20
+  plate_free_margin: 0.5
+  prop_separation: 0.4
+  door_clearance: 1.20
+
+validation:
+  - id: SCALE-VAL-001
+    type: constraint
+    status: active
+    severity: fatal
+    scope: [corridor, room, level]
+    rule: "Every primary navigation route must maintain at least 1.2m clear width"
+    validator: validators/level_validator.yaml#clearance
+  - id: SCALE-VAL-002
+    type: constraint
+    status: active
+    severity: error
+    scope: [door, transition]
+    rule: "Every usable single doorway must be at least 1.2m wide and 2.2m high"
+    validator: validators/level_validator.yaml#door_clearance
+  - id: SCALE-VAL-003
+    type: constraint
+    status: active
+    severity: error
+    scope: [stairs]
+    rule: "Stair rise must be <= 0.2m and run must be >= 0.25m"
+    validator: validators/level_validator.yaml#stairs

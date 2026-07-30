@@ -1,9 +1,90 @@
 {
-    "generated_utc": "2026-07-27T15:30:17.3681648Z",
+    "generated_utc": "2026-07-30T04:31:09.7499578Z",
     "note": "SSIM/pixel-diff solo válidos con baseline previa en Docs/Art/ReferenceFrames",
     "levels": [
         {
             "scene": "Level_01",
+            "light_count": 33,
+            "lights_ok": true,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "fail",
+                    "pixel_diff_pct": 20.48849868774414,
+                    "ssim": 0.8593552112579346
+                },
+                {
+                    "view": "puzzle",
+                    "status": "fail",
+                    "pixel_diff_pct": 50.82725524902344,
+                    "ssim": 0.8236885070800781
+                },
+                {
+                    "view": "exit",
+                    "status": "fail",
+                    "pixel_diff_pct": 50.8271484375,
+                    "ssim": 0.8236103057861328
+                }
+            ]
+        },
+        {
+            "scene": "Level_02",
+            "light_count": 53,
+            "lights_ok": false,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "fail",
+                    "pixel_diff_pct": 30.86610221862793,
+                    "ssim": 0.8476700782775879
+                },
+                {
+                    "view": "puzzle",
+                    "status": "fail",
+                    "pixel_diff_pct": 67.55815887451172,
+                    "ssim": 0.7978833913803101
+                },
+                {
+                    "view": "exit",
+                    "status": "fail",
+                    "pixel_diff_pct": 67.55826568603516,
+                    "ssim": 0.7978986501693726
+                }
+            ]
+        },
+        {
+            "scene": "Level_03",
+            "light_count": 9,
+            "lights_ok": true,
+            "soft_shadow_lights": 0,
+            "magenta_materials": 0,
+            "views": [
+                {
+                    "view": "spawn",
+                    "status": "fail",
+                    "pixel_diff_pct": 63.06260681152344,
+                    "ssim": 0.8745925426483154
+                },
+                {
+                    "view": "puzzle",
+                    "status": "fail",
+                    "pixel_diff_pct": 80.07769012451172,
+                    "ssim": 0.8106403350830078
+                },
+                {
+                    "view": "exit",
+                    "status": "fail",
+                    "pixel_diff_pct": 80.0888671875,
+                    "ssim": 0.8107026219367981
+                }
+            ]
+        },
+        {
+            "scene": "Level_04",
             "light_count": 11,
             "lights_ok": true,
             "soft_shadow_lights": 0,
@@ -11,129 +92,48 @@
             "views": [
                 {
                     "view": "spawn",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 65.9462890625,
+                    "ssim": 0.8029117584228516
                 },
                 {
                     "view": "puzzle",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 78.45941925048828,
+                    "ssim": 0.7860543727874756
                 },
                 {
                     "view": "exit",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
-                }
-            ]
-        },
-        {
-            "scene": "Level_02",
-            "light_count": 22,
-            "lights_ok": true,
-            "soft_shadow_lights": 0,
-            "magenta_materials": 0,
-            "views": [
-                {
-                    "view": "spawn",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
-                },
-                {
-                    "view": "puzzle",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
-                },
-                {
-                    "view": "exit",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
-                }
-            ]
-        },
-        {
-            "scene": "Level_03",
-            "light_count": 16,
-            "lights_ok": true,
-            "soft_shadow_lights": 0,
-            "magenta_materials": 0,
-            "views": [
-                {
-                    "view": "spawn",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
-                },
-                {
-                    "view": "puzzle",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
-                },
-                {
-                    "view": "exit",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
-                }
-            ]
-        },
-        {
-            "scene": "Level_04",
-            "light_count": 12,
-            "lights_ok": true,
-            "soft_shadow_lights": 0,
-            "magenta_materials": 0,
-            "views": [
-                {
-                    "view": "spawn",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
-                },
-                {
-                    "view": "puzzle",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
-                },
-                {
-                    "view": "exit",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 78.45822143554688,
+                    "ssim": 0.7860006093978882
                 }
             ]
         },
         {
             "scene": "Level_05",
-            "light_count": 21,
+            "light_count": 9,
             "lights_ok": true,
             "soft_shadow_lights": 0,
             "magenta_materials": 0,
             "views": [
                 {
                     "view": "spawn",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 66.02213287353516,
+                    "ssim": 0.8640939593315125
                 },
                 {
                     "view": "puzzle",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 74.49305725097656,
+                    "ssim": 0.8710644245147705
                 },
                 {
                     "view": "exit",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 74.50423431396485,
+                    "ssim": 0.8711103200912476
                 }
             ]
         },
@@ -146,21 +146,21 @@
             "views": [
                 {
                     "view": "spawn",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 39.22287368774414,
+                    "ssim": 0.8490175604820252
                 },
                 {
                     "view": "puzzle",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 71.53678131103516,
+                    "ssim": 0.8686330318450928
                 },
                 {
                     "view": "exit",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 71.54296875,
+                    "ssim": 0.8693341016769409
                 }
             ]
         },
@@ -173,21 +173,21 @@
             "views": [
                 {
                     "view": "spawn",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 26.740234375,
+                    "ssim": 0.9063770771026611
                 },
                 {
                     "view": "puzzle",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 72.03461456298828,
+                    "ssim": 0.8605602383613586
                 },
                 {
                     "view": "exit",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 72.03775787353516,
+                    "ssim": 0.8607478737831116
                 }
             ]
         },
@@ -200,21 +200,21 @@
             "views": [
                 {
                     "view": "spawn",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 37.26193618774414,
+                    "ssim": 0.853141725063324
                 },
                 {
                     "view": "puzzle",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 78.60427856445313,
+                    "ssim": 0.8389253616333008
                 },
                 {
                     "view": "exit",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 78.60731506347656,
+                    "ssim": 0.8388901948928833
                 }
             ]
         },
@@ -227,21 +227,21 @@
             "views": [
                 {
                     "view": "spawn",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 59.23752212524414,
+                    "ssim": 0.8466780185699463
                 },
                 {
                     "view": "puzzle",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 75.79535675048828,
+                    "ssim": 0.9239268898963928
                 },
                 {
                     "view": "exit",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 75.79568481445313,
+                    "ssim": 0.9239576458930969
                 }
             ]
         },
@@ -254,21 +254,21 @@
             "views": [
                 {
                     "view": "spawn",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 60.44618225097656,
+                    "ssim": 0.858991265296936
                 },
                 {
                     "view": "puzzle",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 76.18055725097656,
+                    "ssim": 0.8877666592597961
                 },
                 {
                     "view": "exit",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 76.18153381347656,
+                    "ssim": 0.887566864490509
                 }
             ]
         },
@@ -281,21 +281,21 @@
             "views": [
                 {
                     "view": "spawn",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 36.39463806152344,
+                    "ssim": 0.874663233757019
                 },
                 {
                     "view": "puzzle",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 30.58550262451172,
+                    "ssim": 0.9079063534736633
                 },
                 {
                     "view": "exit",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 30.59505271911621,
+                    "ssim": 0.906183123588562
                 }
             ]
         },
@@ -308,21 +308,21 @@
             "views": [
                 {
                     "view": "spawn",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 41.87923049926758,
+                    "ssim": 0.8537376523017883
                 },
                 {
                     "view": "puzzle",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 57.04872131347656,
+                    "ssim": 0.909833550453186
                 },
                 {
                     "view": "exit",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 57.04969787597656,
+                    "ssim": 0.9097634553909302
                 }
             ]
         },
@@ -335,21 +335,21 @@
             "views": [
                 {
                     "view": "spawn",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 38.63237762451172,
+                    "ssim": 0.8657057881355286
                 },
                 {
                     "view": "puzzle",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 72.30197143554688,
+                    "ssim": 0.8599299192428589
                 },
                 {
                     "view": "exit",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 72.30609893798828,
+                    "ssim": 0.8600597977638245
                 }
             ]
         },
@@ -362,21 +362,21 @@
             "views": [
                 {
                     "view": "spawn",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 58.10926818847656,
+                    "ssim": 0.8532822728157044
                 },
                 {
                     "view": "puzzle",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 78.83235931396485,
+                    "ssim": 0.8422062397003174
                 },
                 {
                     "view": "exit",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 78.83040618896485,
+                    "ssim": 0.8424233794212341
                 }
             ]
         },
@@ -389,21 +389,21 @@
             "views": [
                 {
                     "view": "spawn",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 60.45084762573242,
+                    "ssim": 0.8094944357872009
                 },
                 {
                     "view": "puzzle",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 71.98133850097656,
+                    "ssim": 0.8503358960151672
                 },
                 {
                     "view": "exit",
-                    "status": "baseline_created",
-                    "pixel_diff_pct": -1.0,
-                    "ssim": -1.0
+                    "status": "fail",
+                    "pixel_diff_pct": 71.96864318847656,
+                    "ssim": 0.8507004380226135
                 }
             ]
         }
