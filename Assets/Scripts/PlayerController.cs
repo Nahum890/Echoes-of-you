@@ -444,13 +444,13 @@ public partial class PlayerController : MonoBehaviour
 
         if (_cam != null)
         {
-            cameraForward = Vector3.ProjectOnPlane(_cam.forward, movementUp).normalized;
-            if (cameraForward.sqrMagnitude < 0.001f)
-                cameraForward = Vector3.ProjectOnPlane(_cam.up, movementUp).normalized;
-
-            cameraRight = Vector3.ProjectOnPlane(_cam.right, movementUp).normalized;
-            if (cameraRight.sqrMagnitude < 0.001f)
-                cameraRight = Vector3.Cross(movementUp, cameraForward).normalized;
+            // Use camera yaw only for movement direction (ignore pitch) to avoid zigzag when camera looks down
+            Vector3 flatForward = _cam.forward;
+            flatForward.y = 0f;
+            cameraForward = flatForward.sqrMagnitude > 0.001f ? flatForward.normalized : Vector3.forward;
+            Vector3 flatRight = _cam.right;
+            flatRight.y = 0f;
+            cameraRight = flatRight.sqrMagnitude > 0.001f ? flatRight.normalized : Vector3.right;
         }
 
         Vector3 desiredDirection = cameraForward * input.z + cameraRight * input.x;

@@ -53,6 +53,7 @@ public class SimpleFollowCamera : MonoBehaviour
             yaw   += rawX * rotationSpeed * Time.unscaledDeltaTime;
             pitch -= rawY * rotationSpeed * Time.unscaledDeltaTime;
         }
+        yaw = Mathf.Repeat(yaw + 180f, 360f) - 180f;
         pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
 
         distance -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
