@@ -146,20 +146,20 @@ public class PostProcessingSetup : MonoBehaviour
         // Valores canónicos del pase de arte técnico (POST_PROCESSING_SPEC):
         // GameFeelController modula sobre estas mismas bases — mantener sincronizados.
         Bloom bloom = _runtimeProfile.Add<Bloom>(true);
-        bloom.intensity.Override(0.1f);
-        bloom.threshold.Override(0.95f);
-        bloom.scatter.Override(0.6f);
+        bloom.intensity.Override(0.05f);
+        bloom.threshold.Override(0.98f);
+        bloom.scatter.Override(0.5f);
 
         Tonemapping tonemapping = _runtimeProfile.Add<Tonemapping>(true);
         tonemapping.mode.Override(TonemappingMode.None);
 
         ColorAdjustments grading = _runtimeProfile.Add<ColorAdjustments>(true);
         grading.postExposure.Override(0f);
-        grading.contrast.Override(8f);
-        grading.saturation.Override(-5f);
+        grading.contrast.Override(5f);
+        grading.saturation.Override(-3f);
 
         Vignette vignette = _runtimeProfile.Add<Vignette>(true);
-        vignette.intensity.Override(0.3f);
+        vignette.intensity.Override(0.25f);
         vignette.smoothness.Override(0.4f);
         vignette.color.Override(new Color(0.051f, 0.051f, 0.102f)); // #0D0D1A
 
@@ -171,7 +171,7 @@ public class PostProcessingSetup : MonoBehaviour
 
         FilmGrain grain = _runtimeProfile.Add<FilmGrain>(true);
         grain.type.Override(FilmGrainLookup.Medium1);
-        grain.intensity.Override(0.15f);
+        grain.intensity.Override(0.1f);
         grain.response.Override(0.8f);
 
         _volumeGo = new GameObject("GlobalPostProcessVolume");

@@ -29,14 +29,14 @@ public static class EchoesMaterialLibrary
     public static Material DustyRoseMat        => GetMaterial("dusty-rose");
 
     // MAPEO CANÓNICO A TOKENS
-    public static Material FloorMat            => CorridorNavyMat;
+    public static Material FloorMat            => GetOrCreateMaterialInternal("Mat_Floor", HexColor("5A5A5A")); // lighter base so texture shows
     public static Material PlateMat            => FluorescentSickMat;
     public static Material BridgeMat           => EchoCyanMat;
     public static Material DoorMat             => WrongnessRedMat;
     public static Material GoalMat             => MemoryAmberMat;
     public static Material PlayerMat           => GetOrCreateMaterialInternal("Mat_Player", Color.white);
     public static Material EchoMat             => EchoCyanMat;
-    public static Material ArchMat             => GetOrCreateMaterialInternal("Mat_Architecture", HexColor("3A3E47"));
+    public static Material ArchMat             => GetOrCreateMaterialInternal("Mat_Architecture", HexColor("5A5A5A")); // lighter base so texture shows
     public static Material LiminalFogMat       => GetOrCreateFogMaterial();
 
     public static Material WallTealMat         => InstitutionalTealMat;
@@ -112,8 +112,36 @@ public static class EchoesMaterialLibrary
         // CONFIGURACIÓN LIMINAL POR TOKEN
         ConfigureLiminalProperties(token, mat, color);
 
+        // ASIGNAR TEXTURAS A TOKENES ESPECÍFICOS
+        AssignTokenTextures(token, mat);
+
         EditorUtility.SetDirty(mat);
         return mat;
+    }
+
+    private static void AssignTokenTextures(string token, Material mat)
+    {
+        string texPath = "";
+        string texProp = mat.HasProperty("_BaseTex") ? "_BaseTex" : "_BaseMap";
+        
+        if (token == "corridor-navy")
+        {
+            texPath = "Assets/Textures/LoFi/tex_plaster_wall_128.png";
+            mat.SetTextureScale(texProp, new Vector2(2, 4));
+        }
+        else if (token == "institutional-teal" || token == "faded-mustard" || token == "sage-green" || token == "dusty-rose")
+        {
+            // Wall variants could use plaster texture too
+            texPath = "Assets/Textures/LoFi/tex_plaster_wall_128.png";
+            mat.SetTextureScale(texProp, new Vector2(2, 4));
+        }
+        
+        if (!string.IsNullOrEmpty(texPath))
+        {
+            var tex = AssetDatabase.LoadAssetAtPath<Texture>(texPath);
+            if (tex != null)
+                mat.SetTexture(texProp, tex);
+        }
     }
 
     static void ConfigureLiminalProperties(string token, Material mat, Color baseColor)
@@ -250,6 +278,10 @@ public static class EchoesMaterialLibrary
         }
 
         mat.color = color;
+        
+        // ASIGNAR TEXTURAS según el material
+        AssignMaterialTextures(name, mat);
+
         if (emissive)
         {
             mat.EnableKeyword("_EMISSION");
@@ -257,6 +289,42 @@ public static class EchoesMaterialLibrary
         }
         EditorUtility.SetDirty(mat);
         return mat;
+    }
+
+    private static void AssignMaterialTextures(string name, Material mat)
+    {
+        string texPath = "";
+        string texProp = mat.HasProperty("_BaseTex") ? "_BaseTex" : "_BaseMap";
+        
+        if (name == "Mat_Architecture")
+        {
+            texPath = "Assets/Textures/LoFi/tex_plaster_wall_128.png";
+            mat.SetTextureScale(texProp, new Vector2(2, 4));
+        }
+        else if (name == "Mat_Floor")
+        {
+            texPath = "Assets/Textures/LoFi/tex_linoleum_floor_128.png";
+            mat.SetTextureScale(texProp, new Vector2(5, 5));
+        }
+        else if (name == "Mat_Book")
+        {
+            texPath = "Assets/Textures/LoFi/tex_school_wood_128.png";
+        }
+        else if (name == "Mat_Chalkboard")
+        {
+            texPath = "Assets/Textures/LoFi/tex_chalkboard_256.png";
+        }
+        else if (name == "Mat_Cork")
+        {
+            texPath = "Assets/Textures/LoFi/tex_cork_board_128.png";
+        }
+        
+        if (!string.IsNullOrEmpty(texPath))
+        {
+            var tex = AssetDatabase.LoadAssetAtPath<Texture>(texPath);
+            if (tex != null)
+                mat.SetTexture(texProp, tex);
+        }
     }
 
     private static Material GetOrCreateFogMaterial()
