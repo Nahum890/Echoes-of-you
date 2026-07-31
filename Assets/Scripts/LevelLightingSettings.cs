@@ -15,10 +15,8 @@ public class LevelLightingSettings : MonoBehaviour
 
     [Header("Ambiente global")]
     public bool overrideAmbient = true;
-    public Color ambientSky = new Color(0.32f, 0.34f, 0.42f);
-    public Color ambientEquator = new Color(0.22f, 0.24f, 0.3f);
-    public Color ambientGround = new Color(0.12f, 0.13f, 0.17f);
-    [Range(0f, 1f)] public float reflectionIntensity = 0.42f;
+    public Color ambientColor = new Color(0.15f, 0.15f, 0.15f, 1f);
+    [Range(0f, 1f)] public float reflectionIntensity = 0.18f;
 
     [Header("Niebla")]
     public bool enableFog = true;
@@ -38,10 +36,8 @@ public class LevelLightingSettings : MonoBehaviour
     {
         if (overrideAmbient)
         {
-            RenderSettings.ambientMode = AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor = ambientSky;
-            RenderSettings.ambientEquatorColor = ambientEquator;
-            RenderSettings.ambientGroundColor = ambientGround;
+            RenderSettings.ambientMode = AmbientMode.Flat;
+            RenderSettings.ambientLight = ambientColor;
             RenderSettings.reflectionIntensity = reflectionIntensity;
         }
 

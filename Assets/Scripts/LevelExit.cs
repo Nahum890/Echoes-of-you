@@ -75,7 +75,7 @@ public class LevelExit : MonoBehaviour
     public void BindGoal(LevelGoal goal)
     {
         _goal = goal;
-        SetUnlocked(_goal != null ? _goal.IsReady : true);
+        SetUnlocked(_goal != null ? _goal.IsReady : false);
     }
 
     public void SetUnlocked(bool unlocked)

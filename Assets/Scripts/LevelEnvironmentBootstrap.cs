@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering;
 
 public class LevelEnvironmentBootstrap : MonoBehaviour
 {
@@ -322,56 +323,37 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
 
     public static void ApplyLighting()
     {
-        float fogDensity = EchoesPresentationSettings.GameFogDensity;
-        float sunIntensity = EchoesPresentationSettings.GameSunIntensity;
-        float pointMul = EchoesPresentationSettings.GamePointLightMultiplier;
-        float ambientMul = EchoesPresentationSettings.GameAmbientMultiplier;
-        const float globalLightScale = 0.95f;
-        sunIntensity *= globalLightScale;
-        pointMul *= globalLightScale;
-        ambientMul *= globalLightScale;
-
+        // SPEC COMPLIANCE: If scene has LevelLightingSettings, use its values (Flat ambient per spec).
+        // Otherwise, do NOT overwrite - let scene setup handle lighting per spec.
         LevelLightingSettings custom = Object.FindAnyObjectByType<LevelLightingSettings>();
         if (custom != null)
         {
-            custom.fogDensity = fogDensity;
-            custom.directionalIntensity = sunIntensity;
-            custom.pointLightIntensityMultiplier = pointMul;
-            custom.directionalColor = new Color(0.44f, 0.54f, 0.7f, 1f);
-            float ambientBoost = ambientMul * 2.5f;
-            custom.ambientSky = new Color(0.035f * ambientBoost, 0.05f * ambientBoost, 0.09f * ambientBoost, 1f);
-            custom.ambientEquator = new Color(0.018f * ambientBoost, 0.026f * ambientBoost, 0.048f * ambientBoost, 1f);
-            custom.ambientGround = new Color(0.006f * ambientBoost, 0.008f * ambientBoost, 0.014f * ambientBoost, 1f);
-            custom.fogColor = new Color(0.018f, 0.024f, 0.038f, 1f);
-            custom.reflectionIntensity = 0.18f;
             custom.ApplyNow();
-            if (custom.disableRuntimeFillLights)
+
+            // Always clean up any stray fill lights - scene lighting handles everything per spec
+            Light[] strayFills = Object.FindObjectsByType<Light>(FindObjectsInactive.Exclude);
+            for (int i = 0; i < strayFills.Length; i++)
             {
-                // Clean up any stray fill lights if fill lights are disabled
-                Light[] strayFills = Object.FindObjectsByType<Light>(FindObjectsInactive.Exclude);
-                for (int i = 0; i < strayFills.Length; i++)
+                if (strayFills[i] != null && strayFills[i].name.StartsWith("EchoesFill_"))
                 {
-                    if (strayFills[i] != null && strayFills[i].name.StartsWith("EchoesFill_"))
-                    {
-                        if (Application.isPlaying) Object.Destroy(strayFills[i].gameObject);
-                        else Object.DestroyImmediate(strayFills[i].gameObject);
-                    }
+                    if (Application.isPlaying) Object.Destroy(strayFills[i].gameObject);
+                    else Object.DestroyImmediate(strayFills[i].gameObject);
                 }
-                return;
             }
+            return;
         }
 
-        RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
-        float ambientBoost2 = ambientMul * 2.5f;
-        RenderSettings.ambientSkyColor = new Color(0.035f * ambientBoost2, 0.05f * ambientBoost2, 0.09f * ambientBoost2);
-        RenderSettings.ambientEquatorColor = new Color(0.018f * ambientBoost2, 0.026f * ambientBoost2, 0.048f * ambientBoost2);
-        RenderSettings.ambientGroundColor = new Color(0.006f * ambientBoost2, 0.008f * ambientBoost2, 0.014f * ambientBoost2);
-        RenderSettings.reflectionIntensity = 0.18f;
+        // FALLBACK: Only apply spec-compliant setup if NO LevelLightingSettings in scene
+        RenderSettings.ambientMode = AmbientMode.Flat;
+        RenderSettings.ambientLight = new Color(0.15f, 0.15f, 0.15f, 1f);
+        float fogDensity = EchoesPresentationSettings.GameFogDensity;
         RenderSettings.fog = fogDensity > 0.0001f;
         RenderSettings.fogMode = FogMode.ExponentialSquared;
         RenderSettings.fogColor = new Color(0.018f, 0.024f, 0.038f);
         RenderSettings.fogDensity = fogDensity;
 
+        float sunIntensity = EchoesPresentationSettings.GameSunIntensity;
+        float pointMul = EchoesPresentationSettings.GamePointLightMultiplier;
         Light[] lights = Object.FindObjectsByType<Light>(FindObjectsInactive.Exclude);
         for (int i = 0; i < lights.Length; i++)
         {
@@ -382,7 +364,8 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
             if (light.type == LightType.Directional)
             {
                 light.intensity = sunIntensity;
-                light.color = new Color(0.44f, 0.54f, 0.7f);
+                light.color = new Color(0.945f, 0.945f, 1f, 1f); // #F2F2FF per spec
+                light.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
                 continue;
             }
 

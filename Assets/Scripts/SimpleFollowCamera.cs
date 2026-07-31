@@ -18,6 +18,7 @@ public class SimpleFollowCamera : MonoBehaviour
     public float minPitch = -30f;
     public float maxPitch = 75f;
     public float rotationSpeed = 120f;
+    public float mouseSensitivity = 1f;
 
     [Header("Smoothing")]
     public float positionSmoothTime = 0.12f;
@@ -28,9 +29,11 @@ public class SimpleFollowCamera : MonoBehaviour
     public float sphereCastRadius = 0.3f;
 
     Vector3 _velocity = Vector3.zero;
+    Vector2 _smoothMouse;
 
     void Start()
     {
+        mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1f);
         if (target != null) Snap();
     }
 
@@ -41,8 +44,14 @@ public class SimpleFollowCamera : MonoBehaviour
 
         if (Cursor.lockState == CursorLockMode.Locked || true)
         {
-            yaw   += Input.GetAxis("Mouse X") * rotationSpeed * Time.unscaledDeltaTime;
-            pitch -= Input.GetAxis("Mouse Y") * rotationSpeed * Time.unscaledDeltaTime;
+            mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1f);
+            float rawX = Input.GetAxis("Mouse X") * mouseSensitivity;
+            float rawY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+            float deadZone = 0.05f;
+            if (System.Math.Abs(rawX) < deadZone) rawX = 0f;
+            if (System.Math.Abs(rawY) < deadZone) rawY = 0f;
+            yaw   += rawX * rotationSpeed * Time.unscaledDeltaTime;
+            pitch -= rawY * rotationSpeed * Time.unscaledDeltaTime;
         }
         pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
 

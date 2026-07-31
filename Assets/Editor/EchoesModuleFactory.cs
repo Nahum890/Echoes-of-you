@@ -373,7 +373,7 @@ public static class EchoesModuleFactory
         beamMat.color = new Color(1.0f, 0.85f, 0.6f, 0.15f);
         SetupTransparentMaterial(beamMat);
         beamMat.EnableKeyword("_EMISSION");
-        beamMat.SetColor("_EmissionColor", new Color(1.0f, 0.8f, 0.5f) * 2.0f);
+        beamMat.SetColor("_EmissionColor", new Color(1.0f, 0.8f, 0.5f) * 0.5f);
         skyBeam.GetComponent<MeshRenderer>().sharedMaterial = beamMat;
 
         // Beacons luminosos cálidos del final del nivel

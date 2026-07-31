@@ -14,10 +14,10 @@ public static class EchoesPresentationSettings
     public const float DefaultVisualScale = 1f;
     public const float DefaultAnimSpeed = 1f;
     public const float DefaultMenuTextScale = 1.25f;
-    public const float DefaultGameFogDensity = 0.011f;
-    public const float DefaultGameSunIntensity = 0.58f;
-    public const float DefaultGamePointLightMul = 0.72f;
-    public const float DefaultGameAmbientMul = 0.9f;
+    public const float DefaultGameFogDensity = 0.008f;
+    public const float DefaultGameSunIntensity = 0.85f;
+    public const float DefaultGamePointLightMul = 1.0f;
+    public const float DefaultGameAmbientMul = 1.0f;
 
     public static float CharacterVisualScale =>
         Mathf.Clamp(PlayerPrefs.GetFloat(VisualScaleKey, DefaultVisualScale), 0.2f, 1.2f);
