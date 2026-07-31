@@ -160,7 +160,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
 
         PlayerProceduralAnimator procedural = player.GetComponentInChildren<PlayerProceduralAnimator>(true);
         if (procedural != null)
-            procedural.enabled = EchoesPresentationSettings.ProceduralMotionEnabled;
+            procedural.enabled = false;
     }
 
     static void ApplyHazardScales()

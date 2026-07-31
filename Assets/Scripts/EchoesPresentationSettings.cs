@@ -26,7 +26,7 @@ public static class EchoesPresentationSettings
         Mathf.Clamp(PlayerPrefs.GetFloat(AnimSpeedKey, DefaultAnimSpeed), 0.5f, 2f);
 
     public static bool ProceduralMotionEnabled =>
-        PlayerPrefs.GetInt(ProceduralKey, 1) == 1;
+        PlayerPrefs.GetInt(ProceduralKey, 0) == 1;
 
     public static float MenuTextScale =>
         Mathf.Clamp(PlayerPrefs.GetFloat(MenuScaleKey, DefaultMenuTextScale), 1f, 1.6f);
