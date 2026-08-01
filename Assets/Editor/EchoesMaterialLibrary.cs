@@ -8,11 +8,13 @@ public static class EchoesMaterialLibrary
     public const string MaterialRoot = "Assets/Materials/Echoes";
 
     // SHADERS LIMINALES (CONSTANTS_REGISTRY primitives.shaders)
-    public const string kLiminalSurface = "Echoes/LiminalSurface";   // Arquitectura
+    public const string kLiminalSurface = "Echoes/LiminalSurface";   // Arquitectura (legacy)
     public const string kLiminalFogVolume = "Echoes/LiminalFogVolume"; // Volúmenes de niebla
     public const string kEchoLiminal = "Echoes/EchoLiminal";         // Eco en playback
     public const string kAnalogGhost = "Echoes/AnalogGhost";         // Residual / legacy fantasma
     public const string kRetroFlatLit = "Echoes/RetroFlatLit"; // Legacy fallback
+    public const string kPS1World = "Echoes/PS1World";           // PS1 world: vertex snap + affine + dither
+    public const string kPS1Character = "Echoes/PS1Character";   // PS1 character: vertex snap, NO affine
 
     private static readonly Dictionary<string, Material> _materials = new();
 
@@ -29,14 +31,14 @@ public static class EchoesMaterialLibrary
     public static Material DustyRoseMat        => GetMaterial("dusty-rose");
 
     // MAPEO CANÓNICO A TOKENS
-    public static Material FloorMat            => GetOrCreateMaterialInternal("Mat_Floor", HexColor("5A5A5A")); // lighter base so texture shows
+public static Material FloorMat            => GetOrCreateArchitectureMaterial("Mat_Floor", HexColor("5A5A5A"));
     public static Material PlateMat            => FluorescentSickMat;
     public static Material BridgeMat           => EchoCyanMat;
     public static Material DoorMat             => WrongnessRedMat;
     public static Material GoalMat             => MemoryAmberMat;
-    public static Material PlayerMat           => GetOrCreateMaterialInternal("Mat_Player", Color.white);
     public static Material EchoMat             => EchoCyanMat;
-    public static Material ArchMat             => GetOrCreateMaterialInternal("Mat_Architecture", HexColor("5A5A5A")); // lighter base so texture shows
+    public static Material PlayerMat           => GetOrCreatePlayerMaterial();
+    public static Material ArchMat             => GetOrCreateArchitectureMaterial("Mat_Architecture", HexColor("5A5A5A"));
     public static Material LiminalFogMat       => GetOrCreateFogMaterial();
 
     public static Material WallTealMat         => InstitutionalTealMat;
@@ -85,14 +87,24 @@ public static class EchoesMaterialLibrary
         {
             "echo-cyan" => kEchoLiminal,
             "liminal-fog" => kLiminalFogVolume,
-            _ => kLiminalSurface  // TODO usa LiminalSurface por defecto
+            // Tokens de arquitectura/props → PS1World (vertex snap + affine + dither)
+            "corridor-navy" => kPS1World,
+            "institutional-teal" => kPS1World,
+            "faded-mustard" => kPS1World,
+            "sage-green" => kPS1World,
+            "dusty-rose" => kPS1World,
+            "fluorescent-sick" => kPS1World,
+            "void-black" => kPS1World,
+            "memory-amber" => kPS1World,
+            "wrongness-red" => kPS1World,
+            _ => kPS1World  // Default: PS1World para cualquier token de arquitectura
         };
 
         Shader shader = Shader.Find(shaderName);
         if (shader == null)
         {
             Debug.LogError($"[EchoesMaterialLibrary] Shader NO encontrado: {shaderName}. Usando fallback.");
-            shader = Shader.Find("Echoes/LiminalSurface") ?? Shader.Find("Universal Render Pipeline/Lit");
+            shader = Shader.Find(kPS1World) ?? Shader.Find("Echoes/LiminalSurface") ?? Shader.Find("Universal Render Pipeline/Lit");
         }
 
         if (mat == null)
@@ -287,6 +299,52 @@ public static class EchoesMaterialLibrary
             mat.EnableKeyword("_EMISSION");
             mat.SetColor("_EmissionColor", color * 0.8f);
         }
+        EditorUtility.SetDirty(mat);
+        return mat;
+    }
+
+    private static Material GetOrCreateArchitectureMaterial(string name, Color color)
+    {
+        string path = Path.Combine(MaterialRoot, name + ".mat").Replace("\\", "/");
+        Material mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+        Shader shader = Shader.Find(kPS1World) ?? Shader.Find(kLiminalSurface) ?? Shader.Find(kRetroFlatLit);
+
+        if (mat == null)
+        {
+            mat = new Material(shader) { name = name };
+            EnsureFolderExists(MaterialRoot);
+            AssetDatabase.CreateAsset(mat, path);
+        }
+        else if (mat.shader != shader)
+        {
+            mat.shader = shader;
+        }
+
+        mat.color = color;
+        AssignMaterialTextures(name, mat);
+        EditorUtility.SetDirty(mat);
+        return mat;
+    }
+
+    private static Material GetOrCreatePlayerMaterial()
+    {
+        string name = "Mat_Player";
+        string path = Path.Combine(MaterialRoot, name + ".mat").Replace("\\", "/");
+        Material mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+        Shader shader = Shader.Find(kPS1Character) ?? Shader.Find(kLiminalSurface) ?? Shader.Find(kRetroFlatLit);
+
+        if (mat == null)
+        {
+            mat = new Material(shader) { name = name };
+            EnsureFolderExists(MaterialRoot);
+            AssetDatabase.CreateAsset(mat, path);
+        }
+        else if (mat.shader != shader)
+        {
+            mat.shader = shader;
+        }
+
+        mat.color = Color.white;
         EditorUtility.SetDirty(mat);
         return mat;
     }

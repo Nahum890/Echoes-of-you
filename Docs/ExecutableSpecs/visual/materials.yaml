@@ -13,15 +13,15 @@ shader_contract:
 
 color_tokens:
   echo-cyan: {hex: "#4FC3E8", usage: echo_and_temporal_geometry}
-  memory-amber: {hex: "#E8B262", usage: narrative_memory_and_lyra}
+  memory-amber: {hex: "#FFBF00", usage: narrative_memory_and_lyra}
   corridor-navy: {hex: "#1C2430", usage: corridor_base}
-  institutional-teal: {hex: "#2D4D4D", usage: lockers_and_doors}
-  faded-mustard: {hex: "#8A7A4E", usage: desks_and_wood}
-  fluorescent-sick: {hex: "#C8E6C9", usage: fluorescent_lights}
+  institutional-teal: {hex: "#2B4A4A", usage: lockers_and_doors}
+  faded-mustard: {hex: "#5A4A2E", usage: desks_and_wood}
+  fluorescent-sick: {hex: "#C9D4B0", usage: fluorescent_lights}
   wrongness-red: {hex: "#B23A3A", usage: danger}
-  void-black: {hex: "#0A0A0F", usage: void}
-  sage-green: {hex: "#4A5D4E", usage: staff_room}
-  dusty-rose: {hex: "#7A4E5C", usage: narrative_time_details}
+  void-black: {hex: "#0A0A0D", usage: void}
+  sage-green: {hex: "#3A4A38", usage: staff_room}
+  dusty-rose: {hex: "#4A3438", usage: narrative_time_details}
   warm-cement: {hex: "#6B6B6B", usage: floor_and_stairs}
   white-linen: {hex: "#EFEFEF", usage: final_integration}
 

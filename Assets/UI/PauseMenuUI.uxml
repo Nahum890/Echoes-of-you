@@ -1,32 +1,32 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/EchoesTheme.uss" />
 
-    <ui:VisualElement name="pause-root" class="root-fullscreen crt-vignette crt-scanlines hidden" style="background-color: #0A0A0D;" picking-mode="Ignore">
+    <ui:VisualElement name="pause-root" class="root-fullscreen crt-vignette crt-scanlines hidden" style="background-color: transparent;" picking-mode="Ignore">
         
         <!-- ==========================================
              MAIN PAUSE BUTTONS (NOTEBOOK LEAF)
              ========================================== -->
         <ui:VisualElement name="pause-nav" class="pause-notebook">
             <ui:VisualElement>
-                <ui:Label text="Recuerdo Pausado" class="font-serif-bold pause-title" />
-                <ui:Label text="sintonizacion inestable en curso" class="font-mono text-body-sm" style="color: #B4C0A0; -unity-text-align: middle-left; margin-top: 4px; -unity-text-transform: uppercase; font-size: 12px; letter-spacing: 1px;" />
+                <ui:Label text="Capítulo Pausado" class="font-serif-bold pause-title" />
+                <ui:Label text="recorrido en curso" class="font-mono text-body-sm" style="color: #3B5A6E; -unity-text-align: middle-left; margin-top: 4px; -unity-text-transform: uppercase; font-size: 12px; letter-spacing: 1px;" />
             </ui:VisualElement>
 
             <!-- Session stats (populadas por PauseMenu.RefreshPauseStats) -->
-            <ui:VisualElement name="pause-stats" style="margin-top: 24px; border-top-width: 1px; border-top-color: rgba(232, 178, 98, 0.25); border-bottom-width: 1px; border-bottom-color: rgba(232, 178, 98, 0.25); padding-top: 16px; padding-bottom: 16px;">
-                <ui:Label name="lbl-pause-fragment" text="Recuerdo: --" class="font-mono text-body-sm" style="color: #E8B262; margin-bottom: 8px; font-size: 15px;" />
-                <ui:Label name="lbl-pause-time" text="Tiempo: 00:00" class="font-mono text-body-sm" style="color: #FFFFFF; margin-bottom: 6px; font-size: 14px;" />
-                <ui:Label name="lbl-pause-echoes" text="Ecos grabados: 0" class="font-mono text-body-sm" style="color: #FFFFFF; margin-bottom: 6px; font-size: 14px;" />
-                <ui:Label name="lbl-pause-deaths" text="Colapsos: 0" class="font-mono text-body-sm" style="color: #B23A3A; margin-bottom: 6px; font-size: 14px;" />
-                <ui:Label name="lbl-pause-total" text="Expediente: --" class="font-mono text-body-sm" style="color: #E8B262; margin-top: 12px; font-size: 15px;" />
+            <ui:VisualElement name="pause-stats" style="margin-top: 24px; border-top-width: 1px; border-top-color: rgba(255, 191, 0, 0.25); border-bottom-width: 1px; border-bottom-color: rgba(255, 191, 0, 0.25); padding-top: 16px; padding-bottom: 16px;">
+                <ui:Label name="lbl-pause-fragment" text="Capítulo: --" class="font-mono text-body-sm" style="color: #FFBF00; margin-bottom: 8px; font-size: 15px;" />
+                <ui:Label name="lbl-pause-time" text="Tiempo: 00:00" class="font-mono text-body-sm" style="color: #2D2A26; margin-bottom: 6px; font-size: 14px;" />
+                <ui:Label name="lbl-pause-echoes" text="Ecos grabados: 0" class="font-mono text-body-sm" style="color: #2D2A26; margin-bottom: 6px; font-size: 14px;" />
+                <ui:Label name="lbl-pause-deaths" text="Quiebres: 0" class="font-mono text-body-sm" style="color: #B23A3A; margin-bottom: 6px; font-size: 14px;" />
+                <ui:Label name="lbl-pause-total" text="Cuaderno: --" class="font-mono text-body-sm" style="color: #FFBF00; margin-top: 12px; font-size: 15px;" />
             </ui:VisualElement>
 
             <!-- Navigation options -->
             <ui:VisualElement style="flex-direction: column; margin-top: 32px; flex-grow: 1;">
-                <ui:Button name="btn-resume" text="I. Reanudar Recuerdo" class="pause-btn" />
-                <ui:Button name="btn-recalibrate" text="II. Reiniciar Recuerdo" class="pause-btn" />
-                <ui:Button name="btn-settings" text="III. Ajustar Receptor" class="pause-btn" />
-                <ui:Button name="btn-hub" text="IV. Volver al Expediente" class="pause-btn" style="color: #B23A3A; margin-top: 40px;" />
+                <ui:Button name="btn-resume" text="I. Reanudar Capítulo" class="pause-btn" />
+                <ui:Button name="btn-recalibrate" text="II. Reiniciar Capítulo" class="pause-btn" />
+                <ui:Button name="btn-settings" text="III. Ajustes del Cuaderno" class="pause-btn" />
+                <ui:Button name="btn-hub" text="IV. Volver al Cuaderno" class="pause-btn" style="color: #B23A3A; margin-top: 40px;" />
             </ui:VisualElement>
 
             <!-- Back & Void buttons for C# script compatibility (hidden) -->
@@ -36,8 +36,8 @@
             </ui:VisualElement>
 
             <!-- Page footer info -->
-            <ui:VisualElement style="border-top-width: 1px; border-top-color: rgba(232, 178, 98, 0.2); padding-top: 16px; align-items: center;">
-                <ui:Label text="Aula 104 - Memoria Aiden" class="font-serif" style="font-size: 13px; color: #8C96A5; -unity-font-style: italic;" />
+            <ui:VisualElement style="border-top-width: 1px; border-top-color: rgba(255, 191, 0, 0.2); padding-top: 16px; align-items: center;">
+                <ui:Label text="Aula 104 — Capítulo 1 de Aiden" class="font-serif" style="font-size: 13px; color: #3B5A6E; -unity-font-style: italic;" />
             </ui:VisualElement>
         </ui:VisualElement>
 
@@ -45,36 +45,36 @@
              PAUSE SETTINGS PANEL (OSD MONITOR PANEL)
              ========================================== -->
         <ui:VisualElement name="pause-settings-panel" class="hidden">
-            <ui:Label text="Ajustes del Receptor" class="font-serif-bold" style="font-size: 32px; color: #E8B262; margin-bottom: 4px;" />
-            <ui:Label text="calibracion de frecuencia en tiempo real" class="font-mono" style="font-size: 13px; letter-spacing: 2px; color: #A8B4A0; -unity-text-transform: uppercase; margin-bottom: 20px;" />
+            <ui:Label text="Ajustes del Cuaderno" class="font-serif-bold" style="font-size: 32px; color: #FFBF00; margin-bottom: 4px;" />
+            <ui:Label text="ajustes durante el recorrido" class="font-mono" style="font-size: 13px; letter-spacing: 2px; color: #3B5A6E; -unity-text-transform: uppercase; margin-bottom: 20px;" />
             <ui:VisualElement class="accent-line" />
 
             <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
                 <!-- Left: Audio & Graphics sliders -->
                 <ui:ScrollView style="width: 52%; max-height: 380px; padding-right: 24px;">
-                    <ui:Label text="AUDIO DE SINTONIA" class="settings-group-title" />
+                    <ui:Label text="AUDIO" class="settings-group-title" />
                     
                     <ui:VisualElement style="flex-direction: row; align-items: center; margin-bottom: 12px;">
                         <ui:Slider name="p-sld-master" label="Volumen General" low-value="0" high-value="1" style="flex-grow: 1; margin-bottom: 0;" />
-                        <ui:Label name="p-lbl-master-val" text="100%" class="font-mono text-body-sm" style="color: #E8B262; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
+                        <ui:Label name="p-lbl-master-val" text="100%" class="font-mono text-body-sm" style="color: #FFBF00; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
                     </ui:VisualElement>
 
                     <ui:VisualElement style="flex-direction: row; align-items: center; margin-bottom: 12px;">
-                        <ui:Slider name="p-sld-music" label="Canal Musica" low-value="0" high-value="1" style="flex-grow: 1; margin-bottom: 0;" />
-                        <ui:Label name="p-lbl-music-val" text="100%" class="font-mono text-body-sm" style="color: #E8B262; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
+                        <ui:Slider name="p-sld-music" label="Música" low-value="0" high-value="1" style="flex-grow: 1; margin-bottom: 0;" />
+                        <ui:Label name="p-lbl-music-val" text="100%" class="font-mono text-body-sm" style="color: #FFBF00; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
                     </ui:VisualElement>
 
                     <ui:VisualElement style="flex-direction: row; align-items: center; margin-bottom: 12px;">
-                        <ui:Slider name="p-sld-sfx" label="Canal Efectos" low-value="0" high-value="1" style="flex-grow: 1; margin-bottom: 0;" />
-                        <ui:Label name="p-lbl-sfx-val" text="100%" class="font-mono text-body-sm" style="color: #E8B262; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
+                        <ui:Slider name="p-sld-sfx" label="Efectos" low-value="0" high-value="1" style="flex-grow: 1; margin-bottom: 0;" />
+                        <ui:Label name="p-lbl-sfx-val" text="100%" class="font-mono text-body-sm" style="color: #FFBF00; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
                     </ui:VisualElement>
 
                     <ui:VisualElement style="flex-direction: row; align-items: center; margin-bottom: 16px;">
-                        <ui:Slider name="p-sld-echo-voice" label="Filtro de Eco" low-value="0" high-value="1" style="flex-grow: 1; margin-bottom: 0;" />
-                        <ui:Label name="p-lbl-echo-voice-val" text="100%" class="font-mono text-body-sm" style="color: #E8B262; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
+                        <ui:Slider name="p-sld-echo-voice" label="Volumen del Eco" low-value="0" high-value="1" style="flex-grow: 1; margin-bottom: 0;" />
+                        <ui:Label name="p-lbl-echo-voice-val" text="100%" class="font-mono text-body-sm" style="color: #FFBF00; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
                     </ui:VisualElement>
 
-                    <ui:Label text="MONITOR DE VIDEO" class="settings-group-title" style="margin-top: 12px;" />
+                    <ui:Label text="PANTALLA" class="settings-group-title" style="margin-top: 12px;" />
                     <ui:DropdownField name="p-ResolutionDropdown" label="Resolucion" />
                     <ui:Toggle name="p-FullscreenToggle" label="Pantalla Completa" />
                     <ui:Toggle name="p-VsyncToggle" label="Sincronizacion Vertical" />
@@ -84,11 +84,11 @@
                 <!-- Right: Controls, Presets & Actions -->
                 <ui:VisualElement style="width: 43%; margin-left: 5%; justify-content: space-between; height: 380px;">
                     <ui:ScrollView style="width: 100%; max-height: 280px;">
-                        <ui:Label text="CONTROLES DEL EXPEDIENTE" class="settings-group-title" />
+                        <ui:Label text="CONTROLES" class="settings-group-title" />
                         
                         <ui:VisualElement style="flex-direction: row; align-items: center; margin-bottom: 16px;">
                             <ui:Slider name="p-SensitivitySlider" label="Sensibilidad Raton" low-value="0.1" high-value="4" style="flex-grow: 1; margin-bottom: 0;" />
-                            <ui:Label name="p-lbl-cam-sens-val" text="1.0" class="font-mono text-body-sm" style="color: #E8B262; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
+                            <ui:Label name="p-lbl-cam-sens-val" text="1.0" class="font-mono text-body-sm" style="color: #FFBF00; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
                         </ui:VisualElement>
 
                         <ui:VisualElement style="display: none;">
@@ -98,7 +98,7 @@
                             <ui:Label name="p-lbl-sens-val" />
                         </ui:VisualElement>
 
-                        <ui:Label text="ILUMINACION INSTITUTIONAL" class="settings-group-title" style="margin-top: 16px;" />
+                        <ui:Label text="ILUMINACION" class="settings-group-title" style="margin-top: 16px;" />
                         <ui:VisualElement style="flex-direction: row; flex-wrap: wrap;">
                             <ui:Button name="p-btn-light-liminal" text="Liminal" class="btn-classic" style="margin-right: 8px; margin-bottom: 8px; width: 45%;" />
                             <ui:Button name="p-btn-light-bruma" text="Bruma" class="btn-classic" style="margin-right: 8px; margin-bottom: 8px; width: 45%;" />

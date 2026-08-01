@@ -344,7 +344,7 @@ public class MainMenuController : MonoBehaviour
         }
         if (_btnSettings != null)
         {
-            _btnSettings.RegisterCallback<FocusEvent>(_ => OnNavFocus(_btnSettings, MainMenuCinematicWorld.MenuAmbience.System, "Ajustar Receptor"));
+            _btnSettings.RegisterCallback<FocusEvent>(_ => OnNavFocus(_btnSettings, MainMenuCinematicWorld.MenuAmbience.System, "Ajustar Cuaderno"));
         }
         if (_btnExit != null)
         {
@@ -380,7 +380,7 @@ public class MainMenuController : MonoBehaviour
         }
         if (_btnSettings != null)
         {
-            _btnSettings.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnSettings, MainMenuCinematicWorld.MenuAmbience.System, "Ajustar Receptor"));
+            _btnSettings.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnSettings, MainMenuCinematicWorld.MenuAmbience.System, "Ajustar Cuaderno"));
             _btnSettings.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnSettings));
         }
         if (_btnExit != null)
@@ -458,7 +458,7 @@ public class MainMenuController : MonoBehaviour
     {
         if (_activeNavButton == _btnNewGame) return "Aula 104";
         if (_activeNavButton == _btnLevels) return "Archivos Escolares";
-        if (_activeNavButton == _btnSettings) return "Ajustar Receptor";
+        if (_activeNavButton == _btnSettings) return "Ajustar Cuaderno";
         if (_activeNavButton == _btnExit) return "Salir del Recuerdo";
         return "Recuerdo Aislado";
     }
@@ -1026,23 +1026,22 @@ public class MainMenuController : MonoBehaviour
 
     readonly string[] _diagnosticLines = new[]
     {
-        "[RECUERDO] Sintonización de expediente completada.",
+        "[RECORRIDO] Cuaderno de Aiden abierto.",
         "[OK] Vínculos de recuerdo establecidos.",
-        "[OK] Estabilidad del aula sincronizada.",
-        "[BÚSQUEDA] Comprobando integridad de pasillos...",
-        "[OK] Nodos de pasillo respondieron: despejado.",
-        "[SINC] Resonancia de fragmento calibrando...",
+        "[OK] Aula sincronizada.",
+        "[BÚSQUEDA] Comprobando páginas del cuaderno...",
+        "[OK] Páginas de pasillo respondieron: despejado.",
         "[OK] Puntos de anclaje de eco registrados.",
         "[AVISO] Inestabilidad en fragmento — sector 07.",
         "[OK] Memoria en recuperación.",
         "[SINC] Deriva temporal dentro del margen: 0.003ms.",
-        "[OK] Integridad del expediente verificada.",
+        "[OK] Integridad del cuaderno verificada.",
         "[BÚSQUEDA] Escaneando nodos de memoria profunda...",
         "[OK] Sin señales anómalas detectadas.",
         "[SISTEMA] Latido: 72 ppm — NOMINAL.",
-        "[OK] Telemetría de sesión activa.",
+        "[OK] Anotaciones de sesión activas.",
         "[SINC] Resonancia del vacío: ESTABLE.",
-        "Esperando comando de sintonización...",
+        "Esperando comando del cuaderno...",
     };
 
     IEnumerator AnimateTerminalLogs()
@@ -1094,9 +1093,9 @@ public class MainMenuController : MonoBehaviour
 
         SetBarStat("lbl-stat-stability-val", "bar-stat-stability-fill", "lbl-stat-stability-desc",
             stability, completedLevels, totalLevels,
-            "Sincronización de recuerdos iniciando...",
-            "Sincronización de recuerdos en curso...",
-            "Sincronización de recuerdos completada.");
+            "Recorrido de recuerdos iniciando...",
+            "Recorrido de recuerdos en curso...",
+            "Recorrido de recuerdos completado.");
 
         SetBarStat("lbl-stat-coherence-val", "bar-stat-coherence-fill", "lbl-stat-coherence-desc",
             coherence, completedLevels, totalLevels,

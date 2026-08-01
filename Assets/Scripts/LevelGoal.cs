@@ -176,7 +176,7 @@ public class LevelGoal : MonoBehaviour, IResettableLevelObject
         Debug.Log($"[QA LevelGoal] Progreso: {SatisfiedCount} / {RequiredCount} | Listo: {_ready}");
 
         LevelEscapeSequence escape = FindAnyObjectByType<LevelEscapeSequence>();
-        bool unlockExits = _ready && (escape == null || escape.IsEscapeComplete);
+        bool unlockExits = _ready && (escape == null || !escape.enabled || escape.IsEscapeComplete);
 
         if (linkedExits != null)
         {

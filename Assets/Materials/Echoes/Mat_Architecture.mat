@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Mat_Architecture
-  m_Shader: {fileID: 4800000, guid: 3dfb7997268a7ec489415ecb79c85b16, type: 3}
+  m_Shader: {fileID: 4800000, guid: afcdfedd7dc5c7048bf1cb5d37e71723, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -29,19 +29,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _DepthDistort: 0.005
-    - _FluorescentEdge: 0.12
-    - _FresnelInvert: 0.3
-    - _SpecularAnomaly: 0.15
-    - _StainNoiseScale: 4
-    - _StainThreshold: 0.7
-    - _WearHeight: 1.5
-    - _WearNoiseScale: 8
+    - _AffineStrength: 0.5
+    - _DepthJitter: 0.002
+    - _DitherStrength: 0.6
+    - _FogDensity: 0.008
+    - _QuantizeColors: 64
+    - _ScanlineFreq: 120
+    - _VertexSnap: 16
     m_Colors:
     - _BaseColor: {r: 0.1, g: 0.12, b: 0.15, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
-    - _StainColor: {r: 0.05, g: 0.08, b: 0.12, a: 1}
-    - _SubsurfaceTint: {r: 0, g: 0.08, b: 0.12, a: 1}
-    - _WearColor: {r: 0.08, g: 0.1, b: 0.14, a: 1}
+    - _FogColor: {r: 0.04, g: 0.04, b: 0.05, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

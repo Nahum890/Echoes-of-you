@@ -30,7 +30,7 @@
     background-color: transparent;
     border-width: 0;
     border-left-width: 0;
-    border-left-color: rgba(232, 178, 98, 0);
+    border-left-color: rgba(255, 191, 0, 0);
 
     /* Tipografía */
     -unity-text-align: middle-left;
@@ -38,7 +38,7 @@
     letter-spacing: 1.5px;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
     -unity-text-transform: uppercase;
-    color: rgba(225, 230, 240, 0.92);
+    color: rgba(45, 42, 38, 0.92);
 
     /* Transform — origen en borde izquierdo para que escale hacia la derecha */
     transform-origin: left center;
@@ -65,7 +65,7 @@
 
 .nav-item-v2:hover {
     /* Color del texto — transición inmediata */
-    color: rgba(201, 212, 176, 1.0);
+    color: rgba(59, 90, 110, 1.0);
 
     /* Movimiento: desliza 6px a la derecha */
     translate: 6px 0px;
@@ -75,10 +75,10 @@
 
     /* Línea de profundidad izquierda — aparece al hover */
     border-left-width: 2px;
-    border-left-color: rgba(232, 178, 98, 0.9);
+    border-left-color: rgba(255, 191, 0, 0.9);
 
     /* Fondo sutil para separar del fondo */
-    background-color: rgba(201, 212, 176, 0.04);
+    background-color: rgba(59, 90, 110, 0.04);
 }
 
 /* ============================================================
@@ -88,9 +88,9 @@
 .nav-item-v2:active {
     scale: 0.97 0.97;
     translate: 2px 0px;
-    color: rgba(232, 178, 98, 1.0);
-    background-color: rgba(232, 178, 98, 0.08);
-    border-left-color: rgba(232, 178, 98, 1.0);
+    color: rgba(255, 191, 0, 1.0);
+    background-color: rgba(255, 191, 0, 0.08);
+    border-left-color: rgba(255, 191, 0, 1.0);
     border-left-width: 3px;
     transition-duration: 80ms, 80ms, 80ms, 80ms, 80ms, 80ms, 80ms;
     transition-timing-function:
@@ -108,10 +108,10 @@
    ============================================================ */
 
 .nav-item-v2.nav-item--active {
-    color: rgba(232, 178, 98, 1.0);
+    color: rgba(255, 191, 0, 1.0);
     border-left-width: 2px;
-    border-left-color: rgba(232, 178, 98, 1.0);
-    background-color: rgba(232, 178, 98, 0.06);
+    border-left-color: rgba(255, 191, 0, 1.0);
+    background-color: rgba(255, 191, 0, 0.06);
     translate: 4px 0px;
     scale: 1.02 1.02;
 }
@@ -134,7 +134,7 @@
     letter-spacing: 1.5px;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
     -unity-text-transform: uppercase;
-    color: rgba(201, 212, 176, 0.0);
+    color: rgba(59, 90, 110, 0.0);
     padding: 16px 20px 16px 26px;
 
     /* No debe capturar eventos */
@@ -149,7 +149,7 @@
 
 /* Ghost A activado por clase CSS aplicada via C# */
 .nav-item-ghost-a--visible {
-    color: rgba(201, 212, 176, 0.18);
+    color: rgba(59, 90, 110, 0.18);
 }
 
 /* ============================================================
@@ -169,7 +169,7 @@
     letter-spacing: 1.5px;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
     -unity-text-transform: uppercase;
-    color: rgba(201, 212, 176, 0.0);
+    color: rgba(59, 90, 110, 0.0);
     padding: 16px 20px 16px 30px;
 
     pointer-events: none;
@@ -181,7 +181,7 @@
 }
 
 .nav-item-ghost-b--visible {
-    color: rgba(201, 212, 176, 0.09);
+    color: rgba(59, 90, 110, 0.09);
 }
 
 /* ============================================================
@@ -311,7 +311,7 @@
     letter-spacing: 1.5px;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
     -unity-text-transform: uppercase;
-    color: rgba(201, 212, 176, 0.4);
+    color: rgba(59, 90, 110, 0.4);
     padding: 16px 20px 16px 22px;
 
     pointer-events: none;
@@ -342,7 +342,7 @@
 
     -unity-text-align: middle-center;
     font-size: 10px;
-    color: rgba(232, 178, 98, 0.0);
+    color: rgba(255, 191, 0, 0.0);
 
     pointer-events: none;
 
@@ -352,7 +352,7 @@
 }
 
 .nav-item-focus-pip--visible {
-    color: rgba(232, 178, 98, 0.85);
+    color: rgba(255, 191, 0, 0.85);
 }
 
 /* ============================================================
@@ -361,12 +361,12 @@
    ============================================================ */
 
 .nav-item-v2:focus {
-    color: rgba(201, 212, 176, 1.0);
+    color: rgba(59, 90, 110, 1.0);
     translate: 6px 0px;
     scale: 1.035 1.035;
     border-left-width: 2px;
-    border-left-color: rgba(232, 178, 98, 0.9);
-    background-color: rgba(232, 178, 98, 0.04);
+    border-left-color: rgba(255, 191, 0, 0.9);
+    background-color: rgba(255, 191, 0, 0.04);
 
     /* Transiciones más lentas para controller */
     transition-duration: 250ms, 250ms, 250ms, 250ms, 250ms, 250ms, 250ms;
@@ -399,14 +399,14 @@
    ============================================================ */
 
 .panel-tint-warm {
-    background-color: rgba(232, 178, 98, 0.04);
+    background-color: rgba(255, 191, 0, 0.04);
     transition-property: background-color;
     transition-duration: 300ms;
     transition-timing-function: ease-in-out;
 }
 
 .panel-tint-neutral {
-    background-color: rgba(201, 212, 176, 0.03);
+    background-color: rgba(59, 90, 110, 0.03);
     transition-property: background-color;
     transition-duration: 300ms;
     transition-timing-function: ease-in-out;
@@ -436,7 +436,7 @@
     left: 0;
     right: 0;
     height: 1px;
-    background-color: rgba(201, 212, 176, 0.15);
+    background-color: rgba(59, 90, 110, 0.15);
     pointer-events: none;
     opacity: 0.0;
     /* La posición top y opacity se animan desde C# */
@@ -457,11 +457,11 @@
 }
 
 .ui-particle--amber {
-    background-color: rgba(232, 178, 98, 0.8);
+    background-color: rgba(255, 191, 0, 0.8);
 }
 
 .ui-particle--sage {
-    background-color: rgba(201, 212, 176, 0.8);
+    background-color: rgba(59, 90, 110, 0.8);
 }
 
 /* ============================================================
@@ -483,11 +483,11 @@
 }
 
 .side-nav-gradient-newgame {
-    background-color: rgba(232, 178, 98, 0.05);
+    background-color: rgba(255, 191, 0, 0.05);
 }
 
 .side-nav-gradient-levels {
-    background-color: rgba(201, 212, 176, 0.04);
+    background-color: rgba(59, 90, 110, 0.04);
 }
 
 .side-nav-gradient-settings {
@@ -509,7 +509,7 @@
     right: 0;
     bottom: 0;
     pointer-events: none;
-    background-color: rgba(232, 178, 98, 0.0);
+    background-color: rgba(255, 191, 0, 0.0);
 
     transition-property: background-color;
     transition-duration: 60ms;
@@ -517,5 +517,5 @@
 }
 
 .nav-item-confirm-flash--on {
-    background-color: rgba(232, 178, 98, 0.28);
+    background-color: rgba(255, 191, 0, 0.28);
 }

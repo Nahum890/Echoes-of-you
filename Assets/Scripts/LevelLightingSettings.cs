@@ -9,9 +9,9 @@ public class LevelLightingSettings : MonoBehaviour
 {
     [Header("Luz direccional")]
     public bool overrideDirectional = true;
-    public float directionalIntensity = 0.98f;
-    public Color directionalColor = new Color(0.78f, 0.82f, 0.9f, 1f);
-    public Vector3 directionalEuler = new Vector3(42f, -35f, 0f);
+    public float directionalIntensity = 0.85f;
+    public Color directionalColor = new Color(0.95f, 0.95f, 1f, 1f);
+    public Vector3 directionalEuler = new Vector3(50f, -30f, 0f);
 
     [Header("Ambiente global")]
     public bool overrideAmbient = true;
@@ -20,8 +20,8 @@ public class LevelLightingSettings : MonoBehaviour
 
     [Header("Niebla")]
     public bool enableFog = true;
-    public Color fogColor = new Color(0.18f, 0.2f, 0.28f);
-    [Range(0f, 0.02f)] public float fogDensity = 0.0045f;
+    public Color fogColor = new Color(0.1f, 0.1f, 0.12f, 1f);
+    [Range(0f, 0.02f)] public float fogDensity = 0.008f;
 
     [Header("Luces puntuales (hijos de este objeto)")]
     public bool applyToChildPointLights = true;
@@ -58,6 +58,8 @@ public class LevelLightingSettings : MonoBehaviour
                 light.intensity = directionalIntensity;
                 light.color = directionalColor;
                 light.transform.rotation = Quaternion.Euler(directionalEuler);
+                light.shadows = LightShadows.Hard;
+                QualitySettings.shadowDistance = 40f;
                 break;
             }
         }

@@ -10,28 +10,36 @@ public partial class PlayerController
         if (_anim == null || _anim.runtimeAnimatorController == null)
             return;
 
-        // Safety: if physics probe says not-grounded but the CharacterController itself
-        // reports grounded, the probe is giving a false negative (e.g. near a wall).
-        // After a short grace period we trust the CC to avoid the stuck-jump animation.
-        if (!_grounded && _controller != null && _controller.isGrounded)
+        // Ground state sync: immediate when landing, grace period when leaving ground
+        // (avoids false negatives from raycast probes near edges).
+        if (_controller != null)
         {
-            _notGroundedTimer += Time.deltaTime;
-            if (_notGroundedTimer > 0.3f)
+            if (!_grounded && _controller.isGrounded)
             {
                 _grounded = true;
                 _notGroundedTimer = 0f;
             }
-        }
-        else
-        {
-            _notGroundedTimer = 0f;
+            else if (_grounded && !_controller.isGrounded)
+            {
+                _notGroundedTimer += Time.deltaTime;
+                if (_notGroundedTimer > 0.3f)
+                {
+                    _grounded = false;
+                    _notGroundedTimer = 0f;
+                }
+            }
+            else
+            {
+                _notGroundedTimer = 0f;
+            }
         }
 
         Vector3 flatVelocity = Vector3.ProjectOnPlane(_controller.velocity, _currentUp);
         bool isRecording = _echoRecorder != null && _echoRecorder.IsRecording;
         CurrentAnimationState = ResolveAnimationState(flatVelocity.magnitude, isRecording);
 
-        float speedParam = flatVelocity.magnitude * EchoesPresentationSettings.AnimationPlaybackSpeed;
+        float currentMaxSpeed = maxSpeed * sprintMultiplier;
+        float speedParam = Mathf.Clamp01(flatVelocity.magnitude / currentMaxSpeed);
         SetAnimatorFloatIfExists(AnimatorParamSpeed, speedParam);
         if (_anim != null)
             _anim.speed = EchoesPresentationSettings.AnimationPlaybackSpeed;
@@ -67,7 +75,7 @@ public partial class PlayerController
             }
 
             if (speed > movementScrapeSpeed)
-                GameFeelController.Instance?.PlayMovementScrape(transform.position, movementUp, Mathf.InverseLerp(movementScrapeSpeed, moveSpeed * sprintMultiplier, speed));
+                GameFeelController.Instance?.PlayMovementScrape(transform.position, movementUp, Mathf.InverseLerp(movementScrapeSpeed, this.maxSpeed * sprintMultiplier, speed));
         }
         else
         {

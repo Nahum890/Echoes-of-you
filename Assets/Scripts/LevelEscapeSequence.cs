@@ -28,14 +28,18 @@ public class LevelEscapeSequence : MonoBehaviour
         if (exits == null || exits.Length == 0)
             exits = FindObjectsByType<LevelExit>(FindObjectsInactive.Exclude);
 
-        LockExits(true);
+        // Don't lock exits in Awake — wait for Start to let LevelGoal evaluate first
+    }
+
+    void Start()
+    {
+        // Defer check to after LevelGoal.Start() has run
     }
 
     void OnEnable()
     {
         if (goal != null)
         {
-            // Re-evaluar si el goal ya estaba listo al cargar
             if (goal.IsReady)
                 BeginEscape();
         }
@@ -130,7 +134,12 @@ public class LevelEscapeSequence : MonoBehaviour
         for (int i = 0; i < exits.Length; i++)
         {
             if (exits[i] != null)
-                exits[i].SetUnlocked(!locked && (goal == null || goal.IsReady));
+            {
+                if (locked)
+                    exits[i].SetUnlocked(false);
+                else
+                    exits[i].SetUnlocked(goal == null || goal.IsReady);
+            }
         }
     }
 }

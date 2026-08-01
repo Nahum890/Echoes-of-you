@@ -55,7 +55,7 @@ public class PlayerProceduralAnimator : MonoBehaviour
         bool grounded = _player.IsGrounded;
         bool recording = _player.CurrentAnimationState == PlayerController.PlayerAnimationState.Recording;
         float dt = Time.deltaTime;
-        float speed01 = Mathf.Clamp01(_player.PlanarSpeed / Mathf.Max(0.01f, _player.moveSpeed * _player.sprintMultiplier));
+        float speed01 = Mathf.Clamp01(_player.PlanarSpeed / Mathf.Max(0.01f, _player.maxSpeed * _player.sprintMultiplier));
         float proceduralWeight = 1f - Mathf.SmoothStep(0.15f, 1.2f, _player.PlanarSpeed);
 
         // Procedural fatigue builds up during sprint and decays standing still

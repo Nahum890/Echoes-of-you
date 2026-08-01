@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Rendering;
@@ -7,6 +8,7 @@ using UnityEngine.Rendering.Universal;
 /// Sistema de Game Feel con jerarquía de intensidad.
 /// Separa feedback visual, audio, cámara y tiempo.
 /// Cada evento tiene un peso diferente para evitar que todo se sienta igual.
+/// POST-PROCESSING: Pulsos discretos (NO MoveTowards cada frame).
 /// </summary>
 public class GameFeelController : MonoBehaviour
 {
@@ -31,6 +33,9 @@ public class GameFeelController : MonoBehaviour
     [Header("Audio")]
     [SerializeField] AudioSource audioSource;
     [SerializeField] AudioClip jumpClip;
+    [SerializeField] bool enableBitcrusher = true;
+    [Range(0f, 1f)][SerializeField] float bitcrusherDryWet = 0.18f;
+    AudioDistortionFilter _bitcrusherFilter;
     [SerializeField] AudioClip landingClip;
     [SerializeField] AudioClip hardLandingClip;
     [SerializeField] AudioClip footstepClip;
@@ -68,31 +73,22 @@ public class GameFeelController : MonoBehaviour
 
     [Header("Slow Motion")]
     [SerializeField] float slowMotionScale = 0.3f;
-#pragma warning disable CS0414
     [SerializeField] float slowMotionDuration = 0.15f;
-#pragma warning restore CS0414
     float _slowMotionTimer;
-#pragma warning disable CS0414
-    float _slowMotionTarget = 1f;
-#pragma warning restore CS0414
 
     [Header("FOV Pulse")]
-#pragma warning disable CS0414
     [SerializeField] float baseFOV = 50f;
-#pragma warning restore CS0414
     float _fovPulseTarget;
     float _fovPulseTimer;
     float _fovPulseDuration;
-    float _postProcessImpulse;
-    float _vignetteImpulse;
-    float _exposureImpulse;
-    float _nextFootstepTime;
-    float _nextScrapeTime;
-    float _nextMechanicTickTime;
 
     AudioSource _ambientSource1;
     AudioSource _ambientSource2;
     AudioSource _ambientSource3;
+
+    float _nextFootstepTime;
+    float _nextScrapeTime;
+    float _nextMechanicTickTime;
 
     void Awake()
     {
@@ -114,6 +110,14 @@ public class GameFeelController : MonoBehaviour
         if (audioMgr != null)
         {
             audioSource.outputAudioMixerGroup = audioMgr.FindGroup("SFX");
+        }
+
+        if (enableBitcrusher)
+        {
+            _bitcrusherFilter = GetComponent<AudioDistortionFilter>();
+            if (_bitcrusherFilter == null)
+                _bitcrusherFilter = gameObject.AddComponent<AudioDistortionFilter>();
+            _bitcrusherFilter.distortionLevel = Mathf.Lerp(0.05f, 0.35f, bitcrusherDryWet);
         }
 
         if (cameraShake == null)
@@ -149,7 +153,7 @@ public class GameFeelController : MonoBehaviour
             _ambientSource1.clip = ambientLoopClip;
             _ambientSource1.loop = true;
             _ambientSource1.volume = 0.15f * defaultVolume;
-            _ambientSource1.spatialBlend = 0f; // 2D background ambience
+            _ambientSource1.spatialBlend = 0f;
             if (musicGroup != null) _ambientSource1.outputAudioMixerGroup = musicGroup;
             _ambientSource1.Play();
         }
@@ -178,7 +182,6 @@ public class GameFeelController : MonoBehaviour
             _ambientSource3.Play();
         }
 
-        // Periodically chime the clock for eerie atmosphere
         if (clockChimeClip != null)
         {
             InvokeRepeating(nameof(PlayEerieChime), 15f, 45f);
@@ -188,10 +191,9 @@ public class GameFeelController : MonoBehaviour
     void PlayEerieChime()
     {
         if (clockChimeClip == null) return;
-        
-        // Find player position or camera position
+
         Vector3 chimePos = Camera.main != null ? Camera.main.transform.position + Camera.main.transform.forward * 8f : transform.position;
-        PlayClip3D(clockChimeClip, chimePos, defaultVolume * 0.45f, 0.72f); // slow pitch chime for eerie uncanniness
+        PlayClip3D(clockChimeClip, chimePos, defaultVolume * 0.45f, 0.72f);
     }
 
     void Update()
@@ -207,105 +209,164 @@ public class GameFeelController : MonoBehaviour
             }
         }
 
-        // FOV pulse recovery (para Cinemachine, controlado indirectamente)
+        // FOV pulse recovery
         if (_fovPulseTimer > 0f)
         {
             _fovPulseTimer -= Time.unscaledDeltaTime;
         }
-
-        UpdatePostProcessingAndCameraEffects();
     }
 
-    void UpdatePostProcessingAndCameraEffects()
+    // ═══════════════════════════════════════════
+    // POST-PROCESSING: PULSOS DISCRETOS (coroutines)
+    // ═══════════════════════════════════════════
+
+    public void PulseCA(float target, float duration)
     {
-        EchoRecorder recorder = Object.FindAnyObjectByType<EchoRecorder>();
-        bool isRecording = recorder != null && recorder.IsRecording;
-        bool hasEchoes = recorder != null && recorder.EchoCount > 0;
+        StartCoroutine(PulseCA_CR(target, duration));
+    }
 
-        // Soft dynamic audio muffling when player is recording (recalls memory sensory-deprivation)
-        AudioListener listener = Object.FindAnyObjectByType<AudioListener>();
-        if (listener != null)
+    IEnumerator PulseCA_CR(float target, float dur)
+    {
+        var profile = PostProcessingSetup.RuntimeProfile;
+        if (profile == null) yield break;
+        if (!profile.TryGet<ChromaticAberration>(out var ca)) yield break;
+
+        float start = ca.intensity.value;
+        float t = 0f;
+        while (t < dur)
         {
-            var lowPass = listener.GetComponent<AudioLowPassFilter>();
-            if (isRecording)
-            {
-                if (lowPass == null)
-                {
-                    lowPass = listener.gameObject.AddComponent<AudioLowPassFilter>();
-                    lowPass.lowpassResonanceQ = 1.0f;
-                }
-                lowPass.enabled = true;
-                lowPass.cutoffFrequency = Mathf.MoveTowards(lowPass.cutoffFrequency, 850f, Time.unscaledDeltaTime * 4000f);
-            }
-            else
-            {
-                if (lowPass != null)
-                {
-                    lowPass.cutoffFrequency = Mathf.MoveTowards(lowPass.cutoffFrequency, 22000f, Time.unscaledDeltaTime * 50000f);
-                    if (lowPass.cutoffFrequency >= 20000f)
-                        lowPass.enabled = false;
-                }
-            }
+            t += Time.unscaledDeltaTime;
+            ca.intensity.value = Mathf.Lerp(start, target, t / dur);
+            yield return null;
         }
-
-        _postProcessImpulse = Mathf.MoveTowards(_postProcessImpulse, 0f, Time.unscaledDeltaTime * 1.8f);
-        _vignetteImpulse = Mathf.MoveTowards(_vignetteImpulse, 0f, Time.unscaledDeltaTime * 1.2f);
-        _exposureImpulse = Mathf.MoveTowards(_exposureImpulse, 0f, Time.unscaledDeltaTime * 1.1f);
-
-        // Bases alineadas con PostProcessingSetup (vignette 0.35, exposure -0.5) —
-        // este controlador escribe .value cada frame, así que las bases del
-        // VolumeProfile solo sobreviven si coinciden con estas.
-        float targetCA = 0.08f + _postProcessImpulse * 0.42f;
-        float targetLD = -_postProcessImpulse * 22f;
-        float targetVignette = 0.35f + _vignetteImpulse * 0.28f;
-        float targetExposure = -0.5f + _exposureImpulse * 0.32f;
-
-        if (isRecording)
+        t = 0f;
+        while (t < dur)
         {
-            targetCA = Mathf.Max(targetCA, 0.42f + Mathf.PingPong(Time.unscaledTime * 5f, 0.1f));
-            targetLD = 0f; // Disabled lens distortion to prevent disorienting fish-eye/FOV warping
-            targetVignette = Mathf.Max(targetVignette, 0.52f);
-            targetExposure = Mathf.Min(targetExposure, -0.75f); // oscurecer respecto a la base -0.5
+            t += Time.unscaledDeltaTime;
+            ca.intensity.value = Mathf.Lerp(target, 0.12f, t / dur); // base is 0.12f
+            yield return null;
         }
-        else if (hasEchoes)
-        {
-            // Aberración media sutil que pulsa como un latido (sin distorsión ni alteración del FOV)
-            targetCA = Mathf.Max(targetCA, 0.22f + Mathf.Sin(Time.unscaledTime * 4.5f) * 0.04f);
-            targetLD = 0f; // Deshabilitar distorsión para evitar que el FOV se deforme al haber ecos activos
-        }
+        ca.intensity.value = 0.12f;
+    }
 
-        VolumeProfile profile = PostProcessingSetup.RuntimeProfile;
-        if (profile != null)
+    public void PulseVignette(float target, float duration)
+    {
+        StartCoroutine(PulseVignette_CR(target, duration));
+    }
+
+    IEnumerator PulseVignette_CR(float target, float dur)
+    {
+        var profile = PostProcessingSetup.RuntimeProfile;
+        if (profile == null) yield break;
+        if (!profile.TryGet<Vignette>(out var vignette)) yield break;
+
+        float start = vignette.intensity.value;
+        float t = 0f;
+        while (t < dur)
         {
-            if (profile.TryGet<ChromaticAberration>(out var ca))
-            {
-                ca.intensity.value = Mathf.MoveTowards(ca.intensity.value, targetCA, Time.unscaledDeltaTime * 1.5f);
-            }
-            if (profile.TryGet<LensDistortion>(out var ld))
-            {
-                ld.active = false;
-            }
-            if (profile.TryGet<Vignette>(out var vignette))
-            {
-                vignette.intensity.value = Mathf.MoveTowards(vignette.intensity.value, targetVignette, Time.unscaledDeltaTime * 1.8f);
-            }
-            if (profile.TryGet<ColorAdjustments>(out var grading))
-            {
-                grading.postExposure.value = Mathf.MoveTowards(grading.postExposure.value, targetExposure, Time.unscaledDeltaTime * 1.5f);
-                float targetSaturation = isRecording ? -28f : -8f;
-                grading.saturation.value = Mathf.MoveTowards(grading.saturation.value, targetSaturation, Time.unscaledDeltaTime * (isRecording ? 28f : 8f));
-            }
-            if (profile.TryGet<FilmGrain>(out var grain))
-            {
-                float targetGrain = isRecording ? 0.55f : 0.28f;
-                grain.intensity.value = Mathf.MoveTowards(grain.intensity.value, targetGrain, Time.unscaledDeltaTime * 2.2f);
-            }
+            t += Time.unscaledDeltaTime;
+            vignette.intensity.value = Mathf.Lerp(start, target, t / dur);
+            yield return null;
         }
+        t = 0f;
+        while (t < dur)
+        {
+            t += Time.unscaledDeltaTime;
+            vignette.intensity.value = Mathf.Lerp(target, 0.35f, t / dur); // base is 0.35f (SPEC-120)
+            yield return null;
+        }
+        vignette.intensity.value = 0.35f;
+    }
+
+    public void PulseExposure(float target, float duration)
+    {
+        StartCoroutine(PulseExposure_CR(target, duration));
+    }
+
+    IEnumerator PulseExposure_CR(float target, float dur)
+    {
+        var profile = PostProcessingSetup.RuntimeProfile;
+        if (profile == null) yield break;
+        if (!profile.TryGet<ColorAdjustments>(out var grading)) yield break;
+
+        float start = grading.postExposure.value;
+        float t = 0f;
+        while (t < dur)
+        {
+            t += Time.unscaledDeltaTime;
+            grading.postExposure.value = Mathf.Lerp(start, target, t / dur);
+            yield return null;
+        }
+        t = 0f;
+        while (t < dur)
+        {
+            t += Time.unscaledDeltaTime;
+            grading.postExposure.value = Mathf.Lerp(target, -0.5f, t / dur); // base is -0.5f
+            yield return null;
+        }
+        grading.postExposure.value = -0.5f;
+    }
+
+    public void PulseGrain(float target, float duration)
+    {
+        StartCoroutine(PulseGrain_CR(target, duration));
+    }
+
+    IEnumerator PulseGrain_CR(float target, float dur)
+    {
+        var profile = PostProcessingSetup.RuntimeProfile;
+        if (profile == null) yield break;
+        if (!profile.TryGet<FilmGrain>(out var grain)) yield break;
+
+        float start = grain.intensity.value;
+        float t = 0f;
+        while (t < dur)
+        {
+            t += Time.unscaledDeltaTime;
+            grain.intensity.value = Mathf.Lerp(start, target, t / dur);
+            yield return null;
+        }
+        t = 0f;
+        while (t < dur)
+        {
+            t += Time.unscaledDeltaTime;
+            grain.intensity.value = Mathf.Lerp(target, 0.45f, t / dur); // base is 0.45f
+            yield return null;
+        }
+        grain.intensity.value = 0.45f;
+    }
+
+    public void PulseSaturation(float target, float duration)
+    {
+        StartCoroutine(PulseSaturation_CR(target, duration));
+    }
+
+    IEnumerator PulseSaturation_CR(float target, float dur)
+    {
+        var profile = PostProcessingSetup.RuntimeProfile;
+        if (profile == null) yield break;
+        if (!profile.TryGet<ColorAdjustments>(out var grading)) yield break;
+
+        float start = grading.saturation.value;
+        float t = 0f;
+        while (t < dur)
+        {
+            t += Time.unscaledDeltaTime;
+            grading.saturation.value = Mathf.Lerp(start, target, t / dur);
+            yield return null;
+        }
+        t = 0f;
+        while (t < dur)
+        {
+            t += Time.unscaledDeltaTime;
+            grading.saturation.value = Mathf.Lerp(target, -8f, t / dur); // base is -8f (SPEC-120)
+            yield return null;
+        }
+        grading.saturation.value = -8f;
     }
 
     void OnDestroy()
     {
-        // Asegurar que timeScale se restaura si el objeto se destruye
         if (Instance == this)
         {
             Time.timeScale = 1f;
@@ -315,19 +376,16 @@ public class GameFeelController : MonoBehaviour
     }
 
     // ═══════════════════════════════════════════
-    // EVENTOS DE JUEGO — cada uno con peso distinto
+    // EVENTOS DE JUEGO — usan pulsos discretos
     // ═══════════════════════════════════════════
 
-    // Low: salto básico
     public void PlayJump(Vector3 position, Vector3 up)
     {
         SpawnEffect(jumpEffectPrefab, position, up);
         PlayClip3D(jumpClip, position, defaultVolume * 0.7f, 1.04f);
         cameraShake?.AddShake(jumpShake);
-        RequestPostImpulse(0.12f, 0.08f, 0.03f);
     }
 
-    // Medium: aterrizaje proporcional al impacto
     public void PlayLanding(Vector3 position, Vector3 up, float impactSpeed)
     {
         bool hard = impactSpeed >= 13f;
@@ -335,8 +393,13 @@ public class GameFeelController : MonoBehaviour
         float vol = Mathf.Lerp(0.5f, 1f, Mathf.Clamp01(impactSpeed / 12f));
         PlayClip3D(hard && hardLandingClip != null ? hardLandingClip : landingClip, position, defaultVolume * vol, hard ? 0.82f : 0.96f);
         cameraShake?.AddShake(Mathf.Clamp01(landingShake + impactSpeed * 0.015f));
-        RequestCameraPulse(hard ? 55f : 57f, hard ? 0.18f : 0.09f);
-        RequestPostImpulse(hard ? 0.34f : 0.16f, hard ? 0.22f : 0.09f, hard ? -0.12f : -0.04f);
+        
+        if (hard)
+        {
+            PulseCA(0.3f, 0.15f);
+            PulseVignette(0.55f, 0.12f);
+            PulseExposure(-0.7f, 0.1f);
+        }
     }
 
     public void PlayFootstep(Vector3 position, Vector3 up, float speed)
@@ -359,83 +422,81 @@ public class GameFeelController : MonoBehaviour
         PlayClip3D(movementScrapeClip, position, defaultVolume * Mathf.Lerp(0.08f, 0.22f, intensity), 1.15f);
     }
 
-    // High: cambio de gravedad
     public void PlayGravityShift(Vector3 position, Vector3 up)
     {
         SpawnEffect(gravityShiftEffectPrefab, position, up);
         PlayClip3D(gravityShiftClip, position, defaultVolume, 0.74f);
         cameraShake?.AddShake(gravityShake);
-        RequestCameraPulse(54f, 0.22f);
-        RequestPostImpulse(0.55f, 0.26f, 0.1f);
+        PulseCA(0.5f, 0.18f);
+        PulseVignette(0.6f, 0.15f);
         ApplySlowMotion(0.4f, 0.12f);
     }
 
-    // Critical: puzzle resuelto — máximo feedback
     public void PlayPuzzleSolved(Vector3 position)
     {
         SpawnEffect(puzzleSolvedEffectPrefab, position, Vector3.up);
         PlayClip3D(puzzleSolvedClip, position, defaultVolume * 1.2f, 0.78f);
         cameraShake?.AddShake(puzzleSolvedShake + 0.18f);
-        RequestCameraPulse(52f, 0.55f);
-        RequestPostImpulse(0.68f, 0.38f, 0.18f);
+        PulseCA(0.4f, 0.25f);
+        PulseVignette(0.55f, 0.2f);
+        PulseExposure(-0.2f, 0.15f);
+        PulseGrain(0.6f, 0.2f);
         ApplySlowMotion(slowMotionScale, 0.2f);
     }
 
-    // Medium: inicio de grabación
     public void PlayRecordStart(Vector3 position, Vector3 up)
     {
         PlayClip3D(recordClip, position, defaultVolume * 0.9f, 0.86f);
         cameraShake?.AddShake(recordShake);
-        RequestCameraPulse(48f, 0.2f);
-        RequestPostImpulse(0.42f, 0.22f, -0.06f);
+        PulseCA(0.42f, 0.3f);
+        PulseVignette(0.6f, 0.25f);
+        PulseExposure(-0.75f, 0.2f);
+        PulseGrain(0.55f, 0.2f);
+        PulseSaturation(-28f, 0.25f);
         ApplyRecordingTimeFeel(0.82f);
     }
 
-    // Low: fin de grabación
     public void PlayRecordStop(Vector3 position)
     {
         PlayClip3D(recordStopClip, position, defaultVolume * 0.9f, 1.08f);
     }
 
-    // High: eco creado — momento clave, slow motion breve
     public void PlayEchoSpawn(Vector3 position)
     {
         PlayClip3D(echoSpawnClip, position, defaultVolume * 1.05f, 0.68f);
         cameraShake?.AddShake(echoSpawnShake * 0.45f);
-        RequestCameraPulse(50f, 0.12f);
-        RequestPostImpulse(0.18f, 0.08f, 0.02f);
+        PulseCA(0.35f, 0.18f);
+        PulseVignette(0.55f, 0.15f);
     }
 
-    // Low: error suave
     public void PlaySoftError(Vector3 position)
     {
         PlayClip3D(softErrorClip, position, defaultVolume * 0.6f, 0.72f);
-        RequestPostImpulse(0.18f, 0.14f, -0.06f);
+        PulseCA(0.25f, 0.12f);
+        PulseVignette(0.5f, 0.1f);
     }
 
-    // Low: placa presionada
     public void PlayPlatePress(Vector3 position)
     {
         PlayClip3D(platePressClip, position, defaultVolume * 0.85f, 0.9f);
         cameraShake?.AddShake(0.04f);
-        RequestPostImpulse(0.08f, 0.04f, 0.02f);
+        PulseCA(0.15f, 0.08f);
     }
 
-    // Medium: puerta moviéndose
     public void PlayDoorMove(Vector3 position)
     {
         PlayClip3D(doorMoveClip, position, defaultVolume * 0.9f, 0.82f);
         cameraShake?.AddShake(0.06f);
     }
 
-    // High: muerte del jugador
     public void PlayPlayerDeath(Vector3 position)
     {
         SpawnEffect(deathEffectPrefab, position, Vector3.up);
         PlayClip3D(playerDeathClip, position, defaultVolume * 1.2f, 0.55f);
         cameraShake?.AddShake(deathShake);
-        RequestCameraPulse(44f, 0.6f);
-        RequestPostImpulse(0.9f, 0.62f, -0.2f);
+        PulseCA(0.8f, 0.4f);
+        PulseVignette(0.7f, 0.35f);
+        PulseExposure(-1f, 0.3f);
         ApplySlowMotion(0.2f, 0.34f);
     }
 
@@ -444,8 +505,9 @@ public class GameFeelController : MonoBehaviour
         SpawnEffect(respawnEffectPrefab, position, Vector3.up);
         PlayClip3D(respawnClip, position, defaultVolume, 0.92f);
         cameraShake?.AddShake(0.12f);
-        RequestCameraPulse(56f, 0.22f);
-        RequestPostImpulse(0.42f, 0.18f, 0.12f);
+        PulseCA(0.4f, 0.2f);
+        PulseVignette(0.55f, 0.15f);
+        PulseExposure(-0.2f, 0.15f);
     }
 
     public void PlayEchoFade(Vector3 position)
@@ -465,6 +527,27 @@ public class GameFeelController : MonoBehaviour
     public void PlayCameraShake(float intensity)
     {
         cameraShake?.AddShake(intensity);
+    }
+
+    // ═══════════════════════════════════════════
+    // SUBSISTEMAS INTERNOS
+    // ═══════════════════════════════════════════
+
+    void ApplySlowMotion(float scale, float duration)
+    {
+        Time.timeScale = Mathf.Clamp(scale, 0.1f, 1f);
+        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        _slowMotionTimer = duration;
+    }
+
+    void ApplyRecordingTimeFeel(float scale)
+    {
+        EchoRecorder recorder = Object.FindAnyObjectByType<EchoRecorder>();
+        if (recorder == null || !recorder.IsRecording)
+            return;
+
+        Time.timeScale = Mathf.Clamp(scale, 0.65f, 1f);
+        Time.fixedDeltaTime = 0.02f * Time.timeScale;
     }
 
     void EnsureRuntimeFallbackAudio()
@@ -487,41 +570,6 @@ public class GameFeelController : MonoBehaviour
         if (respawnClip == null) respawnClip = CreateToneClip("SFX_Respawn", 0.42f, 190f, 520f, 0.4f, WaveKind.Sine);
     }
 
-    // ═══════════════════════════════════════════
-    // SUBSISTEMAS INTERNOS
-    // ═══════════════════════════════════════════
-
-    // Slow motion controlado — breve, no rompe gameplay
-    void ApplySlowMotion(float scale, float duration)
-    {
-        Time.timeScale = Mathf.Clamp(scale, 0.1f, 1f);
-        Time.fixedDeltaTime = 0.02f * Time.timeScale;
-        _slowMotionTimer = duration;
-    }
-
-    void ApplyRecordingTimeFeel(float scale)
-    {
-        EchoRecorder recorder = Object.FindAnyObjectByType<EchoRecorder>();
-        if (recorder == null || !recorder.IsRecording)
-            return;
-
-        Time.timeScale = Mathf.Clamp(scale, 0.65f, 1f);
-        Time.fixedDeltaTime = 0.02f * Time.timeScale;
-    }
-
-    void RequestPostImpulse(float chromaticLens, float vignette, float exposure)
-    {
-        _postProcessImpulse = Mathf.Clamp01(Mathf.Max(_postProcessImpulse, chromaticLens));
-        _vignetteImpulse = Mathf.Clamp01(Mathf.Max(_vignetteImpulse, vignette));
-        _exposureImpulse = Mathf.Clamp(_exposureImpulse + exposure, -1f, 1f);
-    }
-
-    void RequestCameraPulse(float targetFov, float holdSeconds)
-    {
-        return; // Deshabilitado para evitar deformaciones del FOV/cámara durante triggers del juego
-    }
-
-    // Partículas — spawn y auto-destroy
     void SpawnEffect(ParticleSystem prefab, Vector3 position, Vector3 up)
     {
         if (prefab == null)
@@ -535,7 +583,6 @@ public class GameFeelController : MonoBehaviour
         Destroy(instance.gameObject, Mathf.Max(1f, lifetime + 0.5f));
     }
 
-    // Audio 3D — usa PlayClipAtPoint para espacialidad real
     void PlayClip3D(AudioClip clip, Vector3 position, float volume, float pitch = 1f)
     {
         if (clip == null)
@@ -551,7 +598,7 @@ public class GameFeelController : MonoBehaviour
         source.minDistance = 2f;
         source.maxDistance = 18f;
         source.rolloffMode = AudioRolloffMode.Linear;
-        
+
         var audioMgr = EchoesAudioManager.EnsureExists();
         if (audioMgr != null)
         {
@@ -571,7 +618,6 @@ public class GameFeelController : MonoBehaviour
         if (movementScrapePrefab == null) movementScrapePrefab = CreateParticlePrefab("FX_MovementScrape", new Color(0.82f, 0.9f, 1f, 0.38f), 8, 0.18f, 1.7f, 0.045f, ParticleSystemShapeType.Cone);
         if (gravityShiftEffectPrefab == null) gravityShiftEffectPrefab = CreateParticlePrefab("FX_GravityShift", new Color(0.35f, 0.82f, 1f, 0.72f), 90, 0.75f, 4.2f, 0.09f, ParticleSystemShapeType.Sphere);
         if (puzzleSolvedEffectPrefab == null) puzzleSolvedEffectPrefab = CreateParticlePrefab("FX_PuzzleSolved", new Color(1f, 0.82f, 0.42f, 0.82f), 120, 0.9f, 5.6f, 0.1f, ParticleSystemShapeType.Sphere);
-        // Recording uses CinematicRecordingOverlay + post FX — no smoke burst.
         if (deathEffectPrefab == null) deathEffectPrefab = CreateParticlePrefab("FX_DeathDissolve", new Color(0.05f, 0.12f, 0.2f, 0.7f), 110, 1.1f, 3.0f, 0.14f, ParticleSystemShapeType.Sphere);
         if (respawnEffectPrefab == null) respawnEffectPrefab = CreateParticlePrefab("FX_RespawnReform", new Color(0.65f, 0.9f, 1f, 0.72f), 120, 0.95f, 3.5f, 0.08f, ParticleSystemShapeType.Sphere);
     }

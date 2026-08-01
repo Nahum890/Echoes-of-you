@@ -1,9 +1,11 @@
 using UnityEngine;
+using Unity.Cinemachine;
 
 /// <summary>
 /// Third-person camera with smooth follow, orbital mouse control,
-/// support for arbitrary player up vectors, and auto-recenter
-/// when the player stops moving the mouse.
+/// support for arbitrary player up vectors.
+/// Simplified for PS1 liminal feel - no auto-frame, no auto-recenter, no dynamic FOV.
+/// Cinemachine v3 handles blends/narrative cuts; this is gameplay camera only.
 /// </summary>
 public class ThirdPersonCamera : MonoBehaviour
 {
@@ -11,19 +13,11 @@ public class ThirdPersonCamera : MonoBehaviour
     public Transform target;
     public Vector3 focusOffset = new Vector3(0f, 1.4f, 0f);
     public float distance = 4.1f;
-    public float movementLead = 0.55f;
-
-    [Header("Auto Frame")]
-    public bool autoFrameTarget = true;
-    public float minDistance = 3.2f;
-    public float maxDistance = 4.4f;
-    [Range(0.5f, 0.85f)]
-    public float focusHeightRatio = 0.72f;
 
     [Header("Smoothing")]
-    public float followDamping = 9f;
-    public float rotationDamping = 10f;
-    public float fovDamping = 8f;
+    public float followDamping = 25f;
+    public float rotationDamping = 30f;
+    public float fovDamping = 20f;
 
     [Header("Orbit")]
     public float mouseSensitivity = 1.15f;
@@ -31,16 +25,13 @@ public class ThirdPersonCamera : MonoBehaviour
     public float maxPitch = 24f;
     public bool lockCursorOnStart = true;
 
-    [Header("Auto Recenter")]
-    public bool enableRecenter = true;
-    public float recenterDelay = 1.2f;
-    public float recenterSpeed = 2.2f;
-
     [Header("Composition")]
     public bool clampYaw = true;
     public float maxYawOffset = 28f;
     public Vector3 authoredForward = Vector3.forward;
-    public float baseFov = 58f;
+    public float baseFov = 52f;
+    public float nearClip = 0.3f;
+    public float farClip = 300f;
 
     float _pitch = 12f;
     Vector3 _smoothedFocusPoint;
@@ -48,14 +39,7 @@ public class ThirdPersonCamera : MonoBehaviour
     CameraShake _cameraShake;
     Camera _camera;
 
-    float _noInputTimer;
     Vector3 _lastFocusPoint;
-    float _pulseTargetFov = -1f;
-    float _pulseUntil;
-    Vector3 _eventFocusPoint;
-    float _eventFocusWeight;
-    float _eventFocusUntil;
-    int _framedTargetId = int.MinValue;
     float _landingTiltAmount;
 
     public static ThirdPersonCamera ResolveActive()
@@ -130,11 +114,14 @@ public class ThirdPersonCamera : MonoBehaviour
             _smoothedFocusPoint = GetFocusPoint();
             _orbitForward = ResolvePlanarForward(transform.forward, target.forward, target.right, targetUp);
             _lastFocusPoint = _smoothedFocusPoint;
-            AutoFrameCurrentTarget();
         }
 
         if (_camera != null)
+        {
             _camera.fieldOfView = baseFov;
+            _camera.nearClipPlane = nearClip;
+            _camera.farClipPlane = farClip;
+        }
 
         if (lockCursorOnStart)
         {
@@ -154,30 +141,15 @@ public class ThirdPersonCamera : MonoBehaviour
             if (playerObj != null)
             {
                 target = playerObj.transform;
-                _framedTargetId = int.MinValue;
             }
         }
 
         if (target == null)
             return;
 
-        if (autoFrameTarget && target.GetHashCode() != _framedTargetId)
-            AutoFrameCurrentTarget();
-
         Vector3 targetUp = target.up;
         float yawDelta = Input.GetAxis("Mouse X") * mouseSensitivity;
         float pitchDelta = Input.GetAxis("Mouse Y") * mouseSensitivity;
-
-        // Track mouse input for auto-recenter
-        bool hasMouseInput = Mathf.Abs(yawDelta) > 0.01f || Mathf.Abs(pitchDelta) > 0.01f;
-        if (hasMouseInput)
-        {
-            _noInputTimer = 0f;
-        }
-        else
-        {
-            _noInputTimer += Time.deltaTime;
-        }
 
         _orbitForward = Quaternion.AngleAxis(yawDelta, targetUp) * _orbitForward;
         _orbitForward = ResolvePlanarForward(_orbitForward, transform.forward, target.right, targetUp);
@@ -187,18 +159,6 @@ public class ThirdPersonCamera : MonoBehaviour
 
         _pitch = Mathf.Clamp(_pitch - pitchDelta, minPitch, maxPitch);
         float finalPitch = Mathf.Clamp(_pitch + _landingTiltAmount, minPitch, maxPitch + 18f);
-
-        // Auto-recenter: smoothly return to behind the player after delay
-        if (enableRecenter && _noInputTimer >= recenterDelay)
-        {
-            Vector3 authoredPlanar = ResolvePlanarForward(target.rotation * authoredForward, target.forward, target.right, targetUp);
-            Vector3 behindPlayer = authoredPlanar.sqrMagnitude > 0.001f
-                ? authoredPlanar
-                : ResolvePlanarForward(target.forward, transform.forward, target.right, targetUp);
-            float recenterBlend = DampingFactor(recenterSpeed, Time.deltaTime);
-            _orbitForward = Vector3.Slerp(_orbitForward, behindPlayer, recenterBlend).normalized;
-            _orbitForward = ResolvePlanarForward(_orbitForward, transform.forward, target.right, targetUp);
-        }
 
         if (clampYaw)
         {
@@ -217,16 +177,8 @@ public class ThirdPersonCamera : MonoBehaviour
 
         Quaternion desiredRotation = Quaternion.LookRotation(lookDirection, targetUp);
         Vector3 desiredFocusPoint = GetFocusPoint();
-        Vector3 focusVelocity = (desiredFocusPoint - _lastFocusPoint) / Mathf.Max(Time.deltaTime, 0.0001f);
-        Vector3 planarLead = Vector3.ProjectOnPlane(focusVelocity, targetUp);
-        if (planarLead.sqrMagnitude > 0.001f)
-            desiredFocusPoint += Vector3.ClampMagnitude(planarLead, 2f) * movementLead * 0.08f;
-        if (Time.unscaledTime < _eventFocusUntil)
-            desiredFocusPoint = Vector3.Lerp(desiredFocusPoint, _eventFocusPoint, _eventFocusWeight);
 
-        // Failsafe / Teleport snap: si el personaje se mueve muy rápido (más de 5.0m en un frame)
-        // significa que hubo teleport, respawn o transición brusca. Snappear el foco para evitar
-        // que la cámara atraviese todo el mapa volando (jitter / teletransporte).
+        // Failsafe / Teleport snap
         if (Vector3.Distance(_smoothedFocusPoint, desiredFocusPoint) > 5f)
         {
             _smoothedFocusPoint = desiredFocusPoint;
@@ -245,48 +197,40 @@ public class ThirdPersonCamera : MonoBehaviour
             desiredRotation *= _cameraShake.RotationOffset;
         }
 
-        // Asignar posición directamente. Dado que _smoothedFocusPoint ya está amortiguado (lerp),
-        // aplicar un segundo Lerp sobre transform.position genera doble retraso y oscilación elástica,
-        // lo que produce jitter e inestabilidad visual al saltar, correr o aterrizar (BUG 1).
+        // Apply PS1 noise manually (procedural)
+        float time = Time.time * 12f;
+        Vector3 posJitter = new Vector3(
+            Mathf.PerlinNoise(time, 0f) - 0.5f,
+            Mathf.PerlinNoise(0f, time) - 0.5f,
+            Mathf.PerlinNoise(time, time) - 0.5f
+        ) * 0.015f;
+        Vector3 rotJitter = new Vector3(
+            Mathf.PerlinNoise(time + 100f, 0f) - 0.5f,
+            Mathf.PerlinNoise(0f, time + 100f) - 0.5f,
+            0f
+        ) * 0.12f;
+        desiredPosition += desiredRotation * posJitter;
+        desiredRotation *= Quaternion.Euler(rotJitter);
+
         transform.position = desiredPosition;
         transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, DampingFactor(rotationDamping, Time.deltaTime));
 
         if (_camera != null)
         {
-            float dynamicFov = baseFov;
-            PlayerController pc = target.GetComponentInParent<PlayerController>();
-            if (pc != null && pc.IsGrounded)
-            {
-                // Dynamic FOV pulse during sprint — only when grounded to avoid jump spike
-                float sprintFactor = Mathf.InverseLerp(pc.moveSpeed, pc.moveSpeed * pc.sprintMultiplier, pc.PlanarSpeed);
-                dynamicFov += sprintFactor * 6.5f;
-            }
-            if (_pulseTargetFov > 0f)
-            {
-                if (Time.unscaledTime >= _pulseUntil)
-                {
-                    // Decay the landing pulse target FOV back to base/dynamic FOV smoothly over time instead of snapping instantly
-                    _pulseTargetFov = Mathf.MoveTowards(_pulseTargetFov, dynamicFov, Time.deltaTime * 65f);
-                    if (Mathf.Approximately(_pulseTargetFov, dynamicFov))
-                        _pulseTargetFov = -1f;
-                }
-            }
-            float targetFov = _pulseTargetFov > 0f ? _pulseTargetFov : dynamicFov;
-            _camera.fieldOfView = Mathf.Lerp(_camera.fieldOfView, targetFov, DampingFactor(fovDamping, Time.deltaTime));
+            _camera.fieldOfView = Mathf.Lerp(_camera.fieldOfView, baseFov, DampingFactor(fovDamping, Time.deltaTime));
+            _camera.nearClipPlane = nearClip;
+            _camera.farClipPlane = farClip;
         }
     }
 
     public void RequestFovPulse(float temporaryFov, float holdSeconds = 0.25f)
     {
-        _pulseTargetFov = temporaryFov;
-        _pulseUntil = Time.unscaledTime + Mathf.Max(0.05f, holdSeconds);
+        // Disabled - no dynamic FOV in PS1 mode
     }
 
     public void RequestEventFocus(Vector3 worldPoint, float weight = 0.35f, float holdSeconds = 0.45f, float pulseFov = 60f)
     {
-        _eventFocusPoint = worldPoint;
-        _eventFocusWeight = Mathf.Clamp01(weight);
-        _eventFocusUntil = Time.unscaledTime + Mathf.Max(0.05f, holdSeconds);
+        // Disabled - Cinemachine handles narrative camera cuts
     }
 
     public void PlayLandingTilt(float impactSpeed)
@@ -298,67 +242,6 @@ public class ThirdPersonCamera : MonoBehaviour
     Vector3 GetFocusPoint()
     {
         return target.position + target.rotation * focusOffset;
-    }
-
-    void AutoFrameCurrentTarget()
-    {
-        if (!autoFrameTarget || target == null)
-            return;
-
-        Transform framingRoot = ResolveFramingRoot();
-        if (!TryGetTargetBounds(framingRoot, out Bounds bounds))
-            return;
-
-        Vector3 up = framingRoot.up.sqrMagnitude > 0.001f ? framingRoot.up.normalized : Vector3.up;
-        Vector3 feet = bounds.center - up * bounds.extents.y;
-        float height = Mathf.Clamp(bounds.size.y, 1.45f, 2.1f);
-        Vector3 desiredFocus = feet + up * Mathf.Clamp(height * focusHeightRatio, 1.05f, 1.32f);
-
-        focusOffset = Quaternion.Inverse(target.rotation) * (desiredFocus - target.position);
-        distance = Mathf.Clamp(height * 2.2f, minDistance, maxDistance);
-        baseFov = Mathf.Clamp(baseFov, 52f, 58f);
-        _framedTargetId = target.GetHashCode();
-    }
-
-    Transform ResolveFramingRoot()
-    {
-        PlayerController controller = target.GetComponentInParent<PlayerController>();
-        if (controller != null)
-            return controller.transform;
-
-        return target.root;
-    }
-
-    static bool TryGetTargetBounds(Transform root, out Bounds bounds)
-    {
-        bounds = default;
-        if (root == null)
-            return false;
-
-        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
-        bool found = false;
-        for (int i = 0; i < renderers.Length; i++)
-        {
-            Renderer rendererRef = renderers[i];
-            if (rendererRef == null)
-                continue;
-
-            // Exclude echo renderers so AutoFrame doesn't mis-size the camera to include echo ghosts
-            if (rendererRef.GetComponentInParent<EchoPlayback>() != null)
-                continue;
-
-            if (!found)
-            {
-                bounds = rendererRef.bounds;
-                found = true;
-            }
-            else
-            {
-                bounds.Encapsulate(rendererRef.bounds);
-            }
-        }
-
-        return found;
     }
 
     static float DampingFactor(float sharpness, float deltaTime)

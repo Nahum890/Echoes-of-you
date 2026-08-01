@@ -3,11 +3,15 @@ using UnityEngine;
 /// <summary>
 /// Parkour avanzado: slide, agarre, wall jump/run, dash aéreo y momentum de sprint.
 /// Preserva velocidad; no detiene al jugador al aterrizar.
+/// DESHABILITADO para Modern Liminal (PS1 tank feel) - enableAdvancedLocomotion = false por defecto.
 /// </summary>
 [RequireComponent(typeof(PlayerController))]
 [DefaultExecutionOrder(-40)]
 public class PlayerAdvancedLocomotion : MonoBehaviour
 {
+    [Header("Modern Liminal: Deshabilitado")]
+    public bool enableAdvancedLocomotion = false;
+
     PlayerController _player;
     CharacterController _cc;
     EchoesLocomotionSettings _cfg;
@@ -30,6 +34,12 @@ public class PlayerAdvancedLocomotion : MonoBehaviour
 
     void Awake()
     {
+        if (!enableAdvancedLocomotion)
+        {
+            enabled = false;
+            return;
+        }
+        
         _player = GetComponent<PlayerController>();
         _cc = GetComponent<CharacterController>();
         _cfg = EchoesLocomotionSettings.Instance;
@@ -149,12 +159,10 @@ public class PlayerAdvancedLocomotion : MonoBehaviour
         if (!Physics.Raycast(probe, -_player.UpAxis, out RaycastHit topHit, _cfg.ledgeProbeDown, _player.GroundMask, QueryTriggerInteraction.Ignore))
             return;
 
-        // Evitar falsos positivos agarrando el suelo plano: la repisa debe estar por encima de la rodilla/cintura del jugador
         float ledgeTopHeight = Vector3.Dot(topHit.point - transform.position, _player.UpAxis);
         if (ledgeTopHeight < 0.5f)
             return;
 
-        // Asegurar que hay una pared real frente al jugador para colgarse (raycast justo debajo de la repisa)
         Vector3 wallCheckOrigin = transform.position + _player.UpAxis * (ledgeTopHeight - 0.15f);
         if (!Physics.Raycast(wallCheckOrigin, forward, _cfg.ledgeProbeForward + 0.2f, _player.GroundMask, QueryTriggerInteraction.Ignore))
             return;
@@ -209,10 +217,6 @@ public class PlayerAdvancedLocomotion : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.Space))
         {
-            // Wall jump sólo es válido cuando el jugador está genuinamente en el aire.
-            // Si el jugador está grounded, PlayerController.HandleJumpInput maneja el salto
-            // normal. Disparar ambos en el mismo frame genera doble impulso de velocidad
-            // (BUG 3 — impulso excesivo al correr y saltar).
             if (_player.IsGrounded)
                 return;
 

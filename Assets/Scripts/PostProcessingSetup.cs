@@ -9,12 +9,8 @@ using UnityEngine.SceneManagement;
 /// Pipeline (URP): crea un Volume global en runtime con un VolumeProfile y
 /// habilita el post-procesado en la cámara.
 ///
-/// Reemplaza la implementación anterior basada en Post-Processing Stack v2
-/// (Built-in), que no se renderizaba bajo URP.
-///
-/// Nota: el Ambient Occlusion en URP es SSAO (un Renderer Feature en el asset
-/// del renderer), no un override de Volume, por lo que se configura en el
-/// editor sobre el Universal Renderer y no aquí.
+/// Perfil ESTÁTICO con bases PS1/Liminal — NO MoveTowards cada frame.
+/// GameFeelController usa métodos de pulso discreto (coroutines) para eventos.
 /// </summary>
 public class PostProcessingSetup : MonoBehaviour
 {
@@ -133,8 +129,7 @@ public class PostProcessingSetup : MonoBehaviour
         if (cameraRef == null)
             return;
 
-        // Habilitar el post-procesado en la cámara (equivalente al checkbox
-        // "Post Processing" del UniversalAdditionalCameraData).
+        // Habilitar el post-procesado en la cámara
         var camData = cameraRef.GetUniversalAdditionalCameraData();
         if (camData != null)
             camData.renderPostProcessing = true;
@@ -143,35 +138,40 @@ public class PostProcessingSetup : MonoBehaviour
 
         _runtimeProfile = ScriptableObject.CreateInstance<VolumeProfile>();
 
-        // Valores canónicos del pase de arte técnico (POST_PROCESSING_SPEC):
-        // GameFeelController modula sobre estas mismas bases — mantener sincronizados.
+        // Valores base PS1/LIMINAL ESTÁTICOS (GameFeelController usa pulsos discretos sobre estas bases):
+        // Bloom: intensity 0.25, threshold 0.9, scatter 0.7
         Bloom bloom = _runtimeProfile.Add<Bloom>(true);
-        bloom.intensity.Override(0.05f);
-        bloom.threshold.Override(0.98f);
-        bloom.scatter.Override(0.5f);
+        bloom.intensity.Override(0.25f);
+        bloom.threshold.Override(0.9f);
+        bloom.scatter.Override(0.7f);
 
+        // Tonemapping: None (raw PS1 feel)
         Tonemapping tonemapping = _runtimeProfile.Add<Tonemapping>(true);
         tonemapping.mode.Override(TonemappingMode.None);
 
+        // ColorAdjustments: -0.5 exp / 15 contrast / -8 sat (SPEC-120 RULE-PST-003)
         ColorAdjustments grading = _runtimeProfile.Add<ColorAdjustments>(true);
-        grading.postExposure.Override(0f);
-        grading.contrast.Override(5f);
-        grading.saturation.Override(-3f);
+        grading.postExposure.Override(-0.5f);
+        grading.contrast.Override(15f);
+        grading.saturation.Override(-8f);
 
+        // Vignette: intensity 0.35, smoothness 0.40, color #0D0D1A (SPEC-120 RULE-PST-003)
         Vignette vignette = _runtimeProfile.Add<Vignette>(true);
-        vignette.intensity.Override(0.25f);
-        vignette.smoothness.Override(0.4f);
+        vignette.intensity.Override(0.35f);
+        vignette.smoothness.Override(0.40f);
         vignette.color.Override(new Color(0.051f, 0.051f, 0.102f)); // #0D0D1A
 
-        ChromaticAberration ca = _runtimeProfile.Add<ChromaticAberration>(false);
-        ca.intensity.Override(0f);
+        // ChromaticAberration: intensity 0.12
+        ChromaticAberration ca = _runtimeProfile.Add<ChromaticAberration>(true);
+        ca.intensity.Override(0.12f);
 
         LensDistortion ld = _runtimeProfile.Add<LensDistortion>(false);
         ld.intensity.Override(0f);
 
+        // FilmGrain: 0.45 Medium1
         FilmGrain grain = _runtimeProfile.Add<FilmGrain>(true);
         grain.type.Override(FilmGrainLookup.Medium1);
-        grain.intensity.Override(0.1f);
+        grain.intensity.Override(0.45f);
         grain.response.Override(0.8f);
 
         _volumeGo = new GameObject("GlobalPostProcessVolume");
@@ -180,6 +180,9 @@ public class PostProcessingSetup : MonoBehaviour
         _volume.isGlobal = true;
         _volume.priority = 1f;
         _volume.profile = _runtimeProfile;
+        
+        // Mark as don't save in runtime to prevent scene pollution
+        _volumeGo.hideFlags = HideFlags.DontSave;
     }
 
     void CleanupRuntimeObjects()

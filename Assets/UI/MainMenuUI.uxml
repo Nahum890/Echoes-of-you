@@ -2,16 +2,15 @@
     <Style src="project://database/Assets/UI/EchoesTheme.uss" />
     <Style src="project://database/Assets/UI/EchoesHoverEffects.uss" />
     
-    <ui:VisualElement name="root" class="root-fullscreen crt-vignette crt-scanlines" style="background-color: #0A0A0D;">
-        <ui:VisualElement name="menu-bg" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: #0A0A0D; opacity: 1;" />
+    <ui:VisualElement name="root" class="root-fullscreen crt-vignette crt-scanlines" style="background-color: transparent;">
 
         <!-- ==========================================
              SPLASH SCREEN (VOID INTRO)
              ========================================== -->
         <ui:VisualElement name="void-intro" class="root-fullscreen" style="background-color: #0A0A0D; justify-content: center; align-items: center; padding: 48px;">
             <!-- Title -->
-            <ui:Label text="E C H O E S   O F   Y O U" class="font-serif-bold text-headline-xl" style="color: #E8B262; font-size: 42px; margin-bottom: 8px;" />
-            <ui:Label text="registro de una ausencia" class="font-mono text-body-sm" style="color: #C9D4B0; margin-bottom: 96px; -unity-text-transform: uppercase;" />
+            <ui:Label text="E C H O E S   O F   Y O U" class="font-serif-bold text-headline-xl" style="color: #FFBF00; font-size: 38px; margin-bottom: 8px;" />
+            <ui:Label text="un eco que no se puede borrar" class="font-mono text-body-sm" style="color: #C9D4B0; margin-bottom: 96px; -unity-text-transform: uppercase;" />
             
             <!-- School clock icon mock -->
             <ui:VisualElement style="width: 80px; height: 80px; border-radius: 40px; border-width: 2px; border-color: #2B4A4A; align-items: center; justify-content: center; margin-bottom: 96px; opacity: 0.5;">
@@ -20,7 +19,7 @@
             </ui:VisualElement>
 
             <!-- Blinking prompt -->
-            <ui:Label text="[ PRESIONAR CUALQUIER TECLA PARA SINTONIZAR ]" class="font-mono text-body-sm blink-animation" style="color: #E8B262; letter-spacing: 2px;" />
+            <ui:Label text="[ PRESIONAR CUALQUIER TECLA PARA ABRIR EL CUADERNO ]" class="font-mono text-body-sm blink-animation" style="color: #FFBF00; letter-spacing: 2px;" />
         </ui:VisualElement>
 
         <!-- ==========================================
@@ -32,16 +31,16 @@
 
                 <ui:VisualElement class="folder-tabs-group">
                     <!-- Sidebar Header — Title block -->
-                    <ui:VisualElement style="margin-bottom: 40px; padding-bottom: 24px; border-bottom-width: 1px; border-bottom-color: rgba(232,178,98,0.4);">
+                    <ui:VisualElement style="margin-bottom: 40px; padding-bottom: 24px; border-bottom-width: 1px; border-bottom-color: rgba(255,191,0,0.4);">
                         <!-- Juego Title -->
-                        <ui:Label text="ECHOES OF YOU" class="font-mono-bold" style="font-size: 22px; letter-spacing: 2px; color: #E8B262;" />
-                        <ui:Label text="registro de una ausencia" class="font-mono" style="font-size: 13px; letter-spacing: 1px; color: #A8B4A0; margin-top: 6px;" />
+                        <ui:Label text="ECHOES OF YOU" class="font-mono-bold" style="font-size: 22px; letter-spacing: 2px; color: #FFBF00;" />
+                        <ui:Label text="un eco que no se puede borrar" class="font-mono" style="font-size: 13px; letter-spacing: 1px; color: #3B5A6E; margin-top: 6px;" />
                         <!-- Separator -->
-                        <ui:VisualElement style="height: 1px; background-color: rgba(232,178,98,0.3); margin-top: 18px; margin-bottom: 14px;" />
+                        <ui:VisualElement style="height: 1px; background-color: rgba(255,191,0,0.3); margin-top: 18px; margin-bottom: 14px;" />
                         <!-- User info -->
-                        <ui:Label text="EXPEDIENTE  9811" class="font-mono" style="font-size: 12px; letter-spacing: 2px; color: #8C96A5;" />
-                        <ui:Label text="Identidad: Aiden" class="font-serif" style="font-size: 17px; color: #C9D4B0; margin-top: 6px;" />
-                        <ui:Label name="hero-title" text="" class="font-mono" style="font-size: 14px; color: #A8B4A0; margin-top: 4px; -unity-font-style: italic; min-height: 18px;" />
+                        <ui:Label text="Cuaderno de Aiden" class="font-mono" style="font-size: 12px; letter-spacing: 2px; color: #3B5A6E;" />
+                        <ui:Label text="Aiden" class="font-serif" style="font-size: 17px; color: #2D2A26; margin-top: 6px;" />
+                        <ui:Label name="hero-title" text="" class="font-mono" style="font-size: 14px; color: #3B5A6E; margin-top: 4px; -unity-font-style: italic; min-height: 18px;" />
                     </ui:VisualElement>
 
                     <!-- Navigation Tab Buttons — sistema de hover v2 -->
@@ -60,10 +59,10 @@
                 </ui:VisualElement>
 
                 <!-- File metadata bottom label -->
-                <ui:VisualElement style="border-top-width: 1px; border-top-color: rgba(232,178,98,0.15); padding-top: 14px;">
+                <ui:VisualElement style="border-top-width: 1px; border-top-color: rgba(255,191,0,0.15); padding-top: 14px;">
                     <ui:Label name="lbl-user-rank" text="ESTADO: INCOMPLETO" class="font-mono-bold" style="font-size: 13px; letter-spacing: 1px; color: #B23A3A; -unity-text-transform: uppercase;" />
-                    <ui:Label name="lbl-user-integrity" text="Integridad: 12%" class="font-mono" style="font-size: 13px; color: #8C96A5; margin-top: 4px;" />
-                    <ui:Label name="lbl-user-sessions" text="Sintonizaciones: 1" class="font-mono" style="font-size: 13px; color: #8C96A5; margin-top: 2px;" />
+                    <ui:Label name="lbl-user-integrity" text="Integridad: 12%" class="font-mono" style="font-size: 13px; color: #3B5A6E; margin-top: 4px;" />
+                    <ui:Label name="lbl-user-sessions" text="Sintonizaciones: 1" class="font-mono" style="font-size: 13px; color: #3B5A6E; margin-top: 2px;" />
                 </ui:VisualElement>
             </ui:VisualElement>
 
@@ -77,21 +76,21 @@
                      ========================================== -->
                 <ui:VisualElement name="panel-neural-archives" class="preview-panel preview-panel--visible">
                     <ui:Label text="Expediente de Ausencia" class="font-serif-bold text-headline-xl" style="-unity-text-align: middle-left; margin-bottom: 4px;" />
-                    <ui:Label text="registro y telemetria residual del eco" class="font-mono text-label-caps" style="color: #8C96A5; margin-bottom: 20px;" />
+                    <ui:Label text="registro y telemetria residual del eco" class="font-mono text-label-caps" style="color: #3B5A6E; margin-bottom: 20px;" />
                     <ui:VisualElement class="accent-line" />
 
                     <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
                         <!-- Left col: log & telemetria -->
                         <ui:VisualElement style="width: 55%; padding-right: 24px;">
-                            <ui:Label text="Registro de Actividad" class="font-mono-bold text-label-caps" style="color: #E8B262; margin-bottom: 8px;" />
+                            <ui:Label text="Registro de Actividad" class="font-mono-bold text-label-caps" style="color: #FFBF00; margin-bottom: 8px;" />
                             <ui:VisualElement class="terminal-log-box" style="margin-bottom: 24px;">
                                 <ui:Label text="[OK] Receptor analogico sintonizado." class="terminal-log-line" />
                                 <ui:Label name="lbl-archive-log-1" text="[OK] Fragmentos escolares mapeados." class="terminal-log-line" />
                                 <ui:Label name="lbl-archive-log-2" text="[OK] Frecuencia de eco establecida (15 FPS)." class="terminal-log-line" />
-                                <ui:Label name="lbl-archive-log-3" text="Esperando entrada del observador..." class="terminal-log-line" style="color: #E8B262;" />
+                                <ui:Label name="lbl-archive-log-3" text="Esperando entrada del observador..." class="terminal-log-line" style="color: #FFBF00;" />
                             </ui:VisualElement>
 
-                            <ui:Label text="Datos Acumulados" class="font-mono-bold text-label-caps" style="color: #E8B262; margin-bottom: 8px;" />
+                            <ui:Label text="Datos Acumulados" class="font-mono-bold text-label-caps" style="color: #FFBF00; margin-bottom: 8px;" />
                             <ui:VisualElement class="telemetry-row">
                                 <ui:VisualElement class="telemetry-chip">
                                     <ui:Label text="Objetos" class="telemetry-chip-label" />
@@ -122,9 +121,9 @@
                             <ui:VisualElement style="margin-top: 20px; width: 100%; padding: 12px; background-color: #080A10; border-width: 1px; border-color: rgba(201,212,176,0.2);">
                                 <ui:Label text="RETENCION DE MEMORIA" class="font-mono-bold" style="font-size: 13px; letter-spacing: 1px; color: #6C788A; -unity-text-transform: uppercase; margin-bottom: 8px;" />
                                 <ui:VisualElement style="flex-direction: row; align-items: center; justify-content: space-between;">
-                                    <ui:Label name="lbl-archive-stability-pct" text="0%" class="font-mono-bold" style="font-size: 18px; color: #C9D4B0;" />
+                                    <ui:Label name="lbl-archive-stability-pct" text="0%" class="font-mono-bold" style="font-size: 18px; color: #2D2A26;" />
                                     <ui:VisualElement style="width: 120px; height: 6px; background-color: #1C2430; border-width: 1px; border-color: #2B4A4A;">
-                                        <ui:VisualElement name="bar-archive-stability" style="width: 0%; height: 100%; background-color: #C9D4B0;" />
+                                        <ui:VisualElement name="bar-archive-stability" style="width: 0%; height: 100%; background-color: #2D2A26;" />
                                     </ui:VisualElement>
                                 </ui:VisualElement>
                             </ui:VisualElement>
@@ -137,52 +136,52 @@
                      ========================================== -->
                 <ui:VisualElement name="panel-stability-map" class="preview-panel">
                     <!-- Panel header -->
-                    <ui:Label text="Archivo de Memorias" class="font-serif-bold" style="font-size: 32px; color: #E8B262; margin-bottom: 4px;" />
-                    <ui:Label text="seleccionar un recuerdo registrado" class="font-mono" style="font-size: 13px; letter-spacing: 2px; color: #A8B4A0; -unity-text-transform: uppercase; margin-bottom: 20px;" />
+                    <ui:Label text="Archivo de Memorias" class="font-serif-bold" style="font-size: 32px; color: #FFBF00; margin-bottom: 4px;" />
+                    <ui:Label text="seleccionar un recuerdo registrado" class="font-mono" style="font-size: 13px; letter-spacing: 2px; color: #3B5A6E; -unity-text-transform: uppercase; margin-bottom: 20px;" />
                     <ui:VisualElement class="accent-line" />
 
                     <ui:VisualElement style="flex-direction: row; flex-grow: 1; min-height: 0;">
                         <!-- Left: List of memory tapes -->
                         <ui:ScrollView style="flex: 1; padding-right: 24px;">
-                            <ui:Button name="btn-level-01" text="01  Entrada Escolar  —  Primer eco"     class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-02" text="02  Pasillo de Aulas  —  Espacio dinamico"  class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-03" text="03  Escalera  —  Galeria del eco"       class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-04" text="04  Biblioteca  —  Cruce doble"         class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-05" text="05  Aula de Lyra  —  Caos controlado"   class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-06" text="06  Escalera Central  —  Dominio"       class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-07" text="07  Sala de Profesores  —  Enlace"      class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-08" text="08  Laboratorio  —  Puente del vacio"   class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-09" text="09  Gimnasio  —  Muro de energia"       class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-10" text="10  Aceptacion  —  Archivo dual"        class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-11" text="11  Depresion  —  Puente fantasma"      class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-12" text="12  Aceptacion  —  Ascenso roto"        class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-13" text="13  Verdad  —  Memoria viva"            class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-14" text="14  Liberacion  —  Umbral"              class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-15" text="15  Integracion  —  Final"              class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
+                            <ui:Button name="btn-level-01" text="01  Entrada Escolar  —  Primer eco"     class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #2D2A26;" />
+                            <ui:Button name="btn-level-02" text="02  Pasillo de Aulas  —  Espacio dinamico"  class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #2D2A26;" />
+                            <ui:Button name="btn-level-03" text="03  Escalera  —  Galeria del eco"       class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #2D2A26;" />
+                            <ui:Button name="btn-level-04" text="04  Biblioteca  —  Cruce doble"         class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #2D2A26;" />
+                            <ui:Button name="btn-level-05" text="05  Aula de Lyra  —  Caos controlado"   class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #2D2A26;" />
+                            <ui:Button name="btn-level-06" text="06  Escalera Central  —  Dominio"       class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #2D2A26;" />
+                            <ui:Button name="btn-level-07" text="07  Sala de Profesores  —  Enlace"      class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #2D2A26;" />
+                            <ui:Button name="btn-level-08" text="08  Laboratorio  —  Puente del vacio"   class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #2D2A26;" />
+                            <ui:Button name="btn-level-09" text="09  Gimnasio  —  Muro de energia"       class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #2D2A26;" />
+                            <ui:Button name="btn-level-10" text="10  Aceptacion  —  Archivo dual"        class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #2D2A26;" />
+                            <ui:Button name="btn-level-11" text="11  Depresion  —  Puente fantasma"      class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #2D2A26;" />
+                            <ui:Button name="btn-level-12" text="12  Aceptacion  —  Ascenso roto"        class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #2D2A26;" />
+                            <ui:Button name="btn-level-13" text="13  Verdad  —  Memoria viva"            class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #2D2A26;" />
+                            <ui:Button name="btn-level-14" text="14  Liberacion  —  Umbral"              class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #2D2A26;" />
+                            <ui:Button name="btn-level-15" text="15  Integracion  —  Final"              class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #2D2A26;" />
                         </ui:ScrollView>
 
                         <!-- Right: Selected tape stats + actions -->
                         <ui:VisualElement style="width: 260px; flex-shrink: 0; margin-left: 24px; justify-content: space-between;">
                             <!-- Stats block -->
                             <ui:VisualElement style="padding: 20px; background-color: #06080E; border-width: 1px; border-color: rgba(201,212,176,0.2); margin-bottom: 16px;">
-                                <ui:Label text="ESTADISTICAS" class="font-mono-bold" style="font-size: 12px; letter-spacing: 3px; color: #E8B262; margin-bottom: 16px; -unity-text-transform: uppercase;" />
+                                <ui:Label text="ESTADISTICAS" class="font-mono-bold" style="font-size: 12px; letter-spacing: 3px; color: #FFBF00; margin-bottom: 16px; -unity-text-transform: uppercase;" />
 
                                 <ui:VisualElement style="flex-direction: row; justify-content: space-between; margin-bottom: 10px;">
-                                    <ui:Label text="Objetos" class="font-mono" style="font-size: 14px; color: #A8B4B8;" />
-                                    <ui:Label name="lbl-telemetry-fragments" text="0/0" class="font-mono-bold" style="font-size: 14px; color: #DCE4D0;" />
+                                    <ui:Label text="Objetos" class="font-mono" style="font-size: 14px; color: #3B5A6E;" />
+                                    <ui:Label name="lbl-telemetry-fragments" text="0/0" class="font-mono-bold" style="font-size: 14px; color: #2D2A26;" />
                                 </ui:VisualElement>
                                 <ui:VisualElement style="flex-direction: row; justify-content: space-between; margin-bottom: 10px;">
-                                    <ui:Label text="Ecos" class="font-mono" style="font-size: 14px; color: #A8B4B8;" />
-                                    <ui:Label name="lbl-telemetry-echoes" text="0" class="font-mono-bold" style="font-size: 14px; color: #DCE4D0;" />
+                                    <ui:Label text="Ecos" class="font-mono" style="font-size: 14px; color: #3B5A6E;" />
+                                    <ui:Label name="lbl-telemetry-echoes" text="0" class="font-mono-bold" style="font-size: 14px; color: #2D2A26;" />
                                 </ui:VisualElement>
                                 <ui:VisualElement style="flex-direction: row; justify-content: space-between; margin-bottom: 10px;">
-                                    <ui:Label text="Colapsos" class="font-mono" style="font-size: 14px; color: #A8B4B8;" />
+                                    <ui:Label text="Colapsos" class="font-mono" style="font-size: 14px; color: #3B5A6E;" />
                                     <ui:Label name="lbl-telemetry-deaths" text="0" class="font-mono-bold" style="font-size: 14px; color: #B23A3A;" />
                                 </ui:VisualElement>
                                 <ui:VisualElement style="height: 1px; background-color: rgba(201,212,176,0.15); margin-bottom: 10px;" />
                                 <ui:VisualElement style="flex-direction: row; justify-content: space-between;">
-                                    <ui:Label text="Tiempo total" class="font-mono" style="font-size: 14px; color: #A8B4B8;" />
-                                    <ui:Label name="lbl-telemetry-time" text="0s" class="font-mono-bold" style="font-size: 14px; color: #DCE4D0;" />
+                                    <ui:Label text="Tiempo total" class="font-mono" style="font-size: 14px; color: #3B5A6E;" />
+                                    <ui:Label name="lbl-telemetry-time" text="0s" class="font-mono-bold" style="font-size: 14px; color: #2D2A26;" />
                                 </ui:VisualElement>
                             </ui:VisualElement>
 
@@ -209,8 +208,8 @@
                      PANEL 3: CALIBRATION PREVIEW (SETTINGS)
                      ========================================== -->
                 <ui:VisualElement name="panel-calibration-preview" class="preview-panel">
-                    <ui:Label text="Ajustes de Sintonia" class="font-serif-bold" style="font-size: 32px; color: #E8B262; margin-bottom: 4px;" />
-                    <ui:Label text="calibrar la recepcion de la memoria" class="font-mono" style="font-size: 13px; letter-spacing: 2px; color: #A8B4A0; -unity-text-transform: uppercase; margin-bottom: 20px;" />
+                    <ui:Label text="Ajustes de Sintonia" class="font-serif-bold" style="font-size: 32px; color: #FFBF00; margin-bottom: 4px;" />
+                    <ui:Label text="calibrar la recepcion de la memoria" class="font-mono" style="font-size: 13px; letter-spacing: 2px; color: #3B5A6E; -unity-text-transform: uppercase; margin-bottom: 20px;" />
                     <ui:VisualElement class="accent-line" />
 
                     <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
@@ -220,17 +219,17 @@
                             
                             <ui:VisualElement style="flex-direction: row; align-items: center; margin-bottom: 12px;">
                                 <ui:Slider name="sld-master" label="Volumen General" low-value="0" high-value="1" style="flex-grow: 1; margin-bottom: 0;" />
-                                <ui:Label name="lbl-master-val" text="100%" class="font-mono text-body-sm" style="color: #E8B262; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
+                                <ui:Label name="lbl-master-val" text="100%" class="font-mono text-body-sm" style="color: #FFBF00; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
                             </ui:VisualElement>
 
                             <ui:VisualElement style="flex-direction: row; align-items: center; margin-bottom: 12px;">
                                 <ui:Slider name="sld-music" label="Musica" low-value="0" high-value="1" style="flex-grow: 1; margin-bottom: 0;" />
-                                <ui:Label name="lbl-music-val" text="100%" class="font-mono text-body-sm" style="color: #E8B262; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
+                                <ui:Label name="lbl-music-val" text="100%" class="font-mono text-body-sm" style="color: #FFBF00; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
                             </ui:VisualElement>
 
                             <ui:VisualElement style="flex-direction: row; align-items: center; margin-bottom: 16px;">
                                 <ui:Slider name="sld-sfx" label="Efectos" low-value="0" high-value="1" style="flex-grow: 1; margin-bottom: 0;" />
-                                <ui:Label name="lbl-sfx-val" text="100%" class="font-mono text-body-sm" style="color: #E8B262; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
+                                <ui:Label name="lbl-sfx-val" text="100%" class="font-mono text-body-sm" style="color: #FFBF00; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
                             </ui:VisualElement>
 
                             <ui:Label text="Pantalla" class="settings-group-title" style="margin-top: 12px;" />
@@ -247,7 +246,7 @@
                                 
                                 <ui:VisualElement style="flex-direction: row; align-items: center; margin-bottom: 16px;">
                                     <ui:Slider name="SensitivitySlider" label="Sensibilidad Raton" low-value="0.1" high-value="4" style="flex-grow: 1; margin-bottom: 0;" />
-                                    <ui:Label name="lbl-cam-sens-val" text="1.0" class="font-mono text-body-sm" style="color: #E8B262; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
+                                    <ui:Label name="lbl-cam-sens-val" text="1.0" class="font-mono text-body-sm" style="color: #FFBF00; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
                                 </ui:VisualElement>
                                 
                                 <ui:VisualElement style="display: none;">
