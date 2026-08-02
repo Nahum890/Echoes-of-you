@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 19101, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: EchoesPanelSettings
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.PanelSettings
-  themeUss: {fileID: -4733365628477956816, guid: f1b7e580834df4043915beef6d6b600a, type: 3}
+  themeUss: {fileID: -4733365628477956816, guid: 85dde95bbec5cc14cb209006012e5096, type: 3}
   m_DisableNoThemeWarning: 0
   m_TargetTexture: {fileID: 0}
   m_RenderMode: 0
@@ -27,11 +27,11 @@ MonoBehaviour:
   m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_Match: 0.5
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_TargetDisplay: 0
   m_BindingLogLevel: 0
   m_ClearDepthStencil: 1
-  m_ClearColor: 0
+  m_ClearColor: 1
   m_ColorClearValue: {r: 0, g: 0, b: 0, a: 0}
   m_VertexBudget: 0
   m_TextureSlotCount: 8

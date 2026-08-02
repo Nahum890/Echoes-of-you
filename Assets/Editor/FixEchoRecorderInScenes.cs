@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
+using Echoes.UI;
 
 public class FixEchoRecorderInScenes
 {

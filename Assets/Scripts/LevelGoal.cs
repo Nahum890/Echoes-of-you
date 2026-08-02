@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Echoes.UI;
 
 public class LevelGoal : MonoBehaviour, IResettableLevelObject
 {
@@ -211,3 +212,4 @@ public class LevelGoal : MonoBehaviour, IResettableLevelObject
             Instance = null;
     }
 }
+

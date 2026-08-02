@@ -1,20 +1,186 @@
-schema_version: "1.0"
+schema_version: "2.0"
 catalog_type: level_intent_catalog
-source: Docs/GameDesign/BRIEF_ESPACIAL_15_NIVELES.md
+source: Docs/GameDesign/NARRATIVA_INTERNA.md
+note: |
+  v2.0 (2026-08-02) — Reescritura narrativa. El entorno es la mente de Aiden.
+  Cada primary_rooms ahora describe qué estructura psicológica representa el
+  nivel. chapters renombrados a las 5 etapas de duelo/procesamiento. El usuario
+  preguntó por un MENSAJE DUAL: aceptar el pasado (no se puede cambiar) +
+  mejorar como persona (aceptar no es resignarse). El puzzle de cada nivel
+  enseña esa tensión desde una faceta distinta.
 
 levels:
-  N01: {title: Desorientacion, emotion: desorientation, chapter: I_Persistence, primary_rooms: [SchoolHall, SchoolCorridor], puzzle: echo_introduction}
-  N02: {title: Repetition, emotion: repetition, chapter: I_Persistence, primary_rooms: [SchoolCorridor, SchoolClassroom], puzzle: simultaneous_plates}
-  N03: {title: Indecision, emotion: indecision, chapter: I_Persistence, primary_rooms: [SchoolCorridor, SchoolClassroom], puzzle: mirrored_choice}
-  N04: {title: Espera, emotion: waiting, chapter: II_Coordination, primary_rooms: [SchoolClassroom], puzzle: vertical_timing}
-  N05: {title: Culpa, emotion: guilt, chapter: II_Coordination, primary_rooms: [SchoolCorridor], puzzle: horizontal_timing_maze}
-  N06: {title: Negacion, emotion: denial, chapter: III_Confidence, primary_rooms: [SchoolLibrary], puzzle: temporal_bridge}
-  N07: {title: Evasion, emotion: avoidance, chapter: III_Confidence, primary_rooms: [SchoolCourtyard], puzzle: record_future}
-  N08: {title: Autosabotaje, emotion: self_sabotage, chapter: II_Coordination, primary_rooms: [SchoolStaffRoom], puzzle: two_echo_conflict}
-  N09: {title: Control, emotion: control, chapter: III_Confidence, primary_rooms: [SchoolCourtyard], puzzle: open_space_control}
-  N10: {title: Recuerdos, emotion: memories, chapter: IV_Optimization, primary_rooms: [SchoolLyraClassroom], puzzle: ambient_lyra_echo}
-  N11: {title: Conexion, emotion: connection, chapter: IV_Optimization, primary_rooms: [SchoolStairwell], puzzle: vertical_coordination}
-  N12: {title: Conflicto, emotion: conflict, chapter: V_Consequence, primary_rooms: [SchoolGym, SchoolLab], puzzle: echo_conflict}
-  N13: {title: Verdad, emotion: truth, chapter: V_Consequence, primary_rooms: [SchoolLyraClassroom, SchoolLiminalClassroom], puzzle: single_recording_fragmented_room}
-  N14: {title: Aceptacion, emotion: acceptance, chapter: VI_Acceptance, primary_rooms: [SchoolLiminalClassroom], puzzle: follow_echo_path}
-  N15: {title: Integracion, emotion: integration, chapter: VI_Acceptance, primary_rooms: [SchoolCorridor, SchoolHall], puzzle: final_return}
+  # ─── Capítulo I: Negación (N01-N04) ───
+  # "Aiden está segura de tener razón." El entorno repele la introspección.
+  N01:
+    title: Desorientación
+    emotion: negacion
+    dual_theme: "El recuerdo existe aunque no quiera verlo"
+    chapter: I_Negacion
+    primary_rooms: [SchoolHall, SchoolCorridor]
+    room_meaning: "El vestíbulo — no quiere entrar. El corredor — no quiere mirar las puertas."
+    puzzle: echo_introduction
+    psychological_function: "Presentar el mecanismo del recuerdo (Eco) que Aiden quiere ignorar."
+  N02:
+    title: Repetición
+    emotion: patron
+    dual_theme: "Repetir lo mismo esperando otro resultado"
+    chapter: I_Negacion
+    primary_rooms: [SchoolCorridor, SchoolClassroom]
+    room_meaning: "El mismo pasillo, la misma aula — ella recorre patrones sin verlos."
+    puzzle: simultaneous_plates
+    psychological_function: "Aiden descubre que repetir acciones produce el mismo resultado; aún lo atribuye a circunstancias externas."
+  N03:
+    title: Indecisión
+    emotion: opciones_perdidas
+    dual_theme: "Las bifurcaciones que Aiden no tomó con Lyra"
+    chapter: I_Negacion
+    primary_rooms: [SchoolCorridor, SchoolClassroom]
+    room_meaning: "Pasillo bifurcado — el camino no elegido encara al jugador."
+    puzzle: mirrored_choice
+    psychological_function: "Confrontar la bifurcación. Aiden dice 'elegí bien'; el nivel insinúa lo contrario."
+  N04:
+    title: Espera
+    emotion: silencio
+    dual_theme: "Los momentos donde Aiden calló cuando debió hablar"
+    chapter: I_Negacion
+    primary_rooms: [SchoolClassroom]
+    room_meaning: "Un aula donde Lyra esperó una respuesta que no llegó."
+    puzzle: vertical_timing
+    psychological_function: "Silencio como acción irreparable. El Eco reproduce el silencio (?) — Aiden lo justifica como 'estaba esperando el momento justo'."
+
+  # ─── Capítulo II: Culpa (N05-N08) ───
+  # "El peso empieza a sentirse."
+  N05:
+    title: Culpa
+    emotion: culpa
+    dual_theme: "La responsabilidad que Aiden evita asumir"
+    chapter: II_Culpa
+    primary_rooms: [SchoolCorridor]
+    room_meaning: "El corredor de la taquilla de Lyra — vacía."
+    puzzle: horizontal_timing_maze
+    psychological_function: "Primer quiebre. La taquilla vacía pesa. Aiden busca responsables externos; el nivel los niega."
+  N06:
+    title: Distorsión
+    emotion: distorsion
+    dual_theme: "La versión del recuerdo que Aiden se cuenta a sí misma"
+    chapter: II_Culpa
+    primary_rooms: [SchoolLibrary]
+    room_meaning: "Biblioteca fracturada — los libros cuentan versiones contradictorias del mismo evento."
+    puzzle: temporal_bridge
+    psychological_function: "Detectar la distorsión. El Eco revela puentes que la memoria consciente niega."
+  N07:
+    title: Evasión
+    emotion: huida
+    dual_theme: "La conversación pendiente que Aiden no tuvo con Lyra"
+    chapter: II_Culpa
+    primary_rooms: [SchoolCourtyard]
+    room_meaning: "Patio abierto donde debería haber habido una conversación."
+    puzzle: record_future
+    psychological_function: "Preparar lo que se debió hacer antes. El Eco como 'otra oportunidad' — pero Aiden descubre que tampoco esta vez lo hace bien."
+  N08:
+    title: Autosabotaje
+    emotion: dos_versiones
+    dual_theme: "Dos versiones de Aiden en guerra"
+    chapter: II_Culpa
+    primary_rooms: [SchoolStaffRoom]
+    room_meaning: "Sala de profesores — donde Aiden se juzga a sí misma como juez implacable."
+    puzzle: two_echo_conflict
+    psychological_function: "Dos Ecos del mismo Aiden se chocan: la que quiere reparar vs la que prefiere la herida."
+
+  # ─── Capítulo III: Realización (N09-N12) ───
+  # "Aiden empieza a ver el panorama — pero comprende no es cambiar."
+  N09:
+    title: Control
+    emotion: control
+    dual_theme: "La jaula que Aiden construyó para no sentir"
+    chapter: III_Realizacion
+    primary_rooms: [SchoolCourtyard]
+    room_meaning: "El mismo patio de N07 — pero ahora Aiden entiende que controlarlo todo la aisló."
+    puzzle: open_space_control
+    psychological_function: "Comprender que organizar el dolor no lo resuelve; el espacio abierto no se puede ordenar."
+  N10:
+    title: Recuerdos
+    emotion: nostalgia_quemada
+    dual_theme: "Tocar el recuerdo de Lyra sin romperlo ni asirlo"
+    chapter: III_Realizacion
+    primary_rooms: [SchoolLyraClassroom]
+    room_meaning: "El aula de Lyra. Objetos amber. Dolor que enseña cuando se observa sin agarrar."
+    puzzle: ambient_lyra_echo
+    psychological_function: "Observar a Lyra-vía-Eco sin intentar replicarla ni corregirla. Comprensión pasiva."
+  N11:
+    title: Conexión
+    emotion: conexion_vertical
+    dual_theme: "Subir hacia reconciliación — con Lyra, consigo misma"
+    chapter: III_Realizacion
+    primary_rooms: [SchoolStairwell]
+    room_meaning: "Escalinata — ascenso desde la fragmentación."
+    puzzle: vertical_coordination
+    psychological_function: "Coordinar dos alturas. Subir requiere mirar abajo. Realización no se alcanza sin ver el daño."
+  N12:
+    title: Conflicto
+    emotion: contradiccion
+    dual_theme: "Aceptar la contradicción: el pasado no se borra pero tampoco define todo"
+    chapter: III_Realizacion
+    primary_rooms: [SchoolGym, SchoolLab]
+    room_meaning: "Gimnasio (cuerpo) y laboratorio (mente) — dos aulas que Aiden separa pero que son el mismo espacio."
+    puzzle: echo_conflict
+    psychological_function: "Dos Ecos contradictorios pueden coexistir. La verdad humana es heap, no silogismo."
+
+  # ─── Capítulo IV: Aceptación-Búsqueda (N13-N15) ───
+  # "Sostener el recuerdo sin apretarlo. Dejar ir para poder crecer."
+  N13:
+    title: Verdad
+    emotion: verdad_irreversible
+    dual_theme: "Aceptar que hubo eventos que no pueden repararse — pero eso no me define"
+    chapter: IV_Aceptacion
+    primary_rooms: [SchoolLyraClassroom, SchoolLiminalClassroom]
+    room_meaning: "Aula de Lyra y aula liminal coexisten — lo real y lo recordado ya no compiten."
+    puzzle: single_recording_fragmented_room
+    psychological_function: "Una sola grabación. Una sola versión del evento. Elegir cuál recuerdo guardar — soltar el resto."
+  N14:
+    title: Aceptación
+    emotion: soltar
+    dual_theme: "Fluir con el recuerdo en lugar de contra él"
+    chapter: IV_Aceptacion
+    primary_rooms: [SchoolLiminalClassroom]
+    room_meaning: "Aula liminal sin muros claros — la mente ya no defiende ni ataca."
+    puzzle: follow_echo_path
+    psychological_function: "Seguir el Eco sin controlarlo. Una acción pasada guía; el presente puede only acompañar el movimiento."
+  N15:
+    title: Integración
+    emotion: ser_en_paz
+    dual_theme: "Volver al inicio con ojos distintos — el pasado sigue ahí pero ya no ata"
+    chapter: IV_Aceptacion
+    primary_rooms: [SchoolCorridor, SchoolHall]
+    room_meaning: "El mismo vestíbulo de N01 — ahora Aiden puede salir sin rendirse ni negar."
+    puzzle: final_return
+    psychological_function: "Volver a N01 es la integración. Elegir moverse hacia adelante (mejorar) o repetir el patrón (atraparse). El decision point final define el ending."
+
+validation:
+  - id: LINT-VAL-001
+    type: constraint
+    status: active
+    severity: error
+    scope: [level]
+    rule: "Every level must have title, emotion, dual_theme, chapter, primary_rooms, psychological_function"
+    validator: validators/level_intent_validator.yaml#required_fields
+  - id: LINT-VAL-002
+    type: validation
+    status: active
+    severity: advisory
+    scope: [level, narrative]
+    rule: "dual_theme should express tension between 'accept past' and 'improve self' — not pick one"
+    validator: validators/narrative_validator.yaml#dual_thesis_tension
+
+change_history:
+  - version: "1.0"
+    date: "2026-07-25"
+    note: "Initial level_intent catalog sourced from BRIEF_ESPACIAL_15_NIVELES.md"
+  - version: "2.0"
+    date: "2026-08-02"
+    note: |
+      Reescritura narrativa dual. Añadidos dual_theme (tensión aceptar+mejorar),
+      room_meaning (qué estructura psicológica representa), psychological_function
+      (qué procesa el nivel). Chapters renombrados a las 4 etapas psicológicas.
+      LINT-VAL-002 (dual_thesis_tension) añadido.

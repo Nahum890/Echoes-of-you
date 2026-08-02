@@ -1,153 +1,71 @@
-﻿<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI/EchoesTheme.uss" />
+﻿<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+    <!-- GameHUDUI — Fase 4: Mínimo esencial.
+         Opacidad base 0.0. Solo visible al grabar/reproducir.
+         Elementos:
+         - REC● + barra 12s + slots (solo grabando)
+         - ECO▶ + slots (solo reproduciendo)
+         - Objetivo contextual (top-center)
+         - Toast (bottom-center, 1 a la vez)
+         - Key prompt (centro, solo cerca interactuable)
+         - Chalkboard (tutorial 1 acción)
+         - Footer: REC● / ECO▶ estados -->
 
-    <!--
-        GAME HUD — Cinta Magnética / Expediente de Recuerdos
-        Todos los elementos con name="" son consultados por GameHUD.cs
-        picking-mode="Ignore" en todo elemento no-interactivo
-    -->
-    <ui:VisualElement name="hud-root" class="root-fullscreen" picking-mode="Ignore">
+    <ui:VisualElement class="root-fullscreen" name="hud-root" picking-mode="Ignore">
 
-        <!-- ========================================================
-             PANEL SUPERIOR IZQUIERDO: GRABACIÓN / ECO
-             Muestra punto rojo parpadeante + barra durante grabación,
-             o ruedas de cinta (slots) en modo eco activo.
-             ======================================================== -->
-        <ui:VisualElement name="hud-record-panel" class="hud-record-panel hidden" picking-mode="Ignore">
-            <!-- Punto de grabación (rojo, pulsa) -->
-            <ui:VisualElement name="hud-record-dot" class="hud-record-dot hidden" picking-mode="Ignore" />
-            <!-- Icono de eco (cuadrado verde apagado) -->
-            <ui:VisualElement name="hud-echo-icon" class="hud-echo-icon hidden" picking-mode="Ignore" />
-            <!-- Barra de progreso de grabación (Reel) -->
-            <ui:VisualElement name="hud-record-bar-bg" class="hud-record-bar-bg hidden" picking-mode="Ignore">
-                <ui:VisualElement name="hud-record-bar-fill" class="hud-record-bar-fill" picking-mode="Ignore" />
+        <!-- RECORD PANEL (top-left) - solo grabando -->
+        <ui:VisualElement class="hud-record-panel hidden" name="hud-record-panel">
+            <ui:VisualElement class="hud-record-dot" name="hud-record-dot" />
+            <ui:VisualElement class="hud-record-bar-bg" name="hud-record-bar-bg">
+                <ui:VisualElement class="hud-record-bar-fill" name="hud-record-bar-fill" />
             </ui:VisualElement>
-            <!-- Etiqueta de eco (hidden, solo para compatibilidad de script) -->
-            <ui:Label name="hud-echo-label" text="" class="hud-echo-label hidden" picking-mode="Ignore" />
-            <!-- Contenedor de slots de eco (generado dinámicamente por C#) -->
-            <ui:VisualElement name="hud-echo-slots" class="hud-echo-slots-container" picking-mode="Ignore" />
+            <ui:VisualElement class="hud-echo-slots" name="hud-echo-slots" />
         </ui:VisualElement>
 
-        <!-- ========================================================
-             PANEL SUPERIOR DERECHO: BARRAS DE ESTADO (ESTABILIDAD / RECUERDO)
-             Diseño de medidor de casete: pequeñas barras horizontales.
-             ======================================================== -->
-        <ui:VisualElement name="hud-stability" class="hud-container" picking-mode="Ignore">
-            <ui:VisualElement class="hud-bar-container" picking-mode="Ignore">
-                <ui:Label text="ESTABILIDAD" class="hud-bar-label" picking-mode="Ignore" />
-                <ui:VisualElement class="hud-bar-bg" picking-mode="Ignore">
-                    <ui:VisualElement name="hud-stability-fill" class="hud-bar-fill hud-bar-fill--stability" picking-mode="Ignore" />
+        <!-- HUD BARS (top-right) - solo en puzzle -->
+        <ui:VisualElement class="hud-container hidden" name="hud-container">
+            <ui:VisualElement class="hud-bar-container">
+                <ui:Label class="hud-bar-label" text="ESTABILIDAD" />
+                <ui:VisualElement class="hud-bar-bg">
+                    <ui:VisualElement class="hud-bar-fill hud-bar-fill--stability" name="hud-stability-fill" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement class="hud-bar-container" style="margin-top: 8px;" picking-mode="Ignore">
-                <ui:Label text="RECUERDO" class="hud-bar-label" picking-mode="Ignore" />
-                <ui:VisualElement class="hud-bar-bg" style="width: 96px;" picking-mode="Ignore">
-                    <ui:VisualElement name="hud-recall-fill" class="hud-bar-fill hud-bar-fill--recall" picking-mode="Ignore" />
+            <ui:VisualElement class="hud-bar-container">
+                <ui:Label class="hud-bar-label" text="RECUERDO" />
+                <ui:VisualElement class="hud-bar-bg">
+                    <ui:VisualElement class="hud-bar-fill hud-bar-fill--recall" name="hud-recall-fill" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
 
-        <!-- ========================================================
-             MODO ACTUAL: Panel Inferior Izquierdo (Cassette Mode Display)
-             Actualizado en tiempo real por UpdateSchematicHUD().
-             Muestra: RECUERDO / SINCRONIZACIÓN ECO / LISTO
-             ======================================================== -->
-        <ui:VisualElement name="mode-panel" class="hidden" style="position: absolute; left: 32px; bottom: 180px; background-color: rgba(10, 10, 13, 0.9); border-width: 1px; border-color: #2B4A4A; padding: 10px 16px; max-width: 280px;" picking-mode="Ignore">
-            <ui:Label name="mode-title" text="LISTO" class="font-mono-bold text-label-caps" style="color: #FFBF00; font-size: 10px; margin-bottom: 4px;" picking-mode="Ignore" />
-            <ui:Label name="mode-desc" text="Buscando anclas de memoria." class="font-mono" style="color: #DCE4D0; font-size: 10px; white-space: normal;" picking-mode="Ignore" />
-            <ui:Label name="mode-key" text="R" class="font-mono-bold" style="position: absolute; right: 10px; top: 10px; color: #C9D4B0; font-size: 9px;" picking-mode="Ignore" />
+        <!-- OBJECTIVE (top-center) -->
+        <ui:Label class="hud-objective-text hidden" name="hud-objective-text" text="" />
+
+        <!-- TOAST (bottom-center) -->
+        <ui:Label class="hud-toast-text hidden" name="hud-toast-text" text="" />
+
+        <!-- ECHO STATE (above toast) -->
+        <ui:Label class="hud-echo-state-label hidden" name="hud-echo-state-label" text="" />
+
+        <!-- KEY PROMPT (center) - solo cerca interactuable -->
+        <ui:Label class="key-prompt-label hidden" name="key-prompt-label" text="" />
+
+        <!-- CHALKBOARD TUTORIAL (bottom-left) -->
+        <ui:VisualElement class="chalkboard-box hidden" name="chalkboard-box">
+            <ui:Label class="chalkboard-title" name="chalkboard-title" text="" />
+            <ui:Label class="chalkboard-text" name="chalkboard-text" text="" />
         </ui:VisualElement>
 
-        <!-- ========================================================
-             ESTADO: Indicador de sincronización activo
-             ======================================================== -->
-        <ui:VisualElement name="protocol-status" class="hidden" style="position: absolute; left: 32px; bottom: 148px;" picking-mode="Ignore">
-            <ui:Label name="protocol-title" text="" class="font-mono-bold" style="font-size: 9px; color: #B23A3A;" picking-mode="Ignore" />
-            <ui:Label name="protocol-subtitle" text="" class="font-mono" style="font-size: 8px; color: #A8B4A0;" picking-mode="Ignore" />
-        </ui:VisualElement>
-
-        <!-- ========================================================
-             NODO ESQUEMA IZQUIERDO — Anclaje de grabación
-             ======================================================== -->
-        <ui:VisualElement name="node-left" class="hidden" style="position: absolute; left: 32px; top: 50%; width: 10px; height: 10px; background-color: #B23A3A; border-width: 1px; border-color: #C9D4B0;" picking-mode="Ignore" />
-
-        <!-- NODO ESQUEMA DERECHO — Reproducción eco -->
-        <ui:VisualElement name="node-right" class="hidden" style="position: absolute; right: 32px; top: 50%; width: 10px; height: 10px; background-color: #FFBF00; border-width: 1px; border-color: #C9D4B0;" picking-mode="Ignore" />
-
-        <!-- ========================================================
-             PROMPT DE TECLA — Aparece cerca de objetos interactuables
-             ======================================================== -->
-        <ui:VisualElement name="key-prompt-area" class="hidden" style="position: absolute; left: 50%; top: 50%; margin-left: -48px; margin-top: 48px; align-items: center;" picking-mode="Ignore">
-            <ui:Label name="key-prompt-label" text="E" class="font-mono-bold" style="color: #DCE4D0; font-size: 20px; background-color: rgba(10, 10, 13, 0.85); padding: 4px 10px; border-width: 1px; border-color: #2B4A4A;" picking-mode="Ignore" />
-        </ui:VisualElement>
-
-        <!-- ========================================================
-             OBJETIVO ACTUAL (centro superior)
-             ======================================================== -->
-        <ui:VisualElement name="hud-objective-area" class="hud-objective-area" picking-mode="Ignore">
-            <ui:Label name="hud-objective-text" text="" class="hud-objective-text" picking-mode="Ignore" />
-        </ui:VisualElement>
-
-        <!-- ========================================================
-             TIMELINE DE GRABACIÓN (parte inferior, sobre el toast)
-             ======================================================== -->
-        <ui:VisualElement name="timeline" class="hidden" style="position: absolute; left: 10%; right: 10%; bottom: 120px; height: 24px; background-color: rgba(10,10,13,0.88); border-width: 1px; border-color: #2B4A4A; flex-direction: row; align-items: center; padding: 0px 8px;" picking-mode="Ignore">
-            <ui:Label name="timeline-start" text="00:00:00.00" class="font-mono" style="font-size: 9px; color: #8C96A5; width: 70px;" picking-mode="Ignore" />
-            <ui:VisualElement style="flex-grow: 1; height: 4px; background-color: #1A222C; position: relative; margin: 0 8px;" picking-mode="Ignore">
-                <ui:VisualElement name="timeline-fill" style="height: 100%; background-color: #B23A3A; width: 0%;" picking-mode="Ignore" />
-                <ui:VisualElement name="timeline-playhead" style="position: absolute; width: 2px; height: 10px; background-color: #C9D4B0; top: -3px; left: 0%;" picking-mode="Ignore" />
+        <!-- FOOTER STATUS (bottom-right) -->
+        <ui:VisualElement class="footer-status" name="footer-status">
+            <ui:VisualElement class="footer-item footer-item--inactive" name="hud-recording-status">
+                <ui:Label class="footer-icon" text="●" />
+                <ui:Label class="footer-label" text="REC" />
             </ui:VisualElement>
-            <ui:Label name="timeline-end" text="00:00:10.00" class="font-mono" style="font-size: 9px; color: #8C96A5; width: 70px; -unity-text-align: middle-right;" picking-mode="Ignore" />
-        </ui:VisualElement>
-
-        <!-- ========================================================
-             TOAST / PROMPT TEXT (centro inferior)
-             ======================================================== -->
-        <ui:VisualElement name="hud-toast-area" class="hud-toast-area" picking-mode="Ignore">
-            <ui:Label name="hud-toast-text" text="" class="hud-toast-text" picking-mode="Ignore" />
-        </ui:VisualElement>
-
-        <!-- ========================================================
-             ESTADO DEL ECO (justo encima del toast)
-             ======================================================== -->
-        <ui:VisualElement name="hud-echo-state-area" class="hud-echo-state-area" picking-mode="Ignore">
-            <ui:Label name="hud-echo-state-label" text="" class="hud-echo-state-label" picking-mode="Ignore" />
-        </ui:VisualElement>
-
-        <!-- ========================================================
-             TIRA DE DIÁLOGO (fondo inferior, desaparece cuando no hay texto)
-             Emula papel de expediente escolar con tinta oscura.
-             Controlada externamente por DialogueSystem.cs
-             ======================================================== -->
-        <ui:VisualElement name="dialogue-overlay" class="dialogue-overlay hidden" picking-mode="Ignore">
-            <ui:Label name="dialogue-speaker" text="" class="font-mono-bold" style="font-size: 10px; color: #2B4A4A; -unity-text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; display: none;" picking-mode="Ignore" />
-            <ui:Label name="dialogue-text" text="" class="dialogue-text" picking-mode="Ignore" />
-            <ui:Label name="dialogue-next-prompt" text="▼" class="dialogue-next-prompt" picking-mode="Ignore" />
-        </ui:VisualElement>
-
-        <!-- ========================================================
-             CAJA DE TUTORIAL (pizarrón, inferior izquierdo)
-             Controlada externamente por TutorialSystem o GameHUD
-             ======================================================== -->
-        <ui:VisualElement name="chalkboard-box" class="chalkboard-box hidden" picking-mode="Ignore">
-            <ui:Label name="chalkboard-title" text="Instrucción" class="chalkboard-title" picking-mode="Ignore" />
-            <ui:Label name="chalkboard-text" text="" class="chalkboard-text" picking-mode="Ignore" />
-        </ui:VisualElement>
-
-        <!-- ========================================================
-             FOOTER STATUS (inferior derecho): Estado de cinta
-             ======================================================== -->
-        <ui:VisualElement name="hud-footer" class="footer-status" picking-mode="Ignore">
-            <ui:VisualElement name="hud-recording-status" class="footer-item footer-item--inactive" picking-mode="Ignore">
-                <ui:Label text="●" class="footer-icon" picking-mode="Ignore" />
-                <ui:Label text="REC" class="footer-label" picking-mode="Ignore" />
-            </ui:VisualElement>
-            <ui:VisualElement name="hud-playback-status" class="footer-item footer-item--inactive" picking-mode="Ignore">
-                <ui:Label text="▶" class="footer-icon" picking-mode="Ignore" />
-                <ui:Label text="ECO" class="footer-label" picking-mode="Ignore" />
+            <ui:VisualElement class="footer-item footer-item--inactive" name="hud-playback-status">
+                <ui:Label class="footer-icon" text="▶" />
+                <ui:Label class="footer-label" text="ECO" />
             </ui:VisualElement>
         </ui:VisualElement>
 
     </ui:VisualElement>
-</ui:UXML>
-
+</UXML>

@@ -1,0 +1,51 @@
+/* ============================================================
+   EchoToast — notificación fugaz
+   Estados: entering / visible / exiting
+   Solo CSS — escribimos entrada (fade+translate desde 0).
+   ============================================================ */
+
+@import "../EchoesDesignTokens.uss";
+
+.echo-toast {
+    position: absolute;
+    left: 20%; right: 20%;
+    bottom: 120px;
+    background-color: rgba(10, 10, 13, 0.92);
+    border-width: 1px;
+    border-color: var(--color-memory-amber);
+    padding: var(--space-sm) var(--space-md);
+    opacity: 0;
+    translate: 0 16px;
+    transition-property: opacity, translate;
+    transition-duration: var(--duration-fast);
+    transition-timing-function: var(--easing-standard);
+    align-items: center;
+    pointer-events: none;
+    z-index: var(--z-toast);
+}
+
+/* ENTERING (desde enter) */
+.echo-toast--entering {
+    opacity: 1;
+    translate: 0 0;
+}
+
+/* VISIBLE */
+.echo-toast--visible {
+    opacity: 1;
+    translate: 0 0;
+}
+
+/* EXITING */
+.echo-toast--exiting {
+    opacity: 0;
+    translate: 0 -8px;
+    transition-duration: var(--duration-fast);
+}
+
+.echo-toast__text {
+    font-size: var(--size-small);
+    color: var(--color-paper);
+    -unity-text-align: middle-center;
+    white-space: nowrap;
+}

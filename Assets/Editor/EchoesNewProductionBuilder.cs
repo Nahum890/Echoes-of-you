@@ -150,8 +150,20 @@ public static class EchoesNewProductionBuilder
         if (exit != null) routeEndZ = exit.transform.position.z;
         EchoesLevelShell.SpawnExperienceSystems(mechRoot, envRoot, exit, blueprint, routeStartZ, routeEndZ);
 
-        // Spawn path hint lights from blueprint.pathHints (DISABLED for Phase 1 - Greybox only)
-        // SpawnPathHintLights(envRoot, blueprint, levelNum);
+        // Spawn path hint lights from blueprint.pathHints (early levels guidance)
+        SpawnPathHintLights(envRoot, blueprint, levelNum);
+
+        // Spawn EchoPathHint waypoints (interactive pulsing light orbs for N14 follow-echo path)
+        if (blueprint.pathHints != null && blueprint.pathHints.Length >= 2)
+        {
+            GameObject hintObj = new GameObject("EchoPathHint");
+            hintObj.transform.SetParent(mechRoot, false);
+            EchoPathHint pathHint = hintObj.AddComponent<EchoPathHint>();
+            var scaledWaypoints = new Vector3[blueprint.pathHints.Length];
+            for (int i = 0; i < scaledWaypoints.Length; i++)
+                scaledWaypoints[i] = blueprint.pathHints[i] * EchoesWorldMetrics.LevelGeometryScale;
+            SetSerializedValue(pathHint, "waypoints", scaledWaypoints);
+        }
 
         // Save Scene
         EditorSceneManager.SaveScene(scene, $"{SceneRoot}/{blueprint.levelName}.unity");

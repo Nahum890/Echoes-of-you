@@ -1006,7 +1006,7 @@ public static class EchoesModuleFactory
         }
         else if (levelNum == 10 || levelNum == 11) // Capítulo IV: Optimización
         {
-            ColorUtility.TryParseHtmlString("#E8B262", out col); // Sunset amber
+            ColorUtility.TryParseHtmlString("#FFBF00", out col); // Sunset amber (canon, CONS-MAT-001)
             intensityMultiplier = 1.1f;
         }
         else if (levelNum == 12 || levelNum == 13) // Capítulo V: Consecuencia
@@ -1017,7 +1017,7 @@ public static class EchoesModuleFactory
         }
         else if (levelNum == 14 || levelNum == 15) // Capítulo VI: Aceptación
         {
-            ColorUtility.TryParseHtmlString("#E8B262", out col); // Amber
+            ColorUtility.TryParseHtmlString("#FFBF00", out col); // Amber (canon, CONS-MAT-001)
             intensityMultiplier = 0.6f;
         }
 
@@ -1789,7 +1789,7 @@ public static class EchoesModuleFactory
         bool addFlicker;
         Color capColor = GetChapterColor(out mult, out addFlicker);
         
-        if (warm) ColorUtility.TryParseHtmlString("#E8B262", out capColor);
+        if (warm) ColorUtility.TryParseHtmlString("#FFBF00", out capColor);
         if (cool) ColorUtility.TryParseHtmlString("#A4C2E0", out capColor);
         if (flicker || addFlicker) flicker = true;
 

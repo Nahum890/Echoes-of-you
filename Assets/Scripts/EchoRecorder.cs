@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Echoes.UI;
 
 /// <summary>
 /// Grabación por mantener F/R: hasta 12s default / 20s max o al soltar. Genera un eco que repite el bucle.

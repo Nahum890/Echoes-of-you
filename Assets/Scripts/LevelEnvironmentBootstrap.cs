@@ -44,6 +44,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         ApplyLevelGeometryScale(scene);
         ApplyPlayerAnimationSetup();
         UnlockPlayerControl();
+        EnsureGroundLayerOnEnvironment();
         ApplyHazardScales();
         ApplyObstacleHeights();
         CullLegacyOverlappingDressing();
@@ -448,5 +449,37 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         light.intensity = intensity;
         light.range = range;
         light.shadows = LightShadows.None;
+    }
+
+    /// <summary>
+    /// Ensures that any collider-bearing geometry under the "--- ENVIRONMENT ---"
+    /// root is on the Ground layer (layer 6) so the player's ground probe
+    /// (which uses groundCheckMask = 1<<6) actually detects the floor.
+    /// Environment Pass props that ended up on Default (layer 0) were causing
+    /// the player to sink (the SphereCast ignored them).
+    /// </summary>
+    static void EnsureGroundLayerOnEnvironment()
+    {
+        const int GroundLayer = 6;
+        GameObject envRoot = GameObject.Find("--- ENVIRONMENT ---");
+        if (envRoot == null) return;
+
+        int fixedCount = 0;
+        Collider[] colliders = envRoot.GetComponentsInChildren<Collider>(true);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            Collider col = colliders[i];
+            if (col == null) continue;
+            // Only re-layer colliders that are currently on Default (0) layer.
+            // Avoid touching Player (8), Echo (9), Trigger, Hazard (10), PressurePlate (11), etc.
+            if (col.gameObject.layer == 0)
+            {
+                col.gameObject.layer = GroundLayer;
+                fixedCount++;
+            }
+        }
+
+        if (fixedCount > 0)
+            Debug.Log($"[LevelEnvironmentBootstrap] Re-layered {fixedCount} env colliders to Ground (layer 6).");
     }
 }

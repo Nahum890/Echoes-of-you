@@ -1,4 +1,5 @@
 using UnityEngine;
+using Echoes.UI;
 
 public class HubSceneController : MonoBehaviour
 {

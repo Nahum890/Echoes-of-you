@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using Echoes.UI;
 
 public static class UIBootstrap
 {

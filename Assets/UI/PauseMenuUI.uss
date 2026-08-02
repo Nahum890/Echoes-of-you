@@ -1,0 +1,133 @@
+/* ============================================================
+   PauseMenuUI — Notebook 460px, stats + nav 4 botones.
+   Contraste ≥ 4.5:1. Fondos sólidos. Sin opacidades bajas.
+   ============================================================ */
+
+@import "EchoesDesignTokens.uss";
+@import "Components/EchoButton.uss";
+@import "Components/EchoPanel.uss";
+@import "Components/EchoSlider.uss";
+@import "Components/EchoToggle.uss";
+@import "Components/EchoDropdown.uss";
+@import "Components/EchoTabs.uss";
+@import "Components/EchoModal.uss";
+
+/* ===== ROOT ===== */
+.root-fullscreen {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    overflow: hidden;
+    background-color: rgba(10, 10, 13, 0.92); /* oscuro legible */
+}
+
+/* ===== NOTEBOOK ===== */
+.pause-notebook {
+    width: 460px;
+    background-color: var(--color-void-black);
+    border-width: 1px;
+    border-color: var(--color-memory-amber);
+    border-left-width: 4px;
+    border-left-color: var(--color-memory-amber);
+    padding: var(--space-xl) var(--space-lg);
+    position: absolute;
+    left: 80px;
+    top: 0; bottom: 0;
+    justify-content: space-between;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.85);
+}
+
+/* HEADER */
+.pause-notebook__header {
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--color-institutional-teal);
+}
+
+.pause-title {
+    font-size: var(--size-screen-title);
+    color: var(--color-memory-amber);
+    letter-spacing: 1px;
+    margin-bottom: var(--space-xs);
+}
+
+.pause-subtitle {
+    font-size: var(--size-small);
+    color: var(--color-fluorescent-sick);
+    -unity-text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* STATS */
+.pause-stats {
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-xl);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--color-institutional-teal);
+}
+
+.pause-stat {
+    font-size: var(--size-small);
+    color: var(--color-fluorescent-sick);
+    margin-bottom: var(--space-sm);
+}
+
+/* ACTIONS */
+.pause-actions {
+    flex-direction: column;
+    margin-top: var(--space-xl);
+}
+
+.pause-btn {
+    margin-bottom: var(--space-sm);
+    justify-content: flex-start;
+    padding: var(--space-md) var(--space-lg);
+    font-size: var(--size-body);
+}
+
+/* FOOTER */
+.pause-footer {
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-lg);
+    border-top-width: 1px;
+    border-top-color: var(--color-institutional-teal);
+    font-size: var(--size-small);
+    color: var(--color-faded-mustard);
+}
+
+/* SETTINGS PANEL (overlay) */
+.pause-settings-panel {
+    position: absolute;
+    left: 580px; /* al lado del notebook */
+    top: var(--space-xl);
+    right: var(--space-xl);
+    bottom: var(--space-xl);
+    background-color: var(--color-void-black);
+    border-width: 1px;
+    border-color: var(--color-institutional-teal);
+    padding: var(--space-xl);
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1280px) {
+    .pause-notebook {
+        left: var(--space-lg);
+        width: calc(100% - var(--space-xl));
+    }
+    .pause-settings-panel {
+        left: 0; top: 0; right: 0; bottom: 0;
+        position: absolute;
+        z-index: var(--z-overlay);
+    }
+}
+
+@media (max-width: 768px) {
+    .pause-notebook {
+        left: 0; top: 0; right: 0; bottom: 0;
+        width: 100%;
+        border-left-width: 0;
+        border-radius: 0;
+    }
+}

@@ -1,0 +1,146 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+    <!-- SettingsUI — Panel unificado para MainMenu + Pause.
+         EchoTabs: Video / Audio / Controles / Accesibilidad / Gameplay.
+         Cada categoría = EchoPanel con EchoSlider/EchoToggle/EchoDropdown.
+         Accesibilidad obligatoria: Tamaño texto, Alto contraste, Subtítulos, Reducir flashes, Reducir movimiento, Tiempo extra Eco.
+         Aplicación inmediata en runtime. -->
+
+    <ui:VisualElement class="settings-root" name="settingsRoot">
+        <ui:VisualElement class="settings-header">
+            <ui:Label class="settings-title" text="Configurar Cuaderno" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="echo-tabs" name="settingsTabs">
+            <ui:Button class="echo-tab echo-tab--selected" name="tabVideo" text="Video" />
+            <ui:Button class="echo-tab" name="tabAudio" text="Audio" />
+            <ui:Button class="echo-tab" name="tabControles" text="Controles" />
+            <ui:Button class="echo-tab" name="tabAccesibilidad" text="Accesibilidad" />
+            <ui:Button class="echo-tab" name="tabGameplay" text="Gameplay" />
+        </ui:VisualElement>
+
+        <!-- VIDEO -->
+        <ui:VisualElement class="settings-panel preview-panel--visible" name="panelVideo">
+            <ui:Label class="panel-section-title" text="Video" />
+            <ui:VisualElement class="settings-group">
+                <ui:Label class="settings-group-title" text="Resolución" />
+                <ui:DropdownField class="echo-dropdown" name="ResolutionDropdown" label="Resolución" />
+            </ui:VisualElement>
+            <ui:VisualElement class="settings-group">
+                <ui:Toggle class="echo-toggle" name="FullscreenToggle" label="Pantalla Completa" />
+            </ui:VisualElement>
+            <ui:VisualElement class="settings-group">
+                <ui:Toggle class="echo-toggle" name="VsyncToggle" label="VSync" />
+            </ui:VisualElement>
+            <ui:VisualElement class="settings-group">
+                <ui:Label class="settings-group-title" text="Escala UI" />
+                <ui:DropdownField class="echo-dropdown" name="ScaleDropdown" label="Escala UI" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- AUDIO -->
+        <ui:VisualElement class="settings-panel hidden" name="panelAudio">
+            <ui:Label class="panel-section-title" text="Audio" />
+            <ui:VisualElement class="settings-group">
+                <ui:Label class="settings-group-title" text="Volumen General" />
+                <ui:Slider class="echo-slider" name="sldMaster" label="" low-value="0" high-value="1" value="0.84" />
+                <ui:Label class="echo-slider-value" name="lblMasterVal" text="84%" />
+            </ui:VisualElement>
+            <ui:VisualElement class="settings-group">
+                <ui:Label class="settings-group-title" text="Música" />
+                <ui:Slider class="echo-slider" name="sldMusic" label="" low-value="0" high-value="1" value="0.6" />
+                <ui:Label class="echo-slider-value" name="lblMusicVal" text="60%" />
+            </ui:VisualElement>
+            <ui:VisualElement class="settings-group">
+                <ui:Label class="settings-group-title" text="SFX" />
+                <ui:Slider class="echo-slider" name="sldSfx" label="" low-value="0" high-value="1" value="0.72" />
+                <ui:Label class="echo-slider-value" name="lblSfxVal" text="72%" />
+            </ui:VisualElement>
+            <ui:VisualElement class="settings-group">
+                <ui:Label class="settings-group-title" text="Voz del Eco" />
+                <ui:Slider class="echo-slider" name="sldEchoVoice" label="" low-value="0" high-value="1" value="0.7" />
+                <ui:Label class="echo-slider-value" name="lblEchoVoiceVal" text="70%" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- CONTROLES -->
+        <ui:VisualElement class="settings-panel hidden" name="panelControles">
+            <ui:Label class="panel-section-title" text="Controles" />
+            <ui:VisualElement class="settings-group">
+                <ui:Label class="settings-group-title" text="Sensibilidad Cámara" />
+                <ui:VisualElement class="sensitivity-presets">
+                    <ui:Button class="echo-button echo-button--secondary sensitivity-preset" name="btnSensLow" text="Baja" />
+                    <ui:Button class="echo-button echo-button--secondary sensitivity-preset" name="btnSensMed" text="Media" />
+                    <ui:Button class="echo-button echo-button--secondary sensitivity-preset" name="btnSensHigh" text="Alta" />
+                </ui:VisualElement>
+                <ui:Slider class="echo-slider" name="SensitivitySlider" label="" low-value="0.2" high-value="3" value="1" />
+                <ui:Label class="echo-slider-value" name="lblCamSensVal" text="1.0" />
+            </ui:VisualElement>
+            <ui:VisualElement class="settings-group">
+                <ui:Label class="settings-group-title" text="Reasignar Teclas" />
+                <ui:Label class="settings-hint" text="Próximamente: editor de bindings" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- ACCESIBILIDAD -->
+        <ui:VisualElement class="settings-panel hidden" name="panelAccesibilidad">
+            <ui:Label class="panel-section-title" text="Accesibilidad" />
+            
+            <ui:VisualElement class="settings-group">
+                <ui:Label class="settings-group-title" text="Tamaño de Texto" />
+                <ui:DropdownField class="echo-dropdown" name="TextSizeDropdown" label="Tamaño" />
+            </ui:VisualElement>
+            
+            <ui:VisualElement class="settings-group">
+                <ui:Toggle class="echo-toggle" name="HighContrastToggle" label="Alto Contraste" />
+                <ui:Label class="settings-hint" text="Ratio ≥ 7:1 en todos los elementos" />
+            </ui:VisualElement>
+            
+            <ui:VisualElement class="settings-group">
+                <ui:Toggle class="echo-toggle" name="SubtitlesToggle" label="Subtítulos" />
+                <ui:Slider class="echo-slider" name="SubtitleSizeSlider" label="Tamaño" low-value="0.8" high-value="1.5" value="1" />
+                <ui:Toggle class="echo-toggle" name="SubtitleBgToggle" label="Fondo Subtítulos" />
+            </ui:VisualElement>
+            
+            <ui:VisualElement class="settings-group">
+                <ui:Toggle class="echo-toggle" name="ReduceFlashesToggle" label="Reducir Flashes" />
+                <ui:Label class="settings-hint" text="Desactiva pulsos de post-proceso" />
+            </ui:VisualElement>
+            
+            <ui:VisualElement class="settings-group">
+                <ui:Toggle class="echo-toggle" name="ReduceMotionToggle" label="Reducir Movimiento" />
+                <ui:Label class="settings-hint" text="Anima a 0ms (--duration-* = 0)" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- GAMEPLAY -->
+        <ui:VisualElement class="settings-panel hidden" name="panelGameplay">
+            <ui:Label class="panel-section-title" text="Gameplay" />
+            
+            <ui:VisualElement class="settings-group">
+                <ui:Label class="settings-group-title" text="Tiempo Extra Grabación Eco" />
+                <ui:Slider class="echo-slider" name="ExtraRecordTimeSlider" label="%" low-value="0" high-value="50" value="0" />
+                <ui:Label class="echo-slider-value" name="lblExtraRecordTimeVal" text="0%" />
+                <ui:Label class="settings-hint" text="Asistencia: +X% a maxRecordSeconds" />
+            </ui:VisualElement>
+            
+            <ui:VisualElement class="settings-group">
+                <ui:Label class="settings-group-title" text="Niebla (Fog Density)" />
+                <ui:Slider class="echo-slider" name="sldFog" label="" low-value="0" high-value="0.1" value="0.035" />
+                <ui:Label class="echo-slider-value" name="lblFogVal" text="0.035" />
+            </ui:VisualElement>
+            
+            <ui:VisualElement class="settings-group">
+                <ui:Label class="settings-group-title" text="Opacidad Eco" />
+                <ui:Slider class="echo-slider" name="sldEcho" label="" low-value="0" high-value="1" value="0.6" />
+                <ui:Label class="echo-slider-value" name="lblEchoVal" text="60%" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- BUTTONS -->
+        <ui:VisualElement class="settings-actions">
+            <ui:Button class="echo-button echo-button--destructive" name="btnRestoreDefaults" text="Restaurar Defecto" />
+            <ui:Button class="echo-button echo-button--secondary" name="btnSettingsBack" text="Volver" />
+            <ui:Button class="echo-button echo-button--primary" name="btnSettingsApply" text="Aplicar" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</UXML>

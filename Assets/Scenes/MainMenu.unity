@@ -5900,7 +5900,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuController
   firstLevelScene: Level_01
-  autoStartGame: 0
 --- !u!114 &912787556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5916,7 +5915,7 @@ MonoBehaviour:
   m_PanelSettings: {fileID: 11400000, guid: 68d0b77db81368c42bb3c5f1d971ab08, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 4e198122432d09549b8e6d7cf0013e25, type: 3}
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_Position: 0
   m_WorldSpaceSizeMode: 1
   m_WorldSpaceWidth: 1920
@@ -5952,7 +5951,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 533ef058c36898a4992b60b6d3e93547, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuHoverSystem
-  uiDocument: {fileID: 0}
+  uiDocument: {fileID: 912787556}
   hoverInClip: {fileID: 0}
   hoverOutClip: {fileID: 0}
   clickConfirmClip: {fileID: 0}
@@ -5963,13 +5962,6 @@ MonoBehaviour:
   clickVolume: 0.8
   navMoveVolume: 0.5
   crtAmbientVolume: 0.08
-  hoverEnterDurationMouse: 0.2
-  hoverEnterDurationController: 0.25
-  hoverLeaveDuration: 0.15
-  noiseBaseOpacity: 0.06
-  ghostLayerAOpacity: 0.18
-  ghostLayerBOpacity: 0.09
-  particleSpeed: 1
   menuCursorTexture: {fileID: 0}
 --- !u!1 &948316284
 GameObject:
@@ -6022,6 +6014,51 @@ MonoBehaviour:
   requiresGameplayCollider: 0
   footprintSize: {x: 1, y: 1, z: 1}
   clearanceSize: {x: 1, y: 1, z: 1}
+--- !u!1 &1013854460
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1013854462}
+  - component: {fileID: 1013854461}
+  m_Layer: 0
+  m_Name: SettingsController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1013854461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013854460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f09c3d3017a8a54aa35ba9803e40917, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.UI.SettingsController
+  _settingsTemplate: {fileID: 9197481963319205126, guid: ab3a328fe77bcf94ca0e054c534dc43b, type: 3}
+--- !u!4 &1013854462
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013854460}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1038016609
 GameObject:
   m_ObjectHideFlags: 0
@@ -6820,8 +6857,8 @@ Camera:
   m_GameObject: {fileID: 1989080923}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.04, g: 0.06, b: 0.08, a: 1}
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -7151,3 +7188,4 @@ SceneRoots:
   - {fileID: 912787557}
   - {fileID: 809565440}
   - {fileID: 568610569}
+  - {fileID: 1013854462}

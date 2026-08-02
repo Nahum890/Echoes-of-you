@@ -1,0 +1,84 @@
+/* ============================================================
+   EchoSlider — wrapper sobre Unity Slider
+   Estados: default / hover / focus / dragging / disabled
+   Solo tokens (0 hardcodeado). RULE-UI-001/002.
+   ============================================================ */
+
+@import "../EchoesDesignTokens.uss";
+
+.echo-slider {
+    margin: var(--space-sm) 0;
+    transition-property: opacity;
+    transition-duration: var(--duration-fast);
+}
+
+/* Label */
+.echo-slider > .unity-label {
+    font-size: var(--size-small);
+    color: var(--color-fluorescent-sick);
+    width: 220px;
+}
+
+/* Track (tracker) */
+.echo-slider .unity-base-slider__tracker {
+    background-color: var(--color-void-black);
+    border-width: 1px;
+    border-color: var(--color-institutional-teal);
+    height: 8px;
+    border-radius: 0;
+}
+
+/* Dragger (thumb) */
+.echo-slider .unity-base-slider__dragger {
+    background-color: var(--color-fluorescent-sick);
+    border-width: 1px;
+    border-color: var(--color-institutional-teal);
+    width: 16px;
+    height: 16px;
+    border-radius: 0;
+    transition-property: background-color, border-color, scale;
+    transition-duration: var(--duration-hover-mouse);
+}
+
+/* HOVER */
+.echo-slider:hover .unity-base-slider__dragger {
+    background-color: var(--color-memory-amber);
+    border-color: var(--color-memory-amber);
+    scale: 1.1 1.1;
+}
+
+/* FOCUS */
+.echo-slider:focus .unity-base-slider__tracker {
+    border-color: var(--color-memory-amber);
+    border-width: 2px;
+}
+
+.echo-slider:focus .unity-base-slider__dragger {
+    border-color: var(--color-memory-amber);
+    border-width: 2px;
+    transition-duration: var(--duration-hover-controller);
+}
+
+/* DRAGGING — clase aplicada por C# al iniciar PointerDown */
+.echo-slider--dragging .unity-base-slider__dragger {
+    background-color: var(--color-echo-cyan);
+    border-color: var(--color-echo-cyan);
+    scale: 1.2 1.2;
+    transition-duration: var(--duration-active);
+}
+
+/* DISABLED */
+.echo-slider:disabled {
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+.echo-slider:disabled > .unity-label {
+    color: var(--color-border);
+}
+
+.echo-slider:disabled .unity-base-slider__dragger {
+    background-color: var(--color-border);
+    border-color: var(--color-border);
+}
+

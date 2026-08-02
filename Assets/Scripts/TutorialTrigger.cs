@@ -1,4 +1,5 @@
 using UnityEngine;
+using Echoes.UI;
 
 /// <summary>
 /// Zona trigger que muestra un mensaje de tutorial cuando el jugador entra.
@@ -42,3 +43,4 @@ public class TutorialTrigger : MonoBehaviour
         hud.SetPrompt(combined, displayDuration);
     }
 }
+

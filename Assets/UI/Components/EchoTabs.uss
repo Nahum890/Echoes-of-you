@@ -1,0 +1,60 @@
+/* ============================================================
+   EchoTabs — pestañas de navegación horizontal
+   Estados: default / hover / focus / selected
+   Keyboard y gamepad soportados via :focus (:tabIndex).
+   ============================================================ */
+
+@import "../EchoesDesignTokens.uss";
+
+.echo-tabs {
+    flex-direction: row;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--color-institutional-teal);
+    padding: var(--space-sm) 0;
+}
+
+.echo-tab {
+    padding: var(--space-sm) var(--space-lg);
+    border-width: 0;
+    background-color: transparent;
+    font-size: var(--size-body);
+    color: var(--color-fluorescent-sick);
+    -unity-text-align: middle-center;
+    letter-spacing: 1px;
+    border-bottom-width: 2px;
+    border-bottom-color: transparent;
+    transition-property: color, border-bottom-color, background-color;
+    transition-duration: var(--duration-fast);
+    transition-timing-function: var(--easing-standard);
+    margin-right: var(--space-md);
+}
+
+/* HOVER */
+
+.echo-tab:hover {
+    color: var(--color-memory-amber);
+    border-bottom-color: var(--color-memory-amber);
+    transition-duration: var(--duration-hover-mouse);
+    background-color: rgba(255, 191, 0, 0.04);
+}
+
+/* FOCUS */
+.echo-tab:focus {
+    color: var(--color-memory-amber);
+    border-bottom-color: var(--color-memory-amber);
+    transition-duration: var(--duration-hover-controller);
+    background-color: rgba(255, 191, 0, 0.04);
+}
+
+/* SELECTED — pestaña activa */
+.echo-tab--selected {
+    color: var(--color-memory-amber);
+    border-bottom-color: var(--color-memory-amber);
+}
+
+/* DISABLED */
+.echo-tab:disabled {
+    opacity: 0.3;
+    pointer-events: none;
+    color: var(--color-border);
+}

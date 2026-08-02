@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 070fc9907c41ce84596c0721dbe22b46
+guid: 18bca777c3dedf344a834a0d59a400ba
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Manrope
+  - Inter
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

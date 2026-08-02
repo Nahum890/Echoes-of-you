@@ -94,10 +94,12 @@ public partial class PlayerController
             ? groundCheck.position + normalizedUp * groundProbeRadius
             : transform.position + normalizedUp * groundProbeRadius;
 
-        // Usar DefaultRaycastLayers (~0 excluyendo la capa Ignore Raycast)
-        // para detectar el suelo sin importar en qué capa esté configurado (e.g. Default, Ground, etc.)
-        // ya que el CharacterController.isGrounded (que quitamos por el softblock) detectaba cualquier capa.
-        int mask = Physics.DefaultRaycastLayers;
+        // Use the serialized groundCheckMask (Layer 6 — Ground) instead of
+        // Physics.DefaultRaycastLayers. DefaultRaycastLayers can auto-hit the
+        // player's own colliders when groundCheck is inside the CC capsule,
+        // producing false "grounded" readings that cause the player to sink.
+        // Fallback to DefaultRaycastLayers only if mask is empty (misconfigured).
+        int mask = groundCheckMask != 0 ? groundCheckMask : Physics.DefaultRaycastLayers;
 
         RaycastHit[] hits = Physics.SphereCastAll(
             origin,
@@ -165,8 +167,13 @@ public partial class PlayerController
             groundCheck = gc.transform;
         }
 
-        // Spec: Ground check: SphereCast de radio 0.25m en y = -0.02m.
-        groundCheck.localPosition = new Vector3(0f, -0.02f, 0f);
+        // Posicionar el GroundCheck en la base exacta del CharacterController (pies)
+        // para que el SphereCast comience desde los pies y no desde el centro/origen.
+        float ccHeight = _controller != null ? _controller.height : 2.2f;
+        float ccCenterY = _controller != null ? _controller.center.y : 1.1f;
+        float baseY = ccCenterY - (ccHeight * 0.5f) + 0.02f;
+
+        groundCheck.localPosition = new Vector3(0f, baseY, 0f);
         groundCheck.localRotation = Quaternion.identity;
     }
 

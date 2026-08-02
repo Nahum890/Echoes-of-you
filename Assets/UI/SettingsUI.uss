@@ -1,0 +1,180 @@
+/* ============================================================
+   SettingsUI — Panel unificado (MainMenu + Pause).
+   EchoTabs + EchoPanel por categoría.
+   Accesibilidad: High Contrast, Reduce Motion, Large Text, Subtitles, Extra Time.
+   ============================================================ */
+
+@import "EchoesDesignTokens.uss";
+@import "Components/EchoTabs.uss";
+@import "Components/EchoSlider.uss";
+@import "Components/EchoToggle.uss";
+@import "Components/EchoDropdown.uss";
+@import "Components/EchoButton.uss";
+
+.settings-root {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: var(--color-void-black);
+    overflow: hidden;
+    flex-direction: column;
+}
+
+.settings-header {
+    padding: var(--space-xl) var(--space-2xl);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--color-institutional-teal);
+}
+
+.settings-title {
+    font-size: var(--size-screen-title);
+    color: var(--color-memory-amber);
+    letter-spacing: 1px;
+}
+
+.echo-tabs {
+    flex-direction: row;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--color-institutional-teal);
+    padding: var(--space-md) var(--space-xl);
+    background-color: var(--color-corridor-navy);
+}
+
+.settings-panel {
+    position: absolute;
+    left: 0; top: 80px; right: 0; bottom: 80px;
+    overflow-y: auto;
+    padding: var(--space-xl) var(--space-2xl);
+    flex-direction: column;
+    gap: var(--space-xl);
+    display: none;
+}
+
+.settings-panel--visible {
+    display: flex;
+}
+
+.panel-section-title {
+    font-size: var(--size-option);
+    color: var(--color-memory-amber);
+    letter-spacing: 2px;
+    -unity-text-transform: uppercase;
+    margin-bottom: var(--space-lg);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--color-institutional-teal);
+    padding-bottom: var(--space-sm);
+}
+
+.settings-group {
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.settings-group-title {
+    font-size: var(--size-small);
+    color: var(--color-fluorescent-sick);
+    letter-spacing: 1px;
+    -unity-text-transform: uppercase;
+    margin-bottom: var(--space-sm);
+}
+
+.settings-hint {
+    font-size: 13px;
+    color: var(--color-faded-mustard);
+    margin-top: var(--space-xs);
+}
+
+/* EchoSlider overrides in settings */
+.settings-panel .echo-slider > .unity-label {
+    width: 200px;
+    font-size: var(--size-small);
+    color: var(--color-paper);
+}
+
+.settings-panel .echo-slider .unity-base-slider__tracker {
+    background-color: var(--color-corridor-navy);
+    border-color: var(--color-institutional-teal);
+    height: 8px;
+}
+
+.settings-panel .echo-slider .unity-base-slider__dragger {
+    background-color: var(--color-fluorescent-sick);
+    width: 14px; height: 14px;
+}
+
+.settings-panel .echo-slider:hover .unity-base-slider__dragger {
+    background-color: var(--color-memory-amber);
+    scale: 1.1 1.1;
+}
+
+.echo-slider-value {
+    font-size: var(--size-small);
+    color: var(--color-memory-amber);
+    margin-top: var(--space-xs);
+}
+
+/* EchoToggle overrides in settings */
+.settings-panel .echo-toggle > .unity-label {
+    width: 250px;
+    font-size: var(--size-body);
+    color: var(--color-paper);
+}
+
+.settings-panel .echo-toggle .unity-toggle__checkmark {
+    background-color: var(--color-corridor-navy);
+    border-color: var(--color-institutional-teal);
+    width: 18px; height: 18px;
+}
+
+.settings-panel .echo-toggle:checked .unity-toggle__checkmark {
+    background-color: var(--color-memory-amber);
+    border-color: var(--color-memory-amber);
+}
+
+/* EchoDropdown overrides in settings */
+.settings-panel .echo-dropdown > .unity-label {
+    width: 200px;
+    font-size: var(--size-small);
+    color: var(--color-fluorescent-sick);
+}
+
+.settings-panel .echo-dropdown .unity-base-popup-field__input {
+    background-color: var(--color-corridor-navy);
+    border-color: var(--color-institutional-teal);
+    color: var(--color-paper);
+    font-size: var(--size-small);
+}
+
+/* Sensitivity presets */
+.sensitivity-presets {
+    flex-direction: row;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-sm);
+}
+
+.sensitivity-preset {
+    flex-grow: 1;
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--size-small);
+}
+
+.sensitivity-preset--active {
+    background-color: var(--color-memory-amber);
+    color: var(--color-void-black);
+}
+
+/* Settings actions */
+.settings-actions {
+    position: absolute;
+    right: var(--space-2xl);
+    bottom: var(--space-xl);
+    flex-direction: row;
+    gap: var(--space-md);
+}
+
+/* Responsive */
+@media (max-width: 1280px) {
+    .settings-panel {
+        left: var(--space-lg); right: var(--space-lg);
+        top: 70px; bottom: 70px;
+    }
+}

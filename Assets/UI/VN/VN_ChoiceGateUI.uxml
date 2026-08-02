@@ -1,0 +1,13 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <Style src="VN_ChoiceGateUI.uss" />
+  <VisualElement name="gate-root" class="gate-overlay hidden">
+    <VisualElement class="gate-frame">
+      <Label name="gate-prompt" class="gate-prompt" text="..." />
+      <VisualElement class="gate-buttons-row">
+        <ui:Button name="gate-cyan" class="gate-button gate-button--cyan" text="Cyan" />
+        <ui:Button name="gate-amber" class="gate-button gate-button--amber" text="Amber" />
+      </VisualElement>
+      <Label name="gate-hint" class="gate-hint" text="A = abrir  /  D = mantener" />
+    </VisualElement>
+  </VisualElement>
+</ui:UXML>

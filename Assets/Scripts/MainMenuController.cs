@@ -1,1263 +1,459 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
-
-/// <summary>
-/// Controlador del menú principal usando UI Toolkit.
-/// Diseño "EXPEDIENTE DE RECUERDOS" — Escuela Liminal 2.0.
-/// Requiere un UIDocument component en el mismo GameObject.
-/// El sistema de hover icónico (PS2/VHS/CRT) es gestionado por MenuHoverSystem.cs,
-/// que se añade automáticamente como componente requerido.
-/// </summary>
-[RequireComponent(typeof(UIDocument))]
-[RequireComponent(typeof(MenuHoverSystem))]
-public class MainMenuController : MonoBehaviour
-{
-    [Header("Scenes")]
-    [SerializeField] string firstLevelScene = "Level_01";
-
-    [Header("Debug")]
-    [Tooltip("Si es true, carga Level_01 automáticamente sin esperar input")]
-    [SerializeField] bool autoStartGame = false;
-
-
-
-    UIDocument _doc;
-    VisualElement _root;
-    VisualElement _menuBg;
-    Label _heroTitle;
-    VisualElement _voidIntro;
-    VisualElement _mainContent;
-
-    // Sistema de hover icónico (PS2/VHS/CRT) — gestionado por MenuHoverSystem.cs
-    MenuHoverSystem _hoverSystem;
-
-    // Panels
-    VisualElement _settingsPanel;
-    VisualElement _levelSelectPanel;
-
-    // Hover Preview Panels
-    VisualElement _panelNeuralArchives;
-    VisualElement _panelStabilityMap;
-    VisualElement _panelCalibrationPreview;
-    VisualElement _panelDisconnectOffline;
-    VisualElement _rightContentContainer;
-    string _activePreviewPanelName = "panel-neural-archives";
-    Coroutine _terminalLogCoroutine;
-
-    // Main Menu Buttons
-    Button _btnNewGame;
-    Button _btnLevels;
-    Button _btnSettings;
-    Button _btnExit;
-    Button _activeNavButton;
-
-    // Settings Controls - Audio
-    Slider _sldMaster;
-    Slider _sldMusic;
-    Slider _sldSfx;
-    Label _lblMasterVal;
-    Label _lblMusicVal;
-    Label _lblSfxVal;
-
-    // Settings Controls - Visuals
-    DropdownField _resDropdown;
-    Toggle _fullscreenToggle;
-    Toggle _vsyncToggle;
-    DropdownField _scaleDropdown;
-
-    // Settings Controls - Neural
-    Button _btnSensLow;
-    Button _btnSensMed;
-    Button _btnSensHigh;
-    Label _lblSensVal;
-    Slider _sensitivitySlider;
-    Label _lblCamSensVal;
-
-    // Fog Density & Echo Opacity Settings
-    Slider _sldFog;
-    Label _lblFogVal;
-    Slider _sldEcho;
-    Label _lblEchoVal;
-
-    Slider _sldGameFog;
-    Slider _sldGameSun;
-    Slider _sldGameLights;
-    Slider _sldGameAmbient;
-    Slider _sldMenuText;
-    Label _lblGameFogVal;
-    Label _lblGameSunVal;
-    Label _lblGameLightsVal;
-    Label _lblGameAmbientVal;
-    Label _lblMenuTextVal;
-
-    Button _btnLightLiminal;
-    Button _btnLightBruma;
-    Button _btnLightClaridad;
-    Button _btnLightPenumbra;
-    string _activeLightingPresetId = "liminal";
-
-    List<Resolution> _filteredResolutions;
-
-    // Evita registrar callbacks (clicks/hover) más de una vez si el componente se re-activa.
-    bool _wired;
-
-    void OnEnable()
-    {
-        _doc = GetComponent<UIDocument>();
-        if (_doc == null || _doc.rootVisualElement == null) return;
-        _root = _doc.rootVisualElement;
-
-        // Inicializar el sistema de hover icónico
-        // MenuHoverSystem se auto-configura desde su propio OnEnable,
-        // pero necesita el UIDocument que ya tenemos.
-        _hoverSystem = GetComponent<MenuHoverSystem>();
-        // (MenuHoverSystem.OnEnable() se llama automáticamente por Unity)
-
-        ApplySavedUIScale();
-        ApplySavedMenuTextScale();
-
-        // Background & Hero
-        _menuBg = _root.Q("menu-bg");
-        _heroTitle = _root.Q<Label>("hero-title");
-        _voidIntro = _root.Q("void-intro");
-        _mainContent = _root.Q("main-content");
-
-        // Panels
-        _settingsPanel = _root.Q("settings-panel");
-        _levelSelectPanel = _root.Q("level-select-panel");
-
-        // Hover Preview Panels
-        _rightContentContainer = _root.Q("right-content-container");
-        _panelNeuralArchives = _root.Q("panel-neural-archives");
-        _panelStabilityMap = _root.Q("panel-stability-map");
-        _panelCalibrationPreview = _root.Q("panel-calibration-preview");
-        _panelDisconnectOffline = _root.Q("panel-disconnect-offline");
-
-        // Side nav buttons
-        _btnNewGame = _root.Q<Button>("nav-newgame");
-        _btnLevels = _root.Q<Button>("nav-levels");
-        _btnSettings = _root.Q<Button>("nav-settings");
-        _btnExit = _root.Q<Button>("nav-exit");
-
-        // Setup hover behaviors + acciones de nav (una sola vez)
-        if (!_wired)
-        {
-            SetupHoverCallbacks();
-            SetupFocusNavigation();
-
-            RegisterButtonClick("nav-newgame", StartNewGame);
-            RegisterButtonClick("nav-levels", ShowStabilityMap);
-            RegisterButtonClick("nav-settings", ShowSettings);
-            RegisterButtonClick("nav-exit", QuitGame);
-        }
-
-        GameProgress.EnsureInitialized();
-
-        // Settings panel bindings
-        _sldMaster = _root.Q<Slider>("sld-master");
-        _sldMusic = _root.Q<Slider>("sld-music");
-        _sldSfx = _root.Q<Slider>("sld-sfx");
-
-        _lblMasterVal = _root.Q<Label>("lbl-master-val");
-        _lblMusicVal = _root.Q<Label>("lbl-music-val");
-        _lblSfxVal = _root.Q<Label>("lbl-sfx-val");
-
-        _resDropdown = _root.Q<DropdownField>("ResolutionDropdown");
-        _fullscreenToggle = _root.Q<Toggle>("FullscreenToggle");
-        _vsyncToggle = _root.Q<Toggle>("VsyncToggle");
-        _scaleDropdown = _root.Q<DropdownField>("ScaleDropdown");
-
-        _btnSensLow = _root.Q<Button>("btn-sens-low");
-        _btnSensMed = _root.Q<Button>("btn-sens-med");
-        _btnSensHigh = _root.Q<Button>("btn-sens-high");
-        _lblSensVal = _root.Q<Label>("lbl-sens-val");
-
-        _sensitivitySlider = _root.Q<Slider>("SensitivitySlider");
-        _lblCamSensVal = _root.Q<Label>("lbl-cam-sens-val");
-
-        _sldFog = _root.Q<Slider>("sld-fog");
-        _lblFogVal = _root.Q<Label>("lbl-fog-val");
-        _sldEcho = _root.Q<Slider>("sld-echo");
-        _lblEchoVal = _root.Q<Label>("lbl-echo-val");
-        _sldGameFog = _root.Q<Slider>("sld-game-fog");
-        _sldGameSun = _root.Q<Slider>("sld-game-sun");
-        _sldGameLights = _root.Q<Slider>("sld-game-lights");
-        _sldGameAmbient = _root.Q<Slider>("sld-game-ambient");
-        _sldMenuText = _root.Q<Slider>("sld-menu-text");
-        _lblGameFogVal = _root.Q<Label>("lbl-game-fog-val");
-        _lblGameSunVal = _root.Q<Label>("lbl-game-sun-val");
-        _lblGameLightsVal = _root.Q<Label>("lbl-game-lights-val");
-        _lblGameAmbientVal = _root.Q<Label>("lbl-game-ambient-val");
-        _lblMenuTextVal = _root.Q<Label>("lbl-menu-text-val");
-
-        _btnLightLiminal = _root.Q<Button>("btn-light-liminal");
-        _btnLightBruma = _root.Q<Button>("btn-light-bruma");
-        _btnLightClaridad = _root.Q<Button>("btn-light-claridad");
-        _btnLightPenumbra = _root.Q<Button>("btn-light-penumbra");
-
-        // Registro de callbacks de settings (una sola vez)
-        if (!_wired)
-        {
-            if (_btnLightLiminal != null) _btnLightLiminal.clicked += () => ApplyLightingPresetUi("liminal");
-            if (_btnLightBruma != null) _btnLightBruma.clicked += () => ApplyLightingPresetUi("bruma");
-            if (_btnLightClaridad != null) _btnLightClaridad.clicked += () => ApplyLightingPresetUi("claridad");
-            if (_btnLightPenumbra != null) _btnLightPenumbra.clicked += () => ApplyLightingPresetUi("penumbra");
-
-            RegisterButtonClick("btn-restore-defaults", RestoreFactoryDefaults);
-            RegisterButtonClick("btn-settings-back", DiscardSettings);
-            RegisterButtonClick("btn-settings-apply", ApplySettings);
-            RegisterButtonClick("btn-levels-back", ShowStabilityMap);
-            RegisterButtonClick("btn-reset-progress", OnResetProgressClicked);
-            RegisterButtonClick("btn-reset-progress-confirm", ConfirmResetProgress);
-
-            _wired = true;
-        }
-
-        RefreshDashboard();
-        RefreshNeuralArchives();
-        BindLevelMapButtons();
-
-        InitializeSettings();
-        ShowVoidIntro();
-
-        // Start animated terminal log coroutine
-        if (_terminalLogCoroutine != null) StopCoroutine(_terminalLogCoroutine);
-        _terminalLogCoroutine = StartCoroutine(AnimateTerminalLogs());
-    }
-
-    void Start()
-    {
-        SetMenuCursor();
-
-        GameProgress.RecordSessionStarted();
-
-        // Debug auto-start
-        if (autoStartGame)
-        {
-            Invoke(nameof(AutoStart), 0.5f);
-        }
-    }
-
-    void OnDisable()
-    {
-        UnregisterButtonClick("nav-newgame", StartNewGame);
-        UnregisterButtonClick("nav-levels", ShowStabilityMap);
-        UnregisterButtonClick("nav-settings", ShowSettings);
-        UnregisterButtonClick("nav-exit", QuitGame);
-
-        if (_btnNewGame != null)
-        {
-            _btnNewGame.UnregisterCallback<MouseEnterEvent>(_ => {});
-            _btnNewGame.UnregisterCallback<MouseLeaveEvent>(_ => {});
-        }
-        if (_btnLevels != null)
-        {
-            _btnLevels.UnregisterCallback<MouseEnterEvent>(_ => {});
-            _btnLevels.UnregisterCallback<MouseLeaveEvent>(_ => {});
-        }
-        if (_btnSettings != null)
-        {
-            _btnSettings.UnregisterCallback<MouseEnterEvent>(_ => {});
-            _btnSettings.UnregisterCallback<MouseLeaveEvent>(_ => {});
-        }
-        if (_btnExit != null)
-        {
-            _btnExit.UnregisterCallback<MouseEnterEvent>(_ => {});
-            _btnExit.UnregisterCallback<MouseLeaveEvent>(_ => {});
-        }
-    }
-
-    public static void SetGameplayCursor()
-    {
-        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-        UnityEngine.Cursor.visible = false;
-    }
-
-    public static void SetMenuCursor()
-    {
-        UnityEngine.Cursor.lockState = CursorLockMode.None;
-        UnityEngine.Cursor.visible = true;
-        Time.timeScale = 1f;
-    }
-
-    void Update()
-    {
-        // Descartar la intro ("presionar cualquier tecla para sintonizar") y mostrar el menú.
-        // Sin esto el menú queda atascado en void-intro con main-content oculto.
-        if (_voidIntro != null && !_voidIntro.ClassListContains("hidden") && Input.anyKeyDown)
-        {
-            DismissIntro();
-        }
-    }
-
-    /// <summary>Oculta la intro y revela el menú principal (main-content).</summary>
-    void DismissIntro()
-    {
-        _voidIntro?.AddToClassList("hidden");
-        _mainContent?.RemoveFromClassList("hidden");
-        _rightContentContainer?.RemoveFromClassList("hidden");
-
-        SetActiveNav(_btnNewGame);
-        ShowPreviewPanel("panel-neural-archives");
-    }
-
-    void AutoStart()
-    {
-        LoadLevel(firstLevelScene);
-    }
-
-    void RegisterButtonClick(string name, System.Action action)
-    {
-        var btn = _root.Q<Button>(name);
-        if (btn != null)
-        {
-            btn.clicked += action;
-        }
-        else
-        {
-            var el = _root.Q(name);
-            if (el != null)
-                el.RegisterCallback<ClickEvent>(_ => action());
-        }
-    }
-
-    void UnregisterButtonClick(string name, System.Action action)
-    {
-        var btn = _root.Q<Button>(name);
-        if (btn != null)
-        {
-            btn.clicked -= action;
-        }
-    }
-
-    void SetupFocusNavigation()
-    {
-        if (_btnNewGame != null)
-        {
-            _btnNewGame.RegisterCallback<FocusEvent>(_ => OnNavFocus(_btnNewGame, MainMenuCinematicWorld.MenuAmbience.Void, "Aula 104"));
-        }
-        if (_btnLevels != null)
-        {
-            _btnLevels.RegisterCallback<FocusEvent>(_ => OnNavFocus(_btnLevels, MainMenuCinematicWorld.MenuAmbience.Stability, "Archivos Escolares"));
-        }
-        if (_btnSettings != null)
-        {
-            _btnSettings.RegisterCallback<FocusEvent>(_ => OnNavFocus(_btnSettings, MainMenuCinematicWorld.MenuAmbience.System, "Ajustar Cuaderno"));
-        }
-        if (_btnExit != null)
-        {
-            _btnExit.RegisterCallback<FocusEvent>(_ => OnNavFocus(_btnExit, MainMenuCinematicWorld.MenuAmbience.Disconnect, "Salir del Recuerdo"));
-        }
-    }
-
-    void OnNavFocus(Button btn, MainMenuCinematicWorld.MenuAmbience ambience, string title)
-    {
-        if (MainMenuCinematicWorld.Instance != null)
-            MainMenuCinematicWorld.Instance.SetAmbience(ambience);
-
-        if (_heroTitle != null)
-            _heroTitle.text = title;
-
-        SetActiveNav(btn);
-        ShowPreviewPanel(GetPanelNameForButton(btn));
-    }
-
-    // --- Hover Background & Title Swap ---
-
-    void SetupHoverCallbacks()
-    {
-        if (_btnNewGame != null)
-        {
-            _btnNewGame.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnNewGame, MainMenuCinematicWorld.MenuAmbience.Void, "Aula 104"));
-            _btnNewGame.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnNewGame));
-        }
-        if (_btnLevels != null)
-        {
-            _btnLevels.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnLevels, MainMenuCinematicWorld.MenuAmbience.Stability, "Archivos Escolares"));
-            _btnLevels.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnLevels));
-        }
-        if (_btnSettings != null)
-        {
-            _btnSettings.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnSettings, MainMenuCinematicWorld.MenuAmbience.System, "Ajustar Cuaderno"));
-            _btnSettings.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnSettings));
-        }
-        if (_btnExit != null)
-        {
-            _btnExit.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnExit, MainMenuCinematicWorld.MenuAmbience.Disconnect, "Salir del Recuerdo"));
-            _btnExit.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnExit));
-        }
-    }
-
-    void OnNavHover(Button btn, MainMenuCinematicWorld.MenuAmbience ambience, string title)
-    {
-        if (MainMenuCinematicWorld.Instance != null)
-        {
-            MainMenuCinematicWorld.Instance.SetAmbience(ambience);
-        }
-
-        if (_heroTitle != null)
-        {
-            _heroTitle.text = title;
-        }
-
-        btn.AddToClassList("nav-item--active");
-
-        // Show the corresponding preview panel
-        ShowPreviewPanel(GetPanelNameForButton(btn));
-    }
-
-    void OnNavHoverLeave(Button btn)
-    {
-        if (MainMenuCinematicWorld.Instance != null)
-        {
-            MainMenuCinematicWorld.Instance.SetAmbience(GetActiveNavAmbience());
-        }
-
-        if (_heroTitle != null)
-        {
-            _heroTitle.text = GetActiveHeroTitle();
-        }
-
-        // Keep active selection styling only on the active nav button
-        if (btn != _activeNavButton)
-        {
-            btn.RemoveFromClassList("nav-item--active");
-        }
-
-        // Return to the active nav's preview panel
-        ShowPreviewPanel(GetPanelNameForButton(_activeNavButton));
-    }
-
-    void SetActiveNav(Button activeBtn)
-    {
-        _activeNavButton = activeBtn;
-        _btnNewGame?.RemoveFromClassList("nav-item--active");
-        _btnLevels?.RemoveFromClassList("nav-item--active");
-        _btnSettings?.RemoveFromClassList("nav-item--active");
-        _btnExit?.RemoveFromClassList("nav-item--active");
-        activeBtn?.AddToClassList("nav-item--active");
-
-        if (MainMenuCinematicWorld.Instance != null)
-        {
-            MainMenuCinematicWorld.Instance.SetAmbience(GetActiveNavAmbience());
-        }
-    }
-
-    MainMenuCinematicWorld.MenuAmbience GetActiveNavAmbience()
-    {
-        if (_activeNavButton == _btnNewGame) return MainMenuCinematicWorld.MenuAmbience.Void;
-        if (_activeNavButton == _btnLevels) return MainMenuCinematicWorld.MenuAmbience.Stability;
-        if (_activeNavButton == _btnSettings) return MainMenuCinematicWorld.MenuAmbience.System;
-        if (_activeNavButton == _btnExit) return MainMenuCinematicWorld.MenuAmbience.Disconnect;
-        return MainMenuCinematicWorld.MenuAmbience.Void;
-    }
-
-    string GetActiveHeroTitle()
-    {
-        if (_activeNavButton == _btnNewGame) return "Aula 104";
-        if (_activeNavButton == _btnLevels) return "Archivos Escolares";
-        if (_activeNavButton == _btnSettings) return "Ajustar Cuaderno";
-        if (_activeNavButton == _btnExit) return "Salir del Recuerdo";
-        return "Recuerdo Aislado";
-    }
-
-    string GetPanelNameForButton(Button btn)
-    {
-        if (btn == _btnNewGame) return "panel-neural-archives";
-        if (btn == _btnLevels) return "panel-stability-map";
-        if (btn == _btnSettings) return "panel-calibration-preview";
-        if (btn == _btnExit) return "panel-disconnect-offline";
-        return "panel-neural-archives";
-    }
-
-    // --- Preview Panel Switching ---
-
-    void ShowPreviewPanel(string panelName)
-    {
-        if (panelName == _activePreviewPanelName) return;
-        _activePreviewPanelName = panelName;
-
-        // Hide all preview panels
-        _panelNeuralArchives?.RemoveFromClassList("preview-panel--visible");
-        _panelStabilityMap?.RemoveFromClassList("preview-panel--visible");
-        _panelCalibrationPreview?.RemoveFromClassList("preview-panel--visible");
-        _panelDisconnectOffline?.RemoveFromClassList("preview-panel--visible");
-
-        // Show the target panel
-        var target = _root.Q(panelName);
-        target?.AddToClassList("preview-panel--visible");
-
-        if (panelName == "panel-calibration-preview")
-        {
-            RefreshCalibrationPreview();
-        }
-        else if (panelName == "panel-neural-archives")
-        {
-            RefreshNeuralArchives();
-        }
-    }
-
-    // --- Panel Switching ---
-
-    void ShowVoidIntro()
-    {
-        _settingsPanel?.AddToClassList("hidden");
-        _levelSelectPanel?.AddToClassList("hidden");
-        _rightContentContainer?.RemoveFromClassList("hidden");
-
-        if (_voidIntro != null)
-        {
-            _mainContent?.AddToClassList("hidden");
-            _voidIntro.RemoveFromClassList("hidden");
-        }
-        else
-        {
-            _mainContent?.RemoveFromClassList("hidden");
-        }
-
-        if (_menuBg != null)
-        {
-            _menuBg.style.opacity = 1f;
-        }
-
-        if (_heroTitle != null)
-            _heroTitle.text = "Aula 104";
-
-        SetActiveNav(_btnNewGame);
-        _activePreviewPanelName = "";
-        ShowPreviewPanel("panel-neural-archives");
-        RefreshNeuralArchives();
-    }
-
-    void ShowStabilityMap()
-    {
-        _settingsPanel?.AddToClassList("hidden");
-        _levelSelectPanel?.AddToClassList("hidden");
-        _voidIntro?.AddToClassList("hidden");
-        _mainContent?.RemoveFromClassList("hidden");
-        _rightContentContainer?.RemoveFromClassList("hidden");
-
-        if (_menuBg != null)
-            _menuBg.style.opacity = 1f;
-
-        if (_heroTitle != null)
-            _heroTitle.text = "Archivos Escolares";
-
-        SetActiveNav(_btnLevels);
-        _activePreviewPanelName = ""; // reset para forzar refresco
-        ShowPreviewPanel("panel-stability-map");
-        RefreshDashboard();
-    }
-
-    void ShowSettings()
-    {
-        _settingsPanel?.AddToClassList("hidden");
-        _levelSelectPanel?.AddToClassList("hidden");
-        _voidIntro?.AddToClassList("hidden");
-        _mainContent?.RemoveFromClassList("hidden");
-        _rightContentContainer?.RemoveFromClassList("hidden");
-
-        if (_heroTitle != null)
-            _heroTitle.text = "Configuración";
-
-        SetActiveNav(_btnSettings);
-        _activePreviewPanelName = ""; // reset para forzar refresco
-        ShowPreviewPanel("panel-calibration-preview");
-        LoadCurrentSettingsIntoUI();
-    }
-
-    // --- Actions ---
-
-    void StartNewGame()
-    {
-        LoadLevel(firstLevelScene);
-    }
-
-    void LoadLevel(string levelName)
-    {
-        if (string.IsNullOrWhiteSpace(levelName))
-        {
-            Debug.LogError("[MainMenuController] Cannot load an empty level name.");
-            return;
-        }
-
-        if (!Application.CanStreamedLevelBeLoaded(levelName))
-        {
-            Debug.LogError($"[MainMenuController] Scene '{levelName}' is not in Build Settings or cannot be loaded.");
-            return;
-        }
-
-        if (SceneTransitionManager.Instance != null)
-        {
-            SceneTransitionManager.Instance.LoadScene(levelName);
-        }
-        else
-        {
-            PostProcessingSetup.PrepareForSceneReload();
-            UnityEngine.SceneManagement.SceneManager.LoadScene(levelName);
-        }
-    }
-
-    void QuitGame()
-    {
 #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
+using UnityEditor;
 #endif
-    }
 
-    // --- Settings & Calibration logic ---
-
-    void InitializeSettings()
+namespace Echoes.UI
+{
+    /// <summary>
+    /// MainMenuController — Rewrite Fase 2.
+    /// Vocabulario canónico: Cuaderno, Eco, Recuerdo, Capítulo, Grabar, Proyectar.
+    /// Delegación: SettingsController, LevelSelectController, CreditsController.
+    /// Navegación: NavigationManager + FocusManager.
+    /// </summary>
+    [RequireComponent(typeof(UIDocument))]
+    public class MainMenuController : MonoBehaviour
     {
-        // UI Scale dropdown setup
-        if (_scaleDropdown != null)
+        [Header("Scenes")]
+        [SerializeField] string firstLevelScene = "Level_01";
+
+        // Color constants for inline styling (bypass USS cascade issues)
+        static readonly Color Amber = new Color(1f, 0.749f, 0f);       // #FFBF00
+        static readonly Color Paper = new Color(0.957f, 0.949f, 0.933f); // #F4F2EE
+        static readonly Color VoidBlack = new Color(0.039f, 0.039f, 0.051f); // #0A0A0D
+        static readonly Color DebugRed = new Color(1f, 0f, 0f, 1f);     // DEBUG visibility
+        static readonly Color Fluorescent = new Color(0.788f, 0.831f, 0.69f); // #C9D4B0
+        static readonly Color Faded = new Color(0.353f, 0.29f, 0.18f);   // #5A4A2E
+        static readonly Color DarkBg = new Color(0.012f, 0.016f, 0.024f); // #030406
+        static readonly Color RightBg = new Color(0.035f, 0.043f, 0.059f); // #090B0F
+        static readonly Color MainBg = new Color(0.024f, 0.031f, 0.047f); // #06080C
+        static readonly Color DestructiveRed = new Color(0.698f, 0.227f, 0.227f); // #B23A3A
+        static readonly Color BorderAmber = new Color(1f, 0.749f, 0f, 0.2f); // Amber 20%
+
+        UIDocument _doc;
+        VisualElement _root;
+        VisualElement _rootElement; // The "root" child element (name="root")
+        VisualElement _voidIntro;
+        VisualElement _mainContent;
+        VisualElement _rightContainer;
+        Label _heroTitle;
+
+        Button _btnContinuar;
+        Button _btnCapitulos;
+        Button _btnConfigurar;
+        Button _btnCreditos;
+        Button _btnCerrar;
+
+        VisualElement _panelCuadernoRecorrido;
+        VisualElement _panelCapitulos;
+        VisualElement _panelAjustes;
+        VisualElement _panelCerrar;
+
+        Label _lblEcosAnclados;
+        Label _lblRecuerdos;
+        VisualElement _levelCardGrid;
+
+        bool _wired;
+
+        void OnEnable()
         {
-            _scaleDropdown.choices = new List<string> { "Normal", "Large", "Extra Large" };
-            _scaleDropdown.value = PlayerPrefs.GetString("UIScale", "Normal");
-        }
+            _doc = GetComponent<UIDocument>();
+            if (_doc == null || _doc.rootVisualElement == null) return;
+            _root = _doc.rootVisualElement;
 
-        // Neural presets
-        if (_btnSensLow != null) _btnSensLow.clicked += () => SelectSensitivityPreset("Low", 0.5f);
-        if (_btnSensMed != null) _btnSensMed.clicked += () => SelectSensitivityPreset("Medium", 1.0f);
-        if (_btnSensHigh != null) _btnSensHigh.clicked += () => SelectSensitivityPreset("High", 2.0f);
+            // UI Elements — MUST query BEFORE LoadStyleSheets() so _rootElement is available
+            _voidIntro = _root.Q("void-intro");
+            _mainContent = _root.Q("main-content");
+            _rightContainer = _root.Q("right-content-container");
+            _heroTitle = _root.Q<Label>("heroTitle");
+            _rootElement = _root.Q("root");
 
-        // Sliders change updates labels
-        if (_sldMaster != null) _sldMaster.RegisterValueChangedCallback(evt => UpdateLabel(_lblMasterVal, evt.newValue));
-        if (_sldMusic != null) _sldMusic.RegisterValueChangedCallback(evt => UpdateLabel(_lblMusicVal, evt.newValue));
-        if (_sldSfx != null) _sldSfx.RegisterValueChangedCallback(evt => UpdateLabel(_lblSfxVal, evt.newValue));
-        if (_sensitivitySlider != null) _sensitivitySlider.RegisterValueChangedCallback(evt => UpdateSensitivityLabel(evt.newValue));
-        if (_sldFog != null) _sldFog.RegisterValueChangedCallback(evt => UpdateFogLabel(evt.newValue));
-        if (_sldEcho != null) _sldEcho.RegisterValueChangedCallback(evt => UpdateLabel(_lblEchoVal, evt.newValue));
-        if (_sldGameFog != null) _sldGameFog.RegisterValueChangedCallback(evt => UpdateGameFogLabel(evt.newValue));
-        if (_sldGameSun != null) _sldGameSun.RegisterValueChangedCallback(evt => UpdateGameSunLabel(evt.newValue));
-        if (_sldGameLights != null) _sldGameLights.RegisterValueChangedCallback(evt => UpdateGameLightsLabel(evt.newValue));
-        if (_sldGameAmbient != null) _sldGameAmbient.RegisterValueChangedCallback(evt => UpdateGameAmbientLabel(evt.newValue));
-        if (_sldMenuText != null) _sldMenuText.RegisterValueChangedCallback(evt => UpdateMenuTextLabel(evt.newValue));
+            // Load stylesheets for editor play mode (USS auto-load not reliable in editor)
+            LoadStyleSheets();
 
-        // Resolutions
-        if (_resDropdown != null)
-        {
-            Resolution[] resolutions = Screen.resolutions;
-            _filteredResolutions = new List<Resolution>();
-            List<string> options = new List<string>();
-            int currentResIndex = 0;
-
-            for (int i = 0; i < resolutions.Length; i++)
+            // IMMEDIATELY force styles on rootElement (critical — this covers the UIDocumentRootElement)
+            if (_rootElement != null)
             {
-                _filteredResolutions.Add(resolutions[i]);
-                string option = resolutions[i].width + " x " + resolutions[i].height;
-                options.Add(option);
-
-                if (resolutions[i].width == Screen.currentResolution.width &&
-                    resolutions[i].height == Screen.currentResolution.height)
-                    currentResIndex = i;
+                _rootElement.style.position = Position.Absolute;
+                _rootElement.style.left = 0; _rootElement.style.top = 0; _rootElement.style.right = 0; _rootElement.style.bottom = 0;
+                _rootElement.style.backgroundColor = DebugRed;
+                _rootElement.style.color = Paper;
+                _rootElement.style.fontSize = 30;
             }
 
-            _resDropdown.choices = options;
-            if (options.Count > 0)
+            _btnContinuar  = _root.Q<Button>("nav-continuar");
+            _btnCapitulos  = _root.Q<Button>("nav-capitulos");
+            _btnConfigurar = _root.Q<Button>("nav-configurar");
+            _btnCreditos   = _root.Q<Button>("nav-creditos");
+            _btnCerrar     = _root.Q<Button>("nav-cerrar");
+
+            _panelCuadernoRecorrido = _root.Q("panel-cuaderno-recorrido");
+            _panelCapitulos         = _root.Q("panel-capitulos-cuaderno");
+            _panelAjustes           = _root.Q("panel-ajustes-cuaderno");
+            _panelCerrar            = _root.Q("panel-cerrar-cuaderno");
+
+            _lblEcosAnclados = _root.Q<Label>("lblEcosAnclados");
+            _lblRecuerdos    = _root.Q<Label>("lblRecuerdos");
+            _levelCardGrid   = _root.Q("levelCardGrid");
+
+            // Buttons en panel cerrar
+            var btnConfirmExit = _root.Q<Button>("btn-confirm-exit");
+            var btnCancelExit  = _root.Q<Button>("btn-cancel-exit");
+
+            if (!_wired)
             {
-                _resDropdown.index = Mathf.Clamp(currentResIndex, 0, options.Count - 1);
+                _btnContinuar.clicked  += OnContinuar;
+                _btnCapitulos.clicked  += OnCapitulos;
+                _btnConfigurar.clicked += OnConfigurar;
+                _btnCreditos.clicked   += OnCreditos;
+                _btnCerrar.clicked     += OnCerrar;
+
+                btnConfirmExit.clicked += ConfirmExit;
+                btnCancelExit.clicked  += CancelExit;
+
+                _wired = true;
             }
+
+            GameProgress.EnsureInitialized();
+            RefreshFooterStats();
+            BindLevelCards();
+            ShowVoidIntro();
         }
 
-        LoadCurrentSettingsIntoUI();
-    }
-
-    void LoadCurrentSettingsIntoUI()
-    {
-        var audioMgr = EchoesAudioManager.EnsureExists();
-        if (_sldMaster != null) _sldMaster.value = audioMgr != null ? audioMgr.GetMasterVolume() : PlayerPrefs.GetFloat("MasterVolume", 0.84f);
-        if (_sldMusic != null) _sldMusic.value = audioMgr != null ? audioMgr.GetMusicVolume() : PlayerPrefs.GetFloat("MusicVolume", 0.6f);
-        if (_sldSfx != null) _sldSfx.value = audioMgr != null ? audioMgr.GetSFXVolume() : PlayerPrefs.GetFloat("SfxVolume", 0.72f);
-
-        if (_lblMasterVal != null) UpdateLabel(_lblMasterVal, _sldMaster.value);
-        if (_lblMusicVal != null) UpdateLabel(_lblMusicVal, _sldMusic.value);
-        if (_lblSfxVal != null) UpdateLabel(_lblSfxVal, _sldSfx.value);
-
-        if (_fullscreenToggle != null) _fullscreenToggle.value = Screen.fullScreen;
-        if (_vsyncToggle != null) _vsyncToggle.value = QualitySettings.vSyncCount > 0;
-
-        if (_scaleDropdown != null) _scaleDropdown.value = PlayerPrefs.GetString("UIScale", "Normal");
-
-        float currentSens = PlayerPrefs.GetFloat("CameraSensitivity", 1f);
-        if (_sensitivitySlider != null) _sensitivitySlider.value = currentSens;
-        UpdateSensitivityLabel(currentSens);
-
-        if (_sldFog != null) _sldFog.value = PlayerPrefs.GetFloat("FogDensity", RenderSettings.fog ? RenderSettings.fogDensity : 0.035f);
-        if (_sldEcho != null) _sldEcho.value = PlayerPrefs.GetFloat("EchoOpacity", 0.6f);
-
-        if (_lblFogVal != null) UpdateFogLabel(_sldFog.value);
-        if (_lblEchoVal != null) UpdateLabel(_lblEchoVal, _sldEcho.value);
-
-        if (_sldGameFog != null) _sldGameFog.value = EchoesPresentationSettings.GameFogDensity;
-        if (_sldGameSun != null) _sldGameSun.value = EchoesPresentationSettings.GameSunIntensity;
-        if (_sldGameLights != null) _sldGameLights.value = EchoesPresentationSettings.GamePointLightMultiplier;
-        if (_sldGameAmbient != null) _sldGameAmbient.value = EchoesPresentationSettings.GameAmbientMultiplier;
-        if (_sldMenuText != null) _sldMenuText.value = EchoesPresentationSettings.MenuTextScale;
-        UpdateGameFogLabel(_sldGameFog != null ? _sldGameFog.value : EchoesPresentationSettings.DefaultGameFogDensity);
-        UpdateGameSunLabel(_sldGameSun != null ? _sldGameSun.value : EchoesPresentationSettings.DefaultGameSunIntensity);
-        UpdateGameLightsLabel(_sldGameLights != null ? _sldGameLights.value : EchoesPresentationSettings.DefaultGamePointLightMul);
-        UpdateGameAmbientLabel(_sldGameAmbient != null ? _sldGameAmbient.value : EchoesPresentationSettings.DefaultGameAmbientMul);
-        UpdateMenuTextLabel(_sldMenuText != null ? _sldMenuText.value : EchoesPresentationSettings.DefaultMenuTextScale);
-
-        // Preset button highlights based on sensitivity value
-        if (Mathf.Approximately(currentSens, 0.5f)) SelectSensitivityPresetUI("Low");
-        else if (Mathf.Approximately(currentSens, 2.0f)) SelectSensitivityPresetUI("High");
-        else SelectSensitivityPresetUI("Medium");
-    }
-
-    void UpdateLabel(Label lbl, float val)
-    {
-        if (lbl != null) lbl.text = Mathf.RoundToInt(val * 100f) + "%";
-    }
-
-    void UpdateFogLabel(float val)
-    {
-        if (_lblFogVal != null) _lblFogVal.text = val.ToString("F3");
-    }
-
-    void UpdateSensitivityLabel(float val)
-    {
-        if (_lblCamSensVal != null) _lblCamSensVal.text = val.ToString("F1");
-    }
-
-    void SelectSensitivityPreset(string name, float value)
-    {
-        if (_sensitivitySlider != null) _sensitivitySlider.value = value;
-        if (_lblSensVal != null) _lblSensVal.text = name;
-        SelectSensitivityPresetUI(name);
-    }
-
-    void SelectSensitivityPresetUI(string activePreset)
-    {
-        _btnSensLow?.RemoveFromClassList("preset-button--active");
-        _btnSensMed?.RemoveFromClassList("preset-button--active");
-        _btnSensHigh?.RemoveFromClassList("preset-button--active");
-
-        if (activePreset == "Low") _btnSensLow?.AddToClassList("preset-button--active");
-        else if (activePreset == "High") _btnSensHigh?.AddToClassList("preset-button--active");
-        else _btnSensMed?.AddToClassList("preset-button--active");
-
-        if (_lblSensVal != null) _lblSensVal.text = activePreset;
-    }
-
-    void ApplySettings()
-    {
-        // 1. Audio
-        float master = _sldMaster != null ? _sldMaster.value : 0.84f;
-        float music = _sldMusic != null ? _sldMusic.value : 0.6f;
-        float sfx = _sldSfx != null ? _sldSfx.value : 0.72f;
-
-        var audioMgr = EchoesAudioManager.EnsureExists();
-        if (audioMgr != null)
+        void Update()
         {
-            audioMgr.SetMasterVolume(master);
-            audioMgr.SetMusicVolume(music);
-            audioMgr.SetSFXVolume(sfx);
-        }
-        else
-        {
-            AudioListener.volume = master;
-            PlayerPrefs.SetFloat("MasterVolume", master);
-            PlayerPrefs.SetFloat("MusicVolume", music);
-            PlayerPrefs.SetFloat("SfxVolume", sfx);
+            if (!_voidIntro.ClassListContains("hidden") && Input.GetKeyDown(KeyCode.Space))
+                DismissIntro();
         }
 
-        // Broadcast audio settings
-        var levelCtrl = FindAnyObjectByType<LevelRuntimeController>();
-        if (levelCtrl != null) levelCtrl.SendMessage("ApplySavedAudioSettings", SendMessageOptions.DontRequireReceiver);
-
-        // 2. Visuals
-        if (_fullscreenToggle != null) Screen.fullScreen = _fullscreenToggle.value;
-        if (_vsyncToggle != null) QualitySettings.vSyncCount = _vsyncToggle.value ? 1 : 0;
-
-        if (_resDropdown != null && _filteredResolutions != null && _resDropdown.index >= 0 && _resDropdown.index < _filteredResolutions.Count)
+        void ShowVoidIntro()
         {
-            Resolution res = _filteredResolutions[_resDropdown.index];
-            Screen.SetResolution(res.width, res.height, Screen.fullScreen);
+            _voidIntro.RemoveFromClassList("hidden");
+            _mainContent.AddToClassList("hidden");
+            _rightContainer.AddToClassList("hidden");
+            _heroTitle.text = "Aula 104";
+            SetActiveNav(_btnContinuar);
+            ShowPanel(_panelCuadernoRecorrido);
         }
 
-        // 3. UI Scale
-        if (_scaleDropdown != null)
+        void DismissIntro()
         {
-            string oldScale = PlayerPrefs.GetString("UIScale", "Normal");
-            string newScale = _scaleDropdown.value;
-            PlayerPrefs.SetString("UIScale", newScale);
+            _voidIntro.AddToClassList("hidden");
+            _mainContent.RemoveFromClassList("hidden");
+            _rightContainer.RemoveFromClassList("hidden");
+        }
 
-            if (oldScale != newScale)
+        void OnContinuar()
+        {
+            var continueScene = GameProgress.GetContinueSceneName();
+            if (!string.IsNullOrEmpty(continueScene))
+                LoadLevel(continueScene);
+            else
+                LoadLevel(firstLevelScene);
+        }
+
+        void OnCapitulos()
+        {
+            SetActiveNav(_btnCapitulos);
+            _heroTitle.text = "Capítulos del Cuaderno";
+            ShowPanel(_panelCapitulos);
+            RefreshLevelCards();
+        }
+
+        void OnConfigurar()
+        {
+            SetActiveNav(_btnConfigurar);
+            _heroTitle.text = "Configurar Cuaderno";
+            ShowPanel(_panelAjustes);
+        }
+
+        void OnCreditos()
+        {
+            SetActiveNav(_btnCreditos);
+            _heroTitle.text = "Créditos";
+
+            // Load credits scene directly — NavigationManager.Stack will be
+            // rebuilt when CreditsController initializes after the scene loads.
+            if (Application.CanStreamedLevelBeLoaded("CreditsScene"))
+                UnityEngine.SceneManagement.SceneManager.LoadScene("CreditsScene");
+        }
+
+        void OnCerrar()
+        {
+            SetActiveNav(_btnCerrar);
+            _heroTitle.text = "Cerrar Cuaderno";
+            ShowPanel(_panelCerrar);
+        }
+
+        void CancelExit() => ShowPanel(_panelCuadernoRecorrido);
+
+        void ConfirmExit()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
+
+        void LoadLevel(string sceneName)
+        {
+            if (string.IsNullOrWhiteSpace(sceneName)) return;
+            if (!Application.CanStreamedLevelBeLoaded(sceneName)) return;
+
+            if (SceneTransitionManager.Instance != null)
+                SceneTransitionManager.Instance.LoadScene(sceneName);
+            else
+                UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
+        }
+
+        void SetActiveNav(Button active)
+        {
+            _btnContinuar.RemoveFromClassList("nav-item--active");
+            _btnCapitulos.RemoveFromClassList("nav-item--active");
+            _btnConfigurar.RemoveFromClassList("nav-item--active");
+            _btnCreditos.RemoveFromClassList("nav-item--active");
+            _btnCerrar.RemoveFromClassList("nav-item--active");
+            active?.AddToClassList("nav-item--active");
+        }
+
+        void ShowPanel(VisualElement panel)
+        {
+            _panelCuadernoRecorrido.RemoveFromClassList("preview-panel--visible");
+            _panelCapitulos.RemoveFromClassList("preview-panel--visible");
+            _panelAjustes.RemoveFromClassList("preview-panel--visible");
+            _panelCerrar.RemoveFromClassList("preview-panel--visible");
+            panel?.AddToClassList("preview-panel--visible");
+        }
+
+        void RefreshFooterStats()
+        {
+            int completed = GameProgress.GetCompletedCount();
+            int total = GameProgress.TotalLevels;
+            _lblEcosAnclados.text = $"Ecos anclados: {completed}/{total}";
+            _lblRecuerdos.text = $"Recuerdos completados: {completed}";
+        }
+
+        void BindLevelCards()
+        {
+            _levelCardGrid.Clear();
+            for (int i = 1; i <= GameProgress.TotalLevels; i++)
             {
-                ApplySavedUIScale();
-                // Broadcast live UI Scale update to any other open UI document
-                var allDocs = FindObjectsByType<UIDocument>(FindObjectsInactive.Exclude);
-                foreach (var doc in allDocs)
+                string sceneName = $"Level_{i:D2}";
+                var card = new Button { text = $"Capítulo {i:D2}" };
+                card.AddToClassList("echo-card");
+
+                bool unlocked = GameProgress.IsSceneUnlocked(sceneName);
+                bool completed = GameProgress.IsSceneCompleted(sceneName);
+
+                if (!unlocked) card.AddToClassList("echo-card--locked");
+                else if (completed) card.AddToClassList("echo-card--completed");
+                else if (sceneName == GameProgress.GetContinueSceneName()) card.AddToClassList("echo-card--current");
+                else card.AddToClassList("echo-card--available");
+
+                if (unlocked)
                 {
-                    if (doc != _doc && doc.gameObject != gameObject)
-                    {
-                        doc.gameObject.SendMessage("ApplySavedUIScale", SendMessageOptions.DontRequireReceiver);
-                    }
+                    string capturedScene = sceneName;
+                    card.clicked += () => LoadLevel(capturedScene);
+                }
+
+                _levelCardGrid.Add(card);
+            }
+        }
+
+        void RefreshLevelCards() => BindLevelCards();
+
+        void LoadStyleSheets()
+        {
+            var paths = new[]
+            {
+                "Assets/UI/EchoesTheme.tss",
+                "Assets/UI/MainMenuUI.uss",
+                "Assets/UI/Components/EchoButton.uss",
+                "Assets/UI/Components/EchoPanel.uss",
+                "Assets/UI/Components/EchoCard.uss",
+                "Assets/UI/Components/EchoTabs.uss",
+                "Assets/UI/Components/EchoModal.uss",
+                "Assets/UI/Components/EchoToast.uss",
+                "Assets/UI/Components/EchoLoading.uss",
+                "Assets/UI/Components/EchoSlider.uss",
+                "Assets/UI/Components/EchoToggle.uss",
+                "Assets/UI/Components/EchoDropdown.uss",
+            };
+
+            foreach (var path in paths)
+            {
+                StyleSheet ss = null;
+#if UNITY_EDITOR
+                ss = AssetDatabase.LoadAssetAtPath<StyleSheet>(path);
+#else
+                string resourcePath = path.Replace("Assets/Resources/", "").Replace(".uss", "");
+                ss = Resources.Load<StyleSheet>(resourcePath);
+#endif
+                if (ss != null)
+                {
+                    _root.styleSheets.Add(ss);
+                    Debug.Log($"[MainMenuController] Loaded stylesheet: {path}");
                 }
             }
+
+            // GARANTIZADO: aplicar estilos inline via C# por si falla el USS
+            ApplyInlineStyles();
         }
 
-        // 4. Sensitivity
-        float sens = _sensitivitySlider != null ? _sensitivitySlider.value : 1.0f;
-        PlayerPrefs.SetFloat("CameraSensitivity", sens);
-
-        // Broadcast camera sensitivity
-        var cam = FindAnyObjectByType<ThirdPersonCamera>();
-        if (cam != null) cam.SendMessage("ApplySavedSensitivity", SendMessageOptions.DontRequireReceiver);
-
-        // 5. Fog Density
-        float fogDensity = _sldFog != null ? _sldFog.value : 0.035f;
-        PlayerPrefs.SetFloat("FogDensity", fogDensity);
-        RenderSettings.fogDensity = fogDensity;
-        RenderSettings.fog = fogDensity > 0f;
-
-        // 6. Echo Opacity
-        float echoOpacity = _sldEcho != null ? _sldEcho.value : 0.6f;
-        PlayerPrefs.SetFloat("EchoOpacity", echoOpacity);
-
-        // Broadcast echo opacity
-        var allRecorders = FindObjectsByType<EchoPlayback>(FindObjectsInactive.Exclude);
-        foreach (var playback in allRecorders)
+        void ApplyInlineStyles()
         {
-            playback.SendMessage("ApplySavedEchoOpacity", SendMessageOptions.DontRequireReceiver);
-        }
+            // ROOT
+            _root.style.position = Position.Absolute;
+            _root.style.left = 0; _root.style.top = 0; _root.style.right = 0; _root.style.bottom = 0;
+            _root.style.backgroundColor = VoidBlack;
+            _root.style.color = Paper;
+            _root.style.fontSize = 30;
 
-        float gameFog = _sldGameFog != null ? _sldGameFog.value : EchoesPresentationSettings.DefaultGameFogDensity;
-        float gameSun = _sldGameSun != null ? _sldGameSun.value : EchoesPresentationSettings.DefaultGameSunIntensity;
-        float gameLights = _sldGameLights != null ? _sldGameLights.value : EchoesPresentationSettings.DefaultGamePointLightMul;
-        float gameAmbient = _sldGameAmbient != null ? _sldGameAmbient.value : EchoesPresentationSettings.DefaultGameAmbientMul;
-        float menuText = _sldMenuText != null ? _sldMenuText.value : EchoesPresentationSettings.DefaultMenuTextScale;
-        EchoesPresentationSettings.SaveLighting(gameFog, gameSun, gameLights, gameAmbient);
-        EchoesPresentationSettings.Save(
-            EchoesPresentationSettings.CharacterVisualScale,
-            EchoesPresentationSettings.AnimationPlaybackSpeed,
-            EchoesPresentationSettings.ProceduralMotionEnabled,
-            menuText);
-        ApplySavedMenuTextScale();
-
-        PlayerPrefs.Save();
-        ShowStabilityMap();
-    }
-
-    void DiscardSettings()
-    {
-        // Regresa al panel principal (Neural Archives / "Acceder a Memoria")
-        ShowVoidIntro();
-    }
-
-    void ApplyLightingPresetUi(string presetId)
-    {
-        _activeLightingPresetId = presetId;
-        EchoesPresentationSettings.ApplyLightingPreset(presetId);
-
-        if (EchoesPresentationSettings.TryGetLightingPreset(presetId, out float fog, out float sun, out float point, out float ambient))
-        {
-            if (_sldGameFog != null) _sldGameFog.value = fog;
-            if (_sldGameSun != null) _sldGameSun.value = sun;
-            if (_sldGameLights != null) _sldGameLights.value = point;
-            if (_sldGameAmbient != null) _sldGameAmbient.value = ambient;
-            UpdateGameFogLabel(fog);
-            UpdateGameSunLabel(sun);
-            UpdateGameLightsLabel(point);
-            UpdateGameAmbientLabel(ambient);
-        }
-
-        SetLightingPresetButtonActive(presetId);
-    }
-
-    void SetLightingPresetButtonActive(string presetId)
-    {
-        _btnLightLiminal?.RemoveFromClassList("preset-button--active");
-        _btnLightBruma?.RemoveFromClassList("preset-button--active");
-        _btnLightClaridad?.RemoveFromClassList("preset-button--active");
-        _btnLightPenumbra?.RemoveFromClassList("preset-button--active");
-
-        switch (presetId)
-        {
-            case "bruma": _btnLightBruma?.AddToClassList("preset-button--active"); break;
-            case "claridad": _btnLightClaridad?.AddToClassList("preset-button--active"); break;
-            case "penumbra": _btnLightPenumbra?.AddToClassList("preset-button--active"); break;
-            default: _btnLightLiminal?.AddToClassList("preset-button--active"); break;
-        }
-    }
-
-    void RestoreFactoryDefaults()
-    {
-        if (_sldMaster != null) _sldMaster.value = 0.84f;
-        if (_sldMusic != null) _sldMusic.value = 0.60f;
-        if (_sldSfx != null) _sldSfx.value = 0.72f;
-
-        if (_fullscreenToggle != null) _fullscreenToggle.value = true;
-        if (_vsyncToggle != null) _vsyncToggle.value = true;
-
-        if (_scaleDropdown != null) _scaleDropdown.value = "Normal";
-
-        if (_sldFog != null) _sldFog.value = 0.035f;
-        if (_sldEcho != null) _sldEcho.value = 0.60f;
-
-        SelectSensitivityPreset("Medium", 1.0f);
-
-        if (_sldGameFog != null) _sldGameFog.value = EchoesPresentationSettings.DefaultGameFogDensity;
-        if (_sldGameSun != null) _sldGameSun.value = EchoesPresentationSettings.DefaultGameSunIntensity;
-        if (_sldGameLights != null) _sldGameLights.value = EchoesPresentationSettings.DefaultGamePointLightMul;
-        if (_sldGameAmbient != null) _sldGameAmbient.value = EchoesPresentationSettings.DefaultGameAmbientMul;
-        if (_sldMenuText != null) _sldMenuText.value = EchoesPresentationSettings.DefaultMenuTextScale;
-
-        ApplyLightingPresetUi("liminal");
-    }
-
-    void UpdateGameFogLabel(float value)
-    {
-        if (_lblGameFogVal != null)
-            _lblGameFogVal.text = value.ToString("F4");
-    }
-
-    void UpdateGameSunLabel(float value)
-    {
-        if (_lblGameSunVal != null)
-            _lblGameSunVal.text = value.ToString("F2");
-    }
-
-    void UpdateGameLightsLabel(float value)
-    {
-        if (_lblGameLightsVal != null)
-            _lblGameLightsVal.text = Mathf.RoundToInt(value * 100f) + "%";
-    }
-
-    void UpdateGameAmbientLabel(float value)
-    {
-        if (_lblGameAmbientVal != null)
-            _lblGameAmbientVal.text = Mathf.RoundToInt(value * 100f) + "%";
-    }
-
-    void UpdateMenuTextLabel(float value)
-    {
-        if (_lblMenuTextVal != null)
-            _lblMenuTextVal.text = Mathf.RoundToInt(value * 100f) + "%";
-    }
-
-    void ApplySavedMenuTextScale()
-    {
-        if (_root == null)
-            return;
-
-        float scale = EchoesPresentationSettings.MenuTextScale;
-        _root.RemoveFromClassList("scale-large");
-        _root.RemoveFromClassList("scale-xl");
-
-        if (scale >= 1.45f)
-            _root.AddToClassList("scale-xl");
-        else if (scale >= 1.12f)
-            _root.AddToClassList("scale-large");
-    }
-
-    // Apply scaling styles to root UXML element
-    public void ApplySavedUIScale()
-    {
-        if (_root == null) return;
-
-        string scale = PlayerPrefs.GetString("UIScale", "Normal");
-        _root.RemoveFromClassList("scale-large");
-        _root.RemoveFromClassList("scale-xl");
-
-        if (scale == "Large")
-        {
-            _root.AddToClassList("scale-large");
-        }
-        else if (scale == "Extra Large")
-        {
-            _root.AddToClassList("scale-xl");
-        }
-    }
-
-    // --- Neural Archives (VOID Panel) Telemetry ---
-
-    void RefreshNeuralArchives()
-    {
-        if (_root == null) return;
-
-        int completed = GameProgress.GetCompletedCount();
-        int total = GameProgress.TotalLevels;
-        float stability = 0.20f + 0.80f * (total > 0 ? (float)completed / total : 0f);
-
-        SetLabelText("lbl-archive-fragments", $"{completed}/{total}");
-        SetLabelText("lbl-archive-echoes", GameProgress.GetTotalEchoesCreated().ToString());
-        SetLabelText("lbl-archive-deaths", GameProgress.GetTotalDeathCount().ToString());
-        SetLabelText("lbl-archive-time", GameProgress.FormatPlayTime(GameProgress.GetTotalPlayTimeSeconds()));
-        SetLabelText("lbl-archive-stability-pct", $"{Mathf.RoundToInt(stability * 100f)}%");
-
-        var stabilityBar = _root.Q("bar-archive-stability");
-        if (stabilityBar != null)
-            stabilityBar.style.width = Length.Percent(stability * 100f);
-    }
-
-    void RefreshCalibrationPreview()
-    {
-        if (_root == null) return;
-
-        var audioMgr = EchoesAudioManager.EnsureExists();
-        float master = audioMgr != null ? audioMgr.GetMasterVolume() : PlayerPrefs.GetFloat("MasterVolume", 0.84f);
-        float music = audioMgr != null ? audioMgr.GetMusicVolume() : PlayerPrefs.GetFloat("MusicVolume", 0.6f);
-        float sfx = audioMgr != null ? audioMgr.GetSFXVolume() : PlayerPrefs.GetFloat("SfxVolume", 0.72f);
-
-        SetLabelText("lbl-preview-audio-master", $"Master: {Mathf.RoundToInt(master * 100f)}%");
-        SetLabelText("lbl-preview-audio-music", $"Música: {Mathf.RoundToInt(music * 100f)}%");
-        SetLabelText("lbl-preview-audio-sfx", $"SFX: {Mathf.RoundToInt(sfx * 100f)}%");
-
-        // Get actual resolution
-        string resText = $"{Screen.width} x {Screen.height}";
-        SetLabelText("lbl-preview-video-res", $"Resolución: {resText}");
-        SetLabelText("lbl-preview-video-fs", $"Pantalla Completa: {(Screen.fullScreen ? "SI" : "NO")}");
-        SetLabelText("lbl-preview-video-scale", $"Escala UI: {PlayerPrefs.GetString("UIScale", "Normal")}");
-
-        float sens = PlayerPrefs.GetFloat("CameraSensitivity", 1f);
-        float echo = PlayerPrefs.GetFloat("EchoOpacity", 0.6f);
-        SetLabelText("lbl-preview-neural-sens", $"Sensibilidad: {sens:F1}");
-        SetLabelText("lbl-preview-neural-echo", $"Opacidad Eco: {Mathf.RoundToInt(echo * 100f)}%");
-    }
-
-    // --- Terminal Log Animation ---
-
-    readonly string[] _diagnosticLines = new[]
-    {
-        "[RECORRIDO] Cuaderno de Aiden abierto.",
-        "[OK] Vínculos de recuerdo establecidos.",
-        "[OK] Aula sincronizada.",
-        "[BÚSQUEDA] Comprobando páginas del cuaderno...",
-        "[OK] Páginas de pasillo respondieron: despejado.",
-        "[OK] Puntos de anclaje de eco registrados.",
-        "[AVISO] Inestabilidad en fragmento — sector 07.",
-        "[OK] Memoria en recuperación.",
-        "[SINC] Deriva temporal dentro del margen: 0.003ms.",
-        "[OK] Integridad del cuaderno verificada.",
-        "[BÚSQUEDA] Escaneando nodos de memoria profunda...",
-        "[OK] Sin señales anómalas detectadas.",
-        "[SISTEMA] Latido: 72 ppm — NOMINAL.",
-        "[OK] Anotaciones de sesión activas.",
-        "[SINC] Resonancia del vacío: ESTABLE.",
-        "Esperando comando del cuaderno...",
-    };
-
-    IEnumerator AnimateTerminalLogs()
-    {
-        var log1 = _root?.Q<Label>("lbl-archive-log-1");
-        var log2 = _root?.Q<Label>("lbl-archive-log-2");
-        var log3 = _root?.Q<Label>("lbl-archive-log-3");
-        if (log1 == null || log2 == null || log3 == null)
-            yield break;
-
-        int lineIndex = 3; // Start after the initial 3 lines that are hardcoded in UXML
-
-        while (true)
-        {
-            yield return new WaitForSeconds(Random.Range(2.5f, 5.0f));
-
-            // Shift lines up
-            log1.text = log2.text;
-            log2.text = log3.text;
-
-            // Pick next line
-            string nextLine = _diagnosticLines[lineIndex % _diagnosticLines.Length];
-            lineIndex++;
-
-            // Color the new line based on prefix
-            if (nextLine.StartsWith("[WARN]"))
-                log3.style.color = new StyleColor(new Color(1f, 0.76f, 0.36f, 1f)); // amber
-            else if (nextLine.StartsWith("Waiting"))
-                log3.style.color = new StyleColor(new Color(0.48f, 0.94f, 0.78f, 1f)); // #7af0c8
-            else
-                log3.style.color = new StyleColor(new Color(0.86f, 0.88f, 0.98f, 1f)); // default
-
-            log3.text = nextLine;
-        }
-    }
-
-    void RefreshDashboard()
-    {
-        if (_root == null)
-            return;
-
-        int completedLevels = GameProgress.GetCompletedCount();
-        int totalLevels = GameProgress.TotalLevels;
-        float completionRatio = totalLevels > 0 ? (float)completedLevels / totalLevels : 0f;
-
-        float stability = 0.20f + 0.80f * completionRatio;
-        float coherence = 0.10f + 0.90f * completionRatio;
-        float progress = completionRatio;
-
-        SetBarStat("lbl-stat-stability-val", "bar-stat-stability-fill", "lbl-stat-stability-desc",
-            stability, completedLevels, totalLevels,
-            "Recorrido de recuerdos iniciando...",
-            "Recorrido de recuerdos en curso...",
-            "Recorrido de recuerdos completado.");
-
-        SetBarStat("lbl-stat-coherence-val", "bar-stat-coherence-fill", "lbl-stat-coherence-desc",
-            coherence, completedLevels, totalLevels,
-            "Coherencia de memoria inestable.",
-            "Señal de memoria intermitente.",
-            "Coherencia de memoria estable.");
-
-        SetBarStat("lbl-stat-progress-val", "bar-stat-progress-fill", "lbl-stat-progress-desc",
-            progress, completedLevels, totalLevels,
-            "Deep memory nodes still inaccessible.",
-            "Memory fragments beginning to re-align.",
-            "All memory nodes restored.");
-
-        SetLabelText("lbl-telemetry-fragments", $"{completedLevels}/{totalLevels}");
-        SetLabelText("lbl-telemetry-echoes", GameProgress.GetTotalEchoesCreated().ToString());
-        SetLabelText("lbl-telemetry-deaths", GameProgress.GetTotalDeathCount().ToString());
-        SetLabelText("lbl-telemetry-time", GameProgress.FormatPlayTime(GameProgress.GetTotalPlayTimeSeconds()));
-
-        int integrity = GameProgress.GetIntegrityPercent();
-        SetLabelText("lbl-user-integrity", $"Integridad: {integrity}%");
-        SetLabelText("lbl-user-rank", GameProgress.GetArchivistRank());
-        SetLabelText("lbl-user-sessions", $"Sesiones: {GameProgress.GetSessionCount()}");
-        SetLabelText("lbl-protocol-desc", GameProgress.GetActiveProtocolMessage(completedLevels, totalLevels));
-
-        string continueScene = GameProgress.GetContinueSceneName();
-        int continueIndex = GameProgress.GetSceneIndex(continueScene);
-        string continueName = continueIndex >= 0 ? GameProgress.GetLevelDisplayName(continueScene) : "—";
-        string lastFragmentLine = continueIndex >= 0
-            ? $"{continueName} · Nivel {continueIndex + 1:D2}"
-            : continueName;
-        SetLabelText("lbl-last-fragment", lastFragmentLine);
-
-        if (completedLevels >= totalLevels && totalLevels > 0)
-            SetLabelText("lbl-continue-hint", "VOID reinicia · elige cualquier fragmento en el mapa.");
-        else if (completedLevels == 0)
-            SetLabelText("lbl-continue-hint", "VOID inicia el primer fragmento.");
-        else
-            SetLabelText("lbl-continue-hint", $"Siguiente fragmento sugerido: {continueName}.");
-
-        SetLabelText("lbl-map-progress", completedLevels == 1
-            ? "1 nodo restaurado"
-            : $"{completedLevels} nodos restaurados");
-
-        UpdateLevelMapLabels();
-    }
-
-    void SetBarStat(string valueName, string barName, string descName, float value,
-        int completed, int total, string descEmpty, string descMid, string descFull)
-    {
-        var lblVal = _root.Q<Label>(valueName);
-        var barFill = _root.Q(barName);
-        var lblDesc = _root.Q<Label>(descName);
-
-        if (lblVal != null)
-            lblVal.text = value.ToString("F2");
-        if (barFill != null)
-            barFill.style.width = Length.Percent(value * 100f);
-        if (lblDesc != null)
-        {
-            if (completed == 0)
-                lblDesc.text = descEmpty;
-            else if (completed >= total)
-                lblDesc.text = descFull;
-            else
-                lblDesc.text = descMid;
-        }
-    }
-
-    void SetLabelText(string name, string text)
-    {
-        var lbl = _root.Q<Label>(name);
-        if (lbl != null)
-            lbl.text = text;
-    }
-
-    void UpdateLevelMapLabels()
-    {
-        for (int i = 1; i <= GameProgress.TotalLevels; i++)
-        {
-            string sceneName = $"Level_{i:D2}";
-            var lbl = _root.Q<Label>($"lbl-level-{i:D2}");
-            if (lbl == null)
-                continue;
-
-            if (!GameProgress.IsSceneUnlocked(sceneName))
+            // ROOT ELEMENT (child "root") — CRITICAL: this covers the UIDocumentRootElement
+            if (_rootElement != null)
             {
-                lbl.text = "BLOQUEADO";
-                continue;
+                _rootElement.style.position = Position.Absolute;
+                _rootElement.style.left = 0; _rootElement.style.top = 0; _rootElement.style.right = 0; _rootElement.style.bottom = 0;
+                _rootElement.style.backgroundColor = VoidBlack;
+                _rootElement.style.color = Paper;
+                _rootElement.style.fontSize = 30;
             }
 
-            if (GameProgress.IsSceneCompleted(sceneName))
+            // VOID INTRO
+            if (_voidIntro != null)
             {
-                int deaths = GameProgress.GetSceneDeathCount(sceneName);
-                lbl.text = deaths > 0 ? $"COMPLETO · {deaths} colapsos" : "COMPLETO";
-            }
-            else if (sceneName == GameProgress.GetContinueSceneName())
-            {
-                lbl.text = "EN CURSO";
-            }
-        }
-    }
-
-    readonly System.Collections.Generic.Dictionary<string, System.Action> _levelClickHandlers = new();
-
-    bool _resetArmed;
-
-    void OnResetProgressClicked()
-    {
-        if (!_resetArmed)
-        {
-            _resetArmed = true;
-            SetLabelText("lbl-reset-hint", "Pulsa REINICIAR ARCHIVO otra vez para confirmar.");
-            return;
-        }
-
-        ConfirmResetProgress();
-    }
-
-    void ConfirmResetProgress()
-    {
-        _resetArmed = false;
-        GameProgress.ResetProgress();
-        SetLabelText("lbl-reset-hint", "Expediente borrado. Solo el primer recuerdo está disponible.");
-        if (_heroTitle != null)
-            _heroTitle.text = "Recuerdo Aislado";
-        RefreshDashboard();
-        BindLevelMapButtons();
-    }
-
-    void BindLevelMapButtons()
-    {
-        for (int i = 1; i <= GameProgress.TotalLevels; i++)
-        {
-            string sceneName = $"Level_{i:D2}";
-            string btnName = $"btn-level-{i:D2}";
-            var btn = _root.Q<Button>(btnName);
-            if (btn == null)
-                continue;
-
-            if (_levelClickHandlers.TryGetValue(btnName, out System.Action existing))
-                btn.clicked -= existing;
-
-            bool isUnlocked = GameProgress.IsSceneUnlocked(sceneName);
-            bool isCompleted = GameProgress.IsSceneCompleted(sceneName);
-
-            btn.RemoveFromClassList("level-button--locked");
-            btn.RemoveFromClassList("level-button--completed");
-
-            if (!isUnlocked)
-            {
-                btn.AddToClassList("level-button--locked");
-                btn.SetEnabled(false);
-                continue;
+                _voidIntro.style.backgroundColor = VoidBlack;
+                _voidIntro.style.position = Position.Absolute;
+                _voidIntro.style.left = 0; _voidIntro.style.top = 0; _voidIntro.style.right = 0; _voidIntro.style.bottom = 0;
+                _voidIntro.style.justifyContent = Justify.Center;
+                _voidIntro.style.alignItems = Align.Center;
+                _voidIntro.style.color = Paper;
+                _voidIntro.style.fontSize = 30;
             }
 
-            btn.SetEnabled(true);
-            if (isCompleted)
-                btn.AddToClassList("level-button--completed");
+            // VOID INTRO LABEL
+            var voidLabel = _voidIntro?.Q<Label>();
+            if (voidLabel != null)
+            {
+                voidLabel.style.color = Paper;
+                voidLabel.style.fontSize = 30;
+                voidLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
+            }
 
-            System.Action handler = () => LoadLevel(sceneName);
-            _levelClickHandlers[btnName] = handler;
-            btn.clicked += handler;
+            // MAIN CONTENT
+            if (_mainContent != null)
+            {
+                _mainContent.style.backgroundColor = MainBg;
+                _mainContent.style.position = Position.Absolute;
+                _mainContent.style.left = 0; _mainContent.style.top = 0; _mainContent.style.right = 0; _mainContent.style.bottom = 0;
+                _mainContent.style.flexDirection = FlexDirection.Row;
+                _mainContent.style.color = Paper;
+                _mainContent.style.fontSize = 30;
+            }
+
+            // SIDEBAR
+            var sideNav = _rootElement?.Q("side-nav") ?? _root.Q("side-nav");
+            if (sideNav != null)
+            {
+                sideNav.style.backgroundColor = DarkBg;
+                sideNav.style.width = 420;
+                sideNav.style.paddingTop = 48; sideNav.style.paddingBottom = 48;
+                sideNav.style.paddingLeft = 32; sideNav.style.paddingRight = 32;
+                sideNav.style.flexShrink = 0;
+                sideNav.style.justifyContent = Justify.SpaceBetween;
+                sideNav.style.borderRightWidth = 1;
+                sideNav.style.borderRightColor = BorderAmber;
+                sideNav.style.color = Paper;
+                sideNav.style.fontSize = 30;
+            }
+
+            // HERO TITLE
+            if (_heroTitle != null)
+            {
+                _heroTitle.style.fontSize = 42;
+                _heroTitle.style.color = Fluorescent;
+            }
+
+            // BOTONES NAV
+            var buttons = new[] { _btnContinuar, _btnCapitulos, _btnConfigurar, _btnCreditos, _btnCerrar };
+            foreach (var btn in buttons)
+            {
+                if (btn == null) continue;
+                btn.style.backgroundColor = Amber;
+                btn.style.color = VoidBlack;
+                btn.style.fontSize = 30;
+                btn.style.paddingTop = 16; btn.style.paddingBottom = 16;
+                btn.style.paddingLeft = 20; btn.style.paddingRight = 20;
+                btn.style.borderLeftWidth = 2;
+                btn.style.marginBottom = 4;
+                btn.style.justifyContent = Justify.FlexStart;
+            }
+
+            // BUTTON "Cerrar" — destructive style
+            if (_btnCerrar != null)
+            {
+                _btnCerrar.style.backgroundColor = new Color(0.698f, 0.227f, 0.227f); // #B23A3A
+                _btnCerrar.style.color = Paper;
+            }
+
+            // RIGHT CONTAINER
+            if (_rightContainer != null)
+            {
+                _rightContainer.style.backgroundColor = RightBg;
+                _rightContainer.style.position = Position.Absolute;
+                _rightContainer.style.left = 420;
+                _rightContainer.style.top = 0; _rightContainer.style.right = 0; _rightContainer.style.bottom = 0;
+                _rightContainer.style.color = Paper;
+                _rightContainer.style.fontSize = 30;
+            }
+
+            // PANELS
+            var panels = new[] { _panelCuadernoRecorrido, _panelCapitulos, _panelAjustes, _panelCerrar };
+            foreach (var p in panels)
+            {
+                if (p == null) continue;
+                p.style.position = Position.Absolute;
+                p.style.left = 0; p.style.top = 0; p.style.right = 0; p.style.bottom = 0;
+                p.style.paddingTop = 56; p.style.paddingBottom = 56;
+                p.style.paddingLeft = 48; p.style.paddingRight = 48;
+                p.style.flexDirection = FlexDirection.Column;
+                p.style.backgroundColor = VoidBlack;
+                p.style.color = Paper;
+                p.style.fontSize = 30;
+            }
+
+            // PANEL TITLES
+            var titles = _rootElement?.Query<Label>(className: "panel-title").ToList() 
+                ?? _root.Query<Label>(className: "panel-title").ToList();
+            foreach (var t in titles)
+            {
+                t.style.color = Amber;
+                t.style.fontSize = 42;
+                t.style.marginBottom = 32;
+            }
+
+            // FOOTER STATS
+            if (_lblEcosAnclados != null)
+            {
+                _lblEcosAnclados.style.color = Faded;
+                _lblEcosAnclados.style.fontSize = 17;
+            }
+            if (_lblRecuerdos != null)
+            {
+                _lblRecuerdos.style.color = Faded;
+                _lblRecuerdos.style.fontSize = 17;
+            }
+
+            // LEVEL CARDS
+            if (_levelCardGrid != null)
+            {
+                _levelCardGrid.style.flexGrow = 1;
+            }
+
+            Debug.Log("[MainMenuController] Inline styles applied successfully.");
         }
     }
 }

@@ -1,0 +1,73 @@
+/* ============================================================
+   EchoModal — diálogo de confirmación con fondo oscuro + focus trap
+   Estados: entering / visible / exiting
+   Solo tokens (0 hardcodeado). RULE-UI-001/002.
+   ============================================================ */
+
+@import "../EchoesDesignTokens.uss";
+
+.echo-modal {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: rgba(10, 10, 13, 0.88);
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: var(--duration-slow);
+    transition-timing-function: var(--easing-standard);
+    z-index: var(--z-modal);
+}
+
+/* ENTERING */
+.echo-modal--entering {
+    opacity: 1;
+}
+
+/* VISIBLE */
+.echo-modal--visible {
+    opacity: 1;
+}
+
+/* EXITING */
+.echo-modal--exiting {
+    opacity: 0;
+    transition-duration: var(--duration-fast);
+}
+
+.echo-modal__content {
+    width: 520px;
+    min-height: 180px;
+    background-color: var(--color-void-black);
+    border-width: 1px;
+    border-color: var(--color-memory-amber);
+    padding: var(--space-xl);
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 0 40px rgba(10, 10, 13, 0.9);
+}
+
+.echo-modal__title {
+    font-size: var(--size-option);
+    color: var(--color-memory-amber);
+    margin-bottom: var(--space-md);
+    -unity-text-align: middle-left;
+}
+
+.echo-modal__message {
+    font-size: var(--size-body);
+    color: var(--color-fluorescent-sick);
+    white-space: normal;
+    line-height: 28px;
+    margin-bottom: var(--space-lg);
+    flex-grow: 1;
+}
+
+.echo-modal__actions {
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.echo-modal__actions .echo-button {
+    margin-left: var(--space-md);
+}

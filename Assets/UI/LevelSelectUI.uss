@@ -1,0 +1,74 @@
+/* ============================================================
+   LevelSelectUI — Grid 15 EchoCard responsive.
+   ============================================================ */
+
+@import "EchoesDesignTokens.uss";
+@import "Components/EchoCard.uss";
+@import "Components/EchoButton.uss";
+
+.level-select-root {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: var(--color-void-black);
+    overflow-y: auto;
+    padding: var(--space-2xl) var(--space-3xl);
+    flex-direction: column;
+    align-items: center;
+}
+
+.level-select-title {
+    font-size: var(--size-screen-title);
+    color: var(--color-memory-amber);
+    letter-spacing: 1px;
+    margin-bottom: var(--space-xs);
+}
+
+.level-select-subtitle {
+    font-size: var(--size-body);
+    color: var(--color-fluorescent-sick);
+    margin-bottom: var(--space-2xl);
+}
+
+/* Grid responsive */
+.level-card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+    width: 100%;
+    max-width: 1200px;
+}
+
+@media (max-width: 1280px) {
+    .level-card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .level-card-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* EchoCard integration */
+.level-card-grid .echo-card {
+    width: 100%;
+    min-height: 100px;
+    padding: var(--space-lg);
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.level-card-grid .echo-card__name {
+    font-size: var(--size-option);
+    color: var(--color-memory-amber);
+    margin-bottom: var(--space-sm);
+}
+
+.level-card-grid .echo-card__meta {
+    font-size: var(--size-small);
+    color: var(--color-fluorescent-sick);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}

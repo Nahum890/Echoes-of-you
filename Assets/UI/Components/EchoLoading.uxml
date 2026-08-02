@@ -1,0 +1,13 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+    <!-- EchoLoading — pantalla de carga (loading / complete / error).
+         LoadingController.cs actualiza barra 0-1 o indeterminado.
+         Uso C#:
+           LoadingController.Show("Cargando Capítulo...", progress: 0.4f);
+           LoadingController.Complete(); / LoadingController.Error(); -->
+    <ui:VisualElement class="echo-loading" name="echoLoading">
+        <ui:Label class="echo-loading__title" name="loadingTitle" text="Cargando..." />
+        <ui:VisualElement class="echo-loading__track" name="loadingTrack">
+            <ui:VisualElement class="echo-loading__fill" name="loadingFill" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</UXML>

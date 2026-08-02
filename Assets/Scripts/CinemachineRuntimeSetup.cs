@@ -12,8 +12,14 @@ public class CinemachineRuntimeSetup : MonoBehaviour
         if (cameraRef == null || player == null)
             return;
 
-        ThirdPersonCamera tpc = cameraRef.GetComponent<ThirdPersonCamera>();
-        if (tpc != null && tpc.enabled)
+        // Skip if SimpleFollowCamera exists on main camera (gameplay camera)
+        var simpleCam = cameraRef.GetComponent<ThirdPersonCamera>();
+        if (simpleCam != null)
+            return;
+
+        // Skip if this is a gameplay level (Level_XX)
+        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        if (sceneName.StartsWith("Level_"))
             return;
 
         // Ensure CinemachineBrain on main camera

@@ -1,0 +1,203 @@
+/* ============================================================
+   ECHOES OF YOU 2.0 — DESIGN TOKENS (Canón)
+   Source of Truth: CONSTANTS_REGISTRY.yaml + UI_SPEC.md
+
+   Resolución base: 1920×1080. Spacing base: 8px.
+   Amber canon: #FFBF00 (#E8B262 PROHIBIDO — CONS-MAT-001).
+   Tipografía UI: Inter (SDF, generado vía Font Asset Creator).
+   Tipografía HUD diegético: Courier / Garamond.
+
+   Este archivo define SOLO variables (:root) y, opcionalmente,
+   overrides de accesibilidad aplicables via clases en el root.
+   NUNCA incluir aquí estilos de componentes concretos.
+
+   @import "EchoesDesignTokens.uss" debe aparecer en TODOS los
+   .uss del proyecto (RULE-SOT-001B / RULE-UI-001).
+   ============================================================ */
+
+:root {
+    /* ── COLORES — Paleta Escuela Liminal ───────────────────── */
+    --color-void-black:           #0A0A0D;
+    --color-corridor-navy:        #1C2430;
+    --color-fluorescent-sick:     #C9D4B0;
+    --color-memory-amber:         #FFBF00;  /* CANON — NO #E8B262 */
+    --color-echo-cyan:            #4FC3E8;
+    --color-wrongness-red:        #B23A3A;
+    --color-institutional-teal:   #2B4A4A;
+    --color-faded-mustard:        #5A4A2E;
+    --color-sage-green:           #3A4A38;
+    --color-dusty-rose:           #4A3438;
+
+    /* ── COLORES — Cuaderno (papel/tinta) ───────────────────── */
+    --color-paper:    #F4F2EE;
+    --color-ink:      #2D2A26;
+    --color-pencil:   #3B5A6E;
+    --color-manila:   #C9B893;
+    --color-border:   #8C8270;
+
+    /* ── TIPOGRAFÍA ─────────────────────────────────────────── */
+    /* HUD diegético (ya existentes en Assets/UI/Fonts/) */
+    --font-serif:      'Garamond';
+    --font-serif-bold: 'GaramondBold';
+    --font-mono:       'Courier';
+    --font-mono-bold:  'CourierBold';
+
+    /* UI (Inter SDF — a generar manualmente en Font Asset Creator).
+       Hasta que existan los .asset SDF, referenciamos los .ttf.
+       UITK resuelve fuentes por nombre de fontFamily. */
+    --font-ui:      'Inter';
+    --font-ui-bold: 'InterBold';
+
+    /* ── TAMAÑOS (1920×1080 base) ────────────────────────────── */
+    --size-title:        56px;
+    --size-screen-title: 42px;
+    --size-option:       30px;
+    --size-body:         20px;
+    --size-small:        17px;
+
+    /* ── SPACING (base 8px) ──────────────────────────────────── */
+    --space-xs:  4px;
+    --space-sm:  8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 48px;
+    --space-3xl: 64px;
+
+    /* ── ANIMACIÓN ───────────────────────────────────────────── */
+    --duration-fast:               80ms;
+    --duration-hover-mouse:        150ms;
+    --duration-hover-controller:   200ms;
+    --duration-slow:               250ms;
+    --duration-active:              80ms;
+
+    --easing-standard: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --easing-spring:    cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* ── Z-INDEX ─────────────────────────────────────────────── */
+    --z-base:     0;
+    --z-hover:    10;
+    --z-dropdown: 100;
+    --z-overlay:  200;
+    --z-modal:    500;
+    --z-toast:   1000;
+    --z-loading: 2000;
+
+    /* ── HUD OPACIDAD (RULE-UI-004) ──────────────────────────── */
+    /* HUD gameplay: opacity base 0.0, fade 0.0→0.85 en 0.10s SOLO grabando */
+    --hud-opacity-hidden:  0.0;
+    --hud-opacity-visible: 0.85;
+    --hud-fade-duration:   100ms;
+
+    /* ── HOVER PS2 (4 capas canon) ────────────────────────────── */
+    --hover-translate:        6px;
+    --hover-scale:            1.035;
+    --active-scale:           0.97;
+    --ghost-offset:           4px;
+    --ghost-opacity:          0.12;
+    --ghost-delay:             50ms;
+}
+
+/* ============================================================
+   ESCALADO DE TEXTO — Accesibilidad (aplicar en root)
+   --size-* se interpreta por los componentes como referencia;
+   esta clase escala visualmente todo el árbol UI.
+   (Reemplaza a .scale-large/.scale-xl de EchoesTheme.uss)
+   ============================================================ */
+
+.scale-large {
+    /* ×1.25 — Tamaño Large */
+    --size-title:        70px;
+    --size-screen-title: 52px;
+    --size-option:       37px;
+    --size-body:         25px;
+    --size-small:        21px;
+}
+
+.scale-xl {
+    /* ×1.5 — Tamaño Extra Large */
+    --size-title:        84px;
+    --size-screen-title: 63px;
+    --size-option:       45px;
+    --size-body:         30px;
+    --size-small:        25px;
+}
+
+/* ============================================================
+   HIGH CONTRAST MODE — Accesibilidad (toggle en Settings)
+   Aplicar clase .high-contrast en el root del UIDocument.
+   UITK no soporta @media (prefers-contrast), se activa via C#.
+   ============================================================ */
+
+.high-contrast {
+    --color-ink:            #000000;
+    --color-paper:          #FFFFFF;
+    --color-border:         #000000;
+    --color-memory-amber:   #FFD700;
+    --color-echo-cyan:      #00FFFF;
+    --color-wrongness-red:  #FF0000;
+    --color-void-black:     #000000;
+}
+
+/* ============================================================
+   REDUCE MOTION MODE — Accesibilidad (toggle en Settings)
+   UITK 6 soporta parcialmente @media (prefers-reduced-motion),
+   pero para control determinista lo activamos via clase .reduce-motion
+   en el root del UIDocument. Todos los --duration-* → 0ms.
+   ============================================================ */
+
+/* Override nativo UITK cuando el SO lo pide */
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --duration-fast:             0ms;
+        --duration-hover-mouse:       0ms;
+        --duration-hover-controller:  0ms;
+        --duration-slow:              0ms;
+        --duration-active:            0ms;
+    }
+}
+
+/* Override explícito via Settings (cuando el usuario lo activa
+   independientemente del SO) */
+.reduce-motion {
+    --duration-fast:             0ms;
+    --duration-hover-mouse:       0ms;
+    --duration-hover-controller:  0ms;
+    --duration-slow:              0ms;
+    --duration-active:            0ms;
+}
+
+/* ============================================================
+   CLASES DE TIPOGRAFÍA — a reutilizar por componentes
+   (EchoesPanelSettings.asset). Inter y InterBold están registrados.
+   ============================================================ */
+
+
+/* ============================================================
+   SAFE AREA & RESPONSIVE — Base
+   UITK NO soporta env(safe-area-inset-*). El padding seguro
+   se aplica via C# leyendo Screen.safeArea. Aquí solo dejamos
+   fallback y breakpoints (que sí son soportados).
+   ============================================================ */
+
+.root-fullscreen {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+/* Breakpoints responsivos (sí soportados por UITK 6) */
+@media (max-width: 1280px) {
+    :root {
+        --level-card-grid-cols: 2;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --level-card-grid-cols: 1;
+    }
+}

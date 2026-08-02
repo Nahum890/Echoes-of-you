@@ -1,0 +1,6 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+    <!-- EchoToggle — wrapper sobre ui:Toggle.
+         Uso:
+           <ui:Toggle class="echo-toggle" name="echoToggle" label="Subtítulos" value="false" /> -->
+    <ui:Toggle class="echo-toggle" name="echoToggle" label="Subtítulos" value="false" />
+</UXML>

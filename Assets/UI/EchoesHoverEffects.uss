@@ -1,13 +1,37 @@
 /* ============================================================
-   ECHOES OF YOU — SISTEMA DE HOVER ICÓNICO
-   PS2 / VHS / CRT / Memoria Analógica
+   ECHOES OF YOU — SISTEMA DE HOVER ICÓNICO (FASE 6 CANÓN)
+   PS2 / VHS / CRT / Memoria Analógica — SOLO 4 CAPAS
    
-   Requiere Unity 2022.2+ para soporte completo de:
-   transition, transform, transform-origin, box-shadow
+   CAPAS PERMITIDAS:
+   1. BASE — .nav-item-v2
+   2. HOVER/FOCUS — .nav-item-v2:hover, .nav-item-v2:focus
+   3. ACTIVE — .nav-item-v2:active
+   4. GHOST (1 SOLO) — .nav-item-ghost
+   
+   FOCUS PIP (controller) — .nav-item-focus-pip--visible
+   
+   ELIMINADOS COMPLETAMENTE:
+   - .nav-item-chroma-r / .nav-item-chroma-b (aberración cromática)
+   - .nav-item-noise (capa de ruido)
+   - .nav-item-scanline (scanline)
+   - .nav-item-echo (eco visual)
+   - .nav-item-confirm-flash (flash confirmación)
+   - .nav-item-ghost-a / .nav-item-ghost-b (2 ghosts → 1 solo)
+   - .panel-tint-* (tints panel derecho)
+   - .side-nav-gradient-* (gradientes)
+   - .ui-particle / .ui-particle--* (partículas)
+   - .right-panel-crt-blink (CRT blink)
+   
+   TIMING VARIABLES (desde EchoesDesignTokens.uss):
+   --duration-hover-mouse: 150ms
+   --duration-hover-controller: 200ms
+   --duration-active: 80ms
    ============================================================ */
 
+@import "EchoesDesignTokens.uss";
+
 /* ============================================================
-   WRAPPER — Contenedor relativo para posicionar ghost layers
+   WRAPPER — Contenedor relativo para posicionar ghost layer
    ============================================================ */
 
 .nav-item-wrapper {
@@ -17,7 +41,7 @@
 }
 
 /* ============================================================
-   ESTADO BASE DEL BOTÓN (IDLE)
+   1. ESTADO BASE — .nav-item-v2
    ============================================================ */
 
 .nav-item-v2 {
@@ -47,7 +71,7 @@
 
     /* Transiciones base */
     transition-property: color, translate, scale, border-left-width, border-left-color, background-color, opacity;
-    transition-duration: 200ms, 200ms, 200ms, 200ms, 200ms, 200ms, 200ms;
+    transition-duration: var(--duration-hover-mouse), var(--duration-hover-mouse), var(--duration-hover-mouse), var(--duration-hover-mouse), var(--duration-hover-mouse), var(--duration-hover-mouse), var(--duration-hover-mouse);
     transition-timing-function:
         ease-out,
         cubic-bezier(0.25, 0.46, 0.45, 0.94),
@@ -60,10 +84,12 @@
 }
 
 /* ============================================================
-   ESTADO HOVER
+   2. ESTADO HOVER/FOCUS
+   Mouse: 150ms | Controller: 200ms (variables CSS)
    ============================================================ */
 
-.nav-item-v2:hover {
+.nav-item-v2:hover,
+.nav-item-v2:focus {
     /* Color del texto — transición inmediata */
     color: rgba(59, 90, 110, 1.0);
 
@@ -81,8 +107,29 @@
     background-color: rgba(59, 90, 110, 0.04);
 }
 
+/* Focus pip (controller) — indicador ▸ a la izquierda */
+.nav-item-focus-pip {
+    position: absolute;
+    left: 4px;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    -unity-text-align: middle-center;
+    font-size: 10px;
+    color: rgba(255, 191, 0, 0.0);
+    pointer-events: none;
+    transition-property: color, translate;
+    transition-duration: var(--duration-hover-controller), var(--duration-hover-controller);
+    transition-timing-function: ease-out, ease-out;
+}
+
+.nav-item-focus-pip--visible {
+    color: rgba(255, 191, 0, 0.85);
+}
+
 /* ============================================================
-   ESTADO ACTIVE (PRESSED)
+   3. ESTADO ACTIVE (PRESSED)
+   Duración 80ms
    ============================================================ */
 
 .nav-item-v2:active {
@@ -92,7 +139,7 @@
     background-color: rgba(255, 191, 0, 0.08);
     border-left-color: rgba(255, 191, 0, 1.0);
     border-left-width: 3px;
-    transition-duration: 80ms, 80ms, 80ms, 80ms, 80ms, 80ms, 80ms;
+    transition-duration: var(--duration-active), var(--duration-active), var(--duration-active), var(--duration-active), var(--duration-active), var(--duration-active), var(--duration-active);
     transition-timing-function:
         ease-in,
         cubic-bezier(0.68, -0.55, 0.27, 1.55),
@@ -104,7 +151,7 @@
 }
 
 /* ============================================================
-   ESTADO ACTIVO / SELECCIONADO (nav-item--active)
+   4. ESTADO ACTIVO / SELECCIONADO (nav-item--active)
    ============================================================ */
 
 .nav-item-v2.nav-item--active {
@@ -117,16 +164,16 @@
 }
 
 /* ============================================================
-   GHOST LAYER A — eco primario, offset (-4px, -2px)
+   GHOST LAYER (1 SOLO) — offset 4px, opacity 0.12, delay 50ms
    Representa la señal que "llegó antes" — una memoria anterior
    ============================================================ */
 
-.nav-item-ghost-a {
+.nav-item-ghost {
     position: absolute;
     left: -4px;
-    top: -2px;
+    top: 0px;
     right: -4px;
-    bottom: -2px;
+    bottom: 0px;
 
     /* Misma tipografía que el botón pero transparente en idle */
     -unity-text-align: middle-left;
@@ -144,378 +191,20 @@
     transition-property: color, opacity;
     transition-duration: 180ms, 180ms;
     transition-timing-function: ease-out, ease-out;
-    transition-delay: 15ms, 15ms;
+    transition-delay: 50ms, 50ms;
 }
 
-/* Ghost A activado por clase CSS aplicada via C# */
-.nav-item-ghost-a--visible {
-    color: rgba(59, 90, 110, 0.18);
-}
-
-/* ============================================================
-   GHOST LAYER B — eco secundario, offset (-8px, -4px)
-   Más tenue, más alejado. El recuerdo del recuerdo.
-   ============================================================ */
-
-.nav-item-ghost-b {
-    position: absolute;
-    left: -8px;
-    top: -4px;
-    right: -8px;
-    bottom: -4px;
-
-    -unity-text-align: middle-left;
-    font-size: 20px;
-    letter-spacing: 1.5px;
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
-    -unity-text-transform: uppercase;
-    color: rgba(59, 90, 110, 0.0);
-    padding: 16px 20px 16px 30px;
-
-    pointer-events: none;
-
-    transition-property: color, opacity;
-    transition-duration: 180ms, 180ms;
-    transition-timing-function: ease-out, ease-out;
-    transition-delay: 30ms, 30ms;
-}
-
-.nav-item-ghost-b--visible {
-    color: rgba(59, 90, 110, 0.09);
+/* Ghost activado por clase CSS aplicada via C# */
+.nav-item-ghost--visible {
+    color: rgba(59, 90, 110, 0.12);
 }
 
 /* ============================================================
-   ABERRACIÓN CROMÁTICA — Canal R (rojo-magenta)
+   TIMING VARIABLES (definidas en EchoesDesignTokens.uss, replicadas aquí para reference)
    ============================================================ */
 
-.nav-item-chroma-r {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-
-    -unity-text-align: middle-left;
-    font-size: 20px;
-    letter-spacing: 1.5px;
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
-    -unity-text-transform: uppercase;
-
-    /* Canal rojo desplazado a la izquierda */
-    color: rgba(255, 68, 102, 0.0);
-    padding: 16px 22px 16px 20px;
-    translate: -2px 0px;
-
-    pointer-events: none;
-
-    transition-property: color, translate;
-    transition-duration: 200ms, 200ms;
-    transition-timing-function: ease-out, ease-out;
-    transition-delay: 10ms, 10ms;
-}
-
-.nav-item-chroma-r--visible {
-    color: rgba(255, 68, 102, 0.45);
-    translate: -2px 0px;
-}
-
-.nav-item-chroma-r--pressed {
-    color: rgba(255, 68, 102, 0.65);
-    translate: -4px 0.5px;
-}
-
-/* ============================================================
-   ABERRACIÓN CROMÁTICA — Canal B (cyan-azul)
-   ============================================================ */
-
-.nav-item-chroma-b {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-
-    -unity-text-align: middle-left;
-    font-size: 20px;
-    letter-spacing: 1.5px;
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
-    -unity-text-transform: uppercase;
-
-    /* Canal azul desplazado a la derecha */
-    color: rgba(68, 102, 255, 0.0);
-    padding: 16px 18px 16px 24px;
-    translate: 2px 0px;
-
-    pointer-events: none;
-
-    transition-property: color, translate;
-    transition-duration: 200ms, 200ms;
-    transition-timing-function: ease-out, ease-out;
-    transition-delay: 10ms, 10ms;
-}
-
-.nav-item-chroma-b--visible {
-    color: rgba(68, 102, 255, 0.45);
-    translate: 2px 0px;
-}
-
-.nav-item-chroma-b--pressed {
-    color: rgba(68, 102, 255, 0.65);
-    translate: 4px -0.5px;
-}
-
-/* ============================================================
-   OVERLAY DE RUIDO — textura granular analógica
-   La opacidad se anima desde C# para un pulso orgánico
-   ============================================================ */
-
-.nav-item-noise {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-
-    /* La textura de ruido se asigna vía C# o directamente aquí:
-       background-image: url('project://database/Assets/UI/Images/noise_tile.png');
-       background-size: 64px 64px;
-       background-repeat: repeat; — No soportado en USS, usar shader */
-    opacity: 0.0;
-    background-color: rgba(255, 255, 255, 0.05);
-
-    transition-property: opacity;
-    transition-duration: 200ms;
-    transition-timing-function: ease-in;
-    transition-delay: 50ms;
-}
-
-.nav-item-noise--visible {
-    opacity: 1.0; /* La opacidad real (0.04–0.08) se controla desde C# */
-}
-
-/* ============================================================
-   ECO VISUAL — copia del texto que se dispara al hover enter
-   Creado en C# como VisualElement temporal
-   ============================================================ */
-
-.nav-item-echo {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-
-    -unity-text-align: middle-left;
-    font-size: 20px;
-    letter-spacing: 1.5px;
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
-    -unity-text-transform: uppercase;
-    color: rgba(59, 90, 110, 0.4);
-    padding: 16px 20px 16px 22px;
-
-    pointer-events: none;
-    translate: 0px 0px;
-    opacity: 0.4;
-
-    transition-property: translate, opacity;
-    transition-duration: 80ms, 80ms;
-    transition-timing-function: ease-out, ease-out;
-}
-
-.nav-item-echo--fired {
-    translate: 12px 0px;
-    opacity: 0.0;
-}
-
-/* ============================================================
-   INDICADOR DE FOCO (CONTROLLER NAVIGATION)
-   El pip ▸ a la izquierda del botón
-   ============================================================ */
-
-.nav-item-focus-pip {
-    position: absolute;
-    left: 4px;
-    top: 0;
-    bottom: 0;
-    width: 8px;
-
-    -unity-text-align: middle-center;
-    font-size: 10px;
-    color: rgba(255, 191, 0, 0.0);
-
-    pointer-events: none;
-
-    transition-property: color, translate;
-    transition-duration: 200ms, 200ms;
-    transition-timing-function: ease-out, ease-out;
-}
-
-.nav-item-focus-pip--visible {
-    color: rgba(255, 191, 0, 0.85);
-}
-
-/* ============================================================
-   ESTADO FOCUS (KEYBOARD / CONTROLLER)
-   Idéntico a hover pero con bordes ámbar en lugar de sage
-   ============================================================ */
-
-.nav-item-v2:focus {
-    color: rgba(59, 90, 110, 1.0);
-    translate: 6px 0px;
-    scale: 1.035 1.035;
-    border-left-width: 2px;
-    border-left-color: rgba(255, 191, 0, 0.9);
-    background-color: rgba(255, 191, 0, 0.04);
-
-    /* Transiciones más lentas para controller */
-    transition-duration: 250ms, 250ms, 250ms, 250ms, 250ms, 250ms, 250ms;
-}
-
-/* ============================================================
-   HOVER DEL PANEL DERECHO — CRT blink al cambiar ambience
-   ============================================================ */
-
-.right-panel-crt-blink {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-    background-color: rgba(10, 10, 13, 0.0);
-
-    transition-property: background-color;
-    transition-duration: 50ms;
-    transition-timing-function: ease-out;
-}
-
-.right-panel-crt-blink--flash {
-    background-color: rgba(10, 10, 13, 0.15);
-}
-
-/* ============================================================
-   TEMPERATURA DE COLOR POR BOTÓN — tint del panel derecho
-   ============================================================ */
-
-.panel-tint-warm {
-    background-color: rgba(255, 191, 0, 0.04);
-    transition-property: background-color;
-    transition-duration: 300ms;
-    transition-timing-function: ease-in-out;
-}
-
-.panel-tint-neutral {
-    background-color: rgba(59, 90, 110, 0.03);
-    transition-property: background-color;
-    transition-duration: 300ms;
-    transition-timing-function: ease-in-out;
-}
-
-.panel-tint-cool {
-    background-color: rgba(68, 102, 255, 0.025);
-    transition-property: background-color;
-    transition-duration: 300ms;
-    transition-timing-function: ease-in-out;
-}
-
-.panel-tint-cold {
-    background-color: rgba(140, 150, 165, 0.02);
-    transition-property: background-color;
-    transition-duration: 300ms;
-    transition-timing-function: ease-in-out;
-}
-
-/* ============================================================
-   SCAN LINE — distorsión analógica de barrido
-   Un elemento fino que recorre el botón verticalmente
-   ============================================================ */
-
-.nav-item-scanline {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background-color: rgba(59, 90, 110, 0.15);
-    pointer-events: none;
-    opacity: 0.0;
-    /* La posición top y opacity se animan desde C# */
-}
-
-/* ============================================================
-   PARTÍCULA UI — elemento mínimo para el sistema de partículas
-   Instanciado dinámicamente desde MenuHoverSystem.cs
-   ============================================================ */
-
-.ui-particle {
-    position: absolute;
-    width: 2px;
-    height: 2px;
-    border-radius: 1px;
-    pointer-events: none;
-    /* color y opacity se asignan vía C# en cada instancia */
-}
-
-.ui-particle--amber {
-    background-color: rgba(255, 191, 0, 0.8);
-}
-
-.ui-particle--sage {
-    background-color: rgba(59, 90, 110, 0.8);
-}
-
-/* ============================================================
-   GRADIENTE DINÁMICO DEL PANEL LATERAL
-   Cambia sutilmente según el botón activo
-   ============================================================ */
-
-.side-nav-gradient-overlay {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    height: 120px;
-    pointer-events: none;
-
-    transition-property: background-color;
-    transition-duration: 300ms;
-    transition-timing-function: ease-in-out;
-}
-
-.side-nav-gradient-newgame {
-    background-color: rgba(255, 191, 0, 0.05);
-}
-
-.side-nav-gradient-levels {
-    background-color: rgba(59, 90, 110, 0.04);
-}
-
-.side-nav-gradient-settings {
-    background-color: rgba(68, 102, 255, 0.03);
-}
-
-.side-nav-gradient-exit {
-    background-color: rgba(28, 36, 48, 0.08);
-}
-
-/* ============================================================
-   FLASH DE CONFIRMACIÓN — al hacer click en un botón
-   ============================================================ */
-
-.nav-item-confirm-flash {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-    background-color: rgba(255, 191, 0, 0.0);
-
-    transition-property: background-color;
-    transition-duration: 60ms;
-    transition-timing-function: ease-in;
-}
-
-.nav-item-confirm-flash--on {
-    background-color: rgba(255, 191, 0, 0.28);
+:root {
+    --duration-hover-mouse: 150ms;
+    --duration-hover-controller: 200ms;
+    --duration-active: 80ms;
 }

@@ -1,6 +1,11 @@
 # Docs/ExecutableSpecs/narrative/dialogue_tree_schema.yaml
-# Dialogue Tree Schema - Narrative Choice & Voice System
+# Narrative Choice & Introspection Voice System
 # SPEC-EXEC-DIALOGUE | Authority: Level 3 (Runtime Data Contract)
+# v2.0 (2026-08-02) — Reescritura narrativa dual. Añadido introspection_node
+#   (voz interna 1ª persona de Aiden, ≤42 chars, tono variable por etapa,
+#   regex de persona/tiempo verbal). choice_node refactorizado a
+#   decision_node sobre el perdón vs reincidencia.
+# v1.0 (2026-07-25) — Initial spec, diálogo externo tradicional.
 
 dialogue_tree_schema:
   interpolation_syntax: "{variable}"
@@ -12,6 +17,14 @@ dialogue_tree_schema:
     timeout_action: "default_first"
     max_choices_visible: 4
     choice_text_max_chars: 64
+    note_v2: |
+      choice_node ahora representa DECISIONES PSICOLÓGICAS post-nivel sobre cómo
+      Aiden procesa suerror con Lyra. No rutas espaciales. Cada choice settea
+      flags que alimentan VN_EndingResolver para decidir el ending
+      (Aislamiento / Ruminación / Negociación / Desesperación / Aceptación).
+      Las etiquetas cyan/amber no son buenas/malas — cyan sugiere soltar/aceptar
+      y amber sugiere mantener/retener, pero la lectura correcta es contextual
+      y la resolución final es por patrón acumulado, no por elección individual.
 
   voice_fragment:
     max_duration_s: 8.0
@@ -19,6 +32,11 @@ dialogue_tree_schema:
     channels: 1
     compression: "Vorbis"
     quality: 0.7
+    note_v2: |
+      voice_fragment sigue reservado para audio diegético del ambiente
+      (pasos Eco, zumbido fluorescente). NO para voz hablada de Aiden —
+      Aiden no habla en el juego; solo piensa visiblemente.
+      La voz interna ES el texto del pop-up, no un audio voiceover.
 
   dialogue_node:
     speaker_id: "string"
@@ -28,11 +46,48 @@ dialogue_tree_schema:
     voice_clip_ref: "string|guid"
     auto_advance: false
     advance_delay_s: 0.0
+    note_v2: |
+      dialogue_node DEPRECATED para gameplay. speaker_id solo puede ser "aiden"
+      o "" (ninguno). En gameplay, todo texto debe ser introspection_node
+      (voz interna 1ª persona), no dialogue_node. dialogue_node se conserva
+      solo para menús y epílogos, donde se permite un narrador soft.
+
+  introspection_node:
+    # ─── NUEVO v2.0: Voz interna de Aiden (pop-ups) ───
+    prompt_key: "string"  # ej: "interaction.locker_03.text" — requiere el YAML
+    tone_by_stage:
+      conviction: # N01-N04
+        sample: "Yo no fui la que se fue."
+        forbidden_words: ["tenía_razón", "ella_empezó", "no_me_culpa"]
+        persona: "defensiva, corta, deflexiva"
+      guilt: # N05-N08
+        sample: "Pude haber callado menos."
+        forbidden_words: ["merecía", "castigo", "eterno"]
+        persona: "pesada, fragmentada, autoacusatoria"
+      realization: # N09-N12
+        sample: "Esto también lo armé yo."
+        forbidden_words: ["culpable_absoluto", "inocente"]
+        persona: "tentativa, en búsqueda, inciertas"
+      acceptance: # N13-N15
+        sample: "Puedo soltar esto sin romperlo."
+        forbidden_words: ["olvidar", "borrar", "perdonar_a_ellos", "perdonarme"]
+        persona: "calma, presente, hacia adelante"
+    conditions:
+      - "level_index REQUIRED"
+      - "interaction_object_id REQUIRED"
+      - "comprehension_threshold_for_stage REQUIRED (ver Catch-22 en VALIDATION)"
+    max_chars: 42
+    # Validación estricta de persona y tiempo verbal
+    assert_regex_match: "^(Yo|Quisiera|Esto|Puedo|Aún|Tanto|Pude|Tal vez|Nunca|Siempre|A veces|Me)"
+    forbidden_tense: "pasado simple evocativo (era, fui, tuve) — verbo permitido en condicional o presente"
+    auto_dismiss_s: 2.5
+    auto_dismiss_tolerance_s: 1.0
+    render_channel: "HUD::Chalkboard"
 
   narrative_variables:
     - name: "player_name"
       type: "string"
-      default: "Player"
+      default: "Aiden"  # default fijo: Aiden es chica (canon)
     - name: "echo_count"
       type: "int"
       default: 0
@@ -42,9 +97,46 @@ dialogue_tree_schema:
     - name: "memory_fragments"
       type: "int"
       default: 0
+    - name: "comprehension_score"
+      type: "int"
+      default: 0
+      note: "Acumulado via flags comprehension_*; controla el stage clamp (Catch-22)"
+    - name: "lyra_artifact_seen_count"
+      type: "int"
+      default: 0
+      note: "Veces que el jugador inspeccionó un objeto amber; pondera comprehension_score"
 
   validation:
     assert_interpolation_syntax: true
     assert_wrap_width_positive: true
     assert_voice_duration_max: true
     assert_choice_limit: true
+    # v2.0
+    assert_introspection_1st_person: |
+      Todo introspection_node.text_key resuelto debe empezarYo con 1a persona
+      (regex: ^(Yo|Quisiera|Esto|Puedo|Aún|Tanto|Pude|Tal vez|Nunca|Siempre|A veces|Me))
+    assert_introspection_char_limit: "text resuelto ≤ 42 chars (truncate_ellipsis si excede)"
+    assert_introspection_no_forbidden_relational_terms: |
+      0 ocurrencias en interaction.* de: ["amiga", "novia", "pareja", "relación",
+      "amistad", "queríamos", "nos amamos"] — ANTI-BIB-004.
+    assert_introspection_tone_matches_stage: |
+      El tone_by_stage del introspection_node debe coincidir con la etapa efectiva
+      de Aiden para ese nivel (considerando Catch-22 clamp). Discrepancia = FAIL-EMO-03.
+    assert_introspection_no_auto_justification: |
+      0 textos que concluyan: ["yo tenía razón", "yo tenía la culpa",
+      "ella tenía la culpa", "tenía que ser así"] — ANTI-BIB-005.
+
+change_history:
+  - version: "1.0"
+    date: "2026-07-25"
+    note: "Initial dialogue tree schema, voice_fragment, choice_node externo."
+  - version: "2.0"
+    date: "2026-08-02"
+    note: |
+      Reescritura narrativa dual: añadido introspection_node (voz interna
+      1ª persona, ≤42 chars, tone_by_stage con 4 etapas, regex de persona,
+      Catch-22 clamp). choice_node refactorizado a decisiones psicológicas
+      (perdón vs reincidencia). player_name canon = "Aiden". Nuevas variables:
+      comprehension_score, lyra_artifact_seen_count. Nuevas aserciones:
+      introspection_1st_person, no_forbidden_relational_terms (ANTI-BIB-004),
+      tone_matches_stage, no_auto_justification (ANTI-BIB-005).

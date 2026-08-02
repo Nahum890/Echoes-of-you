@@ -1,0 +1,56 @@
+/* ============================================================
+   EchoPanel — contenedor colapsable animado
+   Estados: default / collapsed (animado)
+   Solo tokens. RULE-UI-001/002.
+   ============================================================ */
+
+@import "../EchoesDesignTokens.uss";
+
+.echo-panel {
+    overflow: hidden;
+    opacity: 1;
+    padding: var(--space-md) var(--space-lg);
+    border-width: 1px;
+    border-color: var(--color-institutional-teal);
+    background-color: transparent;
+    min-height: 0;
+    transition-property: opacity, border-color, max-height;
+    transition-duration: var(--duration-slow);
+    transition-timing-function: var(--easing-standard);
+    margin: var(--space-xs) 0;
+}
+
+/* HOVER / FOCUS en el panel mismo (opcional cuando tiene contenido) */
+.echo-panel:hover {
+    border-color: var(--color-memory-amber);
+}
+
+.echo-panel:focus {
+    border-color: var(--color-memory-amber);
+    border-width: 2px;
+    transition-duration: var(--duration-hover-controller);
+}
+
+/* ── COLLAPSED ─────────────────────────────────────────────── */
+
+.echo-panel--collapsed {
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-width: 0;
+    overflow: hidden;
+    transition-duration: var(--duration-fast);
+}
+
+/* Header (opcional, añadido por UXML embed) */
+.echo-panel__header {
+    font-size: var(--size-body);
+    color: var(--color-fluorescent-sick);
+    padding: var(--space-sm) 0;
+    -unity-text-align: middle-left;
+}
+
+.echo-panel__header:hover {
+    color: var(--color-memory-amber);
+}

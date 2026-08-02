@@ -1,0 +1,61 @@
+@import url("EchoesDesignTokens.uss");
+
+.gate-overlay {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: rgba(10, 10, 13, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition-duration: 300ms;
+}
+.gate-overlay.hidden { display: none; }
+
+.gate-frame {
+    background-color: var(--color-corridor-navy);
+    border-left: 3px solid var(--color-memory-amber);
+    padding: var(--space-3xl);
+    min-width: 540px;
+    max-width: 920px;
+}
+
+.gate-prompt {
+    font-definition: resource("Fonts/Inter-Regular SDF");
+    font-size: var(--size-option);
+    color: var(--color-paper);
+    margin-bottom: var(--space-xl);
+    white-space: normal;
+    text-align: center;
+}
+
+.gate-buttons-row {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: var(--space-lg);
+}
+
+.gate-button {
+    flex: 1;
+    padding: var(--space-lg) var(--space-xl);
+    font-size: var(--size-body);
+    transition-duration: 200ms;
+}
+.gate-button--cyan {
+    background-color: var(--color-echo-cyan);
+    color: var(--color-void-black);
+    margin-right: var(--space-md);
+}
+.gate-button--cyan:hover { scale: 1.03; }
+.gate-button--amber {
+    background-color: var(--color-memory-amber);
+    color: var(--color-void-black);
+    margin-left: var(--space-md);
+}
+.gate-button--amber:hover { scale: 1.03; }
+
+.gate-hint {
+    font-size: var(--size-small);
+    color: var(--color-fluorescent-sick);
+    text-align: center;
+    opacity: 0.6;
+}

@@ -1,0 +1,452 @@
+# Docs/ExecutableSpecs/narrative/VN_ENDINGS_REDEFINED.yaml
+# Visual Novel Endings — Psychological Resolution Schema
+# SPEC-EXEC-VN-END | Authority: Level 3 (Runtime Data Contract)
+# v2.0 (2026-08-02) — Reescritura narrativa dual. Endings renombrados a
+#   etapas psicológicas del procesamiento de Aiden sobre el error con Lyra.
+#   32 combinaciones canónicas de flags resuelven exactamente a 1 de 5 endings.
+#   Ver NARRATIVA_INTERNA.md Sección 7 para definiciones cualitativas.
+
+schema_version: "2.0"
+catalog_type: vn_endings_redefined
+
+# ───────────────────────────────────────────────────────────
+# COMPREHENSION TIERS — alimentan el Catch-22 (RULE-PHI-005)
+# ───────────────────────────────────────────────────────────
+comprehension_tiers:
+  low:
+    min_score: 0
+    max_score: 3
+    stage_clamp: "conviction"
+    narrative_meaning: "Aiden sigue creyendo que tiene razón, incluso en niveles avanzados"
+  low_mid:
+    min_score: 4
+    max_score: 7
+    stage_clamp: "guilt"
+    narrative_meaning: "Aiden siente el peso pero no lo procesa todavía"
+  mid:
+    min_score: 8
+    max_score: 11
+    stage_clamp: "realization"
+    narrative_meaning: "Aiden comprende parcialmente; puede soltar algunos objetos"
+  high:
+    min_score: 12
+    max_score: 20
+    stage_clamp: "acceptance"
+    narrative_meaning: "Aiden puede sostener el recuerdo sin apretarlo"
+
+# Cada comprehension inyecta +1 (flags "abrir") o +0 (flags "mantener").
+# Score máximo posible: 20 (todos los flags "abrir" activos)
+stage_threshold_by_level:
+  N01: 0    # siempre conviction (etapa 1 by level)
+  N02: 0
+  N03: 0
+  N04: 0
+  N05: 2    # necesita comprehension_score >= 2 para sonar "guilt" real
+  N06: 3
+  N07: 4
+  N08: 5
+  N09: 6    # necesita >= 6 para sonar "realization" real
+  N10: 7
+  N11: 8
+  N12: 9
+  N13: 10   # necesita >= 10 para sonar "acceptance" en N13
+  N14: 11
+  N15: 12
+# Si comprehension_score < threshold_by_level[N] → tono clampea a etapa anterior
+# Ver DESIGN_PHILOSOPHY.md Algorithm 8.2 para el mermaid del resolver.
+
+# ───────────────────────────────────────────────────────────
+# FLAG CATALOG — los 20 nodes settean estos flags
+# ───────────────────────────────────────────────────────────
+flag_catalog:
+  # Flags que INYECTAN comprehension (+1 score)
+  openness_flags:
+    - allow_to_see
+    - pattern_seen
+    - allow_other_version
+    - trust_echo
+    - admit_silence
+    - touched_locker
+    - memory_is_real
+    - single_take
+    - release_control
+    - touch_lyra_object
+    - self_coordination
+    - carry_two
+    - let_go_pain
+    - imperfect_take
+    - follow_echo
+    - break_pattern_n15
+
+  # Flags que NO inyectan comprehension (mantienen el patrón)
+  pattern_holding_flags:
+    - avoid_looking
+    - pattern_denied
+    - hold_my_version
+    - doubt_echo
+    - justify_silence
+    - refused_locker
+    - memory_defensive
+    - fix_future
+    - grab_second_take
+    - pick_one_self
+    - control_persist
+    - observe_lyra_object_only
+    - solo_climb
+    - demand_truth
+    - salvage_pain
+    - perfect_take
+    - control_echo
+    - repeat_pattern_n15
+
+  # Flag SINGULAR de salida (seteado solo en Aceptación)
+  exit_flag:
+    - salir_del_colegio
+
+# ───────────────────────────────────────────────────────────
+# ENDING DEFINITIONS
+# ───────────────────────────────────────────────────────────
+endings:
+
+  Aislamiento:
+    ending_id: "Aislamiento"
+    legacy_id: "Void"
+    psychological_arm: "negacion_persistente"
+    comprehension_required: low
+    flag_pattern:
+      any_of:
+        - avoid_looking            # ch1: "pasar de largo" persistentemente
+        - refused_locker            # ch5: no tocar la taquilla de Lyra
+        - repeat_pattern_n15        # ch15: repetir el patrón
+      requirements:
+        openness_flags_count: "<= 4"
+        salir_del_colegio: false
+    scene: "Assets/Scenes/Epilogue_Aislamiento.unity"
+    narration_key: "vn.epilogue.aislamiento"
+    voice_final: "Yo no necesito estar aquí."
+    text_invariant:
+      salir_del_colegio: false
+      aiden_position_at_end: "corredor_de_N01"
+    dual_thesis_signal: "Aiden no acepta el pasado. También no mejora. El epílogo intencionalmente no concluye."
+
+  Ruminacion:
+    ending_id: "Ruminación"
+    legacy_id: "Obsession"
+    psychological_arm: "culpa_persistente_auto_sabotaje"
+    comprehension_required: low_mid
+    flag_pattern:
+      any_of:
+        - self_blame_loop: true            # admintió culpa pero la repite
+        - grab_second_take
+        - perfectionist_take
+        - salvage_pain
+      requirements:
+        openness_flags_count: "[5, 7]"
+        has_guilt_flags: true
+        salir_del_colegio: false
+    scene: "Assets/Scenes/Epilogue_Ruminacion.unity"
+    narration_key: "vn.epilogue.ruminacion"
+    voice_final: "Otra vez. Esta vez saldrá bien."
+    text_invariant:
+      salir_del_colegio: false
+      aiden_position_at_end: "aula_de_Lyra"
+    dual_thesis_signal: "Aiden acepta que el pasado fue — pero cree que es reescribible en rumiación. No mejora; se enrosca."
+
+  Negociacion:
+    ending_id: "Negociación"
+    legacy_id: "Release"
+    psychological_arm: "realizacion_parcial_evasiva"
+    comprehension_required: mid
+    flag_pattern:
+      any_of:
+        - allow_other_version        # vio parcialmente
+        - construct_new_memory
+        - carry_two
+      requirements:
+        openness_flags_count: "[8, 11]"
+        has_openness_but_no_let_go: true
+        # CRITICO: vtocó objetos pero no soltó el que más dolió
+        let_go_pain: false
+        salir_del_colegio: false  # parcial — salir pero regresar a la puerta
+    scene: "Assets/Scenes/Epilogue_Negociacion.unity"
+    narration_key: "vn.epilogue.negociacion"
+    voice_final: "Casi. Mañana termino de soltarlo."
+    text_invariant:
+      salir_del_colegio: "partial"   # sale pero regresa a la puerta
+      aiden_position_at_end: "puerta_del_colegio"
+    dual_thesis_signal: "Aiden comprende (Tesis A parcial) pero negocia (Tesis B incompleta). Psicológicamente realista: la aceptación a medias es frecuente."
+
+  Desesperacion:
+    ending_id: "Desesperación"
+    legacy_id: "Resonance"
+    psychological_arm: "comprension_sin_suelo_pavor_existencial"
+    comprehension_required: high
+    flag_pattern:
+      requires:
+        comprehension_score: ">= 12"
+        # Aiden vio TODO el panorama
+        has_openness_flags_count: ">= 12"
+      requires_missing:
+        - let_go_pain          # CRITICO: vio pero no soltó el dolor
+        - break_pattern_n15    # CRITICO: no rompió el patrón final
+    scene: "Assets/Scenes/Epilogue_Desperacion.unity"
+    narration_key: "vn.epilogue.desesperacion"
+    voice_final: "Esto dolerá por siempre y por eso la amé."
+    text_invariant:
+      salir_del_colegio: false
+      aiden_position_at_end: "vestíbulo_indecisa"
+    dual_thesis_signal: "Aiden ACEPTA completamente (Tesis A) — y por eso mismo no puede mejorar (Tesis B bloqueada por pavor). El dolor como evidencia de que importó."
+
+  Aceptacion:
+    ending_id: "Aceptación"
+    legacy_id: "Integration"
+    psychological_arm: "aceptacion_y_mejora_activa"
+    comprehension_required: high
+    flag_pattern:
+      requires_all:
+        - comprehension_score: ">= 14"
+        - allow_other_version
+        - touch_lyra_object
+        - let_go_pain                          # soltó el que más dolía
+        - imperfect_take                        # aceptó veracidad de lo imperfecto
+        - follow_echo                           # dejó de controlar el Eco
+        - break_pattern_n15                     # rompió el patrón final
+        - release_control
+      requires_any:
+        - admit_silence
+        - carry_two
+    scene: "Assets/Scenes/Epilogue_Aceptacion.unity"
+    narration_key: "vn.epilogue.aceptacion"
+    voice_final: "Puedo llevar esto conmigo sin que me defina."
+    text_invariant:
+      salir_del_colegio: true
+      aiden_position_at_end: "fuera_del_colegio"
+    dual_thesis_signal: |
+      Aiden ACEPTA (Tesis A — puede cargar conello sin negarlo) Y
+      MEJORA (Tesis B — puede moverse, no está condenada a repetir).
+      Aún así, el epílogo NO explicita "fue bueno" ni "perdoné":
+      ANTI-BIB-005 mantiene la dualidad abierta: el dolor sigue ahí,
+      solo que ya no la define.
+
+# ───────────────────────────────────────────────────────────
+# RESOLUTION ALGORITHM (VN_EndingResolver.cs spec)
+# ───────────────────────────────────────────────────────────
+resolution_algorithm:
+  steps:
+    - step: 1
+      name: "Compute comprehension_score"
+      formula: "sum(openness_flags_set) * 1.0 + (lyra_artifacts_seen * 0.5)"
+    - step: 2
+      name: "Check Aceptación hard requirements"
+      if:
+        - "comprehension_score >= 14"
+        - "let_go_pain == true"
+        - "break_pattern_n15 == true"
+        - "touch_lyra_object == true"
+        - "follow_echo == true"
+      then:
+        return: "Aceptación"
+    - step: 3
+      name: "Check Desesperación (high comprehension but failed to let go)"
+      if:
+        - "comprehension_score >= 12"
+        - "let_go_pain == false OR break_pattern_n15 == false"
+      then:
+        return: "Desesperación"
+    - step: 4
+      name: "Check Negociación (mid comprehension)"
+      if:
+        - "comprehension_score >= 8"
+        - "comprehension_score < 14"
+      then:
+        return: "Negociación"
+    - step: 5
+      name: "Check Ruminación (low-mid comprehension but engaged with guilt)"
+      if:
+        - "comprehension_score >= 5"
+        - "comprehension_score < 8"
+      then:
+        return: "Ruminación"
+    - step: 6
+      name: "Default Aislamiento (low engagement)"
+      else:
+        return: "Aislamiento"
+  note: |
+    El orden de steps es prioridad estricta. El primero que matchea, gana.
+    Es imposible empatar porque cada tier de comprehension tiene rango
+    disjunto. Los 32 paths canónicos se mapean deterministamente.
+
+# ───────────────────────────────────────────────────────────
+# 32 CANONICAL TEST PATHS (VN_EndingResolverTests.cs)
+# ───────────────────────────────────────────────────────────
+canonical_test_paths:
+  # Aislamiento paths (8): comprehension 0-4
+  - id: "PATH-001"
+    flags: []
+    expected_ending: "Aislamiento"
+  - id: "PATH-002"
+    flags: [avoid_looking]
+    expected_ending: "Aislamiento"
+  - id: "PATH-003"
+    flags: [avoid_looking, pattern_denied]
+    expected_ending: "Aislamiento"
+  - id: "PATH-004"
+    flags: [pattern_denied, refused_locker]
+    expected_ending: "Aislamiento"
+  - id: "PATH-005"
+    flags: [repeat_pattern_n15]
+    expected_ending: "Aislamiento"
+  - id: "PATH-006"
+    flags: [allow_to_see]
+    expected_ending: "Aislamiento"
+  - id: "PATH-007"
+    flags: [allow_to_see, pattern_seen]
+    expected_ending: "Aislamiento"
+  - id: "PATH-008"
+    flags: [allow_to_see, pattern_seen, trust_echo]
+    expected_ending: "Aislamiento"
+  # Ruminación paths (8): comprehension 5-7
+  - id: "PATH-009"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker]
+    expected_ending: "Ruminación"
+  - id: "PATH-010"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, memory_is_real]
+    expected_ending: "Ruminación"
+  - id: "PATH-011"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, grab_second_take]
+    expected_ending: "Ruminación"
+  - id: "PATH-012"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, salvage_pain]
+    expected_ending: "Ruminación"
+  - id: "PATH-013"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, perfectionist_take]
+    expected_ending: "Ruminación"
+  - id: "PATH-014"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, self_blame_loop, grab_second_take]
+    expected_ending: "Ruminación"
+  - id: "PATH-015"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, solo_climb, perfect_take]
+    expected_ending: "Ruminación"
+  - id: "PATH-016"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, control_persist, control_echo]
+    expected_ending: "Ruminación"
+  # Negociación paths (8): comprehension 8-11
+  - id: "PATH-017"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, memory_is_real, single_take, release_control]
+    expected_ending: "Negociación"
+  - id: "PATH-018"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, memory_is_real, single_take, release_control, observe_lyra_object_only]
+    expected_ending: "Negociación"
+  - id: "PATH-019"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, memory_is_real, single_take, release_control, solo_climb]
+    expected_ending: "Negociación"
+  - id: "PATH-020"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, memory_is_real, single_take, release_control, demand_truth]
+    expected_ending: "Negociación"
+  - id: "PATH-021"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, memory_is_real, single_take, release_control, salvage_pain]
+    expected_ending: "Negociación"
+  - id: "PATH-022"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, memory_is_real, single_take, release_control, pick_one_self]
+    expected_ending: "Negociación"
+  - id: "PATH-023"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, memory_is_real, single_take, release_control, carry_two]
+    expected_ending: "Negociación"
+  - id: "PATH-024"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, memory_is_real, single_take, release_control, self_coordination]
+    expected_ending: "Negociación"
+  # Desesperación paths (4): high compr. but did not let go
+  - id: "PATH-025"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, memory_is_real, single_take, release_control, carry_two, self_coordination, touch_lyra_object, perfect_take]
+    # comprehension = 12, but let_go_pain missing
+    expected_ending: "Desesperación"
+  - id: "PATH-026"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, memory_is_real, single_take, release_control, carry_two, self_coordination, touch_lyra_object, imperfect_take, control_echo]
+    # comprehension = 12, but break_pattern_n15 missing (took control_echo)
+    expected_ending: "Desesperación"
+  - id: "PATH-027"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, memory_is_real, single_take, release_control, carry_two, self_coordination, touch_lyra_object, imperfect_take, follow_echo, repeat_pattern_n15]
+    # comprehension = 14, but break_pattern_n15 false
+    expected_ending: "Desesperación"
+  - id: "PATH-028"
+    flags: [allow_to_see, pattern_seen, trust_echo, admit_silence, touched_locker, memory_is_real, single_take, release_control, carry_two, self_coordination, touch_lyra_object, salvage_pain, imperfect_take, follow_echo]
+    # comprehension = 13, but let_go_pain false (salvage_pain) and break_pattern_n15 needed
+    expected_ending: "Desesperación"
+  # Aceptación paths (4): all hard requirements met
+  - id: "PATH-029"
+    flags: [allow_to_see, pattern_seen, allow_other_version, trust_echo, admit_silence, touched_locker, memory_is_real, single_take, release_control, touch_lyra_object, self_coordination, carry_two, let_go_pain, imperfect_take, follow_echo, break_pattern_n15]
+    expected_ending: "Aceptación"
+  - id: "PATH-030"
+    flags: [allow_to_see, pattern_seen, allow_other_version, trust_echo, admit_silence, touched_locker, memory_is_real, single_take, release_control, touch_lyra_object, self_coordination, admit_silence, let_go_pain, imperfect_take, follow_echo, break_pattern_n15]
+    # note: admit_silence appears twice but counts once
+    expected_ending: "Aceptación"
+  - id: "PATH-031"
+    flags: [allow_to_see, pattern_seen, allow_other_version, trust_echo, admit_silence, touched_locker, memory_is_real, single_take, release_control, touch_lyra_object, carry_two, carry_two, let_go_pain, imperfect_take, follow_echo, break_pattern_n15]
+    expected_ending: "Aceptación"
+  - id: "PATH-032"
+    flags: [allow_to_see, pattern_seen, allow_other_version, trust_echo, admit_silence, touched_locker, memory_is_real, single_take, release_control, touch_lyra_object, self_coordination, carry_two, let_go_pain, imperfect_take, follow_echo, break_pattern_n15, admit_silence]
+    expected_ending: "Aceptación"
+
+# ───────────────────────────────────────────────────────────
+# VALIDATION
+# ───────────────────────────────────────────────────────────
+validation:
+  - id: VN-END-VAL-001
+    type: constraint
+    severity: error
+    scope: [vn_system]
+    rule: "Todos los 32 canonical_test_paths deben resolver a ending_id válido"
+    validator: Assets/Tests/EditMode/VN_EndingResolverTests.cs
+  - id: VN-END-VAL-002
+    type: constraint
+    severity: error
+    scope: [vn_system, narrative]
+    rule: |
+      Solo Aceptación settea salir_del_colegio = true.
+      Otros 4 endings = false o "partial".
+    validator: Assets/Tests/EditMode/VN_EndingFlagsTests.cs
+  - id: VN-END-VAL-003
+    type: constraint
+    severity: error
+    scope: [vn_system, narrative]
+    rule: |
+      ambiguity_police: 0 ocurrencias en voice_final / narration_key de
+      ["amiga", "novia", "pareja", "relación", "amistad", "nos amamos"].
+    validator: Assets/Tests/EditMode/AmbiguityPoliceTests.cs
+  - id: VN-END-VAL-004
+    type: constraint
+    severity: error
+    scope: [vn_system, narrative]
+    rule: |
+      dual_thesis_police: voice_final y narration_key no concluyen:
+      ["tenía razón", "tenía la culpa", "estuvo bien", "perdoné",
+      "ya está bien", "fui inocente"]. ANTI-BIB-005.
+    validator: Assets/Tests/EditMode/DualThesisPoliceTests.cs
+  - id: VN-END-VAL-005
+    type: constraint
+    severity: error
+    scope: [vn_system]
+    rule: |
+      Resolución determinista: dado un set de flags A y B donde
+      comprehension(A) == comprehension(B), resolver(A) == resolver(B).
+      No random, no heuristic.
+    validator: Assets/Tests/EditMode/VN_DeterminismTests.cs
+
+# ───────────────────────────────────────────────────────────
+# CHANGE HISTORY
+# ───────────────────────────────────────────────────────────
+change_history:
+  - version: "1.0"
+    date: "2026-07-25"
+    note: "Initial VN_ENDING_RESOLVER.yaml con endings Void/Obsession/Release/Resonance/Integration"
+  - version: "2.0"
+    date: "2026-08-02"
+    note: |
+      Renombrado a Aislamiento/Ruminación/Negociación/Desesperación/Aceptación.
+      Añadidos: comprehension_tiers, stage_threshold_by_level, flag_catalog,
+      32 canonical_test_paths, resolution_algorithm, 5 validaciones (incl.
+      ambiguity_police y dual_thesis_police). Mapeo de flags "abrir" vs
+      "mantener" formalizado. Salto cualitativo: Aceptación requiere tanto
+      comprehensión alta COMO hard flags individuales (let_go_pain,
+      break_pattern_n15, touch_lyra_object, follow_echo). No es solo cuantitativo
+      — requiere flags duros específicos.

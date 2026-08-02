@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Echoes.UI;
 
 /// <summary>
 /// Define condiciones para desbloquear algo (puertas, eventos, salidas).
@@ -203,3 +204,4 @@ public class PuzzleCondition : MonoBehaviour
         ConditionChanged?.Invoke(false);
     }
 }
+

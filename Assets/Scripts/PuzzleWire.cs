@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Echoes.UI;
 
 /// <summary>
 /// Componente de diseño: Arrastra PressurePlates y DoorControllers en el Inspector
@@ -160,3 +161,4 @@ public class PuzzleWire : MonoBehaviour, IResettableLevelObject
         }
     }
 }
+

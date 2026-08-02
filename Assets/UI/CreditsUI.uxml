@@ -1,0 +1,66 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+    <!-- CreditsUI — Escena de créditos del Cuaderno de Aiden.
+         Scroll automático (30px/s), botón "Volver".
+         Contraste ≥ 4.5:1 en todo texto. -->
+
+    <ui:VisualElement class="root-fullscreen" name="root" style="background-color: #0A0A0D;">
+        <ui:VisualElement class="credits-container" name="creditsContainer">
+            <ui:ScrollView class="credits-scroll" name="creditsScroll">
+
+                <ui:VisualElement class="credits-section">
+                    <ui:Label class="credits-heading" text="ECHOES OF YOU" />
+                    <ui:Label class="credits-subheading" text="Un eco que no se puede borrar" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="credits-section">
+                    <ui:Label class="credits-heading" text="Dirección y Diseño de Juego" />
+                    <ui:Label class="credits-name" text="[Nombre del Director Creativo]" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="credits-section">
+                    <ui:Label class="credits-heading" text="Programación" />
+                    <ui:Label class="credits-name" text="[Nombre(s) del Equipo o de Ingeniero]" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="credits-section">
+                    <ui:Label class="credits-heading" text="Arte y Dirección Visual" />
+                    <ui:Label class="credits-text" text="Paleta Escuela Liminal · PS1/PS2 · CRT" />
+                    <ui:Label class="credits-name" text="[Nombre(s) del Artista/Diseñador]" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="credits-section">
+                    <ui:Label class="credits-heading" text="Narrativa y Escritura" />
+                    <ui:Label class="credits-text" text="Historia sin palabras — el eco habla por sí solo" />
+                    <ui:Label class="credits-name" text="[Nombre(s) del Escritor]" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="credits-section">
+                    <ui:Label class="credits-heading" text="Diseño de Sonido" />
+                    <ui:Label class="credits-name" text="[Nombre(s) del Diseñador de Audio]" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="credits-section">
+                    <ui:Label class="credits-heading" text="QA y Pruebas" />
+                    <ui:Label class="credits-name" text="[Nombre(s) del Tester]" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="credits-section">
+                    <ui:Label class="credits-heading" text="Agradecimientos" />
+                    <ui:Label class="credits-name" text="Fuentes tipográficas: Inter (Rasmus Andersson) · Garamond · Courier" />
+                    <ui:Label class="credits-name" text="Diseño de sonido: Freesound.org y comunidad de audio libre" />
+                    <ui:Label class="credits-name" text="Motor: Unity 6000.4 · URP 17.4" />
+                    <ui:Label class="credits-name" text="Soporte: Coplay MCP Bridge" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="credits-section">
+                    <ui:Label class="credits-heading" text="Cuaderno cerrado." />
+                    <ui:Label class="credits-subheading" text="Gracias por jugar." />
+                </ui:VisualElement>
+
+            </ui:ScrollView>
+        </ui:VisualElement>
+
+        <ui:Button class="echo-button echo-button--secondary credits-back-btn" name="btnBack" text="Volver" />
+
+    </ui:VisualElement>
+</UI>

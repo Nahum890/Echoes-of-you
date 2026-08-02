@@ -187,6 +187,16 @@ public static class GameProgress
         return Mathf.Max(0, PlayerPrefs.GetInt(DeathsPrefix + sceneName, 0));
     }
 
+    public static float GetScenePlayTimeSeconds(string sceneName)
+    {
+        return Mathf.Max(0f, PlayerPrefs.GetFloat("PlayTime_" + sceneName, 0f));
+    }
+
+    public static int GetSceneEchoesCreated(string sceneName)
+    {
+        return Mathf.Max(0, PlayerPrefs.GetInt("Echoes_" + sceneName, 0));
+    }
+
     public static int GetTotalDeathCount()
     {
         int total = 0;

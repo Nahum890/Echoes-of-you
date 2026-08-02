@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using System.Collections.Generic;
+using Echoes.UI;
 
 public static class EchoesLevelShell
 {
@@ -350,6 +351,15 @@ public static class EchoesLevelShell
         SetSerializedValue(runtime, "objectiveText", blueprint.puzzleObjectiveText);
         SetSerializedValue(runtime, "readyPrompt", blueprint.puzzleActiveText);
         SetSerializedValue(runtime, "completionToast", blueprint.puzzleCompleteText);
+        SetSerializedValue(runtime, "introLine", blueprint.narrativeIntroDesc);
+        SetSerializedValue(runtime, "completionLine", blueprint.puzzleCompleteText);
+        SetSerializedValue(runtime, "echoMode", blueprint.echoMode);
+        SetSerializedValue(runtime, "recordFuture", blueprint.recordFuture);
+        SetSerializedValue(runtime, "degradationPerReplay", blueprint.degradationPerReplay);
+        SetSerializedValue(runtime, "lockEchoSlots", blueprint.lockEchoSlots);
+        SetSerializedValue(runtime, "lockedSlotIndices", blueprint.lockedSlotIndices);
+        SetSerializedValue(runtime, "imposedEchoData", blueprint.imposedEchoData);
+        SetSerializedValue(runtime, "ambientEchoData", blueprint.ambientEchoData);
     }
 
     private static void CreateCharacterVisual(Transform player)

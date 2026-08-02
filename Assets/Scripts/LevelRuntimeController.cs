@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Echoes.UI;
+using Echoes.VN;
 
 public class LevelRuntimeController : MonoBehaviour
 {
@@ -12,6 +14,15 @@ public class LevelRuntimeController : MonoBehaviour
     [SerializeField] bool allowSoftReset = true;
     [SerializeField] bool allowHardReset = true;
     [SerializeField] float hardResetHoldSeconds = 0.5f;
+
+    [Header("Echo Mode Configuration")]
+    [SerializeField] EchoPlaybackMode echoMode = EchoPlaybackMode.Standard;
+    [SerializeField] bool recordFuture = false;
+    [SerializeField] float degradationPerReplay = 0.0f;
+    [SerializeField] bool lockEchoSlots = false;
+    [SerializeField] int[] lockedSlotIndices;
+    [SerializeField] EchoRecordingData imposedEchoData;
+    [SerializeField] EchoRecordingData ambientEchoData;
 
     GameHUD _hud;
     EchoRecorder _recorder;
@@ -53,7 +64,26 @@ public class LevelRuntimeController : MonoBehaviour
         _hud = FindAnyObjectByType<GameHUD>();
         _recorder = FindAnyObjectByType<EchoRecorder>();
         if (_recorder != null)
+        {
             _recorder.EchoCreated += OnEchoCreated;
+            _recorder.SetMode(echoMode, recordFuture, degradationPerReplay, lockEchoSlots, lockedSlotIndices);
+        }
+
+        // Configurar EchoModeController si hay datos avanzados
+        if (echoMode != EchoPlaybackMode.Standard || imposedEchoData != null || ambientEchoData != null)
+        {
+            var modeCtl = EchoModeController.Instance ?? gameObject.AddComponent<EchoModeController>();
+            // Crear un LevelBlueprint temporal o dummy para pasarle a EchoModeController
+            var tmpBp = ScriptableObject.CreateInstance<LevelBlueprint>();
+            tmpBp.echoMode = echoMode;
+            tmpBp.recordFuture = recordFuture;
+            tmpBp.degradationPerReplay = degradationPerReplay;
+            tmpBp.lockEchoSlots = lockEchoSlots;
+            tmpBp.lockedSlotIndices = lockedSlotIndices;
+            tmpBp.imposedEchoData = imposedEchoData;
+            tmpBp.ambientEchoData = ambientEchoData;
+            modeCtl.Configure(tmpBp);
+        }
 
         string sceneName = SceneManager.GetActiveScene().name;
         if (GameProgress.GetSceneIndex(sceneName) >= 0)
@@ -227,6 +257,32 @@ public class LevelRuntimeController : MonoBehaviour
             _hud?.ShowToast(toast, new Color(1f, 0.83f, 0.42f, 1f), 1.8f);
 
         _gameState?.NotifyLevelCompleted(position);
+
+        // VN Choice Gate hook: si hay un nodo para este nivel, abrir gate en lugar de avanzar directo
+        int levelIdx = ResolveCurrentLevelIndex();
+        if (VN_ChoiceGateController.Instance != null && levelIdx > 0 && levelIdx < 15)
+        {
+            bool isMicro = IsMicroLevel(levelIdx);
+            VN_ChoiceGateController.Instance.Show(levelIdx, isMicro, (chosen) => {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            });
+            return; // NO avanzar automáticamente - el gate lo hará
+        }
+    }
+
+    static int ResolveCurrentLevelIndex()
+    {
+        var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        int idx = GameProgress.GetSceneIndex(scene);
+        if (idx >= 0) return idx + 1;
+        if (int.TryParse(scene.Replace("Level_", "").Replace("N", ""), out var manual)) return manual;
+        return 1;
+    }
+
+    static bool IsMicroLevel(int levelIdx)
+    {
+        // N03, N07, N13 tienen micro-choices durante el puzzle (ver VN_ENDINGS_REDEFINED)
+        return levelIdx == 3 || levelIdx == 7 || levelIdx == 13;
     }
 
     public void RequestRestart(float delaySeconds)
@@ -286,4 +342,6 @@ public class LevelRuntimeController : MonoBehaviour
         if (Instance == this)
             Instance = null;
     }
+
+    public bool IsLevelCompletedAndGateActive() => _completed && VN_ChoiceGateController.Instance != null;
 }

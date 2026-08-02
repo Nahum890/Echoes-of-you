@@ -1,4 +1,5 @@
 using UnityEngine;
+using Echoes.UI;
 
 /// <summary>
 /// Tras resolver el puzzle, el jugador debe escapar de una secuencia en colapso

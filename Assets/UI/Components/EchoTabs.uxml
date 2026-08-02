@@ -1,0 +1,17 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+    <!-- EchoTabs — pestañas horizontales navegables por teclado/gamepad.
+         Cada pestaña es un EchoButton.ghost con la clase .echo-tab.
+         Uso:
+           <ui:VisualElement class="echo-tabs">
+               <ui:Button class="echo-tab echo-tab--selected" text="Video" />
+               <ui:Button class="echo-tab" text="Audio" />
+           </ui:VisualElement>
+         El C# maneja aria y .echo-tab--selected. -->
+    <ui:VisualElement class="echo-tabs" name="echoTabs">
+        <ui:Button class="echo-tab echo-tab--selected" name="tabVideo" text="Video" />
+        <ui:Button class="echo-tab" name="tabAudio" text="Audio" />
+        <ui:Button class="echo-tab" name="tabControles" text="Controles" />
+        <ui:Button class="echo-tab" name="tabAccesibilidad" text="Accesibilidad" />
+        <ui:Button class="echo-tab" name="tabGameplay" text="Gameplay" />
+    </ui:VisualElement>
+</uxXML>

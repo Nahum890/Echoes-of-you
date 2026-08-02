@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Echoes.UI;
 
 [RequireComponent(typeof(CharacterController))]
 public class EchoPlayback : MonoBehaviour

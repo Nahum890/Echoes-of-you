@@ -39,7 +39,7 @@ public partial class PlayerController : MonoBehaviour
     public float jumpForce = 5.5f;
     public float gravityStrength = 18.0f;
     public Vector3 defaultGravityDirection = Vector3.down;
-    public float groundedStickForce = 0.5f;
+    public float groundedStickForce = 2f;
     public float gravityBlendSpeed = 12f;
     public float fallGravityMultiplier = 2.0f;
     public float maxFallSpeed = 25.0f;
@@ -204,7 +204,7 @@ public partial class PlayerController : MonoBehaviour
             {
                 // Spawn en el suelo
                 _controller.enabled = false;
-                transform.position = hit.point + Vector3.up * 0.02f;
+                transform.position = hit.point + Vector3.up * 1.0f;
                 _controller.enabled = true;
                 _planarVelocity = Vector3.zero;
                 _verticalVelocity = Vector3.zero;
@@ -224,7 +224,7 @@ public partial class PlayerController : MonoBehaviour
                     if (sphereHit.distance > 0.5f && sphereHit.distance < 4f && !Physics.CheckSphere(sphereHit.point + Vector3.up, 0.6f))
                     {
                         _controller.enabled = false;
-                        transform.position = sphereHit.point + Vector3.up * 0.02f;
+                        transform.position = sphereHit.point + Vector3.up * 1.0f;
                         _controller.enabled = true;
                         _planarVelocity = Vector3.zero;
                         _verticalVelocity = Vector3.zero;
@@ -609,4 +609,45 @@ public partial class PlayerController : MonoBehaviour
         public bool isGrounded;
         public RaycastHit hit;
     }
+
+#if UNITY_EDITOR
+    void OnDrawGizmos()
+    {
+        if (!Application.isPlaying) return;
+        CharacterController cc = _controller != null ? _controller : GetComponent<CharacterController>();
+        if (cc == null) return;
+
+        // CharacterController bounds (cyan-blue wireframe)
+        Gizmos.color = new Color(0f, 0.5f, 1f, 0.3f);
+        Gizmos.DrawWireSphere(transform.position + cc.center, cc.radius);
+        Gizmos.DrawWireSphere(transform.position + cc.center + Vector3.up * (cc.height * 0.5f), cc.radius);
+        Gizmos.DrawWireSphere(transform.position + cc.center - Vector3.up * (cc.height * 0.5f), cc.radius);
+
+        // GroundCheck probe (green if grounded, red if not)
+        if (groundCheck != null)
+        {
+            Gizmos.color = _grounded ? Color.green : Color.red;
+            Gizmos.DrawWireSphere(groundCheck.position, groundProbeRadius);
+            Gizmos.DrawRay(groundCheck.position, -_currentUp * groundProbeDistance);
+
+            // SphereCast visualization
+            if (Physics.SphereCast(
+                groundCheck.position + _currentUp * groundProbeRadius,
+                groundProbeRadius,
+                -_currentUp,
+                out RaycastHit gizmoHit,
+                groundProbeDistance + groundProbeRadius,
+                groundCheckMask != 0 ? groundCheckMask : Physics.DefaultRaycastLayers,
+                QueryTriggerInteraction.Ignore))
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawSphere(gizmoHit.point, 0.08f);
+            }
+        }
+
+        // Player velocity (yellow forward)
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawRay(transform.position, _planarVelocity);
+    }
+#endif
 }

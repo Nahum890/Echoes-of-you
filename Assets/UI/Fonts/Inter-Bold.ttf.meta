@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 53744e3501daa544c9b8d2d06591e39b
+guid: 7c4c23c74ab2d4f4cb6583e4bc1283e1
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Space Grotesk
+  - Inter
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

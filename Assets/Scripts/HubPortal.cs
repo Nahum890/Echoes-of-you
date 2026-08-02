@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Echoes.UI;
 
 [RequireComponent(typeof(Collider))]
 public class HubPortal : MonoBehaviour

@@ -1,0 +1,15 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+    <!-- LevelSelectUI — Grid 15 EchoCard (01-15).
+         Estados: locked / available / completed / current.
+         Grid responsive: 3 cols 1080p, 2 cols 720p, 1 col mobile.
+         Metadatos por tarjeta: nombre, ecos, quiebres, tiempo. -->
+
+    <ui:VisualElement class="level-select-root" name="levelSelectRoot">
+        <ui:Label class="level-select-title" text="Capítulos del Cuaderno" />
+        <ui:Label class="level-select-subtitle" text="Elige página del cuaderno" />
+
+        <ui:VisualElement class="level-card-grid" name="levelCardGrid" />
+
+        <ui:Button class="echo-button echo-button--secondary" name="btnBack" text="Volver" />
+    </ui:VisualElement>
+</UXML>

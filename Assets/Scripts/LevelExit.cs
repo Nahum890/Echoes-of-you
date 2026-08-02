@@ -62,7 +62,14 @@ public class LevelExit : MonoBehaviour
             ? completionToast
             : (_goal != null ? _goal.GetCompletionToast() : ResolveCompletionToast(sceneName));
         LevelRuntimeController.Instance?.OnLevelCompleted(transform.position, toast);
-        Invoke(nameof(LoadNext), delaySeconds);
+        
+        // N15: no invocar Invoke(nameof(LoadNext)) si VN gate activo en LevelRuntimeController
+        // El gate manejará la carga del siguiente nivel
+        var lrc = LevelRuntimeController.Instance;
+        if (lrc != null && !lrc.IsLevelCompletedAndGateActive())
+        {
+            Invoke(nameof(LoadNext), delaySeconds);
+        }
     }
 
     void OnTriggerStay(Collider other)

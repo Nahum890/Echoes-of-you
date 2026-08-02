@@ -1,0 +1,153 @@
+/* ============================================================
+   EchoButton — componente reutilizable
+   Variantes: primary / secondary / destructive / ghost
+   Estados:  default / hover / focus / active / disabled / loading
+   Solo tokens (0 hardcodeado). RULE-UI-001/002 + RULE-SOT-001B.
+   ============================================================ */
+
+@import "../EchoesDesignTokens.uss";
+
+.echo-button {
+    /* Layout */
+    padding: var(--space-md) var(--space-xl);
+    margin: var(--space-sm) 0;
+    border-width: 1px;
+    border-radius: 0;
+
+    /* Tipografía */
+    font-size: var(--size-option);
+    -unity-text-align: middle-center;
+    letter-spacing: 1px;
+
+    /* Cursor + transiciones */
+    transition-property: background-color, color, border-color, opacity, scale;
+    transition-duration: var(--duration-fast);
+    transition-timing-function: var(--easing-standard);
+}
+
+/* ── VARIANTES — color base depende del rol semántico ─────── */
+
+.echo-button--primary {
+    background-color: var(--color-memory-amber);
+    color: var(--color-void-black);
+    border-color: var(--color-memory-amber);
+}
+
+.echo-button--secondary {
+    background-color: var(--color-corridor-navy);
+    color: var(--color-fluorescent-sick);
+    border-color: var(--color-border);
+}
+
+.echo-button--destructive {
+    background-color: transparent;
+    color: var(--color-wrongness-red);
+    border-color: var(--color-wrongness-red);
+}
+
+.echo-button--ghost {
+    background-color: transparent;
+    color: var(--color-fluorescent-sick);
+    border-color: transparent;
+}
+
+/* ── ESTADO HOVER — sube intensidad (RULE-UI-002) ────────────── */
+
+.echo-button:hover {
+    scale: 1.03 1.03;
+    transition-duration: var(--duration-hover-mouse);
+}
+
+.echo-button--primary:hover {
+    background-color: var(--color-memory-amber);
+    border-color: var(--color-paper);
+}
+
+.echo-button--secondary:hover {
+    border-color: var(--color-echo-cyan);
+    background-color: var(--color-corridor-navy);
+    color: var(--color-paper);
+}
+
+.echo-button--destructive:hover {
+    background-color: var(--color-wrongness-red);
+    color: var(--color-paper);
+}
+
+.echo-button--ghost:hover {
+    background-color: rgba(76, 195, 232, 0.08);
+    color: var(--color-echo-cyan);
+}
+
+/* ── ESTADO FOCUS — keyboard/gamepad (RULE-UI-002) ─────────── */
+
+.echo-button:focus {
+    scale: 1.03 1.03;
+    border-color: var(--color-memory-amber);
+    border-width: 2px;
+    transition-duration: var(--duration-hover-controller);
+}
+
+.echo-button--destructive:focus {
+    border-color: var(--color-wrongness-red);
+}
+
+/* ── ESTADO ACTIVE — pressed feedback ─────────────────────── */
+
+.echo-button:active {
+    scale: 0.97 0.97;
+    transition-duration: var(--duration-active);
+    background-color: var(--color-institutional-teal);
+    color: var(--color-paper);
+}
+
+.echo-button--destructive:active {
+    background-color: var(--color-wrongness-red);
+}
+
+/* ── ESTADO DISABLED ──────────────────────────────────────── */
+
+.echo-button:disabled {
+    opacity: 0.35;
+    scale: 1.0 1.0;
+    pointer-events: none;
+    border-color: var(--color-border);
+    color: var(--color-border);
+}
+
+/* ── ESTADO LOADING (clase aplicada por C#) ───────────────── */
+
+.echo-button--loading {
+    opacity: 0.6;
+    pointer-events: none;
+    color: transparent;
+    background-color: var(--color-institutional-teal);
+    border-color: var(--color-institutional-teal);
+}
+
+/* Spinner incluido como pseudo-elemento via background-image no existe en UITK.
+   El C# instanciará un VisualElement .echo-button__spinner con animación. */
+.echo-button__spinner {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    border-right-color: var(--color-paper);
+    border-left-color: transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    border-width: 2px;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    left: 50%;
+    top: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: var(--duration-fast);
+}
+
+.echo-button--loading .echo-button__spinner {
+    opacity: 1;
+}
+

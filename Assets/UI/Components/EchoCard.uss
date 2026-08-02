@@ -1,0 +1,89 @@
+/* ============================================================
+   EchoCard — tarjeta tipo "VHS tape" para Level Select
+   Estados: default / locked / available / completed / current / hover / focus
+   Solo tokens. RULE-UI-001/002.
+   ============================================================ */
+
+@import "../EchoesDesignTokens.uss";
+
+.echo-card {
+    padding: var(--space-md) var(--space-lg);
+    margin: var(--space-sm) 0;
+    border-width: 1px;
+    border-color: var(--color-institutional-teal);
+    background-color: var(--color-void-black);
+    font-size: var(--size-body);
+    color: var(--color-fluorescent-sick);
+    -unity-text-align: middle-left;
+    letter-spacing: 1px;
+    flex-direction: row;
+    justify-content: space-between;
+    transition-property: border-color, background-color, color, scale, translate;
+    transition-duration: var(--duration-fast);
+    transition-timing-function: var(--easing-standard);
+    height: auto;
+    min-height: 64px;
+}
+
+/* ── HOVER ───────────────────────────────────────────────────────── */
+.echo-card:hover {
+    border-color: var(--color-echo-cyan);
+    scale: 1.01 1.01;
+    translate: 4px 0px;
+    transition-duration: var(--duration-hover-mouse);
+    background-color: rgba(76, 195, 232, 0.04);
+}
+
+/* ── FOCUS ──────────────────────────────────────────────────────── */
+.echo-card:focus {
+    border-color: var(--color-memory-amber);
+    border-width: 2px;
+    scale: 1.01 1.01;
+    translate: 4px 0px;
+    transition-duration: var(--duration-hover-controller);
+    background-color: rgba(255, 191, 0, 0.04);
+}
+
+/* ── LOCKED — filtro apagado + símbolo bloqueo ─────────────────── */
+.echo-card--locked {
+    opacity: 0.3;
+    border-color: var(--color-border);
+    color: var(--color-border);
+    pointer-events: none;
+}
+
+.echo-card--locked:not(.echo-card--locked):hover,
+.echo-card--locked:focus {
+    scale: 1.0 1.0;
+    translate: 0px 0px;
+    border-width: 1px;
+    background-color: transparent;
+}
+
+/* ── AVAILABLE / COMPLETED / CURRENT ─────────────────────────────── */
+.echo-card--available {
+    border-color: var(--color-institutional-teal);
+    color: var(--color-fluorescent-sick);
+}
+
+.echo-card--completed {
+    border-color: var(--color-sage-green);
+    background-color: rgba(58, 74, 56, 0.12);
+    color: var(--color-sage-green);
+}
+
+.echo-card--current {
+    border-color: var(--color-memory-amber);
+    background-color: rgba(255, 191, 0, 0.06);
+    color: var(--color-memory-amber);
+    scale: 1.02 1.02;
+    translate: 2px 0px;
+}
+
+/* ── METADATOS (nombre, ecos, quiebres) opcionales en texto small */
+.echo-card__metadata {
+    font-size: var(--size-small);
+    color: var(--color-border);
+    -unity-text-align: middle-right;
+    white-space: nowrap;
+}

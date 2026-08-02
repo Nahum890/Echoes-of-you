@@ -1,0 +1,68 @@
+/* ============================================================
+   CreditsUI — Diseño de créditos.
+   Fondo oscuro, texto claro, contraste ≥ 7:1.
+   Scroll automático controlado por C# (30px/s).
+   ============================================================ */
+
+@import "EchoesDesignTokens.uss";
+@import "Components/EchoButton.uss";
+
+.credits-container {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 80px;
+    overflow: hidden;
+}
+
+.credits-scroll {
+    position: absolute;
+    left: 15%; right: 15%;
+    top: 0; bottom: 0;
+    padding: var(--space-3xl) var(--space-xl);
+    background-color: transparent;
+    overflow-y: auto;
+}
+
+.credits-section {
+    margin-bottom: var(--space-2xl);
+    align-items: center;
+}
+
+.credits-heading {
+    font-size: var(--size-option);
+    color: var(--color-memory-amber);
+    -unity-text-align: middle-center;
+    letter-spacing: 2px;
+    margin-bottom: var(--space-lg);
+    -unity-text-transform: uppercase;
+}
+
+.credits-subheading {
+    font-size: var(--size-body);
+    color: var(--color-echo-cyan);
+    -unity-text-align: middle-center;
+    margin-bottom: var(--space-2xl);
+    letter-spacing: 1px;
+}
+
+.credits-name {
+    font-size: var(--size-body);
+    color: var(--color-paper);
+    -unity-text-align: middle-center;
+    letter-spacing: 1px;
+    margin-bottom: var(--space-sm);
+}
+
+.credits-text {
+    font-size: var(--size-small);
+    color: var(--color-fluorescent-sick);
+    -unity-text-align: middle-center;
+    margin-bottom: var(--space-sm);
+}
+
+.credits-back-btn {
+    position: absolute;
+    left: 50%;
+    bottom: var(--space-xl);
+    translate: -50% 0;
+    min-width: 200px;
+}

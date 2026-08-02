@@ -1,0 +1,9 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+    <!-- EchoToast — notificación fugaz en bottom-center.
+         ToastManager.cs instancia esto dinámicamente vía CloneTree.
+         Un solo toast a la vez; latencia de 1.5s por defecto.
+         Uso C#: ToastManager.Show("Mensaje", ToastType.Default, 1.5f) -->
+    <ui:VisualElement class="echo-toast" name="echoToast">
+        <ui:Label class="echo-toast__text" name="toastText" text="Toast message" />
+    </ui:VisualElement>
+</UXML>
