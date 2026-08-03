@@ -22,9 +22,13 @@
 
         <!-- MAIN CONTENT — oculto hasta dismiss -->
         <ui:VisualElement class="main-menu-folder hidden" name="main-content">
+            <!-- BACKGROUND LAYER — for hover interaction -->
+            <ui:VisualElement class="menu-background" name="menuBackground" />
+
             <!-- SIDE NAV — manila paper -->
             <ui:VisualElement class="side-nav" name="side-nav">
                 <ui:VisualElement class="side-nav__header">
+                    <ui:VisualElement class="logo" name="logo" />
                     <ui:Label class="side-nav__title" text="ECHOES OF YOU" />
                     <ui:Label class="side-nav__subtitle" text="un eco que no se puede borrar" />
                 </ui:VisualElement>

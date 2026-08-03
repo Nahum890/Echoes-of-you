@@ -51,7 +51,7 @@ namespace Echoes.UI
         Label _lblFogVal, _lblEchoVal;
 
         // Buttons
-        Button _btnRestoreDefaults, _btnSettingsBack, _btnSettingsApply;
+        Button _btnRestoreDefaults, _btnSettingsBack, _btnSettingsApply, _btnDeleteProgress;
 
         void Awake()
         {
@@ -243,10 +243,12 @@ namespace Echoes.UI
             _btnRestoreDefaults = container.Q<Button>("btnRestoreDefaults");
             _btnSettingsBack = container.Q<Button>("btnSettingsBack");
             _btnSettingsApply = container.Q<Button>("btnSettingsApply");
+            _btnDeleteProgress = container.Q<Button>("btnDeleteProgress");
 
             if (_btnRestoreDefaults != null) _btnRestoreDefaults.clicked += RestoreFactoryDefaults;
             if (_btnSettingsBack != null) _btnSettingsBack.clicked += HideSettings;
             if (_btnSettingsApply != null) _btnSettingsApply.clicked += ApplyAll;
+            if (_btnDeleteProgress != null) _btnDeleteProgress.clicked += DeleteAllProgress;
 
             LoadCurrentSettings();
         }
@@ -537,6 +539,25 @@ namespace Echoes.UI
 
             PlayerPrefs.DeleteAll();
             LoadCurrentSettings();
+        }
+
+        void DeleteAllProgress()
+        {
+            // Confirmación doble para evitar borrado accidental
+            if (UnityEditor.EditorUtility.DisplayDialog(
+                "Borrar Progreso Completo",
+                "Esto eliminará TODOS los datos guardados:\n- Ecos anclados y Recuerdos completados\n- Niveles desbloqueados\n- Todos los ajustes (video, audio, controles, accesibilidad, gameplay)\n\nEsta acción es IRREVERSIBLE.\n\n¿Estás seguro?",
+                "Sí, borrar todo", "Cancelar"))
+            {
+                PlayerPrefs.DeleteAll();
+                GameProgress.EnsureInitialized();
+                LoadCurrentSettings();
+                Debug.Log("[SettingsController] Progreso completo borrado por el usuario.");
+                
+                // Refresh level cards in main menu if present
+                var mainMenu = FindAnyObjectByType<MainMenuController>();
+                mainMenu?.SendMessage("RefreshLevelCards", SendMessageOptions.DontRequireReceiver);
+            }
         }
 
         // Tab click handlers (named methods for proper unregistration on re-init)

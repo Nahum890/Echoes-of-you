@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -18,12 +19,12 @@ namespace Echoes.UI
     {
         [Header("Scenes")]
         [SerializeField] string firstLevelScene = "Level_01";
+        [SerializeField] Texture2D logoTexture;
 
         // Color constants for inline styling (bypass USS cascade issues)
         static readonly Color Amber = new Color(1f, 0.749f, 0f);       // #FFBF00
         static readonly Color Paper = new Color(0.957f, 0.949f, 0.933f); // #F4F2EE
         static readonly Color VoidBlack = new Color(0.039f, 0.039f, 0.051f); // #0A0A0D
-        static readonly Color DebugRed = new Color(1f, 0f, 0f, 1f);     // DEBUG visibility
         static readonly Color Fluorescent = new Color(0.788f, 0.831f, 0.69f); // #C9D4B0
         static readonly Color Faded = new Color(0.353f, 0.29f, 0.18f);   // #5A4A2E
         static readonly Color DarkBg = new Color(0.012f, 0.016f, 0.024f); // #030406
@@ -35,9 +36,9 @@ namespace Echoes.UI
         UIDocument _doc;
         VisualElement _root;
         VisualElement _rootElement; // The "root" child element (name="root")
-        VisualElement _voidIntro;
         VisualElement _mainContent;
         VisualElement _rightContainer;
+        VisualElement _menuBackground;
         Label _heroTitle;
 
         Button _btnContinuar;
@@ -54,8 +55,36 @@ namespace Echoes.UI
         Label _lblEcosAnclados;
         Label _lblRecuerdos;
         VisualElement _levelCardGrid;
+        VisualElement _logoElement;
 
         bool _wired;
+
+        void Awake()
+        {
+            // Reset PlayerPrefs si detectamos datos corruptos (UnlockedCount > 1 sin completar niveles previos)
+            // O si se pulsa "Borrar progreso" desde settings
+            GameProgress.EnsureInitialized();
+            
+            // Verificar si hay datos inflados (ej: UnlockedCount=6 pero Completed<5)
+            int unlocked = PlayerPrefs.GetInt("Echoes.UnlockedCount", 1);
+            int completed = 0;
+            for (int i = 1; i <= 15; i++)
+            {
+                if (PlayerPrefs.GetInt($"Echoes.Completed.Level_{i:D2}", 0) == 1)
+                    completed++;
+            }
+            
+            // Si hay niveles desbloqueados pero NINGUNO completado -> datos de testing corruptos, resetear
+            // O si unlocked > completed + 1 (más niveles desbloqueados de los que deberían por completados)
+            bool isCorrupt = (unlocked > 1 && completed == 0) || (unlocked > completed + 1);
+            
+            if (isCorrupt)
+            {
+                Debug.LogWarning($"[MainMenuController] PlayerPrefs corrupto detectado (Unlocked={unlocked}, Completed={completed}). Reseteando...");
+                PlayerPrefs.DeleteAll();
+                GameProgress.EnsureInitialized();
+            }
+        }
 
         void OnEnable()
         {
@@ -63,25 +92,16 @@ namespace Echoes.UI
             if (_doc == null || _doc.rootVisualElement == null) return;
             _root = _doc.rootVisualElement;
 
-            // UI Elements — MUST query BEFORE LoadStyleSheets() so _rootElement is available
-            _voidIntro = _root.Q("void-intro");
+            // UI Elements — MUST query BEFORE LoadStyleSheets() so elements are available
+            _rootElement = _root.Q("root");
             _mainContent = _root.Q("main-content");
+            _menuBackground = _root.Q("menuBackground");
             _rightContainer = _root.Q("right-content-container");
             _heroTitle = _root.Q<Label>("heroTitle");
-            _rootElement = _root.Q("root");
+            _logoElement = _root.Q("logo");
 
             // Load stylesheets for editor play mode (USS auto-load not reliable in editor)
             LoadStyleSheets();
-
-            // IMMEDIATELY force styles on rootElement (critical — this covers the UIDocumentRootElement)
-            if (_rootElement != null)
-            {
-                _rootElement.style.position = Position.Absolute;
-                _rootElement.style.left = 0; _rootElement.style.top = 0; _rootElement.style.right = 0; _rootElement.style.bottom = 0;
-                _rootElement.style.backgroundColor = DebugRed;
-                _rootElement.style.color = Paper;
-                _rootElement.style.fontSize = 30;
-            }
 
             _btnContinuar  = _root.Q<Button>("nav-continuar");
             _btnCapitulos  = _root.Q<Button>("nav-capitulos");
@@ -113,41 +133,55 @@ namespace Echoes.UI
                 btnConfirmExit.clicked += ConfirmExit;
                 btnCancelExit.clicked  += CancelExit;
 
+                // Hover events for 3D cinematic background + CSS
+                RegisterHover(_btnContinuar, "hover-continuar", MainMenuCinematicWorld.MenuAmbience.Stability);
+                RegisterHover(_btnCapitulos, "hover-capitulos", MainMenuCinematicWorld.MenuAmbience.System);
+                RegisterHover(_btnConfigurar, "hover-configurar", MainMenuCinematicWorld.MenuAmbience.System);
+                RegisterHover(_btnCreditos, "hover-creditos", MainMenuCinematicWorld.MenuAmbience.Disconnect);
+                RegisterHover(_btnCerrar, "hover-cerrar", MainMenuCinematicWorld.MenuAmbience.Disconnect);
+
                 _wired = true;
             }
 
-            GameProgress.EnsureInitialized();
             RefreshFooterStats();
             BindLevelCards();
-            ShowVoidIntro();
+            
+            // Mostrar menú directamente (sin void-intro)
+            ShowMainMenu();
         }
 
-        void Update()
+        void ShowMainMenu()
         {
-            if (!_voidIntro.ClassListContains("hidden") && Input.GetKeyDown(KeyCode.Space))
-                DismissIntro();
-        }
-
-        void ShowVoidIntro()
-        {
-            _voidIntro.RemoveFromClassList("hidden");
-            _mainContent.AddToClassList("hidden");
-            _rightContainer.AddToClassList("hidden");
+            _mainContent?.RemoveFromClassList("hidden");
+            _rightContainer?.RemoveFromClassList("hidden");
             _heroTitle.text = "Aula 104";
             SetActiveNav(_btnContinuar);
             ShowPanel(_panelCuadernoRecorrido);
         }
 
-        void DismissIntro()
+        void RegisterHover(Button btn, string hoverClass, MainMenuCinematicWorld.MenuAmbience ambience)
         {
-            _voidIntro.AddToClassList("hidden");
-            _mainContent.RemoveFromClassList("hidden");
-            _rightContainer.RemoveFromClassList("hidden");
+            if (btn == null) return;
+            
+            btn.RegisterCallback<MouseEnterEvent>(_ =>
+            {
+                if (_menuBackground != null)
+                    _menuBackground.AddToClassList($"menu-background--{hoverClass}");
+                MainMenuCinematicWorld.Instance?.SetAmbience(ambience);
+            });
+            
+            btn.RegisterCallback<MouseLeaveEvent>(_ =>
+            {
+                if (_menuBackground != null)
+                    _menuBackground.RemoveFromClassList($"menu-background--{hoverClass}");
+                MainMenuCinematicWorld.Instance?.SetAmbience(MainMenuCinematicWorld.MenuAmbience.Void);
+            });
         }
 
         void OnContinuar()
         {
             var continueScene = GameProgress.GetContinueSceneName();
+            Debug.Log($"[MainMenuController] OnContinuar: continueScene='{continueScene}', firstLevelScene='{firstLevelScene}'");
             if (!string.IsNullOrEmpty(continueScene))
                 LoadLevel(continueScene);
             else
@@ -167,6 +201,10 @@ namespace Echoes.UI
             SetActiveNav(_btnConfigurar);
             _heroTitle.text = "Configurar Cuaderno";
             ShowPanel(_panelAjustes);
+            
+            // Rellenar el contenedor de settings usando SettingsController
+            var settingsContainer = _panelAjustes?.Q("settingsContainer");
+            SettingsController.Instance?.ShowInContainer(settingsContainer);
         }
 
         void OnCreditos()
@@ -177,7 +215,7 @@ namespace Echoes.UI
             // Load credits scene directly — NavigationManager.Stack will be
             // rebuilt when CreditsController initializes after the scene loads.
             if (Application.CanStreamedLevelBeLoaded("CreditsScene"))
-                UnityEngine.SceneManagement.SceneManager.LoadScene("CreditsScene");
+                SceneManager.LoadScene("CreditsScene");
         }
 
         void OnCerrar()
@@ -200,13 +238,19 @@ namespace Echoes.UI
 
         void LoadLevel(string sceneName)
         {
-            if (string.IsNullOrWhiteSpace(sceneName)) return;
-            if (!Application.CanStreamedLevelBeLoaded(sceneName)) return;
+            if (string.IsNullOrWhiteSpace(sceneName))
+            {
+                Debug.LogWarning("[MainMenuController] LoadLevel: sceneName is null/empty");
+                return;
+            }
+            if (!Application.CanStreamedLevelBeLoaded(sceneName))
+            {
+                Debug.LogError($"[MainMenuController] LoadLevel: CanStreamedLevelBeLoaded('{sceneName}') = FALSE - Scene NOT in Build Settings!");
+                return;
+            }
 
-            if (SceneTransitionManager.Instance != null)
-                SceneTransitionManager.Instance.LoadScene(sceneName);
-            else
-                UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
+            Debug.Log($"[MainMenuController] LoadLevel: Loading '{sceneName}' directly (bypassing SceneTransitionManager)");
+            SceneManager.LoadScene(sceneName);
         }
 
         void SetActiveNav(Button active)
@@ -265,6 +309,8 @@ namespace Echoes.UI
 
         void RefreshLevelCards() => BindLevelCards();
 
+        public void RefreshLevelCardsPublic() => RefreshLevelCards();
+
         void LoadStyleSheets()
         {
             var paths = new[]
@@ -322,25 +368,25 @@ namespace Echoes.UI
                 _rootElement.style.fontSize = 30;
             }
 
-            // VOID INTRO
-            if (_voidIntro != null)
+            // LOGO — aplicar backgroundImage por C# como backup (USS cascade inestable)
+            if (_logoElement != null)
             {
-                _voidIntro.style.backgroundColor = VoidBlack;
-                _voidIntro.style.position = Position.Absolute;
-                _voidIntro.style.left = 0; _voidIntro.style.top = 0; _voidIntro.style.right = 0; _voidIntro.style.bottom = 0;
-                _voidIntro.style.justifyContent = Justify.Center;
-                _voidIntro.style.alignItems = Align.Center;
-                _voidIntro.style.color = Paper;
-                _voidIntro.style.fontSize = 30;
-            }
-
-            // VOID INTRO LABEL
-            var voidLabel = _voidIntro?.Q<Label>();
-            if (voidLabel != null)
-            {
-                voidLabel.style.color = Paper;
-                voidLabel.style.fontSize = 30;
-                voidLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
+                _logoElement.style.width = 200;
+                _logoElement.style.height = 200;
+                _logoElement.style.marginBottom = 16;
+                _logoElement.style.alignSelf = Align.Center;
+                
+                // Intentar cargar la textura del logo
+                if (logoTexture == null)
+                {
+#if UNITY_EDITOR
+                    logoTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/UI/logo.png");
+#endif
+                }
+                if (logoTexture != null)
+                {
+                    _logoElement.style.backgroundImage = logoTexture;
+                }
             }
 
             // MAIN CONTENT

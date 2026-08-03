@@ -330,10 +330,7 @@ void ShowSettings()
                 btn.style.paddingLeft = 20; btn.style.paddingRight = 20;
                 btn.style.borderLeftWidth = 2;
                 btn.style.borderLeftColor = Color.clear;
-                btn.style.color = VoidBlack;
                 btn.style.unityFontDefinition = btn.style.unityFontDefinition;
-                btn.style.fontSize = 16;
-                // Text transform handled via USS class
                 btn.style.letterSpacing = 1;
                 btn.style.marginBottom = 8;
             }

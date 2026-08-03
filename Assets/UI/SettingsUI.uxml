@@ -134,6 +134,12 @@
                 <ui:Slider class="echo-slider" name="sldEcho" label="" low-value="0" high-value="1" value="0.6" />
                 <ui:Label class="echo-slider-value" name="lblEchoVal" text="60%" />
             </ui:VisualElement>
+
+            <ui:VisualElement class="settings-group">
+                <ui:Label class="settings-group-title" text="Progreso" />
+                <ui:Button class="echo-button echo-button--destructive" name="btnDeleteProgress" text="Borrar Progreso Completo" />
+                <ui:Label class="settings-hint" text="ADVERTENCIA: Elimina todos los Ecos, Recuerdos y ajustes guardados. Irreversible." />
+            </ui:VisualElement>
         </ui:VisualElement>
 
         <!-- BUTTONS -->
