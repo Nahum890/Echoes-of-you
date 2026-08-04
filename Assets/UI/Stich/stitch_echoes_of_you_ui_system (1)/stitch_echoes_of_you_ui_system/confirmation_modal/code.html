@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Confirmation Modal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&amp;family=EB+Garamond:ital,wght@0,400..800;1,400..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-dim": "#131410",
+                      "outline": "#959087",
+                      "on-tertiary-fixed": "#001f28",
+                      "on-secondary": "#29313d",
+                      "tertiary-fixed-dim": "#63d4fa",
+                      "on-primary": "#333027",
+                      "tertiary": "#fffeff",
+                      "surface-bright": "#393935",
+                      "surface-container-lowest": "#0e0f0b",
+                      "on-secondary-fixed-variant": "#3f4754",
+                      "inverse-surface": "#e4e2dc",
+                      "on-background": "#e4e2dc",
+                      "tertiary-fixed": "#b7eaff",
+                      "primary-container": "#e8e1d4",
+                      "primary-fixed": "#e9e2d5",
+                      "surface-container-highest": "#353530",
+                      "on-error": "#690005",
+                      "secondary-fixed-dim": "#bfc7d7",
+                      "on-tertiary": "#003543",
+                      "on-secondary-container": "#b4bccc",
+                      "primary": "#fffeff",
+                      "on-surface-variant": "#ccc6bc",
+                      "on-tertiary-container": "#006d87",
+                      "on-surface": "#e4e2dc",
+                      "inverse-on-surface": "#30312c",
+                      "on-primary-fixed": "#1e1b14",
+                      "surface-tint": "#ccc6b9",
+                      "surface": "#131410",
+                      "outline-variant": "#4a463f",
+                      "on-secondary-fixed": "#141c28",
+                      "tertiary-container": "#b6eaff",
+                      "secondary-fixed": "#dbe3f3",
+                      "primary-fixed-dim": "#ccc6b9",
+                      "error-container": "#93000a",
+                      "on-primary-fixed-variant": "#4a463d",
+                      "secondary-container": "#444c59",
+                      "error": "#ffb4ab",
+                      "on-primary-container": "#686459",
+                      "background": "#131410",
+                      "surface-variant": "#353530",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-high": "#2a2a26",
+                      "surface-container": "#1f201c",
+                      "on-tertiary-fixed-variant": "#004d61",
+                      "secondary": "#bfc7d7",
+                      "inverse-primary": "#625e54",
+                      "surface-container-low": "#1b1c18"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-edge": "64px",
+                      "container-padding": "32px",
+                      "unit": "8px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "interface-md": ["'Courier Prime'", "monospace"],
+                      "display-md": ["'EB Garamond'", "serif"],
+                      "display-lg-mobile": ["'EB Garamond'", "serif"],
+                      "display-lg": ["'EB Garamond'", "serif"],
+                      "label-caps": ["'Courier Prime'", "monospace"],
+                      "interface-sm": ["'Courier Prime'", "monospace"],
+                      "interface-lg": ["'Courier Prime'", "monospace"]
+              },
+              "fontSize": {
+                      "interface-md": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                      "display-md": ["48px", {"lineHeight": "56px", "fontWeight": "400"}],
+                      "display-lg-mobile": ["40px", {"lineHeight": "44px", "fontWeight": "400"}],
+                      "display-lg": ["64px", {"lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                      "label-caps": ["16px", {"lineHeight": "20px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                      "interface-sm": ["20px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "interface-lg": ["38px", {"lineHeight": "44px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        /* Base CRT/Analog effects */
+        .scanlines {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+        
+        /* PS2 Micro-jitter Animation */
+        @keyframes micro-jitter {
+            0% { transform: translate(0, 0); }
+            20% { transform: translate(-1px, 1px); }
+            40% { transform: translate(1px, -1px); }
+            60% { transform: translate(-1px, -1px); }
+            80% { transform: translate(1px, 1px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* Hover States for Analog Buttons */
+        .btn-analog {
+            transition: all 0s; /* No smooth transition, harsh analog feel */
+        }
+        
+        .btn-analog:hover, .btn-analog:focus {
+            animation: micro-jitter 0.2s infinite;
+            background-color: theme('colors.surface-container-highest');
+        }
+
+        .btn-analog:hover span, .btn-analog:focus span {
+            /* Chromatic offset effect */
+            text-shadow: 2px 0 0 rgba(99, 212, 250, 0.6), -2px 0 0 rgba(255, 180, 171, 0.6);
+        }
+
+        /* Danger Specific Hover */
+        .btn-danger:hover, .btn-danger:focus {
+            border-color: theme('colors.error');
+            background-color: theme('colors.error-container');
+        }
+        
+        .btn-danger:hover span, .btn-danger:focus span {
+            color: theme('colors.error');
+            text-shadow: 2px 0 0 rgba(255, 180, 171, 0.8), -2px 0 0 rgba(105, 0, 5, 0.8);
+        }
+
+        /* Terminal Cursor */
+        .cursor-blink::after {
+            content: '_';
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-screen w-screen overflow-hidden flex items-center justify-center relative selection:bg-tertiary-fixed-dim selection:text-on-tertiary-fixed">
+<!-- Background Layer (Darkened Gameplay Context) -->
+<div class="absolute inset-0 z-0 bg-cover bg-center" data-alt="A blurred, darkened gameplay screenshot of a corrupted, abandoned school archive. Dimly lit with harsh shadows, subtle film grain, and a melancholic atmosphere. The scene is mostly obscured by a heavy navy blue tint to ensure the modal stands out." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAvpX_AzlfOZTUHSxB9arG3G_D2oBpuvw0c9PFOPaqVdY25s9VExL1NPwWTZI8k-ka2-MSjGEOxel9QFvU2iR8zONYAi9ZtD0X2r8OHncVJG3tYUeqswnLzFYpxIEUZ9SVUrI2OLgBW5yeBTNz7SZ3V_qWfLvr2WFd4drMgA1bjTSxviNeohqIj570tT_5cmyqp0ZNyBnnWtm9OfxyvqaCLCwujYfBrGnzrd0tYsnKRKCx9DwaeynbXOA')"></div>
+<div class="absolute inset-0 z-0 bg-surface-dim/85 backdrop-blur-sm scanlines"></div>
+<!-- Modal Canvas (Analog Archival Box) -->
+<main class="relative z-10 flex flex-col w-full max-w-[800px] mx-gutter border border-outline bg-surface-container/70 backdrop-blur-md shadow-2xl before:absolute before:-inset-[1px] before:border before:border-outline/30 before:pointer-events-none before:z-[-1]">
+<!-- Header Section -->
+<header class="border-b border-outline p-container-padding pb-unit relative overflow-hidden">
+<!-- Subtle glitch echo in background of header -->
+<div class="absolute right-0 top-0 opacity-5 text-[120px] font-display-lg leading-none translate-x-1/4 -translate-y-1/4 select-none pointer-events-none text-tertiary-fixed-dim font-bold">?</div>
+<h1 class="font-display-md text-display-md text-primary tracking-tight m-0">
+                ¿REINICIAR DESDE EL ÚLTIMO PUNTO<span class="cursor-blink text-tertiary-fixed-dim"></span>
+</h1>
+</header>
+<!-- Body Section -->
+<div class="p-container-padding py-gutter">
+<p class="font-interface-md text-interface-md text-on-surface-variant m-0 max-w-prose">
+                Se perderá el progreso realizado desde el último punto de control.
+            </p>
+</div>
+<!-- Actions Section -->
+<footer class="p-container-padding pt-0 flex justify-end gap-gutter mt-8">
+<!-- Focused by default (Ivory/Primary) -->
+<button class="btn-analog px-6 py-3 border border-primary text-primary font-label-caps text-label-caps uppercase tracking-[0.1em] focus:outline-none focus:ring-1 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface-dim relative group">
+<span class="relative z-10">Cancelar</span>
+<!-- Active Indicator Line -->
+<div class="absolute bottom-0 left-0 w-full h-[2px] bg-primary scale-x-100 transition-transform origin-left"></div>
+</button>
+<!-- Destructive Action (Danger) -->
+<button class="btn-analog btn-danger px-6 py-3 border border-outline text-outline font-label-caps text-label-caps uppercase tracking-[0.1em] focus:outline-none focus:ring-1 focus:ring-error focus:ring-offset-2 focus:ring-offset-surface-dim relative group">
+<span class="relative z-10 transition-colors duration-150">Reiniciar</span>
+<div class="absolute bottom-0 left-0 w-full h-[2px] bg-error scale-x-0 group-hover:scale-x-100 group-focus:scale-x-100 transition-transform origin-left duration-200"></div>
+</button>
+</footer>
+<!-- Decoration: Bottom Right Archival ID -->
+<div class="absolute bottom-2 left-2 text-[10px] font-interface-sm text-outline-variant tracking-widest opacity-50 select-none pointer-events-none">
+            SYS_REQ: RESTART_SEQ // OVERWRITE_PENDING
+        </div>
+</main>
+<script>
+        // Set focus to Cancelar by default to simulate "Focused by default" requirement
+        document.addEventListener('DOMContentLoaded', () => {
+            const defaultFocusBtn = document.querySelector('button:first-of-type');
+            if(defaultFocusBtn) {
+                defaultFocusBtn.focus();
+            }
+        });
+    </script>
+</body></html>

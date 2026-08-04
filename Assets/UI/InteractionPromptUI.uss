@@ -1,0 +1,61 @@
+/* ============================================================
+   InteractionPromptUI — proximity interaction prompt (Stich)
+   Appears center-bottom when player is within range.
+   [E] icon + action label. Glassmorphism. Fade 150ms linear.
+   ============================================================ */
+
+@import "EchoesDesignTokens.uss";
+
+.interaction-prompt-root {
+    background-color: transparent;
+    overflow: hidden;
+}
+
+.prompt-hidden {
+    display: none;
+}
+
+.prompt-box {
+    position: absolute;
+    left: 50%;
+    bottom: 160px;
+    translate: -50% 0;
+    min-width: 200px;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    background-color: var(--color-void-overlay-92);
+    border-width: 1px;
+    border-color: var(--color-stich-outline-variant);
+    border-radius: 0;
+    padding: var(--space-sm) var(--space-lg);
+    opacity: 1;
+    transition-property: opacity, bottom;
+    transition-duration: var(--duration-hover);
+    transition-timing-function: linear;
+}
+
+/* Active variant (amber border for primary actions) */
+.prompt-box--primary {
+    border-color: var(--color-stich-amber);
+}
+
+.prompt-key-icon {
+    font-family: var(--font-interface-bold);
+    font-size: var(--size-interface-sm);
+    color: var(--color-stich-amber);
+    -unity-text-align: middle-center;
+    letter-spacing: 2px;
+    opacity: 1;
+    min-width: 40px;
+}
+
+.prompt-action-label {
+    font-family: var(--font-interface);
+    font-size: var(--size-interface-sm);
+    color: var(--color-stich-on-surface);
+    -unity-text-align: middle-left;
+    letter-spacing: 1px;
+    opacity: 1;
+    flex-grow: 1;
+}

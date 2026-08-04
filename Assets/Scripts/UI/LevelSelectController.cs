@@ -108,7 +108,7 @@ namespace Echoes.UI
                         var deathLabel = meta.Q<Label>(className: "deaths");
                         var timeLabel = meta.Q<Label>(className: "time");
                         if (echoLabel != null) echoLabel.text = $"Ecos: {echoes}";
-                        if (deathLabel != null) deathLabel.text = deaths > 0 ? $"Colapsos: {deaths}" : "Colapsos: 0";
+                        if (deathLabel != null) deathLabel.text = deaths > 0 ? $"Quiebres: {deaths}" : "Quiebres: 0";
                         if (timeLabel != null) timeLabel.text = $"Tiempo: {GameProgress.FormatPlayTime(time)}";
                     }
                 }

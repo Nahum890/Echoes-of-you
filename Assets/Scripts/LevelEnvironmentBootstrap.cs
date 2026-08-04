@@ -104,23 +104,10 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
-            LevelSpawnMarker marker = player.GetComponent<LevelSpawnMarker>();
-            if (marker == null)
-            {
-                marker = player.AddComponent<LevelSpawnMarker>();
-                marker.OriginalPosition = player.transform.position;
-            }
-
-            if (!marker.PositionScaled)
-            {
-                Vector3 original = marker.OriginalPosition;
-                player.transform.position = new Vector3(
-                    original.x * scale,
-                    original.y,
-                    original.z * scale);
-                marker.PositionScaled = true;
-            }
-
+            // SPEC: El player NO se escala con LevelGeometryScale. Su CharacterController
+            // ya tiene las dimensiones canónicas (h=2.2, r=0.36, center=1.1) aplicadas en
+            // PlayerController.Awake(). Solo garantizamos que sigan correctas y repo-
+            // sicionamos el GroundCheck (bootstrap corre después de Awake).
             CharacterController cc = player.GetComponent<CharacterController>();
             if (cc != null)
             {
@@ -129,6 +116,10 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
                 cc.center = new Vector3(0f, EchoesWorldMetrics.PlayerCenterY, 0f);
                 cc.enabled = true;
             }
+
+            PlayerController pc = player.GetComponent<PlayerController>();
+            if (pc != null)
+                pc.RepositionGroundCheck();
         }
 
         if (scaledAny)

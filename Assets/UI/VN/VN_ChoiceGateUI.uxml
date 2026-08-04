@@ -1,6 +1,12 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+  <Style src="project://database/Assets/UI/EchoesTheme.uss" />
   <Style src="VN_ChoiceGateUI.uss" />
-  <VisualElement name="gate-root" class="gate-overlay hidden">
+  <VisualElement name="gate-root" class="gate-overlay hidden" style="width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
+
+    <!-- Character sprites (background layer, like VN_DialogueUI) -->
+    <ui:VisualElement name="gate-sprite-left" class="vn-sprite vn-sprite--left" />
+    <ui:VisualElement name="gate-sprite-right" class="vn-sprite vn-sprite--right" />
+
     <VisualElement class="gate-frame">
       <Label name="gate-prompt" class="gate-prompt" text="..." />
       <VisualElement class="gate-buttons-row">

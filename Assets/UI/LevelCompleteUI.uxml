@@ -1,0 +1,39 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/EchoesTheme.uss" />
+    <Style src="project://database/Assets/UI/LevelCompleteUI.uss" />
+
+    <ui:VisualElement name="level-complete-root" class="level-complete-root complete-hidden" style="width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
+
+        <!-- Background -->
+        <ui:VisualElement class="complete-vignette" />
+
+        <!-- Content -->
+        <ui:VisualElement class="complete-content">
+
+            <!-- Title -->
+            <ui:Label name="complete-title" class="complete-title" text="MEMORIA ANCLADA" />
+
+            <!-- Separator -->
+            <ui:VisualElement class="complete-separator" />
+
+            <!-- Stats -->
+            <ui:VisualElement class="complete-stats">
+                <ui:Label text="ECOS" class="complete-stat-label" />
+                <ui:Label name="stat-echoes" class="complete-stat-value" text="0" />
+                <ui:Label text="QUIEBRES" class="complete-stat-label" />
+                <ui:Label name="stat-breaks" class="complete-stat-value" text="0" />
+                <ui:Label text="TIEMPO" class="complete-stat-label" />
+                <ui:Label name="stat-time" class="complete-stat-value" text="00:00" />
+            </ui:VisualElement>
+
+            <!-- Action buttons -->
+            <ui:VisualElement class="complete-buttons">
+                <ui:Button name="btn-continue" class="complete-btn complete-btn--primary" text="Continuar" />
+                <ui:Button name="btn-restart" class="complete-btn" text="Reiniciar" />
+                <ui:Button name="btn-copybook" class="complete-btn" text="Cuaderno" />
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

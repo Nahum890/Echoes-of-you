@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Echoes of You - Índice de Recuerdos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&amp;family=EB+Garamond:ital,wght@0,400..800;1,400..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-dim": "#131410",
+                      "outline": "#959087",
+                      "on-tertiary-fixed": "#001f28",
+                      "on-secondary": "#29313d",
+                      "tertiary-fixed-dim": "#63d4fa",
+                      "on-primary": "#333027",
+                      "tertiary": "#fffeff",
+                      "surface-bright": "#393935",
+                      "surface-container-lowest": "#0e0f0b",
+                      "on-secondary-fixed-variant": "#3f4754",
+                      "inverse-surface": "#e4e2dc",
+                      "on-background": "#e4e2dc",
+                      "tertiary-fixed": "#b7eaff",
+                      "primary-container": "#e8e1d4",
+                      "primary-fixed": "#e9e2d5",
+                      "surface-container-highest": "#353530",
+                      "on-error": "#690005",
+                      "secondary-fixed-dim": "#bfc7d7",
+                      "on-tertiary": "#003543",
+                      "on-secondary-container": "#b4bccc",
+                      "primary": "#fffeff",
+                      "on-surface-variant": "#ccc6bc",
+                      "on-tertiary-container": "#006d87",
+                      "on-surface": "#e4e2dc",
+                      "inverse-on-surface": "#30312c",
+                      "on-primary-fixed": "#1e1b14",
+                      "surface-tint": "#ccc6b9",
+                      "surface": "#131410",
+                      "outline-variant": "#4a463f",
+                      "on-secondary-fixed": "#141c28",
+                      "tertiary-container": "#b6eaff",
+                      "secondary-fixed": "#dbe3f3",
+                      "primary-fixed-dim": "#ccc6b9",
+                      "error-container": "#93000a",
+                      "on-primary-fixed-variant": "#4a463d",
+                      "secondary-container": "#444c59",
+                      "error": "#ffb4ab",
+                      "on-primary-container": "#686459",
+                      "background": "#131410",
+                      "surface-variant": "#353530",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-high": "#2a2a26",
+                      "surface-container": "#1f201c",
+                      "on-tertiary-fixed-variant": "#004d61",
+                      "secondary": "#bfc7d7",
+                      "inverse-primary": "#625e54",
+                      "surface-container-low": "#1b1c18"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-edge": "64px",
+                      "container-padding": "32px",
+                      "unit": "8px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "interface-md": ["Courier Prime", "monospace"],
+                      "display-md": ["EB Garamond", "serif"],
+                      "display-lg-mobile": ["EB Garamond", "serif"],
+                      "display-lg": ["EB Garamond", "serif"],
+                      "label-caps": ["Courier Prime", "monospace"],
+                      "interface-sm": ["Courier Prime", "monospace"],
+                      "interface-lg": ["Courier Prime", "monospace"]
+              },
+              "fontSize": {
+                      "interface-md": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                      "display-md": ["48px", {"lineHeight": "56px", "fontWeight": "400"}],
+                      "display-lg-mobile": ["40px", {"lineHeight": "44px", "fontWeight": "400"}],
+                      "display-lg": ["64px", {"lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                      "label-caps": ["16px", {"lineHeight": "20px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                      "interface-sm": ["20px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "interface-lg": ["38px", {"lineHeight": "44px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        /* Custom utilities for the specific aesthetic */
+        .echo-trail-active .echo-layer {
+            opacity: 0.3;
+            transform: translate(6px, 4px);
+            color: #63d4fa; /* tertiary-fixed-dim */
+            filter: blur(1px);
+        }
+        
+        .scanline {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+        }
+
+        .chromatic-btn:hover span {
+            text-shadow: -1px 0 #63d4fa, 1px 0 #ffb4ab;
+        }
+    </style>
+</head>
+<body class="bg-surface-dim text-on-surface font-interface-md h-screen w-screen overflow-hidden flex relative">
+<!-- Atmospheric Background -->
+<div class="absolute inset-0 z-0">
+<div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-luminosity grayscale" data-alt="A haunting, abandoned school hallway stretching into the distance. The scene is illuminated by pale, flickering fluorescent light filtering through dusty windows, creating long, distorted shadows. The aesthetic is melancholic and analog, with a subtle grainy texture and faded tones of navy and sepia. Desks are overturned and papers are scattered like lost memories." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCBBAOZXkxMr8Cvx40IEWvYUYbUu7VGxZz8iQrJC8b5iIGcB2OJSCfEwBDc3v_rAR8NZ2-pmK3tfSAF1uV3FejT0rs4gDm6br6AuQrOZeMl9F2Nh9U6040hBeF5GTS6QA71HEk-TwE_wE1K2n629P41b_srsEvXr8jeAywBBorZwJ4O_BXeTrO-KJbzMQzUWqqg2SG2bFLx0pztfiyJw472lidkWK85FvwTSiiCEjeKSKzcb2aqt-0zHA')"></div>
+<div class="absolute inset-0 bg-surface-dim/85 backdrop-blur-sm z-0"></div>
+<div class="absolute inset-0 scanline z-0 pointer-events-none opacity-20"></div>
+</div>
+<!-- SideNavBar (from JSON) -->
+<nav class="fixed left-0 top-0 h-full flex flex-col py-margin-edge bg-surface/80 backdrop-blur-md border-r border-outline-variant h-full w-80 z-40 hidden md:flex">
+<div class="px-margin-edge mb-12">
+<h1 class="font-display-md text-display-md text-primary tracking-tighter">SCHOOL_ARCHIVE_01</h1>
+<p class="font-interface-sm text-interface-sm text-outline mt-2">STATUS: CORRUPTED</p>
+</div>
+<ul class="flex flex-col gap-4 w-full mt-8">
+<!-- Active Tab -->
+<li>
+<a class="text-primary font-bold border-l-2 border-primary pl-4 flex items-center gap-4 bg-primary/10 py-3 w-full transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+<span class="font-label-caps text-label-caps uppercase tracking-[0.2em]">ARCHIVE</span>
+</a>
+</li>
+<!-- Inactive Tabs -->
+<li>
+<a class="text-outline flex items-center gap-4 pl-4 py-3 w-full hover:bg-secondary-container/50 hover:text-tertiary-fixed-dim hover:italic hover:translate-x-2 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined group-hover:text-tertiary-fixed-dim">waves</span>
+<span class="font-label-caps text-label-caps uppercase tracking-[0.2em]">ECHOS</span>
+</a>
+</li>
+<li>
+<a class="text-outline flex items-center gap-4 pl-4 py-3 w-full hover:bg-secondary-container/50 hover:text-tertiary-fixed-dim hover:italic hover:translate-x-2 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined group-hover:text-tertiary-fixed-dim">schedule</span>
+<span class="font-label-caps text-label-caps uppercase tracking-[0.2em]">CHRONOS</span>
+</a>
+</li>
+<li>
+<a class="text-outline flex items-center gap-4 pl-4 py-3 w-full hover:bg-secondary-container/50 hover:text-tertiary-fixed-dim hover:italic hover:translate-x-2 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined group-hover:text-tertiary-fixed-dim">psychology</span>
+<span class="font-label-caps text-label-caps uppercase tracking-[0.2em]">MEMORY</span>
+</a>
+</li>
+<li class="mt-auto pt-8">
+<a class="text-outline flex items-center gap-4 pl-4 py-3 w-full hover:bg-secondary-container/50 hover:text-tertiary-fixed-dim hover:italic hover:translate-x-2 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined group-hover:text-tertiary-fixed-dim">logout</span>
+<span class="font-label-caps text-label-caps uppercase tracking-[0.2em]">EXIT</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Canvas -->
+<main class="relative z-10 flex-1 ml-0 md:ml-80 h-full overflow-y-auto px-4 md:px-16 py-16 scrollbar-hide">
+<header class="mb-16 pb-6 border-b border-outline-variant/30 max-w-5xl">
+<p class="font-label-caps text-label-caps text-outline mb-4">DIRECTORIO_PRINCIPAL // 001</p>
+<h2 class="font-display-lg text-display-lg text-primary tracking-tighter">Índice de Recuerdos</h2>
+</header>
+<div class="max-w-5xl flex flex-col gap-0" id="archive-list">
+<!-- Chapter Entry 1: Expanded (Active) State -->
+<article class="chapter-entry relative border-b border-outline-variant/50 py-8 echo-trail-active transition-all duration-500 cursor-default bg-secondary-container/5 pl-6 -ml-6 border-l border-primary">
+<div class="flex items-start gap-8 relative z-10">
+<!-- Thumbnail -->
+<div class="w-32 h-24 shrink-0 border border-outline/30 relative overflow-hidden group-hover:border-tertiary-fixed-dim transition-colors">
+<img class="w-full h-full object-cover opacity-80 mix-blend-luminosity" data-alt="A close-up view of a dusty classroom chalkboard, partially erased. Faint mathematical equations are visible beneath smears of white chalk dust. The lighting is dim and natural, coming from off-screen, emphasizing the texture of the board and the melancholic, abandoned atmosphere of the school memory." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQgs_v6gJREUWAhTbGk5qj9pEpCvM5hDTb5ozkQM1bbuSaWni3GZE7afahC1G-qutvudwPK1C0RrvoufAPGIUAK5i7o-TOVi3X6ILgalaCPZczwgUM5OSPRpqYLlDJcdLO30zk_ZooxImsYwMQnwVDm-ihKgM_OC_4LyiqjKXuk9F2B7YCUmPitGCHM9ri9nErpRPb5vwZVq1xwjdDRWTCIJTR6UHvkC-6tevesaF1S2BuJbErXxe17w"/>
+<div class="absolute inset-0 bg-tertiary-fixed-dim/10 mix-blend-overlay"></div>
+</div>
+<!-- Meta & Title -->
+<div class="flex-1">
+<div class="flex items-center gap-4 font-label-caps text-label-caps text-outline mb-2">
+<span>REC: I</span>
+<span class="w-1 h-1 bg-outline-variant rounded-full"></span>
+<span>Pasillo Norte</span>
+<span class="ml-auto text-tertiary-fixed-dim">75% ECHOES</span>
+</div>
+<div class="relative">
+<!-- Echo Layer (Positioned absolutely behind) -->
+<h3 aria-hidden="true" class="font-display-md text-display-md absolute top-0 left-0 echo-layer transition-all duration-700 pointer-events-none select-none">El Susurro del Aula</h3>
+<!-- Main Title Layer -->
+<h3 class="font-display-md text-display-md text-primary relative z-10">El Susurro del Aula</h3>
+</div>
+<!-- Expanded Content -->
+<div class="mt-6 text-on-surface-variant font-interface-sm text-interface-sm max-w-3xl leading-relaxed border-l border-outline-variant/30 pl-4">
+<p>El eco de pasos que no te pertenecen aún resuena cerca de las taquillas. Un fragmento temporal inestable donde la memoria del primer día se mezcla con el último. Debes tener cuidado con las sombras que se alargan más de lo debido.</p>
+<button class="mt-8 border border-outline px-6 py-3 font-label-caps text-label-caps text-primary hover:bg-secondary-container hover:border-tertiary-fixed-dim transition-all duration-300 flex items-center gap-3 chromatic-btn group">
+<span class="material-symbols-outlined text-[18px] group-hover:text-tertiary-fixed-dim transition-colors">login</span>
+<span class="tracking-widest">ENTRAR EN EL RECUERDO</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+<!-- Chapter Entry 2: Collapsed State -->
+<article class="chapter-entry relative border-b border-outline-variant/50 py-8 hover:bg-surface-bright/20 transition-all duration-300 cursor-pointer group pl-6 -ml-6 border-l border-transparent hover:border-outline">
+<div class="flex items-center gap-8">
+<!-- Thumbnail -->
+<div class="w-24 h-16 shrink-0 border border-outline/20 relative overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500">
+<img class="w-full h-full object-cover opacity-50 group-hover:opacity-100" data-alt="A distorted view looking out of a rain-streaked school window into a bleak courtyard. The colors are muted, dominated by cool grays and dark blues, suggesting a rainy, lonely afternoon. The glass reflects a faint, ghost-like silhouette, hinting at the corrupted memory theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUdsygZLH3HPYgzRBQUjC5FiSb2bcmsBzXipYyWU3OshZKnMLyFGIWcXXKA0CMBuBq-vK1_50Hm-Zox6s1hLuiPpNHZv3qd7YvhyqiS2ZW2uW6Zmku6nNPL8cDiC56XAIuzs33jiDIPAXE484qQYJPpAShdNQQl1GL0b83ynJ5RaSg_BLxqBa_EGkTKObXnqeMXN1Zuak3Y4vwnpzGokhvhRUzN_w29xVxgg10jaUPy3rMbH3mdM0t0Q"/>
+</div>
+<!-- Meta & Title -->
+<div class="flex-1 flex items-center justify-between">
+<div>
+<div class="flex items-center gap-4 font-label-caps text-label-caps text-outline/70 mb-1 group-hover:text-outline transition-colors">
+<span>REC: II</span>
+<span class="w-1 h-1 bg-outline-variant rounded-full"></span>
+<span>Patio Interior</span>
+</div>
+<h3 class="font-display-md text-display-md text-on-surface group-hover:text-primary transition-colors text-[36px] leading-none">Lluvia Estática</h3>
+</div>
+<div class="text-right font-interface-sm text-interface-sm text-outline">
+<span class="block">42% ECHOES</span>
+</div>
+</div>
+</div>
+</article>
+<!-- Chapter Entry 3: Collapsed State (Locked/Corrupted) -->
+<article class="chapter-entry relative border-b border-outline-variant/50 py-8 opacity-50 cursor-not-allowed pl-6 -ml-6">
+<div class="flex items-center gap-8">
+<!-- Thumbnail -->
+<div class="w-24 h-16 shrink-0 border border-error-container/30 relative overflow-hidden bg-surface-container">
+<!-- Corrupted pattern instead of image -->
+<div class="absolute inset-0 scanline opacity-40"></div>
+<div class="absolute inset-0 flex items-center justify-center text-error font-interface-sm">ERR</div>
+</div>
+<!-- Meta & Title -->
+<div class="flex-1 flex items-center justify-between">
+<div>
+<div class="flex items-center gap-4 font-label-caps text-label-caps text-error/70 mb-1">
+<span>REC: III</span>
+<span class="w-1 h-1 bg-error-container rounded-full"></span>
+<span>[DATOS_DAÑADOS]</span>
+</div>
+<h3 class="font-display-md text-display-md text-on-surface/50 text-[36px] leading-none line-through decoration-error-container">El Reloj del Director</h3>
+</div>
+<div class="text-right font-interface-sm text-interface-sm text-error/70">
+<span class="block">ACCESO DENEGADO</span>
+</div>
+</div>
+</div>
+</article>
+</div>
+<!-- Bottom padding for scrolling -->
+<div class="h-32"></div>
+</main>
+</body></html>

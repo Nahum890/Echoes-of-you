@@ -1,0 +1,123 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f7e4997a9b64d441a770fc4eb717f16, type: 3}
+  m_Name: VN_ChoiceRegistry
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.VN.VN_ChoiceRegistry
+  nodes:
+  - nodeId: ch1_choice_1
+    levelIndex: 1
+    isMicroChoice: 0
+    promptKey: vn.ch1.choice.1
+    cyanFlag: allow_to_see
+    amberFlag: avoid_looking
+  - nodeId: ch2_choice_1
+    levelIndex: 2
+    isMicroChoice: 0
+    promptKey: vn.ch2.choice.1
+    cyanFlag: pause_at_doubt
+    amberFlag: walk_past_light
+  - nodeId: ch3_choice_1
+    levelIndex: 3
+    isMicroChoice: 0
+    promptKey: vn.ch3.choice.1
+    cyanFlag: left_corridor
+    amberFlag: right_corridor
+  - nodeId: ch3_choice_2
+    levelIndex: 3
+    isMicroChoice: 1
+    promptKey: vn.ch3.choice.2
+    cyanFlag: trust_first_take
+    amberFlag: redo_silently
+  - nodeId: ch4_choice_1
+    levelIndex: 4
+    isMicroChoice: 0
+    promptKey: vn.ch4.choice.1
+    cyanFlag: let_hand_rest
+    amberFlag: force_release
+  - nodeId: ch5_choice_1
+    levelIndex: 5
+    isMicroChoice: 0
+    promptKey: vn.ch5.choice.1
+    cyanFlag: pattern_recognized
+    amberFlag: guess_blind
+  - nodeId: ch6_choice_1
+    levelIndex: 6
+    isMicroChoice: 0
+    promptKey: vn.ch6.choice.1
+    cyanFlag: speak_below_doubt
+    amberFlag: lower_voice
+  - nodeId: ch7_choice_1
+    levelIndex: 7
+    isMicroChoice: 0
+    promptKey: vn.ch7.choice.1
+    cyanFlag: let_two_walk
+    amberFlag: keep_distance
+  - nodeId: ch7_choice_2
+    levelIndex: 7
+    isMicroChoice: 1
+    promptKey: vn.ch7.choice.2
+    cyanFlag: relay_echo
+    amberFlag: wait_passively
+  - nodeId: ch8_choice_1
+    levelIndex: 8
+    isMicroChoice: 0
+    promptKey: vn.ch8.choice.1
+    cyanFlag: self_coordination
+    amberFlag: personal_space
+  - nodeId: ch9_choice_1
+    levelIndex: 9
+    isMicroChoice: 0
+    promptKey: vn.ch9.choice.1
+    cyanFlag: lower_pieces
+    amberFlag: snatch_pieces
+  - nodeId: ch10_choice_1
+    levelIndex: 10
+    isMicroChoice: 0
+    promptKey: vn.ch10.choice.1
+    cyanFlag: carry_two
+    amberFlag: drop_one
+  - nodeId: ch11_choice_1
+    levelIndex: 11
+    isMicroChoice: 0
+    promptKey: vn.ch11.choice.1
+    cyanFlag: let_go_pain
+    amberFlag: cradle_sting
+  - nodeId: ch12_choice_1
+    levelIndex: 12
+    isMicroChoice: 0
+    promptKey: vn.ch12.choice.1
+    cyanFlag: imperfect_take
+    amberFlag: perfect_take
+  - nodeId: ch13_choice_1
+    levelIndex: 13
+    isMicroChoice: 0
+    promptKey: vn.ch13.choice.1
+    cyanFlag: name_of_doors
+    amberFlag: renumber_outlets
+  - nodeId: ch13_choice_2
+    levelIndex: 13
+    isMicroChoice: 1
+    promptKey: vn.ch13.choice.2
+    cyanFlag: sit_with_noise
+    amberFlag: last_minute
+  - nodeId: ch14_choice_1
+    levelIndex: 14
+    isMicroChoice: 0
+    promptKey: vn.ch14.choice.1
+    cyanFlag: follow_echo
+    amberFlag: follow_aircon
+  - nodeId: ch15_choice_1
+    levelIndex: 15
+    isMicroChoice: 0
+    promptKey: vn.ch15.choice.1
+    cyanFlag: break_pattern
+    amberFlag: conclude_earlier

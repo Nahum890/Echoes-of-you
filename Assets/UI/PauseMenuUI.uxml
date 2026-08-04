@@ -11,10 +11,10 @@
             </ui:VisualElement>
 
             <ui:VisualElement class="pause-stats" name="pauseStats">
-                <ui:Label class="pause-stat" name="lbl-pause-fragment" text="Recuerdo: —" />
+                <ui:Label class="pause-stat" name="lbl-pause-fragment" text="Capítulo: --" />
                 <ui:Label class="pause-stat" name="lbl-pause-time" text="Tiempo: 00:00:00" />
                 <ui:Label class="pause-stat" name="lbl-pause-echoes" text="Ecos grabados: 0" />
-                <ui:Label class="pause-stat" name="lbl-pause-deaths" text="Colapsos (aula): 0 · sesión 0" />
+                <ui:Label class="pause-stat" name="lbl-pause-deaths" text="Quiebres (aula): 0 · sesión 0" />
                 <ui:Label class="pause-stat" name="lbl-pause-total" text="Cuaderno de Aiden: 0/15 · 0 ecos · 00:00:00" />
             </ui:VisualElement>
 

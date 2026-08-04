@@ -143,9 +143,9 @@ public partial class PlayerController : MonoBehaviour
         {
             _controller.stepOffset = 0.30f;
             _controller.slopeLimit = 45.0f;
-            _controller.radius = 0.35f;
-            _controller.height = 1.80f;
-            _controller.center = new Vector3(0f, 0.90f, 0f);
+            _controller.radius = EchoesWorldMetrics.PlayerRadius;       // 0.36f
+            _controller.height = EchoesWorldMetrics.PlayerHeight;       // 2.2f
+            _controller.center = new Vector3(0f, EchoesWorldMetrics.PlayerCenterY, 0f); // 1.1f
             _controller.skinWidth = 0.08f;
         }
 

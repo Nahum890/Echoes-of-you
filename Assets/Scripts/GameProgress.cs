@@ -313,11 +313,11 @@ public static class GameProgress
     public static string GetActiveProtocolMessage(int completedLevels, int totalLevels)
     {
         if (completedLevels == 0)
-            return "El Archivo aguarda tu primera decisión. Proyecta un eco antes de cruzar lo imposible.";
+            return "El Cuaderno aguarda tu primera decisión. Proyecta un eco antes de cruzar lo imposible.";
         if (completedLevels < totalLevels / 2)
-            return "Varios fragmentos siguen desalineados. Usa la proyección (F) para actuar sin mover tu cuerpo.";
+            return "Varios capítulos siguen desalineados. Usa la proyección (F) para actuar sin mover tu cuerpo.";
         if (completedLevels < totalLevels)
-            return "La coherencia mejora. Evita ecos en rutas que cierran tu propio camino.";
+            return "El recorrido avanza. Evita ecos en rutas que cierran tu propio camino.";
         return "Todos los nodos de memoria están activos. El Archivo reconoce tu patrón.";
     }
 

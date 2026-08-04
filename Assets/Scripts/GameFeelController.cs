@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using Unity.Cinemachine;
 
 /// <summary>
 /// Sistema de Game Feel con jerarquía de intensidad.
@@ -63,6 +64,11 @@ public class GameFeelController : MonoBehaviour
     [SerializeField] CameraShake cameraShake;
     [SerializeField] ThirdPersonCamera gameplayCamera;
     [SerializeField] FixedPuzzleCameraController fixedGameplayCamera;
+    // Bridge Cinemachine: cuando una CinemachineBrain controla la cámara (PS1 desactivado),
+    // CameraShake.PositionOffset/RotationOffset no tienen consumidor (ThirdPersonCamera se
+    // deshabilita solo). Este impulse source inyecta el shake en la pipeline Cinemachine.
+    CinemachineImpulseSource _impulseSource;
+    CinemachineBrain _cinemachineBrain;
     [SerializeField] float jumpShake = 0.08f;
     [SerializeField] float landingShake = 0.18f;
     [SerializeField] float gravityShake = 0.28f;
@@ -122,6 +128,15 @@ public class GameFeelController : MonoBehaviour
 
         if (cameraShake == null)
             cameraShake = GetComponent<CameraShake>();
+
+        // Cinemachine impulse bridge — crear dinámicamente si falta.
+        _cinemachineBrain = FindAnyObjectByType<CinemachineBrain>();
+        if (_cinemachineBrain != null)
+        {
+            _impulseSource = GetComponent<CinemachineImpulseSource>();
+            if (_impulseSource == null)
+                _impulseSource = gameObject.AddComponent<CinemachineImpulseSource>();
+        }
 
         if (gameplayCamera == null)
             gameplayCamera = GetComponent<ThirdPersonCamera>();
@@ -494,6 +509,9 @@ public class GameFeelController : MonoBehaviour
         SpawnEffect(deathEffectPrefab, position, Vector3.up);
         PlayClip3D(playerDeathClip, position, defaultVolume * 1.2f, 0.55f);
         cameraShake?.AddShake(deathShake);
+        // Cinemachine bridge: impulso fuerte de muerte.
+        if (_impulseSource != null && _cinemachineBrain != null)
+            _impulseSource.GenerateImpulse(Mathf.Clamp01(deathShake) * 0.9f);
         PulseCA(0.8f, 0.4f);
         PulseVignette(0.7f, 0.35f);
         PulseExposure(-1f, 0.3f);
@@ -527,6 +545,9 @@ public class GameFeelController : MonoBehaviour
     public void PlayCameraShake(float intensity)
     {
         cameraShake?.AddShake(intensity);
+        // Cinemachine bridge: impulse (force escalada, Cinemachine re-amplifica).
+        if (_impulseSource != null && _cinemachineBrain != null)
+            _impulseSource.GenerateImpulse(Mathf.Clamp01(intensity) * 0.6f);
     }
 
     // ═══════════════════════════════════════════

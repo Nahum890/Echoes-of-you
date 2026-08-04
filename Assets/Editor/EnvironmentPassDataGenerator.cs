@@ -18,7 +18,7 @@ public static class EnvironmentPassDataGenerator
             EnsureFolder($"Assets/ScriptableObjects/EnvironmentPass/Level{i:D2}");
 
         // Load canonical materials
-        var matMemory = EchoesMaterialLibrary.GetOrCreateEmissiveMaterial("Mat_Memory", EchoesMaterialLibrary.HexColor("8A5A2E"), EchoesMaterialLibrary.HexColor("E8B262") * 0.9f);
+        var matMemory = EchoesMaterialLibrary.GetOrCreateEmissiveMaterial("Mat_Memory", EchoesMaterialLibrary.HexColor("8A5A2E"), EchoesMaterialLibrary.HexColor("FFBF00") * 0.9f);
         var matWallTeal = EchoesMaterialLibrary.GetOrCreateMaterial("Mat_WallTeal", EchoesMaterialLibrary.HexColor("2B4A4A"));
         var matWallMustard = EchoesMaterialLibrary.GetOrCreateMaterial("Mat_WallMustard", EchoesMaterialLibrary.HexColor("5A4A2E"));
         var matWallSage = EchoesMaterialLibrary.GetOrCreateMaterial("Mat_WallSage", EchoesMaterialLibrary.HexColor("3A4A38"));

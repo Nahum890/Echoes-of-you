@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Echo Archive - HUD Grabación</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&amp;family=EB+Garamond:ital,wght@0,400..800;1,400..800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config injected from instructions -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error": "#690005",
+                      "surface-container-lowest": "#0e0f0b",
+                      "outline": "#959087",
+                      "on-secondary-container": "#b4bccc",
+                      "on-tertiary-container": "#006d87",
+                      "error-container": "#93000a",
+                      "on-tertiary-fixed": "#001f28",
+                      "secondary-fixed": "#dbe3f3",
+                      "surface-variant": "#353530",
+                      "inverse-primary": "#625e54",
+                      "primary-fixed": "#e9e2d5",
+                      "primary": "#fffeff",
+                      "on-tertiary": "#003543",
+                      "tertiary-fixed": "#b7eaff",
+                      "surface": "#131410",
+                      "error": "#ffb4ab",
+                      "on-primary-fixed-variant": "#4a463d",
+                      "surface-container-highest": "#353530",
+                      "on-secondary": "#29313d",
+                      "on-primary-container": "#686459",
+                      "on-secondary-fixed-variant": "#3f4754",
+                      "on-error-container": "#ffdad6",
+                      "primary-fixed-dim": "#ccc6b9",
+                      "on-surface": "#e4e2dc",
+                      "surface-dim": "#131410",
+                      "secondary": "#bfc7d7",
+                      "surface-container": "#1f201c",
+                      "tertiary-fixed-dim": "#63d4fa",
+                      "outline-variant": "#4a463f",
+                      "primary-container": "#e8e1d4",
+                      "surface-bright": "#393935",
+                      "on-background": "#e4e2dc",
+                      "tertiary-container": "#b6eaff",
+                      "on-primary-fixed": "#1e1b14",
+                      "on-surface-variant": "#ccc6bc",
+                      "surface-tint": "#ccc6b9",
+                      "secondary-container": "#444c59",
+                      "on-tertiary-fixed-variant": "#004d61",
+                      "surface-container-low": "#1b1c18",
+                      "secondary-fixed-dim": "#bfc7d7",
+                      "on-primary": "#333027",
+                      "inverse-surface": "#e4e2dc",
+                      "tertiary": "#fffeff",
+                      "on-secondary-fixed": "#141c28",
+                      "surface-container-high": "#2a2a26",
+                      "inverse-on-surface": "#30312c",
+                      "background": "#131410"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "unit": "8px",
+                      "margin-edge": "64px",
+                      "container-padding": "32px"
+              },
+              "fontFamily": {
+                      "label-caps": [
+                              "courierPrime"
+                      ],
+                      "display-lg-mobile": [
+                              "ebGaramond"
+                      ],
+                      "display-lg": [
+                              "ebGaramond"
+                      ],
+                      "interface-sm": [
+                              "courierPrime"
+                      ],
+                      "display-md": [
+                              "ebGaramond"
+                      ],
+                      "interface-md": [
+                              "courierPrime"
+                      ],
+                      "interface-lg": [
+                              "courierPrime"
+                      ]
+              },
+              "fontSize": {
+                      "label-caps": [
+                              "16px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "40px",
+                              {
+                                      "lineHeight": "44px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "64px",
+                              {
+                                      "lineHeight": "72px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "interface-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-md": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "interface-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "interface-lg": [
+                              "38px",
+                              {
+                                      "lineHeight": "44px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        /* Custom HUD Effects */
+        .hud-fringe {
+            box-shadow: inset 0 0 80px rgba(99, 212, 250, 0.15), inset 0 0 20px rgba(99, 212, 250, 0.3);
+            pointer-events: none;
+        }
+        
+        .text-chromatic-shift {
+            text-shadow: -2px 0 0 rgba(99, 212, 250, 0.6), 2px 0 0 rgba(105, 0, 5, 0.4);
+        }
+
+        .echo-trail-svg {
+            animation: draw-trail 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes draw-trail {
+            0% { stroke-dashoffset: 200; }
+            100% { stroke-dashoffset: 0; }
+        }
+
+        .hud-scanline {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface overflow-hidden relative w-screen h-screen selection:bg-tertiary-fixed-dim selection:text-background font-interface-md text-interface-md">
+<!-- Simulated Game Environment Background -->
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center opacity-30 mix-blend-luminosity" data-alt="A dark, heavily blurred first-person perspective of an abandoned institutional hallway. The lighting is dim and melancholic, with heavy film grain, vignette, and slight chromatic aberration at the edges. The scene suggests a corrupted memory or an eerie, abandoned archive space. Deep shadows dominate." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCibq_4SYy1G4D0Co8ll4LBjsjYcIk0xiX_jF-9LcXybaFTrYJdVLGkN180gtEXyA2LZx56WGesNSM-sk94jQ__fUjNF6mYefSb4WR_8hVkwDV8GstfqQ6zYeN15diNOjKpw6x3GDuiG4RPnNZ6hVQWeijJcW7cJD3Nm4-2_z-ut9z9bzieWZSC2cXyp3xXq5G8wwwdOQ-2XIQz7-BSXDKG8FyqiFx1pXUkE8_AmbS_fSKnqZpetVkpxg')"></div>
+</div>
+<!-- Screen Effects Layer -->
+<div class="absolute inset-0 z-10 hud-fringe hud-scanline"></div>
+<!-- HUD Overlay Canvas -->
+<main class="absolute inset-0 z-20 flex flex-col justify-between p-margin-edge pointer-events-none">
+<!-- Top Section -->
+<div class="flex justify-between items-start w-full">
+<!-- Empty Left for balance, or could hold obscure data -->
+<div class="w-1/3">
+<div class="text-interface-sm font-interface-sm text-outline-variant opacity-50 flex flex-col gap-1">
+<span>SYS.MEM.CORRUPT</span>
+<span>TS: 0x8F3A2B</span>
+</div>
+</div>
+<!-- Center Objective -->
+<div class="w-1/3 flex justify-center">
+<div class="relative group">
+<!-- Echo Silhouette -->
+<div class="absolute inset-0 bg-surface-container/20 border border-tertiary-fixed-dim/20 px-8 py-3 translate-y-1 translate-x-1 opacity-50 blur-[1px]"></div>
+<!-- Main Container -->
+<div class="relative bg-surface-container-highest/60 backdrop-blur-md border border-outline-variant/40 px-8 py-3 text-center">
+<span class="font-interface-md text-interface-md tracking-wider text-on-surface drop-shadow-md">
+                            Encuentra una forma de cruzar
+                        </span>
+<div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-12 h-px bg-tertiary-fixed-dim/50"></div>
+</div>
+</div>
+</div>
+<!-- Right Recording Status -->
+<div class="w-1/3 flex justify-end">
+<div class="flex items-center gap-3 animate-pulse">
+<span class="font-label-caps text-label-caps text-tertiary-fixed-dim tracking-[0.2em] text-chromatic-shift">GRABANDO</span>
+<div class="relative flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-2xl" style="font-variation-settings: 'FILL' 1;">radio_button_checked</span>
+<div class="absolute inset-0 bg-tertiary-fixed-dim rounded-full blur-[8px] opacity-40"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Center Reticle / Broken-O -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 flex items-center justify-center opacity-80 mix-blend-screen">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<filter height="140%" id="cyanGlow" width="140%" x="-20%" y="-20%">
+<fegaussianblur result="blur" stddeviation="4"></fegaussianblur>
+<fecomposite in="SourceGraphic" in2="blur" operator="over"></fecomposite>
+</filter>
+</defs>
+<!-- Background Broken Track -->
+<circle class="text-outline-variant opacity-30" cx="100" cy="100" fill="none" r="90" stroke="currentColor" stroke-dasharray="15 5 5 5 400" stroke-width="1"></circle>
+<!-- Main Broken O -->
+<circle class="text-on-surface/40" cx="100" cy="100" fill="none" r="80" stroke="currentColor" stroke-dasharray="350 150" stroke-width="2"></circle>
+<!-- Cyan Closing Trail -->
+<circle class="text-tertiary-fixed-dim echo-trail-svg" cx="100" cy="100" fill="none" filter="url(#cyanGlow)" r="80" stroke="currentColor" stroke-dasharray="100 400" stroke-width="3"></circle>
+<!-- Center Focus Point -->
+<circle class="text-tertiary-fixed-dim/60" cx="100" cy="100" fill="currentColor" r="2"></circle>
+</svg>
+</div>
+<!-- Bottom Section -->
+<div class="flex justify-between items-end w-full">
+<!-- Decorative Tech Bar -->
+<div class="w-1/3 flex items-end">
+<div class="flex gap-1 h-8 opacity-40">
+<div class="w-2 h-full bg-outline-variant/30"></div>
+<div class="w-2 h-3/4 bg-outline-variant/30"></div>
+<div class="w-2 h-1/2 bg-outline-variant/30"></div>
+<div class="w-2 h-full bg-outline-variant/30"></div>
+<div class="w-8 h-px bg-outline-variant/30 self-end mb-1 ml-2"></div>
+</div>
+</div>
+<!-- Input Hint -->
+<div class="w-1/3 flex justify-end w-full">
+<div class="flex items-center gap-3 font-interface-sm text-interface-sm text-on-surface-variant bg-surface-container-lowest/50 px-4 py-2 border border-outline-variant/20 backdrop-blur-sm">
+<div class="relative">
+<div class="absolute inset-0 bg-on-surface/10 translate-x-0.5 translate-y-0.5 rounded-sm"></div>
+<span class="relative border border-on-surface/40 rounded-sm px-2 py-0.5 bg-background text-on-surface font-label-caps text-label-caps">R</span>
+</div>
+<span class="tracking-wide">Detener</span>
+</div>
+</div>
+</div>
+</main>
+</body></html>

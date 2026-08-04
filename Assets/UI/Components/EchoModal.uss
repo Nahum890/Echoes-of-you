@@ -9,7 +9,7 @@
 .echo-modal {
     position: absolute;
     left: 0; top: 0; right: 0; bottom: 0;
-    background-color: rgba(10, 10, 13, 0.88);
+    background-color: var(--color-void-overlay-88);
     justify-content: center;
     align-items: center;
     opacity: 0;
@@ -44,7 +44,7 @@
     padding: var(--space-xl);
     flex-direction: column;
     justify-content: space-between;
-    box-shadow: 0 0 40px rgba(10, 10, 13, 0.9);
+    box-shadow: 0 0 40px var(--color-void-overlay-90);
 }
 
 .echo-modal__title {

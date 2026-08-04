@@ -1,9 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace Echoes.UI
 {
@@ -20,16 +17,6 @@ namespace Echoes.UI
         [SerializeField] string hubSceneName = "MainMenu";
         [SerializeField] string mainMenuScene = "MainMenu";
 
-        // Color constants for inline styling (bypass USS cascade issues)
-        static readonly Color Amber = new Color(1f, 0.749f, 0f);       // #FFBF00
-        static readonly Color Paper = new Color(0.957f, 0.949f, 0.933f); // #F4F2EE
-        static readonly Color VoidBlack = new Color(0.039f, 0.039f, 0.051f); // #0A0A0D
-        static readonly Color DarkBg = new Color(0.012f, 0.016f, 0.024f); // #030406
-        static readonly Color Fluorescent = new Color(0.788f, 0.831f, 0.69f); // #C9D4B0
-        static readonly Color Faded = new Color(0.353f, 0.29f, 0.18f);   // #5A4A2E
-        static readonly Color DestructiveRed = new Color(0.698f, 0.227f, 0.227f); // #B23A3A
-        static readonly Color BorderAmber = new Color(1f, 0.749f, 0f, 0.2f); // Amber 20%
-
         bool _paused;
         UIDocument _doc;
         VisualElement _root;
@@ -42,41 +29,38 @@ namespace Echoes.UI
         Button _btnSettings;
         Button _btnHub;
 
-        void OnEnable()
-        {
-            InitializeUI();
-        }
+        void OnEnable() { InitializeUI(); }
 
         void InitializeUI()
         {
-            if (_paused) return; // ya inicializado
+            if (_paused) return;
 
             _doc = GetComponent<UIDocument>();
             if (_doc == null || _doc.rootVisualElement == null) return;
-
             _root = _doc.rootVisualElement;
 
-            // Query elements BEFORE loading stylesheets (needed for inline styles)
             _pauseRoot = _root.Q("pause-root");
             if (_pauseRoot == null) return;
 
             _pauseNav = _root.Q("pause-nav");
             _settingsPanel = _root.Q("pause-settings-panel");
 
-            // Botones principales
             _btnResume    = _pauseRoot.Q<Button>("btn-resume");
             _btnReiniciar = _pauseRoot.Q<Button>("btn-reiniciar");
             _btnSettings  = _pauseRoot.Q<Button>("btn-settings");
             _btnHub       = _pauseRoot.Q<Button>("btn-hub");
 
-            // Load stylesheets for editor play mode
-            LoadStyleSheets();
+            // Wire button events just once
+            if (_btnResume != null && !_btnResume.name.EndsWith("_wired"))
+            {
+                _btnResume.name += "_wired";
+                _btnResume.clicked += Resume;
+                _btnReiniciar.clicked += ConfirmReiniciar;
+                _btnSettings.clicked += ShowSettings;
+                _btnHub.clicked += ConfirmHub;
+            }
 
-            // IMMEDIATELY apply inline styles to override USS cascade
-            ApplyInlineStyles();
             _settingsPanel?.AddToClassList("hidden");
-
-            // Start hidden
             _pauseRoot.AddToClassList("hidden");
         }
 
@@ -202,7 +186,7 @@ void ShowSettings()
             bool isLevel = levelIndex >= 0;
 
             string fragmentLine = isLevel
-                ? $"Recuerdo: {GameProgress.GetLevelDisplayName(sceneName)}"
+                ? $"Capítulo: {GameProgress.GetLevelDisplayName(sceneName)}"
                 : $"Zona: {sceneName}";
 
             SetLabel("lbl-pause-fragment", fragmentLine);
@@ -215,8 +199,8 @@ void ShowSettings()
             SetLabel("lbl-pause-time", $"Tiempo: {GameProgress.FormatPlayTime(sessionTime)}");
             SetLabel("lbl-pause-echoes", $"Ecos grabados: {sessionEchoes}");
             SetLabel("lbl-pause-deaths", isLevel
-                ? $"Colapsos (aula): {GameProgress.GetSceneDeathCount(sceneName)} · sesión {sessionDeaths}"
-                : $"Colapsos (sesión): {sessionDeaths}");
+                ? $"Quiebres (aula): {GameProgress.GetSceneDeathCount(sceneName)} · sesión {sessionDeaths}"
+                : $"Quiebres (sesión): {sessionDeaths}");
 
             int completed = GameProgress.GetCompletedCount();
             SetLabel("lbl-pause-total",
@@ -227,147 +211,6 @@ void ShowSettings()
         {
             var lbl = _doc.rootVisualElement.Q<Label>(elementName);
             if (lbl != null) lbl.text = text;
-        }
-
-        void LoadStyleSheets()
-        {
-            var paths = new[]
-            {
-                "Assets/UI/EchoesTheme.tss",
-                "Assets/UI/PauseMenuUI.uss",
-                "Assets/UI/Components/EchoButton.uss",
-                "Assets/UI/Components/EchoPanel.uss",
-                "Assets/UI/Components/EchoSlider.uss",
-                "Assets/UI/Components/EchoToggle.uss",
-                "Assets/UI/Components/EchoDropdown.uss",
-                "Assets/UI/Components/EchoTabs.uss",
-                "Assets/UI/Components/EchoModal.uss",
-            };
-
-            foreach (var path in paths)
-            {
-                StyleSheet ss = null;
-#if UNITY_EDITOR
-                ss = AssetDatabase.LoadAssetAtPath<StyleSheet>(path);
-#else
-                string resourcePath = path.Replace("Assets/Resources/", "").Replace(".uss", "").Replace(".tss", "");
-                ss = Resources.Load<StyleSheet>(resourcePath);
-#endif
-                if (ss != null)
-                {
-                    _root.styleSheets.Add(ss);
-                    Debug.Log("[PauseMenu] Loaded stylesheet: " + path);
-                }
-            }
-        }
-
-        void ApplyInlineStyles()
-        {
-            if (_pauseRoot == null || _pauseNav == null) return;
-
-            // pause-root (fullscreen background)
-            _pauseRoot.style.backgroundColor = new Color(0.039f, 0.039f, 0.051f, 0.92f); // #0A0A0D 92%
-            _pauseRoot.style.color = Paper;
-            _pauseRoot.style.fontSize = 30;
-
-            // pause-nav (notebook panel)
-            _pauseNav.style.backgroundColor = VoidBlack;
-            _pauseNav.style.borderLeftWidth = 1; _pauseNav.style.borderRightWidth = 1;
-            _pauseNav.style.borderTopWidth = 1; _pauseNav.style.borderBottomWidth = 1;
-            _pauseNav.style.borderLeftColor = Amber; _pauseNav.style.borderRightColor = Amber;
-            _pauseNav.style.borderTopColor = Amber; _pauseNav.style.borderBottomColor = Amber;
-            _pauseNav.style.borderLeftWidth = 4;
-            _pauseNav.style.borderLeftColor = Amber;
-            _pauseNav.style.paddingTop = 48; _pauseNav.style.paddingBottom = 48;
-            _pauseNav.style.paddingLeft = 36; _pauseNav.style.paddingRight = 36;
-            _pauseNav.style.color = Paper;
-            _pauseNav.style.fontSize = 30;
-
-            // Header labels
-            var header = _pauseNav.Q(className: "pause-notebook__header");
-            if (header != null) {
-                header.style.marginBottom = 48;
-                header.style.paddingBottom = 36;
-                header.style.borderBottomWidth = 1;
-                header.style.borderBottomColor = new Color(0.169f, 0.29f, 0.29f); // Institutional Teal
-            }
-
-            var titleLabel = _pauseNav.Q<Label>(className: "pause-title");
-            if (titleLabel != null) {
-                titleLabel.style.fontSize = 32;
-                titleLabel.style.color = Amber;
-                titleLabel.style.unityFontDefinition = titleLabel.style.unityFontDefinition;
-                titleLabel.style.letterSpacing = 1;
-                titleLabel.style.marginBottom = 8;
-            }
-
-            var subtitleLabel = _pauseNav.Q<Label>(className: "pause-subtitle");
-            if (subtitleLabel != null) {
-                subtitleLabel.style.fontSize = 17;
-                subtitleLabel.style.color = Fluorescent;
-                subtitleLabel.style.letterSpacing = 2;
-                // Text transform handled via USS class
-            }
-
-            // Stats
-            var stats = _pauseNav.Q(className: "pause-stats");
-            if (stats != null) {
-                var statLabels = stats.Query<Label>(className: "pause-stat").ToList();
-                foreach (var lbl in statLabels) {
-                    lbl.style.color = Fluorescent;
-                    lbl.style.fontSize = 17;
-                }
-            }
-
-            // Buttons
-            var buttons = new[] { _btnResume, _btnReiniciar, _btnSettings, _btnHub };
-            foreach (var btn in buttons) {
-                if (btn == null) continue;
-                btn.style.backgroundColor = Amber;
-                btn.style.color = VoidBlack;
-                btn.style.fontSize = 16;
-                btn.style.paddingTop = 14; btn.style.paddingBottom = 14;
-                btn.style.paddingLeft = 20; btn.style.paddingRight = 20;
-                btn.style.borderLeftWidth = 2;
-                btn.style.borderLeftColor = Color.clear;
-                btn.style.unityFontDefinition = btn.style.unityFontDefinition;
-                btn.style.letterSpacing = 1;
-                btn.style.marginBottom = 8;
-            }
-
-            // Destructive button (Reiniciar)
-            if (_btnReiniciar != null) {
-                _btnReiniciar.style.backgroundColor = Color.clear;
-                _btnReiniciar.style.color = DestructiveRed;
-                _btnReiniciar.style.borderLeftColor = Color.clear;
-            }
-
-            // Secondary button (Hub)
-            if (_btnHub != null) {
-                _btnHub.style.backgroundColor = new Color(0.11f, 0.141f, 0.188f); // Navy
-                _btnHub.style.color = Fluorescent;
-                _btnHub.style.borderLeftColor = Color.clear;
-            }
-
-            // Settings panel
-            if (_settingsPanel != null) {
-                _settingsPanel.style.backgroundColor = VoidBlack;
-                _settingsPanel.style.borderLeftWidth = 1; _settingsPanel.style.borderRightWidth = 1;
-                _settingsPanel.style.borderTopWidth = 1; _settingsPanel.style.borderBottomWidth = 1;
-                _settingsPanel.style.borderLeftColor = new Color(0.788f, 0.831f, 0.69f, 0.2f);
-                _settingsPanel.style.borderRightColor = new Color(0.788f, 0.831f, 0.69f, 0.2f);
-                _settingsPanel.style.borderTopColor = new Color(0.788f, 0.831f, 0.69f, 0.2f);
-                _settingsPanel.style.borderBottomColor = new Color(0.788f, 0.831f, 0.69f, 0.2f);
-            }
-
-            // Footer
-            var footer = _pauseNav.Q<Label>(className: "pause-footer");
-            if (footer != null) {
-                footer.style.color = Faded;
-                footer.style.fontSize = 17;
-            }
-
-            Debug.Log("[PauseMenu] Inline styles applied successfully.");
         }
     }
 }

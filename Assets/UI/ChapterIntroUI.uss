@@ -1,0 +1,105 @@
+/* ============================================================
+   ChapterIntroUI — chapter intro screen (Stich aesthetic)
+   Fills screen with surface-bg + vignette at chapter start.
+   Title (Garamond amber), subtitle (Courier ivory), description,
+   "Comenzar" button. Fade in/out via .chapter-hidden class.
+   ============================================================ */
+
+@import "EchoesDesignTokens.uss";
+
+.chapter-intro-root {
+    background-color: var(--color-stich-surface);
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+    transition-property: opacity;
+    transition-duration: var(--duration-slow);
+    transition-timing-function: linear;
+    opacity: 1;
+}
+
+.chapter-hidden {
+    display: none;
+}
+
+.chapter-vignette {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}
+
+.chapter-content {
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xl);
+    max-width: 1200px;
+}
+
+.chapter-label {
+    font-family: var(--font-interface-bold);
+    font-size: var(--size-label-caps);
+    color: var(--color-stich-on-surface-variant);
+    letter-spacing: 0.1em;
+    -unity-text-transform: uppercase;
+    margin-bottom: var(--space-lg);
+    opacity: 1;
+}
+
+.chapter-title {
+    font-family: var(--font-display);
+    font-size: var(--size-display-md);
+    color: var(--color-stich-amber);
+    letter-spacing: -0.02em;
+    -unity-text-align: middle-center;
+    margin-bottom: var(--space-md);
+    opacity: 1;
+}
+
+.chapter-separator {
+    height: 1px;
+    width: 240px;
+    background-color: var(--color-stich-outline-variant);
+    margin-bottom: var(--space-lg);
+}
+
+.chapter-description {
+    font-family: var(--font-interface);
+    font-size: var(--size-interface-sm);
+    color: var(--color-stich-on-surface);
+    -unity-text-align: middle-center;
+    white-space: normal;
+    line-height: var(--size-interface-lg);
+    max-width: 600px;
+    margin-bottom: var(--space-2xl);
+    opacity: 1;
+}
+
+.chapter-start-btn {
+    font-family: var(--font-interface-bold);
+    font-size: var(--size-interface-sm);
+    color: var(--color-stich-pure-white);
+    background-color: transparent;
+    border-width: 1px;
+    border-color: var(--color-stich-on-surface);
+    padding: var(--space-md) var(--space-2xl);
+    letter-spacing: 2px;
+    -unity-text-transform: uppercase;
+    -unity-text-align: middle-center;
+    opacity: 1;
+    transition-property: color, border-color, background-color;
+    transition-duration: var(--duration-hover);
+    transition-timing-function: linear;
+    border-radius: 0;
+}
+
+.chapter-start-btn:hover {
+    color: var(--color-stich-amber);
+    border-color: var(--color-stich-amber);
+    background-color: var(--color-amber-tint-12);
+}
+
+.chapter-start-btn:active {
+    color: var(--color-stich-amber);
+    border-color: var(--color-stich-amber);
+}

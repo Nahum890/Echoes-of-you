@@ -66,7 +66,7 @@
 }
 
 .echo-dropdown .unity-base-dropdown__item:hover {
-    background-color: rgba(255, 191, 0, 0.08);
+    background-color: var(--color-amber-tint-08);
 }
 
 .echo-dropdown .unity-base-dropdown__item:hover .unity-label {

@@ -1,66 +1,79 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
-    <!-- CreditsUI — Escena de créditos del Cuaderno de Aiden.
-         Scroll automático (30px/s), botón "Volver".
-         Contraste ≥ 4.5:1 en todo texto. -->
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/EchoesTheme.uss" />
+    <Style src="project://database/Assets/UI/CreditsUI.uss" />
 
-    <ui:VisualElement class="root-fullscreen" name="root" style="background-color: #0A0A0D;">
+    <ui:VisualElement name="root" class="root-fullscreen" style="background-color: #131410; width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
+
         <ui:VisualElement class="credits-container" name="creditsContainer">
             <ui:ScrollView class="credits-scroll" name="creditsScroll">
 
-                <ui:VisualElement class="credits-section">
-                    <ui:Label class="credits-heading" text="ECHOES OF YOU" />
-                    <ui:Label class="credits-subheading" text="Un eco que no se puede borrar" />
+                <!-- Opening title -->
+                <ui:VisualElement class="credits-section credits-section--title">
+                    <ui:Label class="credits-title-main" text="ECHOES OF YOU" />
+                    <ui:VisualElement class="credits-separator" />
+                    <ui:Label class="credits-subtitle" text="Un eco que no se puede borrar" />
                 </ui:VisualElement>
 
+                <!-- Direction -->
                 <ui:VisualElement class="credits-section">
-                    <ui:Label class="credits-heading" text="Dirección y Diseño de Juego" />
+                    <ui:Label class="credits-heading" text="DIRECCION Y DISENO" />
                     <ui:Label class="credits-name" text="[Nombre del Director Creativo]" />
                 </ui:VisualElement>
 
+                <!-- Programming -->
                 <ui:VisualElement class="credits-section">
-                    <ui:Label class="credits-heading" text="Programación" />
+                    <ui:Label class="credits-heading" text="PROGRAMACION" />
                     <ui:Label class="credits-name" text="[Nombre(s) del Equipo o de Ingeniero]" />
                 </ui:VisualElement>
 
+                <!-- Art -->
                 <ui:VisualElement class="credits-section">
-                    <ui:Label class="credits-heading" text="Arte y Dirección Visual" />
-                    <ui:Label class="credits-text" text="Paleta Escuela Liminal · PS1/PS2 · CRT" />
-                    <ui:Label class="credits-name" text="[Nombre(s) del Artista/Diseñador]" />
+                    <ui:Label class="credits-heading" text="ARTE Y DIRECCION VISUAL" />
+                    <ui:Label class="credits-text" text="Paleta Escuela Liminal - PS1/PS2 - CRT" />
+                    <ui:Label class="credits-name" text="[Nombre(s) del Artista]" />
                 </ui:VisualElement>
 
+                <!-- Narrative -->
                 <ui:VisualElement class="credits-section">
-                    <ui:Label class="credits-heading" text="Narrativa y Escritura" />
-                    <ui:Label class="credits-text" text="Historia sin palabras — el eco habla por sí solo" />
+                    <ui:Label class="credits-heading" text="NARRATIVA Y ESCRITURA" />
+                    <ui:Label class="credits-text" text="Historia sin palabras - el eco habla por si solo" />
                     <ui:Label class="credits-name" text="[Nombre(s) del Escritor]" />
                 </ui:VisualElement>
 
+                <!-- Sound -->
                 <ui:VisualElement class="credits-section">
-                    <ui:Label class="credits-heading" text="Diseño de Sonido" />
-                    <ui:Label class="credits-name" text="[Nombre(s) del Diseñador de Audio]" />
+                    <ui:Label class="credits-heading" text="DISENO DE SONIDO" />
+                    <ui:Label class="credits-name" text="[Nombre(s) del Dise\u00f1ador de Audio]" />
                 </ui:VisualElement>
 
+                <!-- QA -->
                 <ui:VisualElement class="credits-section">
-                    <ui:Label class="credits-heading" text="QA y Pruebas" />
+                    <ui:Label class="credits-heading" text="QA Y PRUEBAS" />
                     <ui:Label class="credits-name" text="[Nombre(s) del Tester]" />
                 </ui:VisualElement>
 
+                <!-- Thanks -->
                 <ui:VisualElement class="credits-section">
-                    <ui:Label class="credits-heading" text="Agradecimientos" />
-                    <ui:Label class="credits-name" text="Fuentes tipográficas: Inter (Rasmus Andersson) · Garamond · Courier" />
-                    <ui:Label class="credits-name" text="Diseño de sonido: Freesound.org y comunidad de audio libre" />
-                    <ui:Label class="credits-name" text="Motor: Unity 6000.4 · URP 17.4" />
+                    <ui:Label class="credits-heading" text="AGRADECIMIENTOS" />
+                    <ui:Label class="credits-name" text="Fuentes: Inter (Rasmus Andersson) - Garamond - Courier" />
+                    <ui:Label class="credits-name" text="Motor: Unity 6000.4 - URP 17.4" />
                     <ui:Label class="credits-name" text="Soporte: Coplay MCP Bridge" />
                 </ui:VisualElement>
 
-                <ui:VisualElement class="credits-section">
-                    <ui:Label class="credits-heading" text="Cuaderno cerrado." />
-                    <ui:Label class="credits-subheading" text="Gracias por jugar." />
+                <!-- Closing -->
+                <ui:VisualElement class="credits-section credits-section--close">
+                    <ui:Label class="credits-heading credits-heading--close" text="Cuaderno cerrado." />
+                    <ui:VisualElement class="credits-separator" />
+                    <ui:Label class="credits-subtitle" text="Gracias por jugar." />
                 </ui:VisualElement>
+
+                <!-- Padding for scroll -->
+                <ui:VisualElement style="height: 200px;" />
 
             </ui:ScrollView>
         </ui:VisualElement>
 
-        <ui:Button class="echo-button echo-button--secondary credits-back-btn" name="btnBack" text="Volver" />
+        <ui:Button class="credit-back-btn" name="btnBack" text="Volver" />
 
     </ui:VisualElement>
-</UI>
+</ui:UXML>

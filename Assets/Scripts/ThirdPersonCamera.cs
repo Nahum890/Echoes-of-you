@@ -53,6 +53,11 @@ public class ThirdPersonCamera : MonoBehaviour
 
     void OnEnable()
     {
+        if (GetComponent<SimpleFollowCamera>() != null && GetComponent<SimpleFollowCamera>().enabled)
+        {
+            enabled = false;
+            return;
+        }
         CheckAndDisableIfCinemachineActive();
     }
 
@@ -96,7 +101,11 @@ public class ThirdPersonCamera : MonoBehaviour
         _cameraShake = GetComponent<CameraShake>();
         _camera = GetComponent<Camera>();
 
-        // If Cinemachine is active in scene, ThirdPersonCamera must disable itself automatically
+        if (GetComponent<SimpleFollowCamera>() != null && GetComponent<SimpleFollowCamera>().enabled)
+        {
+            enabled = false;
+            return;
+        }
         if (CheckAndDisableIfCinemachineActive())
             return;
 

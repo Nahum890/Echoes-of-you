@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/EchoesTheme.uss" />
+    <Style src="project://database/Assets/UI/InteractionPromptUI.uss" />
+
+    <ui:VisualElement name="interaction-prompt-root" class="interaction-prompt-root prompt-hidden" style="width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
+        <ui:VisualElement name="prompt-box" class="prompt-box">
+            <ui:Label name="key-icon" class="prompt-key-icon" text="[E]" />
+            <ui:Label name="prompt-label" class="prompt-action-label" text="Interactuar" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,141 @@
+/* ============================================================
+   VN_DialogueUI — Visual Novel dialogue panel (Stich aesthetic)
+   Source: Stich/DESIGN.md
+   - Bottom panel with glassmorphism
+   - Garamond for character name (display)
+   - Courier for dialogue text (interface)
+   - Amber accent for name, Ivory for text
+   - Typewriter cursor via C# (not USS animation)
+   ============================================================ */
+
+@import "../EchoesDesignTokens.uss";
+
+/* ===== ROOT — invisible by default, C# toggles .vn-hidden ===== */
+.vn-dialogue-root {
+    background-color: transparent;
+    overflow: hidden;
+}
+
+.vn-hidden {
+    display: none;
+}
+
+/* ===== CHARACTER SPRITES (background layer) ===== */
+.vn-sprite {
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    opacity: 1;
+    transition-property: opacity, translate;
+    transition-duration: var(--duration-slow);
+    transition-timing-function: linear;
+    pointer-events: none;
+}
+
+.vn-sprite--left {
+    left: 80px;
+    bottom: 280px;
+    width: 480px;
+    height: 720px;
+}
+
+.vn-sprite--center {
+    left: 720px;
+    bottom: 280px;
+    width: 480px;
+    height: 720px;
+}
+
+.vn-sprite--right {
+    right: 80px;
+    bottom: 280px;
+    width: 480px;
+    height: 720px;
+}
+
+/* ===== DIALOGUE PANEL (bottom) — glassmorphism Stich ===== */
+.vn-dialogue-panel {
+    position: absolute;
+    left: 64px;
+    right: 64px;
+    bottom: 48px;
+    min-height: 200px;
+    background-color: var(--color-glass-bg-strong);
+    border-width: 1px;
+    border-color: var(--color-glass-border-bright);
+    padding: var(--space-lg) var(--space-xl) var(--space-md) var(--space-xl);
+    flex-direction: column;
+    border-radius: 0;
+}
+
+/* ===== NAME BAR ===== */
+.vn-name-bar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-sm);
+}
+
+.vn-character-name {
+    font-family: var(--font-display-bold);
+    font-size: var(--size-interface-md);
+    color: var(--color-stich-amber);
+    letter-spacing: 2px;
+    -unity-text-transform: uppercase;
+    opacity: 1;
+}
+
+.vn-line-counter {
+    font-family: var(--font-interface);
+    font-size: var(--size-label-caps);
+    color: var(--color-stich-on-surface-variant);
+    letter-spacing: 1px;
+    opacity: 1;
+}
+
+/* ===== SEPARATOR ===== */
+.vn-separator {
+    height: 1px;
+    background-color: var(--color-stich-outline-variant);
+    margin-bottom: var(--space-md);
+}
+
+/* ===== DIALOGUE TEXT ===== */
+.vn-dialogue-text {
+    font-family: var(--font-interface);
+    font-size: var(--size-interface-sm);
+    color: var(--color-stich-on-surface);
+    line-height: var(--size-interface-lg);
+    white-space: normal;
+    -unity-text-align: middle-left;
+    flex-grow: 1;
+    padding-right: var(--space-lg);
+    opacity: 1;
+}
+
+/* Typewriter cursor (appended by C# as last char) */
+.vn-typewriter-cursor {
+    color: var(--color-stich-amber);
+    opacity: 1;
+}
+
+/* ===== ADVANCE PROMPT ===== */
+.vn-advance-row {
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: var(--space-sm);
+}
+
+.vn-advance-prompt {
+    font-family: var(--font-interface);
+    font-size: var(--size-label-caps);
+    color: var(--color-stich-on-surface-variant);
+    letter-spacing: 1px;
+    opacity: 1;
+}
+
+/* ===== ACTIVE STATE (panel visible) ===== */
+.vn-dialogue-root:not(.vn-hidden) .vn-dialogue-panel {
+    border-color: var(--color-stich-on-surface);
+}

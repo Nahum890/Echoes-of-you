@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Echoes of You - Visual Design System</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&amp;family=EB+Garamond:ital,wght@0,400..800;1,400..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-surface": "#e4e2dc",
+                      "primary-fixed": "#e9e2d5",
+                      "tertiary-fixed-dim": "#63d4fa",
+                      "surface-bright": "#393935",
+                      "on-tertiary": "#003543",
+                      "secondary-container": "#444c59",
+                      "inverse-primary": "#625e54",
+                      "primary": "#fffeff",
+                      "on-secondary-container": "#b4bccc",
+                      "on-tertiary-container": "#006d87",
+                      "outline-variant": "#4a463f",
+                      "surface-dim": "#131410",
+                      "on-primary-fixed-variant": "#4a463d",
+                      "inverse-on-surface": "#30312c",
+                      "primary-container": "#e8e1d4",
+                      "on-secondary-fixed-variant": "#3f4754",
+                      "on-error": "#690005",
+                      "on-secondary-fixed": "#141c28",
+                      "on-surface": "#e4e2dc",
+                      "on-primary": "#333027",
+                      "tertiary-container": "#b6eaff",
+                      "error": "#ffb4ab",
+                      "error-container": "#93000a",
+                      "on-error-container": "#ffdad6",
+                      "on-secondary": "#29313d",
+                      "secondary": "#bfc7d7",
+                      "primary-fixed-dim": "#ccc6b9",
+                      "on-primary-fixed": "#1e1b14",
+                      "on-background": "#e4e2dc",
+                      "on-tertiary-fixed-variant": "#004d61",
+                      "on-primary-container": "#686459",
+                      "background": "#131410",
+                      "secondary-fixed-dim": "#bfc7d7",
+                      "on-surface-variant": "#ccc6bc",
+                      "outline": "#959087",
+                      "surface-tint": "#ccc6b9",
+                      "tertiary": "#fffeff",
+                      "surface-container-low": "#1b1c18",
+                      "surface-container": "#1f201c",
+                      "tertiary-fixed": "#b7eaff",
+                      "secondary-fixed": "#dbe3f3",
+                      "surface": "#131410",
+                      "surface-variant": "#353530",
+                      "on-tertiary-fixed": "#001f28",
+                      "surface-container-lowest": "#0e0f0b",
+                      "surface-container-high": "#2a2a26",
+                      "surface-container-highest": "#353530"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "unit": "8px",
+                      "margin-edge": "64px",
+                      "container-padding": "32px"
+              },
+              "fontFamily": {
+                      "display-lg-mobile": [
+                              "EB Garamond", "serif"
+                      ],
+                      "interface-sm": [
+                              "Courier Prime", "monospace"
+                      ],
+                      "display-md": [
+                              "EB Garamond", "serif"
+                      ],
+                      "display-lg": [
+                              "EB Garamond", "serif"
+                      ],
+                      "interface-md": [
+                              "Courier Prime", "monospace"
+                      ],
+                      "interface-lg": [
+                              "Courier Prime", "monospace"
+                      ],
+                      "label-caps": [
+                              "Courier Prime", "monospace"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg-mobile": [
+                              "40px",
+                              {
+                                      "lineHeight": "44px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "interface-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-md": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "64px",
+                              {
+                                      "lineHeight": "72px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "interface-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "interface-lg": [
+                              "38px",
+                              {
+                                      "lineHeight": "44px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "16px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: #0e0f0b; /* surface-container-lowest */
+            color: #e4e2dc; /* on-surface */
+            background-image: radial-gradient(circle at center, rgba(31, 32, 28, 0.4) 0%, transparent 100%), 
+                              url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            background-attachment: fixed;
+        }
+
+        .grain-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.15;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Broken O Motif */
+        .broken-o {
+            position: relative;
+            display: inline-block;
+        }
+        .broken-o::after {
+            content: '';
+            position: absolute;
+            top: 40%;
+            left: -10%;
+            right: -10%;
+            height: 2px;
+            background-color: #0e0f0b; /* Masking effect */
+            transform: rotate(-15deg);
+        }
+
+        /* UI Panel Glassmorphism */
+        .glass-panel {
+            background: rgba(19, 20, 16, 0.7); /* surface-dim */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(149, 144, 135, 0.3); /* outline */
+        }
+
+        /* Interactive States */
+        .btn-base {
+            background: transparent;
+            border: 1px solid #e9e2d5; /* primary-fixed / Aged Ivory */
+            color: #e4e2dc;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-hover:hover {
+            background-color: rgba(68, 76, 89, 0.5); /* secondary-container / Corridor Navy */
+            transform: translate(1px, 1px);
+        }
+
+        .btn-hover:hover .text-layer {
+            animation: chromaticShift 0.2s forwards, jitter 0.1s infinite alternate;
+        }
+        
+        .btn-hover:hover::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid #63d4fa; /* cyan echo */
+            transform: translate(-2px, -2px);
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .btn-active {
+            border-color: #ffb4ab; /* Using error for Amber/Red intent */
+            background-color: rgba(68, 76, 89, 0.8);
+        }
+
+        .btn-disabled {
+            opacity: 0.3;
+            border-style: dashed;
+            cursor: not-allowed;
+        }
+
+        @keyframes chromaticShift {
+            0% { text-shadow: none; }
+            50% { text-shadow: -2px 0 #63d4fa, 2px 0 #ffb4ab; }
+            100% { text-shadow: -1px 0 rgba(99, 212, 250, 0.5), 1px 0 rgba(255, 180, 171, 0.5); }
+        }
+
+        @keyframes jitter {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(0.5px, 0.5px); }
+        }
+
+        /* Delayed Silhouette (Echo Trails) */
+        .echo-trail-container {
+            position: relative;
+        }
+        .echo-trail {
+            position: absolute;
+            top: 0; left: 0;
+            opacity: 0.15;
+            color: #63d4fa;
+            transform: translate(-4px, 4px);
+            pointer-events: none;
+            z-index: -1;
+            filter: blur(1px);
+        }
+        
+        /* Typewriter Cursor */
+        .typewriter-cursor::after {
+            content: '_';
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Section dividers */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(149, 144, 135, 0.5) 50%, transparent 100%);
+            margin: 48px 0;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen p-margin-edge selection:bg-tertiary-fixed-dim selection:text-surface">
+<div class="grain-overlay"></div>
+<div class="max-w-[1440px] mx-auto">
+<!-- Top: Logo & Motif -->
+<header class="mb-24 text-center">
+<h1 class="font-display-lg text-display-lg text-primary tracking-widest uppercase opacity-90">
+                Ech<span class="broken-o">o</span>es <span class="text-surface-variant px-4">|</span> <span class="font-display-md text-display-md text-outline">System Record</span>
+</h1>
+<p class="font-interface-sm text-interface-sm text-on-surface-variant mt-4 opacity-70 uppercase tracking-[0.2em]">Archive // Design Parameters v1.0.4</p>
+</header>
+<!-- Section 1: Color Tokens -->
+<section class="mb-24">
+<h2 class="font-interface-lg text-interface-lg text-on-surface mb-8 border-b border-outline-variant pb-2 inline-block">01. Pigment Extrusions</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
+<!-- Color Swatch Component -->
+<div class="flex flex-col gap-3">
+<div class="h-24 w-full rounded border border-outline-variant bg-surface-container-lowest relative overflow-hidden">
+<div class="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity bg-surface-variant/20 flex items-center justify-center backdrop-blur-sm">
+<span class="font-interface-sm text-interface-sm text-primary">#0e0f0b</span>
+</div>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-primary">Void Black</p>
+<p class="font-interface-sm text-[14px] text-outline">Lowest Elevation</p>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="h-24 w-full rounded border border-outline-variant bg-secondary-container relative overflow-hidden">
+<div class="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity bg-surface-variant/20 flex items-center justify-center backdrop-blur-sm">
+<span class="font-interface-sm text-interface-sm text-primary">#444c59</span>
+</div>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-primary">Corridor Navy</p>
+<p class="font-interface-sm text-[14px] text-outline">Translucent Base</p>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="h-24 w-full rounded border border-outline-variant bg-primary-fixed relative overflow-hidden">
+<div class="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity bg-surface-variant/20 flex items-center justify-center backdrop-blur-sm">
+<span class="font-interface-sm text-interface-sm text-surface">#e9e2d5</span>
+</div>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-primary">Aged Ivory</p>
+<p class="font-interface-sm text-[14px] text-outline">Primary Ink</p>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="h-24 w-full rounded border border-outline-variant bg-outline relative overflow-hidden">
+<div class="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity bg-surface-variant/20 flex items-center justify-center backdrop-blur-sm">
+<span class="font-interface-sm text-interface-sm text-surface">#959087</span>
+</div>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-primary">Dust Gray</p>
+<p class="font-interface-sm text-[14px] text-outline">Borders &amp; Metadata</p>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="h-24 w-full rounded border border-outline-variant bg-tertiary-fixed-dim relative overflow-hidden">
+<div class="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity bg-surface-variant/20 flex items-center justify-center backdrop-blur-sm">
+<span class="font-interface-sm text-interface-sm text-surface">#63d4fa</span>
+</div>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-tertiary-fixed-dim">Echo Cyan</p>
+<p class="font-interface-sm text-[14px] text-outline">Temporal Anomalies</p>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="h-24 w-full rounded border border-outline-variant bg-[#d4a373] relative overflow-hidden"> <!-- Manual amber for specific request, fallback to near theme -->
+<div class="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity bg-surface-variant/20 flex items-center justify-center backdrop-blur-sm">
+<span class="font-interface-sm text-interface-sm text-surface">#d4a373</span>
+</div>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-[#d4a373]">Memory Amber</p>
+<p class="font-interface-sm text-[14px] text-outline">Active Focus</p>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="h-24 w-full rounded border border-outline-variant bg-error relative overflow-hidden">
+<div class="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity bg-surface-variant/20 flex items-center justify-center backdrop-blur-sm">
+<span class="font-interface-sm text-interface-sm text-surface">#ffb4ab</span>
+</div>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-error">Ribbon Red</p>
+<p class="font-interface-sm text-[14px] text-outline">Corruption / Error</p>
+</div>
+</div>
+</div>
+</section>
+<div class="section-divider"></div>
+<!-- Section 2: Typography Scale -->
+<section class="mb-24 flex flex-col md:flex-row gap-16">
+<div class="flex-1">
+<h2 class="font-interface-lg text-interface-lg text-on-surface mb-8 border-b border-outline-variant pb-2 inline-block">02. Typographic Decay</h2>
+<div class="space-y-12">
+<div>
+<p class="font-interface-sm text-[14px] text-outline mb-2">Display Large (EB Garamond, 64px)</p>
+<h1 class="font-display-lg text-display-lg text-primary">The Forgotten Wing</h1>
+</div>
+<div>
+<p class="font-interface-sm text-[14px] text-outline mb-2">Display Medium (EB Garamond, 48px)</p>
+<h2 class="font-display-md text-display-md text-primary">Subject 04: Anomalous</h2>
+</div>
+<div>
+<p class="font-interface-sm text-[14px] text-outline mb-2">Interface Large (Courier Prime, 38px)</p>
+<p class="font-interface-lg text-interface-lg text-primary opacity-80">&gt; SYSTEM_REBOOT_INIT</p>
+</div>
+<div>
+<p class="font-interface-sm text-[14px] text-outline mb-2">Interface Medium (Courier Prime, 24px)</p>
+<p class="font-interface-md text-interface-md text-on-surface">Data fragments recovered: 42%</p>
+</div>
+<div>
+<p class="font-interface-sm text-[14px] text-outline mb-2">Label Caps (Courier Prime, 16px, Bold, Tracking)</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant">RESTRICTED ACCESS</p>
+</div>
+</div>
+</div>
+<div class="flex-1 border-l border-outline-variant pl-16 pt-8 opacity-60 hidden md:block">
+<div class="font-interface-md text-[18px] leading-relaxed text-outline">
+<p class="mb-4">"The words do not sit firmly on the page. They drift, detached from the paper, like dust motes caught in a projector's beam."</p>
+<p class="italic text-on-surface-variant font-display-md text-[24px]">-- Archivist Note, 1998</p>
+</div>
+</div>
+</section>
+<div class="section-divider"></div>
+<!-- Section 3: Interactive States -->
+<section class="mb-24">
+<h2 class="font-interface-lg text-interface-lg text-on-surface mb-8 border-b border-outline-variant pb-2 inline-block">03. Tactile Responses</h2>
+<div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+<!-- Normal -->
+<div class="flex flex-col gap-4 items-start">
+<p class="font-interface-sm text-[14px] text-outline">Default</p>
+<button class="btn-base font-interface-md text-[20px] px-6 py-3 w-full text-left">
+<span class="text-layer">&gt; Inspect File</span>
+</button>
+</div>
+<!-- Hover -->
+<div class="flex flex-col gap-4 items-start">
+<p class="font-interface-sm text-[14px] text-tertiary-fixed-dim">Hover (Simulated)</p>
+<button class="btn-base btn-hover font-interface-md text-[20px] px-6 py-3 w-full text-left bg-secondary-container/50 translate-x-[1px] translate-y-[1px]">
+<span class="absolute inset-0 border border-tertiary-fixed-dim -translate-x-[2px] -translate-y-[2px] opacity-50 pointer-events-none"></span>
+<span class="text-layer" style="text-shadow: -1px 0 rgba(99, 212, 250, 0.5), 1px 0 rgba(255, 180, 171, 0.5);">&gt; Inspect File</span>
+</button>
+</div>
+<!-- Focus -->
+<div class="flex flex-col gap-4 items-start">
+<p class="font-interface-sm text-[14px] text-[#d4a373]">Focus / Active</p>
+<button class="btn-base btn-active font-interface-md text-[20px] px-6 py-3 w-full text-left">
+<span class="text-layer text-primary">&gt; Inspect File</span>
+</button>
+</div>
+<!-- Pressed -->
+<div class="flex flex-col gap-4 items-start">
+<p class="font-interface-sm text-[14px] text-outline">Pressed</p>
+<button class="btn-base font-interface-md text-[20px] px-6 py-3 w-full text-left bg-surface-container opacity-80 translate-y-[2px]">
+<span class="text-layer">&gt; Inspect File</span>
+</button>
+</div>
+<!-- Disabled -->
+<div class="flex flex-col gap-4 items-start">
+<p class="font-interface-sm text-[14px] text-outline opacity-50">Corrupted / Disabled</p>
+<button class="btn-base btn-disabled font-interface-md text-[20px] px-6 py-3 w-full text-left">
+<span class="text-layer line-through text-error/70">&gt; In██ect F█le</span>
+</button>
+</div>
+</div>
+</section>
+<div class="section-divider"></div>
+<!-- Section 4 & 5: UI Panels & Components -->
+<section class="mb-24">
+<h2 class="font-interface-lg text-interface-lg text-on-surface mb-8 border-b border-outline-variant pb-2 inline-block">04 &amp; 05. Structural Fragments</h2>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+<!-- Background Context Container -->
+<div class="relative min-h-[500px] border border-outline/30 p-8 overflow-hidden bg-black">
+<!-- Fake gameplay background image placeholder -->
+<div class="absolute inset-0 bg-cover bg-center opacity-30 grayscale" data-alt="A dark, blurry, low-fidelity photograph of an empty, dilapidated school hallway at night. Grainy texture, high contrast shadows, eerie atmosphere, VHS aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDS0hNjT5xX8y3FGkfJ5kpHWQNMg2WC_R1tRD0HHPebGnLvm4KBlNozTtpiY1MpSSG9GMiZJ8aZ-g1XDXwaBPWPtXTnzcmq3E0j-Yg6XoVo3oiumkCWjuTcysouXs8mdIve5kXkNRj9-Wo6ehywMYglN7dFPTewCr9XMwK4LgnwVRSJpj6iiNpMXQH5dL0-Ej1ve1C-2iFzY_kc1n3vmZ9AQnJg_W6iE5RYLBQYYMAhMxMizKw88IDQ6g')"></div>
+<div class="relative z-10 h-full flex flex-col justify-end space-y-6">
+<!-- Objective Card -->
+<div class="self-end max-w-sm w-full">
+<div class="glass-panel p-4 flex flex-col border-t-2 border-t-primary-fixed">
+<div class="flex justify-between items-center mb-2 border-b border-outline-variant pb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">CURRENT TRACE</span>
+<span class="material-symbols-outlined text-outline text-sm">schedule</span>
+</div>
+<h3 class="font-display-md text-[28px] text-primary mb-1">Find the missing reel</h3>
+<p class="font-interface-sm text-[16px] text-outline typewriter-cursor">A/V Room - 2nd Floor</p>
+</div>
+</div>
+<!-- Dialogue Box -->
+<div class="glass-panel p-6 w-full relative mt-auto">
+<!-- Aiden Silhouette placeholder -->
+<img class="absolute -top-16 left-8 w-24 h-24 object-cover rounded-full border border-outline-variant opacity-80 mix-blend-screen" data-alt="A high-contrast, stark black silhouette of a teenage boy's head and shoulders against a pale, noisy gray background. Stylized, graphic novel aesthetic, minimalist." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBY8BCwqQWRfQLTaiNs2lxMekvDb73a6BBeX_nOi8I-uJnSAd6FbUE2C6tQ5Rd_tEjW7VpHarhATm1ev7HcfGHZ2t8I5FNkdZd2pIF9ZJRSlWghtj4RboJ9iLqzGb4D5EnhyoaHX3mHBNP5V54KzBk38bRKPSg6j__fxWZO4XyFLqbLM7nBX-alse7hcBgjlWQt5G3CD53vQtC7v6vhVs6T3_YvsaS7rEMhiDycAT9-yfGW2EPmfXR9zw"/>
+<div class="ml-24 pl-8 border-l border-outline-variant">
+<p class="font-label-caps text-label-caps text-tertiary-fixed-dim mb-2 echo-trail-container">
+<span class="echo-trail">AIDEN</span>
+<span>AIDEN</span>
+</p>
+<p class="font-display-md text-[32px] text-primary leading-tight">
+                                    "I remember this room... but the desks were facing the other way. Why are they looking at the door?"
+                                </p>
+</div>
+<!-- Controller Prompts -->
+<div class="absolute bottom-4 right-6 flex gap-4">
+<div class="flex items-center gap-2 opacity-70">
+<div class="w-6 h-6 rounded-full border border-primary-fixed flex items-center justify-center font-interface-sm text-[12px]">X</div>
+<span class="font-interface-sm text-[14px]">Advance</span>
+</div>
+<div class="flex items-center gap-2 opacity-40">
+<div class="w-6 h-6 rounded-full border border-outline flex items-center justify-center font-interface-sm text-[12px]">O</div>
+<span class="font-interface-sm text-[14px]">Skip</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Standalone Components & Chips -->
+<div class="space-y-8">
+<div class="glass-panel p-8">
+<h3 class="font-interface-md text-[20px] text-outline mb-6">Memory Fragments (Chips)</h3>
+<div class="flex flex-wrap gap-4">
+<div class="border border-primary-fixed px-4 py-2 font-interface-sm text-primary">Locker 302</div>
+<div class="border border-tertiary-fixed-dim px-4 py-2 font-interface-sm text-tertiary-fixed-dim bg-tertiary-fixed-dim/10 echo-trail-container">
+<span class="echo-trail">Echo: Whispers</span>
+                                Echo: Whispers
+                            </div>
+<div class="border border-error px-4 py-2 font-interface-sm text-error bg-error/10 line-through">DATA_CORRUPT</div>
+</div>
+</div>
+<div class="glass-panel p-8">
+<h3 class="font-interface-md text-[20px] text-outline mb-6">Terminal Input</h3>
+<div class="border-b border-outline-variant pb-2">
+<p class="font-interface-md text-[24px] text-primary">
+<span class="text-outline">&gt;</span> ENTER_PASSCODE<span class="typewriter-cursor"></span>
+</p>
+</div>
+<p class="font-interface-sm text-[14px] text-error mt-2 hidden">Error: Value mismatch.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer: Motion Principles -->
+<footer class="mt-32 pt-8 border-t border-outline-variant text-center opacity-60">
+<h4 class="font-label-caps text-label-caps mb-4">Motion &amp; Kinetic Laws</h4>
+<div class="flex justify-center gap-12 font-interface-sm text-[14px] text-outline">
+<p>1. <span class="text-primary">Frame Skipping:</span> UI elements animate at 12fps to simulate struggle.</p>
+<p>2. <span class="text-tertiary-fixed-dim">Delayed Duplicates:</span> Cyan elements drag a 15% opacity ghost 4px behind.</p>
+<p>3. <span class="text-primary">No Easing:</span> Use linear or step-end transitions. No modern spring physics.</p>
+</div>
+</footer>
+</div>
+</body></html>

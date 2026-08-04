@@ -10,7 +10,7 @@
     position: absolute;
     left: 20%; right: 20%;
     bottom: 120px;
-    background-color: rgba(10, 10, 13, 0.92);
+    background-color: var(--color-void-overlay-92);
     border-width: 1px;
     border-color: var(--color-memory-amber);
     padding: var(--space-sm) var(--space-md);

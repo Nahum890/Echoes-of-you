@@ -35,7 +35,7 @@
     color: var(--color-memory-amber);
     border-bottom-color: var(--color-memory-amber);
     transition-duration: var(--duration-hover-mouse);
-    background-color: rgba(255, 191, 0, 0.04);
+    background-color: var(--color-amber-tint-04);
 }
 
 /* FOCUS */
@@ -43,7 +43,7 @@
     color: var(--color-memory-amber);
     border-bottom-color: var(--color-memory-amber);
     transition-duration: var(--duration-hover-controller);
-    background-color: rgba(255, 191, 0, 0.04);
+    background-color: var(--color-amber-tint-04);
 }
 
 /* SELECTED — pestaña activa */

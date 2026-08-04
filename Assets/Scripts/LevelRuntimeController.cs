@@ -260,11 +260,18 @@ public class LevelRuntimeController : MonoBehaviour
 
         // VN Choice Gate hook: si hay un nodo para este nivel, abrir gate en lugar de avanzar directo
         int levelIdx = ResolveCurrentLevelIndex();
-        if (VN_ChoiceGateController.Instance != null && levelIdx > 0 && levelIdx < 15)
+        if (levelIdx >= 0 && levelIdx < 15 && VN_ChoiceGateController.Instance != null)
         {
+            var hud = FindAnyObjectByType<Echoes.UI.GameHUD>();
+            if (hud != null) hud.SetVisible(false);
             bool isMicro = IsMicroLevel(levelIdx);
             VN_ChoiceGateController.Instance.Show(levelIdx, isMicro, (chosen) => {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+                VN_EndingFlags.Instance?.SetFlag($"ch{levelIdx}_choice_1", chosen);
+                int nextBuildIndex = SceneManager.GetActiveScene().buildIndex + 1;
+                if (nextBuildIndex < SceneManager.sceneCountInBuildSettings)
+                    SceneManager.LoadScene(nextBuildIndex);
+                else
+                    SceneManager.LoadScene(0); // volver a MainMenu si no hay siguiente
             });
             return; // NO avanzar automáticamente - el gate lo hará
         }

@@ -11,22 +11,23 @@
     opacity: 1;
     padding: var(--space-md) var(--space-lg);
     border-width: 1px;
-    border-color: var(--color-institutional-teal);
-    background-color: transparent;
+    border-color: var(--color-glass-border);
+    background-color: var(--color-glass-bg);
     min-height: 0;
     transition-property: opacity, border-color, max-height;
     transition-duration: var(--duration-slow);
-    transition-timing-function: var(--easing-standard);
+    transition-timing-function: linear;
     margin: var(--space-xs) 0;
+    border-radius: 0;
 }
 
-/* HOVER / FOCUS en el panel mismo (opcional cuando tiene contenido) */
+/* HOVER / FOCUS en el panel mismo */
 .echo-panel:hover {
-    border-color: var(--color-memory-amber);
+    border-color: var(--color-stich-on-surface);
 }
 
 .echo-panel:focus {
-    border-color: var(--color-memory-amber);
+    border-color: var(--color-stich-amber);
     border-width: 2px;
     transition-duration: var(--duration-hover-controller);
 }
@@ -43,14 +44,14 @@
     transition-duration: var(--duration-fast);
 }
 
-/* Header (opcional, añadido por UXML embed) */
+/* Header */
 .echo-panel__header {
-    font-size: var(--size-body);
-    color: var(--color-fluorescent-sick);
+    font-size: var(--size-interface-sm);
+    color: var(--color-stich-on-surface);
     padding: var(--space-sm) 0;
     -unity-text-align: middle-left;
 }
 
 .echo-panel__header:hover {
-    color: var(--color-memory-amber);
+    color: var(--color-stich-amber);
 }

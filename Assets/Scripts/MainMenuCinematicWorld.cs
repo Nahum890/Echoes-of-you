@@ -86,26 +86,37 @@ public class MainMenuCinematicWorld : MonoBehaviour
 
     public float CurrentEchoSpeed => _currentEchoSpeed;
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    static void Bootstrap()
+static void Bootstrap()
     {
+        UnityEngine.Debug.Log("[MainMenuCinematicWorld] Bootstrap() running");
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "MainMenu")
+        {
+            UnityEngine.Debug.Log("[MainMenuCinematicWorld] Not MainMenu scene, returning");
             return;
+        }
 
-        if (FindAnyObjectByType<MainMenuCinematicWorld>() != null)
+        var existing = UnityEngine.Object.FindAnyObjectByType<MainMenuCinematicWorld>();
+        UnityEngine.Debug.Log(string.Format("[MainMenuCinematicWorld] Found existing: {0}", existing != null));
+        if (existing != null)
+        {
+            UnityEngine.Debug.Log("[MainMenuCinematicWorld] Existing found, returning");
             return;
+        }
 
+        UnityEngine.Debug.Log("[MainMenuCinematicWorld] Creating new instance");
         GameObject root = new GameObject("MainMenuCinematicWorld");
         root.AddComponent<MainMenuCinematicWorld>();
     }
 
-    void Awake()
-    {
-        Instance = this;
-    }
+        void Awake()
+        {
+            UnityEngine.Debug.Log("[MainMenuCinematicWorld] Awake() called");
+            Instance = this;
+        }
 
-    void Start()
+void Start()
     {
+        UnityEngine.Debug.Log("[MainMenuCinematicWorld] Start() called");
         BuildMaterials();
         BuildVoid();
 
@@ -161,12 +172,12 @@ public class MainMenuCinematicWorld : MonoBehaviour
             case MenuAmbience.Void:
                 _targetVoidScale = 1f;
                 _targetOrbitSpeed = orbitSpeed * 1.5f;
-                _targetOrbitRadius = 14f;
-                _targetFogDensity = 0.045f;
-                _targetFogColor = new Color(0.01f, 0.03f, 0.05f, 1f);
-                _targetAmbientLight = new Color(0.05f, 0.15f, 0.2f, 1f);
-                _targetArchColor = new Color(0.08f, 0.12f, 0.18f, 1f);
-                _targetEchoColor = new Color(0.35f, 0.85f, 1f, 0.8f);
+                _targetOrbitRadius = 8f;
+                _targetFogDensity = 0.008f;
+                _targetFogColor = new Color(0.02f, 0.04f, 0.08f, 1f);
+                _targetAmbientLight = new Color(0.20f, 0.25f, 0.35f, 1f);
+                _targetArchColor = new Color(0.20f, 0.28f, 0.40f, 1f);
+                _targetEchoColor = new Color(0.50f, 0.90f, 1f, 0.9f);
                 _targetEchoSpeed = 2.0f;
                 _targetCameraPitch = 25f;
                 _targetCameraYOffset = 2f;
@@ -292,18 +303,11 @@ public class MainMenuCinematicWorld : MonoBehaviour
             _disconnectRoot.Rotate(Vector3.up, 2f * dt);
         }
 
-        // Update Camera Rig rotation
+        // Update Camera Rig rotation — órbita suave original alrededor del vórtice
         if (_cameraPivot != null)
         {
-            _orbitAngle += _currentOrbitSpeed * dt;
-            _cameraPivot.rotation = Quaternion.Euler(_currentCameraPitch, _orbitAngle, 0f);
-        }
-
-        // Update Camera Rig local zoom
-        Camera main = Camera.main;
-        if (main != null && main.transform.parent == _cameraPivot)
-        {
-            main.transform.localPosition = new Vector3(0f, _currentCameraYOffset, -_currentOrbitRadius);
+            _orbitAngle += orbitSpeed * Time.deltaTime;
+            _cameraPivot.rotation = Quaternion.Euler(12f, _orbitAngle, 0f);
         }
 
         // Update Materials
@@ -328,32 +332,32 @@ public class MainMenuCinematicWorld : MonoBehaviour
     {
         Shader shader = Shader.Find(EchoesUrpMaterials.LitShaderName);
         _archMat = new Material(shader);
-        _archMat.color = new Color(0.22f, 0.26f, 0.34f, 1f);
+        _archMat.color = new Color(0.45f, 0.5f, 0.65f, 1f);
         _archMat.SetFloat("_Metallic", 0.3f);
         _archMat.SetFloat("_Smoothness", 0.45f);
 
         _echoMat = new Material(shader);
-        _echoMat.color = new Color(0.35f, 0.85f, 1f, 0.55f);
+        _echoMat.color = new Color(0.5f, 0.9f, 1f, 0.7f);
         _echoMat.SetFloat("_Surface", 1f);
         _echoMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
         _echoMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
         _echoMat.SetInt("_ZWrite", 0);
         _echoMat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
         _echoMat.EnableKeyword("_EMISSION");
-        _echoMat.SetColor("_EmissionColor", new Color(0.35f, 0.85f, 1f) * 1.5f);
+        _echoMat.SetColor("_EmissionColor", new Color(0.5f, 0.9f, 1f) * 3f);
         _echoMat.renderQueue = 3000;
 
         _circuitMat = new Material(shader);
-        _circuitMat.color = new Color(0.02f, 0.15f, 0.12f, 1f);
+        _circuitMat.color = new Color(0.04f, 0.25f, 0.2f, 1f);
         _circuitMat.SetFloat("_Metallic", 0.8f);
         _circuitMat.SetFloat("_Smoothness", 0.7f);
         _circuitMat.EnableKeyword("_EMISSION");
-        _circuitMat.SetColor("_EmissionColor", new Color(0.08f, 0.45f, 0.35f) * 0.9f);
+        _circuitMat.SetColor("_EmissionColor", new Color(0.15f, 0.6f, 0.5f) * 1.5f);
 
         _packetMat = new Material(shader);
-        _packetMat.color = new Color(0.25f, 0.9f, 0.7f, 1f);
+        _packetMat.color = new Color(0.35f, 0.95f, 0.8f, 1f);
         _packetMat.EnableKeyword("_EMISSION");
-        _packetMat.SetColor("_EmissionColor", new Color(0.25f, 0.9f, 0.7f) * 3f);
+        _packetMat.SetColor("_EmissionColor", new Color(0.35f, 0.95f, 0.8f) * 5f);
     }
 
     void BuildVoid()
@@ -361,13 +365,13 @@ public class MainMenuCinematicWorld : MonoBehaviour
         RenderSettings.fog = true;
         RenderSettings.fogMode = FogMode.Exponential;
         RenderSettings.fogColor = new Color(0.04f, 0.06f, 0.1f, 1f);
-        RenderSettings.ambientLight = new Color(0.18f, 0.22f, 0.3f, 1f);
+        RenderSettings.ambientLight = new Color(0.4f, 0.45f, 0.55f, 1f);
 
         GameObject lightObj = new GameObject("MenuMoon");
         _dirLight = lightObj.AddComponent<Light>();
         _dirLight.type = LightType.Directional;
-        _dirLight.color = new Color(0.55f, 0.7f, 0.95f, 1f);
-        _dirLight.intensity = 0.65f;
+        _dirLight.color = new Color(0.7f, 0.8f, 1f, 1f);
+        _dirLight.intensity = 1.2f;
         _dirLight.shadows = LightShadows.Soft;
         lightObj.transform.rotation = Quaternion.Euler(28f, -40f, 0f);
     }
@@ -428,9 +432,9 @@ public class MainMenuCinematicWorld : MonoBehaviour
         centerLight.transform.position = new Vector3(0f, -0.5f, 0f);
         _vortexLight = centerLight.AddComponent<Light>();
         _vortexLight.type = LightType.Point;
-        _vortexLight.color = new Color(0.35f, 0.85f, 1f);
-        _vortexLight.intensity = 4.5f;
-        _vortexLight.range = 18f;
+        _vortexLight.color = new Color(0.5f, 0.9f, 1f);
+        _vortexLight.intensity = 12f;
+        _vortexLight.range = 30f;
         _vortexLight.shadows = LightShadows.Soft;
     }
 
@@ -660,10 +664,11 @@ public class MainMenuCinematicWorld : MonoBehaviour
         if (main == null)
             return;
 
+        // Restaurar órbita suave original alrededor del vórtice
         _cameraPivot = new GameObject("MenuCameraOrbit").transform;
         _cameraPivot.position = Vector3.zero;
         main.transform.SetParent(_cameraPivot);
-        main.transform.localPosition = new Vector3(0f, _currentCameraYOffset, -orbitRadius);
+        main.transform.localPosition = new Vector3(0f, 3f, -orbitRadius);
         main.transform.localRotation = Quaternion.Euler(8f, 0f, 0f);
     }
 

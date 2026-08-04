@@ -94,6 +94,15 @@ public class LevelExit : MonoBehaviour
 
     void LoadNext()
     {
+        // Race condition guard: si VN_ChoiceGateController está mostrando una
+        // elección, él gestiona la transición de escena. Evitar doble LoadScene.
+        var vnGate = Echoes.VN.VN_ChoiceGateController.Instance;
+        if (vnGate != null && vnGate.IsShowing)
+        {
+            Debug.Log("[LevelExit] LoadNext pospuesto — VN gate activo.");
+            return;
+        }
+
         Debug.Log($"[LevelExit] LoadNext => target={nextSceneName}");
         PostProcessingSetup.PrepareForSceneReload();
 

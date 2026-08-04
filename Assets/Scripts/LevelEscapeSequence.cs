@@ -2,7 +2,7 @@ using UnityEngine;
 using Echoes.UI;
 
 /// <summary>
-/// Tras resolver el puzzle, el jugador debe escapar de una secuencia en colapso
+/// Tras resolver el puzzle, el jugador debe escapar de una secuencia en quiebre
 /// antes de que la salida final se desbloquee por completo.
 /// </summary>
 public class LevelEscapeSequence : MonoBehaviour
@@ -105,7 +105,7 @@ public class LevelEscapeSequence : MonoBehaviour
 
         Invoke(nameof(StartCollapseFeedback), collapseDelay);
         GameHUD hud = FindAnyObjectByType<GameHUD>();
-        hud?.ShowToast("¡Escapa antes del colapso!", new Color(1f, 0.55f, 0.35f, 1f), 2.2f);
+        hud?.ShowToast("¡Escapa antes del quiebre!", new Color(1f, 0.55f, 0.35f, 1f), 2.2f);
     }
 
     void StartCollapseFeedback()

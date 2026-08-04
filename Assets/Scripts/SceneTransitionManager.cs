@@ -47,21 +47,7 @@ public class SceneTransitionManager : MonoBehaviour
         if (_initialized)
             return;
 
-        _doc = gameObject.AddComponent<UIDocument>();
-        _doc.sortingOrder = 100;
-
-        var root = new VisualElement();
-        root.style.position = Position.Absolute;
-        root.style.left = 0;
-        root.style.top = 0;
-        root.style.right = 0;
-        root.style.bottom = 0;
-        root.style.backgroundColor = new StyleColor(Color.black);
-        root.style.opacity = 0f;
-        root.pickingMode = PickingMode.Ignore;
-
-        _fadeOverlay = root;
-        _doc.rootVisualElement.Add(root);
+        // ELIMINADO EL FADE NEGRO POR SOLICITUD DE USUARIO (evita pantalla negra permanente)
         _initialized = true;
     }
 
@@ -162,42 +148,11 @@ public class SceneTransitionManager : MonoBehaviour
 
     IEnumerator FadeTo(float targetAlpha)
     {
-        if (_fadeOverlay == null)
-        {
-            Debug.LogWarning("[SceneTransitionManager] FadeTo: _fadeOverlay is null");
-            yield break;
-        }
-
-        float alpha = _fadeOverlay.style.opacity.value;
-        Debug.Log($"[SceneTransitionManager] FadeTo: starting from {alpha} to {targetAlpha}");
-        
-        int iterations = 0;
-        while (!Mathf.Approximately(alpha, targetAlpha))
-        {
-            alpha = Mathf.MoveTowards(alpha, targetAlpha, Time.unscaledDeltaTime * FadeSpeed);
-            _fadeOverlay.style.opacity = alpha;
-            yield return null;
-            
-            iterations++;
-            if (iterations > 200) // safety timeout
-            {
-                Debug.LogWarning($"[SceneTransitionManager] FadeTo timeout after {iterations} frames");
-                break;
-            }
-        }
-
-        _fadeOverlay.style.opacity = targetAlpha;
-        Debug.Log($"[SceneTransitionManager] FadeTo complete: {alpha}");
+        yield return null;
     }
 
     public void ResetFade()
     {
         _isTransitioning = false;
-
-        if (_fadeOverlay == null)
-            return;
-
-        _fadeOverlay.style.opacity = 0f;
-        _fadeOverlay.pickingMode = PickingMode.Ignore;
     }
 }

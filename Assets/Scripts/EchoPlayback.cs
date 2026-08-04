@@ -524,9 +524,11 @@ public class EchoPlayback : MonoBehaviour
         if (source == null)
             source = FindLivePlayerModelSource();
 
-        // Priority 3: generic prefab from Resources (last resort — may be LowPolyCharacter)
+        // Priority 3: generic prefab from Resources (last resort).
+        // "EchoesEchoVisual" reemplaza al antiguo "EchoesCharacterVisual" (LowPolyCharacter
+        // bakeado) — usar un prefab dedicado para el eco evita el modelo lowpoly incorrecto.
         if (source == null)
-            source = Resources.Load<GameObject>(ResourcesPrefabPath);
+            source = Resources.Load<GameObject>("EchoesEchoVisual");
 
         if (source == null)
             return null;

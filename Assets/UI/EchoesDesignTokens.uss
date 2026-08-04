@@ -1,11 +1,10 @@
 /* ============================================================
-   ECHOES OF YOU 2.0 — DESIGN TOKENS (Canón)
-   Source of Truth: CONSTANTS_REGISTRY.yaml + UI_SPEC.md
+   ECHOES OF YOU 2.0 — DESIGN TOKENS (Stich Canón)
+   Source of Truth: Stich/DESIGN.md + Stich/code.html
 
    Resolución base: 1920×1080. Spacing base: 8px.
-   Amber canon: #FFBF00 (#E8B262 PROHIBIDO — CONS-MAT-001).
-   Tipografía UI: Inter (SDF, generado vía Font Asset Creator).
-   Tipografía HUD diegético: Courier / Garamond.
+   Tipografía display: Garamond (= EB Garamond).
+   Tipografía interface: Courier (= Courier Prime).
 
    Este archivo define SOLO variables (:root) y, opcionalmente,
    overrides de accesibilidad aplicables via clases en el root.
@@ -16,78 +15,224 @@
    ============================================================ */
 
 :root {
-    /* ── COLORES — Paleta Escuela Liminal ───────────────────── */
-    --color-void-black:           #0A0A0D;
-    --color-corridor-navy:        #1C2430;
-    --color-fluorescent-sick:     #C9D4B0;
-    --color-memory-amber:         #FFBF00;  /* CANON — NO #E8B262 */
-    --color-echo-cyan:            #4FC3E8;
-    --color-wrongness-red:        #B23A3A;
-    --color-institutional-teal:   #2B4A4A;
-    --color-faded-mustard:        #5A4A2E;
-    --color-sage-green:           #3A4A38;
-    --color-dusty-rose:           #4A3438;
+    /* ── STICH SURFACE (Tonal Layering) ─────────────────────── */
+    --color-stich-surface:                  #131410;
+    --color-stich-surface-dim:              #131410;
+    --color-stich-surface-bright:           #393935;
+    --color-stich-surface-container-lowest: #0e0f0b;
+    --color-stich-surface-container-low:    #1b1c18;
+    --color-stich-surface-container:        #1f201c;
+    --color-stich-surface-container-high:   #2a2a26;
+    --color-stich-surface-container-highest:#353530;
 
-    /* ── COLORES — Cuaderno (papel/tinta) ───────────────────── */
+    /* ── STICH ON-SURFACE (Texto) ────────────────────────────── */
+    --color-stich-on-surface:         #e4e2dc;  /* Aged Ivory — texto principal */
+    --color-stich-on-surface-variant: #ccc6bc;  /* texto secundario */
+    --color-stich-pure-white:         #fffeff;  /* blancos puros para títulos */
+    --color-stich-inverse-surface:    #e4e2dc;
+    --color-stich-inverse-on-surface: #30312c;
+
+    /* ── STICH OUTLINE ────────────────────────────────────────── */
+    --color-stich-outline:         #959087;
+    --color-stich-outline-variant: #4a463f;
+
+    /* ── STICH PRIMARY ────────────────────────────────────────── */
+    --color-stich-primary:           #fffeff;
+    --color-stich-on-primary:        #333027;
+    --color-stich-primary-container: #e8e1d4;
+    --color-stich-on-primary-container: #686459;
+
+    /* ── STICH SECONDARY (Echo Cyan family) ───────────────────── */
+    --color-stich-secondary:             #bfc7d7;
+    --color-stich-on-secondary:         #29313d;
+    --color-stich-secondary-container:   #444c59;
+    --color-stich-on-secondary-container:#b4bccc;
+
+    /* ── STICH TERTIARY (Bright Echo Cyan) ───────────────────── */
+    --color-stich-tertiary:             #fffeff;
+    --color-stich-on-tertiary:          #003543;
+    --color-stich-tertiary-container:   #b6eaff;
+    --color-stich-on-tertiary-container:#006d87;
+
+    /* ── STICH AMBER (Memory Amber) ──────────────────────────── */
+    --color-stich-amber:       #E8B262;
+    --color-stich-amber-fixed: #d4a373;
+
+    /* ── STICH ERROR (Aiden Ribbon Red) ──────────────────────── */
+    --color-stich-error:           #ffb4ab;
+    --color-stich-on-error:        #690005;
+    --color-stich-error-container: #93000a;
+    --color-stich-on-error-container: #ffdad6;
+
+    /* ── STICH FIXED (para fixed dim/brillo) ──────────────────── */
+    --color-stich-primary-fixed:        #e9e2d5;
+    --color-stich-primary-fixed-dim:    #ccc6b9;
+    --color-stich-on-primary-fixed:      #1e1b14;
+    --color-stich-on-primary-fixed-variant: #4a463d;
+    --color-stich-secondary-fixed:      #dbe3f3;
+    --color-stich-secondary-fixed-dim:  #bfc7d7;
+    --color-stich-on-secondary-fixed:   #141c28;
+    --color-stich-on-secondary-fixed-variant: #3f4754;
+    --color-stich-tertiary-fixed:        #b7eaff;
+    --color-stich-tertiary-fixed-dim:    #63d4fa;
+    --color-stich-on-tertiary-fixed:     #001f28;
+    --color-stich-on-tertiary-fixed-variant: #004d61;
+
+    /* ── STICH MISC ───────────────────────────────────────────── */
+    --color-stich-background:    #131410;
+    --color-stich-on-background: #e4e2dc;
+    --color-stich-surface-variant:    #353530;
+    --color-stich-surface-tint:       #ccc6b9;
+    --color-stich-inverse-primary:    #625e54;
+    --color-stich-secondary-gray:     #9B9A94;
+
+    /* ── COLORES LEGACY (compatibilidad — mapeados a Stich) ──── */
+    /* Mantiene compat con USS existentes que referencian vars viejas */
+    --color-memory-amber:        var(--color-stich-amber);
+    --color-echo-cyan:           var(--color-stich-tertiary-container);
+    --color-echo-cyan-bright:    var(--color-stich-tertiary-fixed-dim);
+    --color-wrongness-red:       var(--color-stich-error);
+    --color-aiden-ribbon-red:    #8F252D;
+    --color-institutional-teal:  var(--color-stich-outline-variant);
+    --color-faded-mustard:       var(--color-stich-on-surface-variant);
+    --color-sage-green:          #3A4A38;
+    --color-dusty-rose:          #4A3438;
+    --color-corridor-navy:       var(--color-stich-surface-container-low);
+    --color-void-black:          var(--color-stich-surface-container-lowest);
+    --color-secondary-gray:      var(--color-stich-secondary-gray);
+
+    /* ── COLORES Cuaderno (papel/tinta) ──────────────────────── */
     --color-paper:    #F4F2EE;
     --color-ink:      #2D2A26;
     --color-pencil:   #3B5A6E;
     --color-manila:   #C9B893;
-    --color-border:   #8C8270;
+    --color-border:   var(--color-stich-outline-variant);
 
-    /* ── TIPOGRAFÍA ─────────────────────────────────────────── */
-    /* HUD diegético (ya existentes en Assets/UI/Fonts/) */
-    --font-serif:      'Garamond';
-    --font-serif-bold: 'GaramondBold';
-    --font-mono:       'Courier';
-    --font-mono-bold:  'CourierBold';
+    /* ── TIPOGRAFÍA STICH ─────────────────────────────────────── */
+    /* Display: Garamond (= EB Garamond) */
+    --font-display:        'Garamond';
+    --font-display-bold:   'GaramondBold';
+    /* Interface: Courier (= Courier Prime) */
+    --font-interface:       'Courier';
+    --font-interface-bold:  'CourierBold';
 
-    /* UI (Inter SDF — a generar manualmente en Font Asset Creator).
-       Hasta que existan los .asset SDF, referenciamos los .ttf.
-       UITK resuelve fuentes por nombre de fontFamily. */
-    --font-ui:      'Inter';
-    --font-ui-bold: 'InterBold';
+    /* Legacy aliases */
+    --font-serif:      var(--font-display);
+    --font-serif-bold: var(--font-display-bold);
+    --font-mono:       var(--font-interface);
+    --font-mono-bold:  var(--font-interface-bold);
+    --font-ui:         var(--font-interface);
+    --font-ui-bold:    var(--font-interface-bold);
 
-    /* ── TAMAÑOS (1920×1080 base) ────────────────────────────── */
-    --size-title:        56px;
-    --size-screen-title: 42px;
-    --size-option:       30px;
-    --size-body:         20px;
-    --size-small:        17px;
+    /* ── TAMAÑOS STICH Typography (1920×1080 base) ──────────── */
+    --size-display-lg:    64px;
+    --size-display-md:    48px;
+    --size-interface-lg:  38px;
+    --size-interface-md:  24px;
+    --size-interface-sm:  20px;
+    --size-label-caps:    16px;
 
-    /* ── SPACING (base 8px) ──────────────────────────────────── */
-    --space-xs:  4px;
-    --space-sm:  8px;
-    --space-md: 16px;
-    --space-lg: 24px;
-    --space-xl: 32px;
-    --space-2xl: 48px;
-    --space-3xl: 64px;
+    /* Legacy aliases */
+    --size-title:        var(--size-display-lg);
+    --size-screen-title: var(--size-display-md);
+    --size-option:       var(--size-interface-lg);
+    --size-body:         var(--size-interface-md);
+    --size-small:        var(--size-interface-sm);
 
-    /* ── ANIMACIÓN ───────────────────────────────────────────── */
-    --duration-fast:               80ms;
-    --duration-hover-mouse:        150ms;
-    --duration-hover-controller:   200ms;
-    --duration-slow:               250ms;
-    --duration-active:              80ms;
+    /* ── SPACING STICH (base 8px) ────────────────────────────── */
+    --space-unit:    8px;
+    --space-xs:      4px;
+    --space-sm:      8px;
+    --space-md:     16px;
+    --space-gutter: 24px;
+    --space-lg:     24px;
+    --space-container: 32px;
+    --space-xl:     32px;
+    --space-2xl:    48px;
+    --space-margin: 64px;
+    --space-3xl:    64px;
 
-    --easing-standard: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* ── ANIMACIÓN STICH (step-end/linear, 12fps feel) ───────── */
+    --duration-instant: 0ms;
+    --duration-fast:    80ms;
+    --duration-hover:   150ms;
+    --duration-hover-mouse:     150ms;
+    --duration-hover-controller: 200ms;
+    --duration-slow:    250ms;
+    --duration-active:   80ms;
+
+    --easing-standard: linear;
     --easing-spring:    cubic-bezier(0.34, 1.56, 0.64, 1);
+    --easing-stich:     step-end;
 
     /* ── Z-INDEX ─────────────────────────────────────────────── */
     --z-base:     0;
     --z-hover:    10;
     --z-dropdown: 100;
-    --z-overlay:  200;
+    --z-overlay: 200;
     --z-modal:    500;
     --z-toast:   1000;
     --z-loading: 2000;
+
+    /* ── ALPHA VARIANTES — Stich glassmorphism ────────────────── */
+    /* Surface container-low 88% (glass panels) */
+    --color-glass-bg:          rgba(27, 28, 24, 0.70);
+    --color-glass-bg-strong:   rgba(27, 28, 24, 0.88);
+    --color-glass-border:      rgba(149, 144, 135, 0.30);
+    --color-glass-border-bright: rgba(228, 226, 220, 0.50);
+    /* Void black overlays */
+    --color-void-overlay-92:  rgba(10, 10, 13, 0.92);
+    --color-void-overlay-90:  rgba(10, 10, 13, 0.90);
+    --color-void-overlay-88:  rgba(10, 10, 13, 0.88);
+    /* Amber tint hover/focus overlays */
+    --color-amber-tint-04:   rgba(232, 178, 98, 0.04);
+    --color-amber-tint-06:   rgba(232, 178, 98, 0.06);
+    --color-amber-tint-08:   rgba(232, 178, 98, 0.08);
+    --color-amber-tint-12:   rgba(232, 178, 98, 0.12);
+    /* Echo cyan tint hover/focus overlays */
+    --color-cyan-tint-04:    rgba(182, 234, 255, 0.04);
+    --color-cyan-tint-08:    rgba(182, 234, 255, 0.08);
+    --color-cyan-tint-12:   rgba(182, 234, 255, 0.12);
+    /* Sage green tint — completed state overlay */
+    --color-sage-tint-12:    rgba(58, 74, 56, 0.12);
 
     /* ── HUD OPACIDAD (RULE-UI-004) ──────────────────────────── */
     /* HUD gameplay: opacity base 0.0, fade 0.0→0.85 en 0.10s SOLO grabando */
     --hud-opacity-hidden:  0.0;
     --hud-opacity-visible: 0.85;
     --hud-fade-duration:   100ms;
+
+    /* ── DERIVED SURFACE COLORS (legacy compatibility) ────────── */
+    --color-surface-deepest: var(--color-stich-surface-container-lowest);
+    --color-surface-deeper:  #04060A;
+    --color-surface-deep:    var(--color-stich-surface-container-lowest);
+    --color-surface-dim:     var(--color-stich-surface-dim);
+    --color-surface:         var(--color-stich-surface);
+    --color-surface-light:   var(--color-stich-surface-container);
+    --color-surface-lighter: var(--color-stich-surface-container-high);
+    --color-surface-elevate: var(--color-stich-surface-container-high);
+    --color-surface-card:    var(--color-stich-surface-container);
+    --color-surface-teal:    var(--color-stich-surface-container-high);
+    --color-track-bg:        var(--color-stich-surface-container-high);
+    --color-polaroid-ink:    #20242A;
+    --color-footer-muted:    var(--color-stich-on-surface-variant);
+    --color-text-muted:      var(--color-stich-on-surface-variant);
+    --color-prompt-muted:    var(--color-stich-on-surface-variant);
+    --color-paper-border:    var(--color-stich-outline);
+    --color-polaroid-frame:  #C0C4C8;
+    --color-chalkboard-text: var(--color-stich-on-surface);
+    --color-text-body:       var(--color-stich-on-surface);
+    --color-text-medium:     var(--color-stich-on-surface-variant);
+    --color-text-bright:     var(--color-stich-pure-white);
+    --color-text-terminal:   var(--color-stich-on-surface);
+    --color-chalkboard-title:var(--color-stich-amber);
+    --color-text-hover:      var(--color-stich-pure-white);
+    --color-text-light:      var(--color-stich-on-surface);
+    --color-polaroid-bg:     #E6E8EA;
+    --color-body-neutral:    var(--color-stich-on-surface);
+    --color-wood:            #503E2D;
+    --color-fluorescent-sick: var(--color-stich-on-surface);
+    --color-faded-mustard:  var(--color-stich-on-surface-variant);
 
     /* ── HOVER PS2 (4 capas canon) ────────────────────────────── */
     --hover-translate:        6px;
@@ -100,84 +245,78 @@
 
 /* ============================================================
    ESCALADO DE TEXTO — Accesibilidad (aplicar en root)
-   --size-* se interpreta por los componentes como referencia;
-   esta clase escala visualmente todo el árbol UI.
-   (Reemplaza a .scale-large/.scale-xl de EchoesTheme.uss)
    ============================================================ */
 
 .scale-large {
-    /* ×1.25 — Tamaño Large */
-    --size-title:        70px;
-    --size-screen-title: 52px;
-    --size-option:       37px;
-    --size-body:         25px;
-    --size-small:        21px;
-}
-
-.scale-xl {
-    /* ×1.5 — Tamaño Extra Large */
-    --size-title:        84px;
-    --size-screen-title: 63px;
-    --size-option:       45px;
+    --size-display-lg:    80px;
+    --size-display-md:    60px;
+    --size-interface-lg:  47px;
+    --size-interface-md:  30px;
+    --size-interface-sm:  25px;
+    --size-label-caps:    20px;
+    --size-title:        80px;
+    --size-screen-title: 60px;
+    --size-option:       47px;
     --size-body:         30px;
     --size-small:        25px;
 }
 
+.scale-xl {
+    --size-display-lg:    96px;
+    --size-display-md:    72px;
+    --size-interface-lg:  57px;
+    --size-interface-md:  36px;
+    --size-interface-sm:  30px;
+    --size-label-caps:    24px;
+    --size-title:        96px;
+    --size-screen-title: 72px;
+    --size-option:       57px;
+    --size-body:         36px;
+    --size-small:        30px;
+}
+
 /* ============================================================
    HIGH CONTRAST MODE — Accesibilidad (toggle en Settings)
-   Aplicar clase .high-contrast en el root del UIDocument.
-   UITK no soporta @media (prefers-contrast), se activa via C#.
    ============================================================ */
 
 .high-contrast {
     --color-ink:            #000000;
     --color-paper:          #FFFFFF;
     --color-border:         #000000;
-    --color-memory-amber:   #FFD700;
-    --color-echo-cyan:      #00FFFF;
-    --color-wrongness-red:  #FF0000;
-    --color-void-black:     #000000;
+    --color-stich-amber:   #FFD700;
+    --color-stich-tertiary-container: #00FFFF;
+    --color-stich-error:   #FF0000;
+    --color-stich-surface: #000000;
 }
 
 /* ============================================================
-   REDUCE MOTION MODE — Accesibilidad (toggle en Settings)
-   UITK 6 soporta parcialmente @media (prefers-reduced-motion),
-   pero para control determinista lo activamos via clase .reduce-motion
-   en el root del UIDocument. Todos los --duration-* → 0ms.
+   REDUCE MOTION MODE — Accesibilidad
    ============================================================ */
 
-/* Override nativo UITK cuando el SO lo pide */
 @media (prefers-reduced-motion: reduce) {
     :root {
-        --duration-fast:             0ms;
-        --duration-hover-mouse:       0ms;
-        --duration-hover-controller:  0ms;
-        --duration-slow:              0ms;
-        --duration-active:            0ms;
+        --duration-instant:               0ms;
+        --duration-fast:                  0ms;
+        --duration-hover-mouse:           0ms;
+        --duration-hover-controller:      0ms;
+        --duration-hover:                 0ms;
+        --duration-slow:                  0ms;
+        --duration-active:                0ms;
     }
 }
 
-/* Override explícito via Settings (cuando el usuario lo activa
-   independientemente del SO) */
 .reduce-motion {
-    --duration-fast:             0ms;
-    --duration-hover-mouse:       0ms;
-    --duration-hover-controller:  0ms;
-    --duration-slow:              0ms;
-    --duration-active:            0ms;
+    --duration-instant:               0ms;
+    --duration-fast:                  0ms;
+    --duration-hover-mouse:           0ms;
+    --duration-hover-controller:      0ms;
+    --duration-hover:                 0ms;
+    --duration-slow:                  0ms;
+    --duration-active:                0ms;
 }
 
 /* ============================================================
-   CLASES DE TIPOGRAFÍA — a reutilizar por componentes
-   (EchoesPanelSettings.asset). Inter y InterBold están registrados.
-   ============================================================ */
-
-
-/* ============================================================
    SAFE AREA & RESPONSIVE — Base
-   UITK NO soporta env(safe-area-inset-*). El padding seguro
-   se aplica via C# leyendo Screen.safeArea. Aquí solo dejamos
-   fallback y breakpoints (que sí son soportados).
    ============================================================ */
 
 .root-fullscreen {
@@ -189,7 +328,6 @@
     overflow: hidden;
 }
 
-/* Breakpoints responsivos (sí soportados por UITK 6) */
 @media (max-width: 1280px) {
     :root {
         --level-card-grid-cols: 2;

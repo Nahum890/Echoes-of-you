@@ -156,8 +156,9 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
         Vector3 center = transform.TransformPoint(box.center);
         Vector3 halfExtents = Vector3.Scale(box.size, transform.lossyScale) * 0.5f;
 
-        // Inflate detection slightly upward
-        halfExtents.y += 0.2f;
+        // Inflar detección en TODAS las direcciones (antes solo Y), para que la placa
+        // reaccione cuando el player/eco entra desde los lados — no solo desde arriba.
+        halfExtents += Vector3.one * 0.15f;
         center.y += 0.1f;
 
         int hitCount = Physics.OverlapBoxNonAlloc(center, halfExtents, _overlapBuffer, transform.rotation);

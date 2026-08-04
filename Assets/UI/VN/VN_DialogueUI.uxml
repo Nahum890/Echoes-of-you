@@ -1,0 +1,34 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/EchoesTheme.uss" />
+    <Style src="project://database/Assets/UI/VN/VN_DialogueUI.uss" />
+
+    <ui:VisualElement name="vn-dialogue-root" class="vn-dialogue-root vn-hidden" style="width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
+
+        <!-- Character sprite containers (background layer) -->
+        <ui:VisualElement name="sprite-left" class="vn-sprite vn-sprite--left" />
+        <ui:VisualElement name="sprite-center" class="vn-sprite vn-sprite--center" />
+        <ui:VisualElement name="sprite-right" class="vn-sprite vn-sprite--right" />
+
+        <!-- Dialogue panel (bottom) -->
+        <ui:VisualElement name="dialogue-panel" class="vn-dialogue-panel">
+
+            <!-- Character name bar -->
+            <ui:VisualElement class="vn-name-bar">
+                <ui:Label name="character-name" class="vn-character-name" text="" />
+                <ui:Label name="line-counter" class="vn-line-counter" text="" />
+            </ui:VisualElement>
+
+            <!-- Separator -->
+            <ui:VisualElement class="vn-separator" />
+
+            <!-- Dialogue text with typewriter -->
+            <ui:Label name="dialogue-text" class="vn-dialogue-text" text="" />
+
+            <!-- Advance prompt -->
+            <ui:VisualElement class="vn-advance-row">
+                <ui:Label name="advance-prompt" class="vn-advance-prompt" text="[E] continuar  ·  [Space] saltar" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

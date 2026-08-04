@@ -11,6 +11,8 @@ namespace Echoes.VN
     {
         public static VN_ChoiceGateController Instance { get; private set; }
 
+        public bool IsShowing => _active;
+
         [SerializeField] VN_ChoiceRegistry registry;
         [SerializeField] UIDocument document;
         [SerializeField] float fadeInSeconds = 0.3f;
@@ -63,9 +65,15 @@ namespace Echoes.VN
         {
             if (registry == null)
             {
-                onComplete?.Invoke(true);
-                return;
+                // Fallback robusto: cargar desde Resources si no asignado en Inspector.
+                registry = Resources.Load<VN_ChoiceRegistry>("VN_ChoiceRegistry");
+                if (registry == null)
+                {
+                    Debug.LogWarning("[VN_ChoiceGate] Registry null — creando runtime fallback vacío.");
+                    registry = ScriptableObject.CreateInstance<VN_ChoiceRegistry>();
+                }
             }
+
             _currentNode = registry.GetNode(levelIndex, isMicro);
             if (_currentNode == null)
             {

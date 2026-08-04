@@ -1,7 +1,11 @@
 /* ============================================================
-   CreditsUI — Diseño de créditos.
-   Fondo oscuro, texto claro, contraste ≥ 7:1.
-   Scroll automático controlado por C# (30px/s).
+   CreditsUI — Credits scene styling (Stich aesthetic)
+   Source: Stich/DESIGN.md
+   - Surface #131410 background
+   - Garamond for title, Courier for body
+   - Amber heading accents, ivory body text
+   - Glassmorphism back button
+   - 30px/s auto-scroll (controlled by CreditsController.cs)
    ============================================================ */
 
 @import "EchoesDesignTokens.uss";
@@ -17,52 +21,130 @@
     position: absolute;
     left: 15%; right: 15%;
     top: 0; bottom: 0;
-    padding: var(--space-3xl) var(--space-xl);
+    padding: var(--space-3xl) var(--space-container);
     background-color: transparent;
-    overflow-y: auto;
 }
 
+/* ===== SECTIONS ===== */
 .credits-section {
     margin-bottom: var(--space-2xl);
     align-items: center;
+    padding-top: var(--space-lg);
+    padding-bottom: var(--space-lg);
 }
 
-.credits-heading {
-    font-size: var(--size-option);
-    color: var(--color-memory-amber);
+/* Opening title section */
+.credits-section--title {
+    margin-top: var(--space-3xl);
+    margin-bottom: var(--space-3xl);
+}
+
+.credits-section--close {
+    margin-top: var(--space-2xl);
+}
+
+/* ===== TITLE (opening) ===== */
+.credits-title-main {
+    font-family: var(--font-display-bold);
+    font-size: var(--size-display-lg);
+    color: var(--color-stich-amber);
     -unity-text-align: middle-center;
-    letter-spacing: 2px;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-lg);
+    opacity: 1;
+    line-height: var(--size-display-lg);
+}
+
+.credits-subtitle {
+    font-family: var(--font-display);
+    font-size: var(--size-interface-md);
+    color: var(--color-stich-on-surface);
+    -unity-text-align: middle-center;
+    margin-top: var(--space-sm);
+    letter-spacing: 1px;
+    opacity: 1;
+}
+
+/* ===== SEPARATOR ===== */
+.credits-separator {
+    height: 1px;
+    width: 280px;
+    background-color: var(--color-stich-outline-variant);
+    margin: var(--space-md) 0;
+}
+
+/* ===== HEADINGS (section titles) ===== */
+.credits-heading {
+    font-family: var(--font-interface-bold);
+    font-size: var(--size-interface-sm);
+    color: var(--color-stich-amber);
+    -unity-text-align: middle-center;
+    letter-spacing: 0.1em;
     margin-bottom: var(--space-lg);
     -unity-text-transform: uppercase;
+    opacity: 1;
 }
 
-.credits-subheading {
-    font-size: var(--size-body);
-    color: var(--color-echo-cyan);
-    -unity-text-align: middle-center;
-    margin-bottom: var(--space-2xl);
-    letter-spacing: 1px;
+/* Closing heading — same style but no uppercase */
+.credits-heading--close {
+    font-family: var(--font-display);
+    font-size: var(--size-display-md);
+    color: var(--color-stich-amber);
+    -unity-text-transform: none;
+    letter-spacing: 0;
 }
 
+/* ===== NAMES ===== */
 .credits-name {
-    font-size: var(--size-body);
-    color: var(--color-paper);
+    font-family: var(--font-interface);
+    font-size: var(--size-interface-md);
+    color: var(--color-stich-on-surface);
     -unity-text-align: middle-center;
     letter-spacing: 1px;
     margin-bottom: var(--space-sm);
+    opacity: 1;
 }
 
+/* ===== BODY TEXT ===== */
 .credits-text {
-    font-size: var(--size-small);
-    color: var(--color-fluorescent-sick);
+    font-family: var(--font-interface);
+    font-size: var(--size-interface-sm);
+    color: var(--color-stich-on-surface-variant);
     -unity-text-align: middle-center;
     margin-bottom: var(--space-sm);
+    opacity: 1;
 }
 
-.credits-back-btn {
+/* ===== BACK BUTTON — Stich glassmorphism ===== */
+.credit-back-btn {
     position: absolute;
     left: 50%;
     bottom: var(--space-xl);
     translate: -50% 0;
     min-width: 200px;
+    font-family: var(--font-interface);
+    font-size: var(--size-interface-sm);
+    color: var(--color-stich-on-surface);
+    background-color: var(--color-glass-bg-strong);
+    border-width: 1px;
+    border-color: var(--color-stich-outline);
+    padding: var(--space-md) var(--space-xl);
+    letter-spacing: 1px;
+    -unity-text-align: middle-center;
+    opacity: 1;
+    transition-property: color, border-color, background-color;
+    transition-duration: var(--duration-hover);
+    transition-timing-function: linear;
+    border-radius: 0;
+}
+
+.credit-back-btn:hover {
+    color: var(--color-stich-pure-white);
+    background-color: var(--color-stich-surface-container-low);
+    border-color: var(--color-stich-on-surface);
+}
+
+.credit-back-btn:active {
+    color: var(--color-stich-amber);
+    border-color: var(--color-stich-amber);
 }

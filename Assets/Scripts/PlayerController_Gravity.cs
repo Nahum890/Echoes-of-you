@@ -90,9 +90,14 @@ public partial class PlayerController
     GroundProbe ProbeGround(Vector3 probeUp)
     {
         Vector3 normalizedUp = probeUp.sqrMagnitude > 0.001f ? probeUp.normalized : transform.up;
+        CharacterController cc = GetComponent<CharacterController>();
+        // Origen en la base del CharacterController (pies). Si groundCheck está bien
+        // reposicionado por RepositionGroundCheck(), usar su posición; si no, caer
+        // a transform.position - up*(height/2 - radius) para no iniciar el cast
+        // dentro de la cápsula y auto-detectar al propio jugador (causa de hundimiento).
         Vector3 origin = groundCheck != null
-            ? groundCheck.position + normalizedUp * groundProbeRadius
-            : transform.position + normalizedUp * groundProbeRadius;
+            ? groundCheck.position
+            : transform.position - transform.up * (cc != null ? cc.height * 0.5f - cc.radius : 1.1f);
 
         // Use the serialized groundCheckMask (Layer 6 — Ground) instead of
         // Physics.DefaultRaycastLayers. DefaultRaycastLayers can auto-hit the
@@ -167,12 +172,17 @@ public partial class PlayerController
             groundCheck = gc.transform;
         }
 
-        // Posicionar el GroundCheck en la base exacta del CharacterController (pies)
-        // para que el SphereCast comience desde los pies y no desde el centro/origen.
-        float ccHeight = _controller != null ? _controller.height : 2.2f;
-        float ccCenterY = _controller != null ? _controller.center.y : 1.1f;
-        float baseY = ccCenterY - (ccHeight * 0.5f) + 0.02f;
+        RepositionGroundCheck();
+    }
 
+    public void RepositionGroundCheck()
+    {
+        if (groundCheck == null) return;
+        var cc = _controller;
+        if (cc == null) return;
+
+        // GroundCheck en la BASE del CharacterController (pies)
+        float baseY = cc.center.y - (cc.height * 0.5f) + 0.02f; // -1.08f para h=2.2
         groundCheck.localPosition = new Vector3(0f, baseY, 0f);
         groundCheck.localRotation = Quaternion.identity;
     }
