@@ -47,6 +47,12 @@ public partial class PlayerController
             renderers[i].updateWhenOffscreen = true;
 
         _anim = visualAnimator;
+        AlignModelToFeet();
+    }
+
+    void LateUpdate()
+    {
+        AlignModelToFeet();
     }
 
 #if UNITY_EDITOR

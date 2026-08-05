@@ -94,12 +94,23 @@ public class LevelEscapeSequence : MonoBehaviour
         if (_escapeActive)
             return;
 
+        // Salvagarda crítica: si no hay hazard asignado NI en el blueprint, la secuencia
+        // de escape no tiene sentido (no hay amenaza que obligue a huir). Completar al
+        // instante para que el exit se desbloquee. Esto evita el bug "no se pueden pasar
+        // los niveles" cuando el level designer olvidó configurar el ChaseHazardMotor.
+        if (hazard == null && blueprint != null)
+            hazard = blueprint.ChaseHazard;
+
+        if (hazard == null && escapeRouteEnd == null)
+        {
+            Debug.LogWarning("[LevelEscapeSequence] No hay ChaseHazard ni escapeRouteEnd — completando escape inmediatamente.");
+            CompleteEscape();
+            return;
+        }
+
         _escapeActive = true;
         _escapeTimer = blueprint != null ? blueprint.EscapeDuration : escapeTimeLimit;
         LockExits(true);
-
-        if (hazard == null && blueprint != null)
-            hazard = blueprint.ChaseHazard;
 
         hazard?.Activate();
 

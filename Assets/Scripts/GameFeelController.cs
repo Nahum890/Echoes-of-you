@@ -613,17 +613,24 @@ public class GameFeelController : MonoBehaviour
         audioObject.transform.position = position;
         AudioSource source = audioObject.AddComponent<AudioSource>();
         source.clip = clip;
-        source.volume = volume;
+        source.volume = volume * 1.35f; // Aumentar ligeramente para presencia
         source.pitch = pitch;
         source.spatialBlend = 1f;
-        source.minDistance = 2f;
-        source.maxDistance = 18f;
+        source.minDistance = 3f;
+        source.maxDistance = 25f;
         source.rolloffMode = AudioRolloffMode.Linear;
 
         var audioMgr = EchoesAudioManager.EnsureExists();
         if (audioMgr != null)
         {
             source.outputAudioMixerGroup = audioMgr.FindGroup("SFX");
+        }
+
+        // Si el bitcrusher está activo, replicarlo en el OneShotAudio para game feel consistente
+        if (enableBitcrusher)
+        {
+            var distortion = audioObject.AddComponent<AudioDistortionFilter>();
+            distortion.distortionLevel = Mathf.Lerp(0.08f, 0.4f, bitcrusherDryWet);
         }
 
         source.Play();

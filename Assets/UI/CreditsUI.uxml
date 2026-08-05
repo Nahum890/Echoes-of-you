@@ -2,48 +2,55 @@
     <Style src="project://database/Assets/UI/EchoesTheme.uss" />
     <Style src="project://database/Assets/UI/CreditsUI.uss" />
 
-    <ui:VisualElement name="root" class="root-fullscreen" style="background-color: #131410; width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
+    <ui:VisualElement name="root" class="root-fullscreen credits-root" style="width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
 
+        <!-- HEADER FIJO -->
+        <ui:VisualElement class="credits-header">
+            <ui:Label class="credits-header-title" text="CREDITOS" />
+            <ui:Label class="credits-header-subtitle" text="Expediente de Ausencia — Registro de autores" />
+        </ui:VisualElement>
+
+        <!-- SCROLL AREA -->
         <ui:VisualElement class="credits-container" name="creditsContainer">
             <ui:ScrollView class="credits-scroll" name="creditsScroll">
 
-                <!-- Opening title -->
+                <!-- TITULO DE APERTURA -->
                 <ui:VisualElement class="credits-section credits-section--title">
                     <ui:Label class="credits-title-main" text="ECHOES OF YOU" />
                     <ui:VisualElement class="credits-separator" />
                     <ui:Label class="credits-subtitle" text="Un eco que no se puede borrar" />
                 </ui:VisualElement>
 
-                <!-- Direction -->
+                <!-- DIRECCION -->
                 <ui:VisualElement class="credits-section">
                     <ui:Label class="credits-heading" text="DIRECCION Y DISENO" />
                     <ui:Label class="credits-name" text="[Nombre del Director Creativo]" />
                 </ui:VisualElement>
 
-                <!-- Programming -->
+                <!-- PROGRAMACION -->
                 <ui:VisualElement class="credits-section">
                     <ui:Label class="credits-heading" text="PROGRAMACION" />
-                    <ui:Label class="credits-name" text="[Nombre(s) del Equipo o de Ingeniero]" />
+                    <ui:Label class="credits-name" text="[Nombre(s) del Equipo de Ingenieria]" />
                 </ui:VisualElement>
 
-                <!-- Art -->
+                <!-- ARTE -->
                 <ui:VisualElement class="credits-section">
                     <ui:Label class="credits-heading" text="ARTE Y DIRECCION VISUAL" />
                     <ui:Label class="credits-text" text="Paleta Escuela Liminal - PS1/PS2 - CRT" />
                     <ui:Label class="credits-name" text="[Nombre(s) del Artista]" />
                 </ui:VisualElement>
 
-                <!-- Narrative -->
+                <!-- NARRATIVA -->
                 <ui:VisualElement class="credits-section">
                     <ui:Label class="credits-heading" text="NARRATIVA Y ESCRITURA" />
                     <ui:Label class="credits-text" text="Historia sin palabras - el eco habla por si solo" />
                     <ui:Label class="credits-name" text="[Nombre(s) del Escritor]" />
                 </ui:VisualElement>
 
-                <!-- Sound -->
+                <!-- SONIDO -->
                 <ui:VisualElement class="credits-section">
                     <ui:Label class="credits-heading" text="DISENO DE SONIDO" />
-                    <ui:Label class="credits-name" text="[Nombre(s) del Dise\u00f1ador de Audio]" />
+                    <ui:Label class="credits-name" text="[Nombre(s) del Disenador de Audio]" />
                 </ui:VisualElement>
 
                 <!-- QA -->
@@ -52,7 +59,7 @@
                     <ui:Label class="credits-name" text="[Nombre(s) del Tester]" />
                 </ui:VisualElement>
 
-                <!-- Thanks -->
+                <!-- AGRADECIMIENTOS -->
                 <ui:VisualElement class="credits-section">
                     <ui:Label class="credits-heading" text="AGRADECIMIENTOS" />
                     <ui:Label class="credits-name" text="Fuentes: Inter (Rasmus Andersson) - Garamond - Courier" />
@@ -60,15 +67,15 @@
                     <ui:Label class="credits-name" text="Soporte: Coplay MCP Bridge" />
                 </ui:VisualElement>
 
-                <!-- Closing -->
+                <!-- CIERRE -->
                 <ui:VisualElement class="credits-section credits-section--close">
                     <ui:Label class="credits-heading credits-heading--close" text="Cuaderno cerrado." />
                     <ui:VisualElement class="credits-separator" />
                     <ui:Label class="credits-subtitle" text="Gracias por jugar." />
                 </ui:VisualElement>
 
-                <!-- Padding for scroll -->
-                <ui:VisualElement style="height: 200px;" />
+                <!-- PADDING FINAL -->
+                <ui:VisualElement class="credits-end-padding" />
 
             </ui:ScrollView>
         </ui:VisualElement>

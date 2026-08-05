@@ -30,6 +30,7 @@
 .hidden {
     display: none;
 }
+}
 
 .disabled {
     opacity: 0.3;
@@ -869,229 +870,97 @@
     background-color: rgba(255, 191, 0, 0.12) !important;
 }
 /* ============================================================
-   ESTETICA STICH - Alta Legibilidad & Tonal Layering (Canon)
-   Source: Stich/DESIGN.md + Stich/code.html
-   Glassmorphism - Sharp 0px - Chromatic hover - Delayed silhouettes
+   ESTETICA STICH — Legibilidad de texto (sin !important destructivo)
    ============================================================ */
 
-/* -- ROOT SURFACE - void base -- */
-.root-fullscreen {
-    background-color: var(--color-stich-surface) !important;
-}
-
-/* -- GLASS PANELS - glassmorphism Stich -- */
-.main-menu-folder {
-    background-color: var(--color-glass-bg-strong) !important;
-    border-top-color: var(--color-stich-amber) !important;
-    border-top-width: 1px !important;
-}
-
-.side-nav {
-    background-color: var(--color-glass-bg) !important;
-    border-right-color: var(--color-stich-outline-variant) !important;
-    border-right-width: 1px !important;
-}
-
-.preview-panel {
-    background-color: var(--color-glass-bg) !important;
-    border-left-color: var(--color-stich-outline-variant) !important;
-    border-left-width: 1px !important;
-}
-
-.echo-panel {
-    background-color: var(--color-glass-bg) !important;
-    border-color: var(--color-glass-border) !important;
-}
-
-/* -- TEXT LEGIBILITY - FORCE OPACITY 1, HIGH-CONTRAST COLORS -- */
+/* Forzar opacity 1 en texto globalmente */
 Label {
-    color: var(--color-stich-on-surface) !important;
-    opacity: 1 !important;
+    opacity: 1;
 }
 
-.root-fullscreen Label {
-    color: var(--color-stich-on-surface) !important;
-    opacity: 1 !important;
+/* Texto blanco puro solo en titulos */
+.font-serif-bold,
+.panel-title,
+.side-nav__title {
+    color: var(--color-stich-pure-white);
+    opacity: 1;
 }
 
-.root-fullscreen Button {
-    color: var(--color-stich-on-surface) !important;
-    opacity: 1 !important;
+/* HUD text shadow */
+.hud-objective-text {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.95);
 }
 
-.root-fullscreen Button:hover {
-    color: var(--color-stich-pure-white) !important;
-}
-
-.root-fullscreen .font-serif-bold,
-.root-fullscreen .panel-title,
-.root-fullscreen .side-nav__title,
-.root-fullscreen .hero-title,
-.root-fullscreen .main-title {
-    color: var(--color-stich-pure-white) !important;
-    opacity: 1 !important;
-}
-
-.terminal-log-line,
-.text-body-lg,
-.footer-item .footer-label,
-.hud-bar-label {
-    color: var(--color-stich-on-surface-variant) !important;
-    opacity: 1 !important;
-}
-
-/* -- NAVIGATION ITEMS - Stich button aesthetic -- */
-.nav-item-v2,
-.nav-item {
-    color: var(--color-stich-on-surface) !important;
-    font-size: var(--size-interface-sm) !important;
-    opacity: 1 !important;
-    border-left-color: transparent !important;
-    border-left-width: 1px !important;
-    transition-property: color, background-color, border-left-color !important;
-    transition-duration: var(--duration-hover) !important;
-    transition-timing-function: linear !important;
-}
-
-.nav-item-v2:hover,
-.nav-item:hover {
-    color: var(--color-stich-pure-white) !important;
-    background-color: var(--color-amber-tint-12) !important;
-    border-left-color: var(--color-stich-amber) !important;
-    border-left-width: 2px !important;
-}
-
-.panel-title {
-    color: var(--color-stich-pure-white) !important;
-}
-
-/* -- ECHO BUTTON - Stich states -- */
-.echo-button {
-    background-color: transparent !important;
-    color: var(--color-stich-on-surface) !important;
-    border-color: var(--color-stich-outline) !important;
-    border-width: 1px !important;
-    border-radius: 0 !important;
-    opacity: 1 !important;
-    transition-timing-function: linear !important;
-}
-
-.echo-button:hover {
-    background-color: var(--color-stich-surface-container-low) !important;
-    color: var(--color-stich-pure-white) !important;
-    border-color: var(--color-stich-on-surface) !important;
-    scale: 1.0 1.0 !important;
-}
-
-.echo-button--primary {
-    background-color: transparent !important;
-    color: var(--color-stich-pure-white) !important;
-    border-color: var(--color-stich-on-surface) !important;
-}
-
-.echo-button--primary:hover {
-    background-color: var(--color-stich-surface-container-low) !important;
-    border-color: var(--color-stich-pure-white) !important;
-}
-
-.echo-button--primary:active,
-.echo-button:active {
-    border-color: var(--color-stich-amber) !important;
-    color: var(--color-stich-amber) !important;
-    scale: 1.0 1.0 !important;
-}
-
+/* Focus amber accent on buttons */
 .echo-button:focus {
-    border-color: var(--color-stich-amber) !important;
-    border-width: 2px !important;
-    scale: 1.0 1.0 !important;
-}
-
-.echo-button:disabled {
-    opacity: 0.4 !important;
-    border-style: dashed !important;
-    color: var(--color-stich-secondary-gray) !important;
-    border-color: var(--color-stich-outline-variant) !important;
-}
-
-/* -- ECHO CARD - 70% corridor navy + ivory border -- */
-.echo-card {
-    background-color: var(--color-glass-bg) !important;
-    border-color: var(--color-glass-border) !important;
-    border-width: 1px !important;
-    border-radius: 0 !important;
-    color: var(--color-stich-on-surface) !important;
-    opacity: 1 !important;
-}
-
-.echo-card:hover {
-    border-color: var(--color-stich-tertiary-container) !important;
-    background-color: var(--color-cyan-tint-04) !important;
-    scale: 1.0 1.0 !important;
-    translate: 4px 0 !important;
+    border-color: var(--color-stich-amber);
+    border-width: 2px;
 }
 
 .echo-card:focus {
-    border-color: var(--color-stich-amber) !important;
-    border-width: 2px !important;
-    background-color: var(--color-amber-tint-04) !important;
+    border-color: var(--color-stich-amber);
+    border-width: 2px;
 }
 
+/* Card hover */
+.echo-card:hover {
+    border-color: var(--color-stich-tertiary-container);
+    translate: 4px 0;
+}
+
+/* Card states */
 .echo-card--current {
-    border-color: var(--color-stich-amber) !important;
-    background-color: var(--color-amber-tint-06) !important;
-    color: var(--color-stich-amber) !important;
+    border-color: var(--color-stich-amber);
+    color: var(--color-stich-amber);
 }
 
 .echo-card--completed {
-    border-color: var(--color-sage-green) !important;
-    background-color: var(--color-sage-tint-12) !important;
-    color: var(--color-sage-green) !important;
+    border-color: var(--color-sage-green);
+    color: var(--color-sage-green);
 }
 
 .echo-card--locked {
-    opacity: 0.3 !important;
-    color: var(--color-stich-secondary-gray) !important;
-    border-color: var(--color-stich-outline-variant) !important;
+    opacity: 0.3;
+    color: var(--color-stich-secondary-gray);
+    border-color: var(--color-stich-outline-variant);
 }
 
-/* -- HUD ELEMENTS - Stich text on glass -- */
+/* HUD elemeents solid bg */
 .hud-record-panel,
 .hud-toast-text,
 .key-prompt-label,
 .chalkboard-box {
-    background-color: var(--color-void-overlay-92) !important;
-    border-color: var(--color-stich-outline-variant) !important;
-    color: var(--color-stich-on-surface) !important;
-    opacity: 1 !important;
+    background-color: var(--color-void-overlay-92);
+    border-color: var(--color-stich-outline-variant);
+    color: var(--color-stich-on-surface);
+    opacity: 1;
 }
 
 .hud-objective-text {
-    color: var(--color-stich-pure-white) !important;
-    opacity: 1 !important;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.95) !important;
+    color: var(--color-stich-pure-white);
+    opacity: 1;
 }
 
 .hud-echo-state-label {
-    color: var(--color-stich-tertiary-container) !important;
-    opacity: 1 !important;
+    color: var(--color-stich-tertiary-container);
+    opacity: 1;
 }
 
 .key-prompt-label {
-    color: var(--color-stich-amber) !important;
-    border-color: var(--color-stich-amber) !important;
-    border-width: 2px !important;
+    color: var(--color-stich-amber);
+    border-color: var(--color-stich-amber);
+    border-width: 2px;
 }
 
 .chalkboard-title {
-    color: var(--color-stich-amber) !important;
+    color: var(--color-stich-amber);
 }
 
 .chalkboard-text {
-    color: var(--color-stich-on-surface) !important;
+    color: var(--color-stich-on-surface);
 }
 
-/* -- DROPDOWN UNITY OVERRIDES - Stich -- */
+/* Dropdown override */
 .unity-base-dropdown__item:hover .unity-label {
-    color: var(--color-stich-amber) !important;
+    color: var(--color-stich-amber);
 }

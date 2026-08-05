@@ -1,133 +1,136 @@
 /* ============================================================
-   PauseMenuUI — Notebook 460px, stats + nav 4 botones.
-   Contraste ≥ 4.5:1. Fondos sólidos. Sin opacidades bajas.
+   PauseMenuUI — Notebook Stich, más opaco, fondos sólidos
    ============================================================ */
 
 @import "EchoesDesignTokens.uss";
-@import "Components/EchoButton.uss";
-@import "Components/EchoPanel.uss";
-@import "Components/EchoSlider.uss";
-@import "Components/EchoToggle.uss";
-@import "Components/EchoDropdown.uss";
-@import "Components/EchoTabs.uss";
-@import "Components/EchoModal.uss";
 
-/* ===== ROOT ===== */
+/* ===== ROOT — opaco para bloquear vista del juego ===== */
 .root-fullscreen {
     position: absolute;
     left: 0; top: 0; right: 0; bottom: 0;
     overflow: hidden;
-    background-color: rgba(10, 10, 13, 0.92); /* oscuro legible */
+    background-color: rgba(6, 8, 12, 0.85);
 }
 
 /* ===== NOTEBOOK ===== */
 .pause-notebook {
     width: 460px;
-    background-color: var(--color-void-black);
+    background-color: #131410;
     border-width: 1px;
-    border-color: var(--color-memory-amber);
+    border-color: #4a463f;
     border-left-width: 4px;
-    border-left-color: var(--color-memory-amber);
-    padding: var(--space-xl) var(--space-lg);
+    border-left-color: #E8B262;
+    padding: 32px 28px;
     position: absolute;
     left: 80px;
     top: 0; bottom: 0;
     justify-content: space-between;
-    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.85);
 }
 
 /* HEADER */
 .pause-notebook__header {
-    margin-bottom: var(--space-xl);
-    padding-bottom: var(--space-lg);
-    border-bottom-width: 1px;
-    border-bottom-color: var(--color-institutional-teal);
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom-width: 2px;
+    border-bottom-color: #4a463f;
 }
 
 .pause-title {
-    font-size: var(--size-screen-title);
-    color: var(--color-memory-amber);
-    letter-spacing: 1px;
-    margin-bottom: var(--space-xs);
+    font-size: 36px;
+    color: #E8B262;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    opacity: 1;
 }
 
 .pause-subtitle {
-    font-size: var(--size-small);
-    color: var(--color-fluorescent-sick);
-    -unity-text-transform: uppercase;
+    font-size: 14px;
+    color: #ccc6bc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
     letter-spacing: 2px;
+    opacity: 1;
 }
 
 /* STATS */
 .pause-stats {
-    margin-bottom: var(--space-xl);
-    padding-bottom: var(--space-xl);
+    margin-bottom: 24px;
+    padding-bottom: 24px;
     border-bottom-width: 1px;
-    border-bottom-color: var(--color-institutional-teal);
+    border-bottom-color: #4a463f;
 }
 
 .pause-stat {
-    font-size: var(--size-small);
-    color: var(--color-fluorescent-sick);
-    margin-bottom: var(--space-sm);
+    font-size: 18px;
+    color: #e4e2dc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    margin-bottom: 10px;
+    opacity: 1;
 }
 
 /* ACTIONS */
 .pause-actions {
     flex-direction: column;
-    margin-top: var(--space-xl);
+    margin-top: 16px;
 }
 
 .pause-btn {
-    margin-bottom: var(--space-sm);
+    margin-bottom: 10px;
     justify-content: flex-start;
-    padding: var(--space-md) var(--space-lg);
-    font-size: var(--size-body);
+    padding: 16px 20px;
+    font-size: 18px;
+    color: #e4e2dc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    background-color: #1b1c18;
+    border-width: 1px;
+    border-color: #4a463f;
+    border-left-width: 4px;
+    border-left-color: #E8B262;
+    border-radius: 0;
+    letter-spacing: 1px;
+    transition-property: color, background-color, border-color, scale;
+    transition-duration: 150ms;
+    transition-timing-function: linear;
+    opacity: 1;
+}
+
+.pause-btn:hover {
+    color: #fffeff;
+    background-color: #2a2a26;
+    border-color: #E8B262;
+    scale: 1.02 1.02;
+}
+
+.pause-btn:active {
+    color: #E8B262;
+    border-color: #E8B262;
+    scale: 0.98 0.98;
 }
 
 /* FOOTER */
 .pause-footer {
-    margin-top: var(--space-2xl);
-    padding-top: var(--space-lg);
+    margin-top: 24px;
+    padding-top: 16px;
     border-top-width: 1px;
-    border-top-color: var(--color-institutional-teal);
-    font-size: var(--size-small);
-    color: var(--color-faded-mustard);
+    border-top-color: #4a463f;
+    font-size: 14px;
+    color: #ccc6bc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    opacity: 1;
 }
 
 /* SETTINGS PANEL (overlay) */
 .pause-settings-panel {
     position: absolute;
-    left: 580px; /* al lado del notebook */
-    top: var(--space-xl);
-    right: var(--space-xl);
-    bottom: var(--space-xl);
-    background-color: var(--color-void-black);
+    left: 600px;
+    top: 32px;
+    right: 32px;
+    bottom: 32px;
+    background-color: #131410;
     border-width: 1px;
-    border-color: var(--color-institutional-teal);
-    padding: var(--space-xl);
+    border-color: #4a463f;
+    border-left-width: 4px;
+    border-left-color: #E8B262;
+    padding: 32px;
     flex-direction: column;
-    overflow-y: auto;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 1280px) {
-    .pause-notebook {
-        left: var(--space-lg);
-        width: calc(100% - var(--space-xl));
-    }
-    .pause-settings-panel {
-        left: 0; top: 0; right: 0; bottom: 0;
-        position: absolute;
-        z-index: var(--z-overlay);
-    }
-}
-
-@media (max-width: 768px) {
-    .pause-notebook {
-        left: 0; top: 0; right: 0; bottom: 0;
-        width: 100%;
-        border-left-width: 0;
-        border-radius: 0;
-    }
 }

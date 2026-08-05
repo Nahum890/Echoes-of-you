@@ -16,20 +16,8 @@
                 <ui:VisualElement class="folder-tabs-group">
                     <!-- Logo -->
                     <ui:VisualElement name="logo" class="menu-logo" />
-                    <!-- Sidebar Header ÔÇö Title block -->
-                    <ui:VisualElement style="margin-bottom: 40px; padding-bottom: 24px; border-bottom-width: 1px; border-bottom-color: rgba(232,178,98,0.4);">
-                        <!-- Juego Title -->
-                        <ui:Label text="ECHOES OF YOU" class="font-mono-bold" style="font-size: 22px; letter-spacing: 2px; color: #E8B262;" />
-                        <ui:Label text="registro de una ausencia" class="font-mono" style="font-size: 13px; letter-spacing: 1px; color: #e4e2dc; margin-top: 6px; opacity: 1;" />
-                        <!-- Separator -->
-                        <ui:VisualElement style="height: 1px; background-color: rgba(232,178,98,0.3); margin-top: 18px; margin-bottom: 14px;" />
-                        <!-- User info -->
-                        <ui:Label text="EXPEDIENTE  9811" class="font-mono" style="font-size: 12px; letter-spacing: 2px; color: #ccc6bc; opacity: 1;" />
-                        <ui:Label text="Identidad: Aiden" class="font-serif" style="font-size: 17px; color: #e4e2dc; margin-top: 6px; opacity: 1;" />
-                        <ui:Label name="hero-title" text="" class="font-mono" style="font-size: 14px; color: #ccc6bc; margin-top: 4px; opacity: 1; -unity-font-style: italic; min-height: 18px;" />
-                    </ui:VisualElement>
 
-                    <!-- Navigation Tab Buttons ÔÇö sistema de hover v2 -->
+                    <!-- Navigation Tab Buttons – sistema de hover v2 -->
                     <ui:VisualElement class="nav-item-wrapper">
                         <ui:Button name="nav-newgame" text="I. Acceder a Memoria" class="nav-item nav-item-v2" />
                     </ui:VisualElement>
@@ -48,10 +36,10 @@
                 </ui:VisualElement>
 
                 <!-- File metadata bottom label -->
-                <ui:VisualElement style="border-top-width: 1px; border-top-color: rgba(232,178,98,0.15); padding-top: 14px;">
-                    <ui:Label name="lbl-user-rank" text="ESTADO: INCOMPLETO" class="font-mono-bold" style="font-size: 13px; letter-spacing: 1px; color: #B23A3A; -unity-text-transform: uppercase;" />
-                    <ui:Label name="lbl-user-integrity" text="Integridad: 12%" class="font-mono" style="font-size: 13px; color: #8C96A5; margin-top: 4px;" />
-                    <ui:Label name="lbl-user-sessions" text="Sintonizaciones: 1" class="font-mono" style="font-size: 13px; color: #8C96A5; margin-top: 2px;" />
+                <ui:VisualElement style="border-top-width: 2px; border-top-color: #4a463f; padding-top: 16px;">
+                    <ui:Label name="lbl-user-rank" text="ESTADO: INCOMPLETO" style="font-size: 15px; letter-spacing: 1px; color: #B23A3A; -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');" />
+                    <ui:Label name="lbl-user-integrity" text="Integridad: 12%" style="font-size: 15px; color: #ccc6bc; margin-top: 6px; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');" />
+                    <ui:Label name="lbl-user-sessions" text="Sintonizaciones: 1" style="font-size: 15px; color: #ccc6bc; margin-top: 4px; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');" />
                 </ui:VisualElement>
             </ui:VisualElement>
 

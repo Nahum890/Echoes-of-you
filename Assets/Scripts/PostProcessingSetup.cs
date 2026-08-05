@@ -25,6 +25,31 @@ public class PostProcessingSetup : MonoBehaviour
     /// Perfil de Volume en runtime, modulado por GameFeelController.
     public static VolumeProfile RuntimeProfile => _runtimeProfile;
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void ResetCaches()
+    {
+        _instance = null;
+        CleanupStaticObjects();
+    }
+
+    static void CleanupStaticObjects()
+    {
+        if (_volumeGo != null)
+        {
+            if (Application.isPlaying) Object.Destroy(_volumeGo);
+            else Object.DestroyImmediate(_volumeGo);
+            _volumeGo = null;
+            _volume = null;
+        }
+
+        if (_runtimeProfile != null)
+        {
+            if (Application.isPlaying) Object.Destroy(_runtimeProfile);
+            else Object.DestroyImmediate(_runtimeProfile);
+            _runtimeProfile = null;
+        }
+    }
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     static void AutoSetup()
     {

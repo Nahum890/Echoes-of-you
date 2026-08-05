@@ -33,6 +33,16 @@ public class ThirdPersonCamera : MonoBehaviour
     public float nearClip = 0.3f;
     public float farClip = 300f;
 
+    [Header("Camera Collision")]
+    [Tooltip("Radio de la esfera para el cast de colisión de cámara.")]
+    [SerializeField] float collisionRadius = 0.25f;
+    [Tooltip("Capa a ignorar al hacer cast (player, echo, etc.). Por defecto detecta todo menos Ignore Raycast.")]
+    [SerializeField] LayerMask collisionMask = ~0;
+    [Tooltip("Distancia mínima a la que la cámara puede acercarse al focus point cuando choca.")]
+    [SerializeField] float minCollisionDistance = 0.6f;
+    [Tooltip("Cuánto suavizar el retroceso de colisión (mayor = más snappy).")]
+    [SerializeField] float collisionDamping = 18f;
+
     float _pitch = 12f;
     Vector3 _smoothedFocusPoint;
     Vector3 _orbitForward = Vector3.forward;
@@ -206,6 +216,11 @@ public class ThirdPersonCamera : MonoBehaviour
             desiredRotation *= _cameraShake.RotationOffset;
         }
 
+        // ─── Camera collision (prevent clipping through walls) ────────
+        // SphereCast desde el focus point hacia la posición deseada de cámara;
+        // si choca, empujamos desiredPosition al punto de impacto + radio.
+        desiredPosition = ResolveCameraCollision(_smoothedFocusPoint, desiredPosition);
+
         // Apply PS1 noise manually (procedural)
         float time = Time.time * 12f;
         Vector3 posJitter = new Vector3(
@@ -251,6 +266,35 @@ public class ThirdPersonCamera : MonoBehaviour
     Vector3 GetFocusPoint()
     {
         return target.position + target.rotation * focusOffset;
+    }
+
+    /// <summary>
+    /// Evita que la cámara atraviese paredes/suelos: SphereCast desde el focus point
+    /// (cabeza del player) hacia la posición deseada. Si hay obstáculo, empuja la
+    /// cámara al punto de impacto + radio. Suavizado vía collisionDamping.
+    /// </summary>
+    Vector3 ResolveCameraCollision(Vector3 focusPoint, Vector3 desiredPosition)
+    {
+        Vector3 castDir = desiredPosition - focusPoint;
+        float castDistance = castDir.magnitude;
+        if (castDistance < 0.001f) return desiredPosition;
+        castDir /= castDistance;
+
+        // Excluir player/echo/pressureplate (layers 8/9/11) y triggers.
+        LayerMask mask = collisionMask;
+        mask &= ~(1 << 8);  // Player
+        mask &= ~(1 << 9);  // Echo
+        mask &= ~(1 << 11); // PressurePlate
+
+        if (Physics.SphereCast(focusPoint, collisionRadius, castDir, out RaycastHit hit, castDistance + collisionRadius, mask, QueryTriggerInteraction.Ignore))
+        {
+            float safeDistance = Mathf.Max(minCollisionDistance, hit.distance - collisionRadius);
+            Vector3 safePosition = focusPoint + castDir * safeDistance;
+            // Suavizado: interpolar hacia la posición segura (evita popping brusco)
+            return Vector3.Lerp(desiredPosition, safePosition, DampingFactor(collisionDamping, Time.deltaTime));
+        }
+
+        return desiredPosition;
     }
 
     static float DampingFactor(float sharpness, float deltaTime)

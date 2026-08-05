@@ -1,9 +1,13 @@
 <UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+    <Style src="project://database/Assets/UI/EchoesDesignTokens.uss" />
+    <Style src="project://database/Assets/UI/EchoesTheme.uss" />
+    <Style src="project://database/Assets/UI/PauseMenuUI.uss" />
+    
     <!-- PauseMenuUI — Notebook 460px, stats + nav 4 botones.
          Escape → Reanudar (focus por defecto).
-         Contraste ≥ 4.5:1. Fondos sólidos, sin opacidades bajas. -->
+         Contraste ≥ 7:1. Fondos sólidos, sin opacidades bajas. -->
 
-    <ui:VisualElement class="root-fullscreen hidden" name="pause-root">
+    <ui:VisualElement class="root-fullscreen hidden" name="pause-root" style="width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
         <ui:VisualElement class="pause-notebook" name="pause-nav">
             <ui:VisualElement class="pause-notebook__header">
                 <ui:Label class="pause-title" text="Capítulo Pausado" />

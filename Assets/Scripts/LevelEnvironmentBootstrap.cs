@@ -57,6 +57,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
             _lightingApplied = true;
         }
         ApplyLighting();
+        ApplyArchitectureMaterialStyling();
         ApplyEchoPlateVisuals();
         EnsureExperienceSystems();
     }
@@ -472,5 +473,49 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
 
         if (fixedCount > 0)
             Debug.Log($"[LevelEnvironmentBootstrap] Re-layered {fixedCount} env colliders to Ground (layer 6).");
+    }
+
+    static void ApplyArchitectureMaterialStyling()
+    {
+        Renderer[] renderers = Object.FindObjectsByType<Renderer>(FindObjectsInactive.Exclude);
+        int styledCount = 0;
+        
+        // Colores canónicos institucionales para las paredes de los niveles liminales
+        Color wallColor = new Color(0.18f, 0.24f, 0.32f, 1f); // Corridor Navy (#1C2430 con más luz)
+        Color accentColor = new Color(0.17f, 0.29f, 0.29f, 1f); // Institutional Teal (#2B4A4A)
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer r = renderers[i];
+            if (r == null) continue;
+
+            Material[] mats = r.sharedMaterials;
+            bool modified = false;
+
+            for (int m = 0; m < mats.Length; m++)
+            {
+                Material mat = mats[m];
+                if (mat == null) continue;
+
+                // Si usa el shader PS1World o similar y tiene un color demasiado oscuro (< 0.15)
+                if (mat.HasProperty("_BaseColor"))
+                {
+                    Color c = mat.GetColor("_BaseColor");
+                    if (c.r < 0.12f && c.g < 0.14f && c.b < 0.18f)
+                    {
+                        // Crear una instancia única en runtime para no corromper el asset en disco
+                        Material instMat = r.materials[m];
+                        instMat.SetColor("_BaseColor", (i % 2 == 0) ? wallColor : accentColor);
+                        if (instMat.HasProperty("_DitherStrength"))
+                            instMat.SetFloat("_DitherStrength", 0.35f);
+                        styledCount++;
+                        modified = true;
+                    }
+                }
+            }
+        }
+
+        if (styledCount > 0)
+            Debug.Log($"[LevelEnvironmentBootstrap] Estilizados {styledCount} materiales de arquitectura con paleta canónica liminal.");
     }
 }

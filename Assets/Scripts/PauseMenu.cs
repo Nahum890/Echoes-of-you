@@ -91,6 +91,10 @@ namespace Echoes.UI
             UnityEngine.Cursor.lockState = UnityEngine.CursorLockMode.None;
             UnityEngine.Cursor.visible = true;
 
+            // Congelar cámara del jugador
+            var cam = FindAnyObjectByType<SimpleFollowCamera>();
+            if (cam != null) cam.Frozen = true;
+
             // Ocultar HUD gameplay
             var gameHUD = FindAnyObjectByType<GameHUD>();
             gameHUD?.SetVisible(false);
@@ -111,6 +115,10 @@ namespace Echoes.UI
             Time.timeScale = 1f;
             UnityEngine.Cursor.lockState = UnityEngine.CursorLockMode.Locked;
             UnityEngine.Cursor.visible = false;
+
+            // Liberar cámara del jugador
+            var cam = FindAnyObjectByType<SimpleFollowCamera>();
+            if (cam != null) cam.Frozen = false;
 
             // Mostrar HUD gameplay
             var gameHUD2 = FindAnyObjectByType<GameHUD>();
@@ -169,6 +177,10 @@ void ShowSettings()
             Time.timeScale = 1f;
             UnityEngine.Cursor.lockState = UnityEngine.CursorLockMode.None;
             UnityEngine.Cursor.visible = true;
+
+            var cam = FindAnyObjectByType<SimpleFollowCamera>();
+            if (cam != null) cam.Frozen = false;
+
             _pauseRoot?.AddToClassList("hidden");
         }
 

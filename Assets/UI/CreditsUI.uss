@@ -1,150 +1,201 @@
 /* ============================================================
-   CreditsUI — Credits scene styling (Stich aesthetic)
-   Source: Stich/DESIGN.md
-   - Surface #131410 background
-   - Garamond for title, Courier for body
-   - Amber heading accents, ivory body text
-   - Glassmorphism back button
-   - 30px/s auto-scroll (controlled by CreditsController.cs)
+   CreditsUI — Rediseño Stich (solid, crisp, legible)
+   Fondo sólido, tipografía cargada, secciones con tarjetas
    ============================================================ */
 
 @import "EchoesDesignTokens.uss";
-@import "Components/EchoButton.uss";
 
+/* ===== ROOT ===== */
+.credits-root {
+    background-color: #0A0A0D;
+}
+
+/* ===== HEADER FIJO ===== */
+.credits-header {
+    position: absolute;
+    left: 0; top: 0; right: 0;
+    height: 100px;
+    background-color: #131410;
+    border-bottom-width: 2px;
+    border-bottom-color: #E8B262;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 48px;
+}
+
+.credits-header-title {
+    font-size: 36px;
+    color: #E8B262;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    letter-spacing: 2px;
+    opacity: 1;
+}
+
+.credits-header-subtitle {
+    font-size: 16px;
+    color: #ccc6bc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    letter-spacing: 1px;
+    margin-left: 24px;
+    opacity: 1;
+}
+
+/* ===== SCROLL AREA ===== */
 .credits-container {
     position: absolute;
-    left: 0; top: 0; right: 0; bottom: 80px;
-    overflow: hidden;
+    left: 0; top: 100px; right: 0; bottom: 0;
+    background-color: #0A0A0D;
 }
 
 .credits-scroll {
     position: absolute;
-    left: 15%; right: 15%;
+    left: 20%; right: 20%;
     top: 0; bottom: 0;
-    padding: var(--space-3xl) var(--space-container);
+    padding: 48px 0;
     background-color: transparent;
 }
 
-/* ===== SECTIONS ===== */
+/* ===== SECCIONES (tarjetas) ===== */
 .credits-section {
-    margin-bottom: var(--space-2xl);
-    align-items: center;
-    padding-top: var(--space-lg);
-    padding-bottom: var(--space-lg);
+    background-color: #131410;
+    border-width: 1px;
+    border-color: #4a463f;
+    border-left-width: 4px;
+    border-left-color: #E8B262;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    align-items: flex-start;
 }
 
-/* Opening title section */
 .credits-section--title {
-    margin-top: var(--space-3xl);
-    margin-bottom: var(--space-3xl);
+    background-color: #1b1c18;
+    border-left-color: #fffeff;
+    border-left-width: 6px;
+    padding: 40px 36px;
+    margin-bottom: 32px;
+    text-align: center;
+    align-items: center;
 }
 
 .credits-section--close {
-    margin-top: var(--space-2xl);
+    background-color: #1b1c18;
+    border-left-color: #E8B262;
+    border-left-width: 6px;
+    padding: 40px 36px;
+    margin-bottom: 32px;
+    align-items: center;
 }
 
-/* ===== TITLE (opening) ===== */
+/* ===== TITULO PRINCIPAL ===== */
 .credits-title-main {
-    font-family: var(--font-display-bold);
-    font-size: var(--size-display-lg);
-    color: var(--color-stich-amber);
+    font-size: 52px;
+    color: #E8B262;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
     -unity-text-align: middle-center;
-    letter-spacing: -0.02em;
-    margin-bottom: var(--space-lg);
+    letter-spacing: 4px;
+    margin-bottom: 16px;
     opacity: 1;
-    line-height: var(--size-display-lg);
 }
 
 .credits-subtitle {
-    font-family: var(--font-display);
-    font-size: var(--size-interface-md);
-    color: var(--color-stich-on-surface);
+    font-size: 22px;
+    color: #e4e2dc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Garamond.ttf');
     -unity-text-align: middle-center;
-    margin-top: var(--space-sm);
+    margin-top: 8px;
     letter-spacing: 1px;
     opacity: 1;
 }
 
-/* ===== SEPARATOR ===== */
+/* ===== SEPARADOR ===== */
 .credits-separator {
-    height: 1px;
-    width: 280px;
-    background-color: var(--color-stich-outline-variant);
-    margin: var(--space-md) 0;
+    height: 2px;
+    width: 240px;
+    background-color: #E8B262;
+    margin: 16px 0;
 }
 
-/* ===== HEADINGS (section titles) ===== */
+/* ===== HEADING DE SECCION ===== */
 .credits-heading {
-    font-family: var(--font-interface-bold);
-    font-size: var(--size-interface-sm);
-    color: var(--color-stich-amber);
-    -unity-text-align: middle-center;
-    letter-spacing: 0.1em;
-    margin-bottom: var(--space-lg);
-    -unity-text-transform: uppercase;
+    font-size: 18px;
+    color: #E8B262;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    -unity-text-align: middle-left;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
     opacity: 1;
 }
 
-/* Closing heading — same style but no uppercase */
 .credits-heading--close {
-    font-family: var(--font-display);
-    font-size: var(--size-display-md);
-    color: var(--color-stich-amber);
-    -unity-text-transform: none;
-    letter-spacing: 0;
+    font-size: 32px;
+    color: #E8B262;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    -unity-text-align: middle-center;
+    margin-bottom: 12px;
+    letter-spacing: 2px;
 }
 
-/* ===== NAMES ===== */
+/* ===== NOMBRES ===== */
 .credits-name {
-    font-family: var(--font-interface);
-    font-size: var(--size-interface-md);
-    color: var(--color-stich-on-surface);
-    -unity-text-align: middle-center;
+    font-size: 18px;
+    color: #e4e2dc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    -unity-text-align: middle-left;
     letter-spacing: 1px;
-    margin-bottom: var(--space-sm);
+    margin-bottom: 6px;
     opacity: 1;
 }
 
-/* ===== BODY TEXT ===== */
+/* ===== TEXTO BODY ===== */
 .credits-text {
-    font-family: var(--font-interface);
-    font-size: var(--size-interface-sm);
-    color: var(--color-stich-on-surface-variant);
-    -unity-text-align: middle-center;
-    margin-bottom: var(--space-sm);
+    font-size: 16px;
+    color: #ccc6bc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    -unity-text-align: middle-left;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
     opacity: 1;
 }
 
-/* ===== BACK BUTTON — Stich glassmorphism ===== */
+/* ===== BACK BUTTON — SOLID ===== */
 .credit-back-btn {
     position: absolute;
     left: 50%;
-    bottom: var(--space-xl);
+    bottom: 32px;
     translate: -50% 0;
-    min-width: 200px;
-    font-family: var(--font-interface);
-    font-size: var(--size-interface-sm);
-    color: var(--color-stich-on-surface);
-    background-color: var(--color-glass-bg-strong);
+    min-width: 220px;
+    font-size: 18px;
+    color: #e4e2dc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    background-color: #1b1c18;
     border-width: 1px;
-    border-color: var(--color-stich-outline);
-    padding: var(--space-md) var(--space-xl);
-    letter-spacing: 1px;
+    border-color: #4a463f;
+    border-left-width: 4px;
+    border-left-color: #E8B262;
+    padding: 16px 32px;
+    letter-spacing: 2px;
     -unity-text-align: middle-center;
     opacity: 1;
-    transition-property: color, border-color, background-color;
-    transition-duration: var(--duration-hover);
+    transition-property: color, border-color, background-color, scale;
+    transition-duration: 150ms;
     transition-timing-function: linear;
     border-radius: 0;
 }
 
 .credit-back-btn:hover {
-    color: var(--color-stich-pure-white);
-    background-color: var(--color-stich-surface-container-low);
-    border-color: var(--color-stich-on-surface);
+    color: #fffeff;
+    background-color: #2a2a26;
+    border-color: #E8B262;
+    scale: 1.03 1.03;
 }
 
 .credit-back-btn:active {
-    color: var(--color-stich-amber);
-    border-color: var(--color-stich-amber);
+    color: #E8B262;
+    border-color: #E8B262;
+    scale: 0.97 0.97;
+}
+
+/* ===== PADDING FINAL SCROLL ===== */
+.credits-end-padding {
+    height: 160px;
 }

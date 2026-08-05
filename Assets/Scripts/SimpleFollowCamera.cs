@@ -30,6 +30,13 @@ public class SimpleFollowCamera : MonoBehaviour
 
     Vector3 _velocity = Vector3.zero;
     Vector2 _smoothMouse;
+    bool _frozen;
+
+    public bool Frozen
+    {
+        get => _frozen;
+        set => _frozen = value;
+    }
 
     void Start()
     {
@@ -41,6 +48,7 @@ public class SimpleFollowCamera : MonoBehaviour
     {
         if (target == null) return;
         if (!Application.isPlaying) return;
+        if (_frozen) return;
 
         if (Cursor.lockState == CursorLockMode.Locked || true)
         {
