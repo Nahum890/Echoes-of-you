@@ -2,37 +2,56 @@
     <Style src="project://database/Assets/UI/EchoesDesignTokens.uss" />
     <Style src="project://database/Assets/UI/EchoesTheme.uss" />
     <Style src="project://database/Assets/UI/PauseMenuUI.uss" />
-    
-    <!-- PauseMenuUI — Notebook 460px, stats + nav 4 botones.
-         Escape → Reanudar (focus por defecto).
-         Contraste ≥ 7:1. Fondos sólidos, sin opacidades bajas. -->
 
     <ui:VisualElement class="root-fullscreen hidden" name="pause-root" style="width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
+
+        <!-- Scanline overlay -->
+        <ui:VisualElement class="pause-scanline" />
+
+        <!-- Echo silhouette (sombra desplazada detras del panel) -->
+        <ui:VisualElement class="echo-silhouette" />
+
+        <!-- Panel izquierdo 33% -->
         <ui:VisualElement class="pause-notebook" name="pause-nav">
-            <ui:VisualElement class="pause-notebook__header">
-                <ui:Label class="pause-title" text="Capítulo Pausado" />
-                <ui:Label class="pause-subtitle" text="recorrido en curso" />
+
+            <!-- Emblem (O de Echoes) -->
+            <ui:VisualElement class="pause-emblem">
+                <ui:Label class="pause-emblem-text" text="O" />
             </ui:VisualElement>
 
+            <!-- Header -->
+            <ui:VisualElement class="pause-notebook__header">
+                <ui:Label class="pause-title" text="CAPITULO PAUSADO" />
+                <ui:Label class="pause-subtitle" text="checkpoint actual" />
+                <ui:Label class="pause-location" name="lbl-pause-fragment" text="Aula XXX" />
+            </ui:VisualElement>
+
+            <!-- Stats -->
             <ui:VisualElement class="pause-stats" name="pauseStats">
-                <ui:Label class="pause-stat" name="lbl-pause-fragment" text="Capítulo: --" />
                 <ui:Label class="pause-stat" name="lbl-pause-time" text="Tiempo: 00:00:00" />
                 <ui:Label class="pause-stat" name="lbl-pause-echoes" text="Ecos grabados: 0" />
-                <ui:Label class="pause-stat" name="lbl-pause-deaths" text="Quiebres (aula): 0 · sesión 0" />
-                <ui:Label class="pause-stat" name="lbl-pause-total" text="Cuaderno de Aiden: 0/15 · 0 ecos · 00:00:00" />
+                <ui:Label class="pause-stat" name="lbl-pause-deaths" text="Quiebres (aula): 0" />
+                <ui:Label class="pause-stat" name="lbl-pause-total" text="Cuaderno: 0/15 ecos" />
             </ui:VisualElement>
 
+            <!-- Actions -->
             <ui:VisualElement class="pause-actions">
-                <ui:Button class="echo-button echo-button--primary pause-btn" name="btn-resume" text="I. Reanudar Capítulo" />
-                <ui:Button class="echo-button echo-button--destructive pause-btn" name="btn-reiniciar" text="II. Reiniciar Capítulo" />
-                <ui:Button class="echo-button echo-button--primary pause-btn" name="btn-settings" text="III. Ajustes del Cuaderno" />
-                <ui:Button class="echo-button echo-button--secondary pause-btn" name="btn-hub" text="IV. Volver al Cuaderno" />
+                <ui:Button class="pause-btn pause-btn--focus" name="btn-resume" text="Reanudar" />
+                <ui:Button class="pause-btn pause-btn--danger" name="btn-reiniciar" text="Reiniciar desde el ultimo punto" />
+                <ui:Button class="pause-btn" name="btn-settings" text="Ajustes" />
+                <ui:Button class="pause-btn" name="btn-hub" text="Expediente" />
             </ui:VisualElement>
 
-            <ui:Label class="pause-footer" name="lbl-pause-location" text="Aula XXX — Capítulo Y de Aiden" />
+            <!-- Footer — volver al menu -->
+            <ui:Button class="pause-footer-btn" name="btn-footer-menu" text="Volver al menu principal" />
+
         </ui:VisualElement>
+
+        <!-- Right side — texto REC residual -->
+        <ui:Label class="pause-rec-text" text="REC_0392 // A. PIERCE // ERROR_MEMORY_CORRUPTED" />
 
         <!-- Settings panel (overlay, hidden by default) -->
         <ui:VisualElement class="pause-settings-panel hidden" name="pause-settings-panel" />
+
     </ui:VisualElement>
 </UXML>

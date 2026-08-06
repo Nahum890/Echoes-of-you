@@ -23,6 +23,8 @@ namespace Echoes.VN
         Button _cyanButton;
         Button _amberButton;
         Label _hintLabel;
+        VisualElement _spriteLeft;
+        VisualElement _spriteRight;
 
         bool _active;
         Action<bool> _onComplete;
@@ -49,6 +51,8 @@ namespace Echoes.VN
             _cyanButton = _root.Q<Button>("gate-cyan");
             _amberButton = _root.Q<Button>("gate-amber");
             _hintLabel = _root.Q<Label>("gate-hint");
+            _spriteLeft  = _root.Q("gate-sprite-left");
+            _spriteRight = _root.Q("gate-sprite-right");
             _root.AddToClassList("hidden");
             if (_cyanButton != null) _cyanButton.clicked += () => OnChoiceMade(true);
             if (_amberButton != null) _amberButton.clicked += () => OnChoiceMade(false);
@@ -92,7 +96,26 @@ namespace Echoes.VN
             if (_hintLabel != null) _hintLabel.text = "A = abrir  /  D = mantener";
 
             if (_root != null) _root.RemoveFromClassList("hidden");
+            UpdateAidenSprite();
             _active = true;
+        }
+
+        void UpdateAidenSprite()
+        {
+            if (_spriteLeft == null && _spriteRight == null) return;
+
+            var stage = AidenStageResolver.ResolveForCurrentLevel();
+            string spriteName = stage switch
+            {
+                AidenStage.Conviction => "VN/Sprites/aiden/Aiden_Perturbada",
+                AidenStage.Guilt => "VN/Sprites/aiden/Aiden_Pensativa",
+                _ => "VN/Sprites/aiden/Aiden_Feliz",
+            };
+
+            Texture2D tex = Resources.Load<Texture2D>(spriteName);
+            var bg = tex != null ? new StyleBackground(tex) : new StyleBackground();
+            if (_spriteRight != null) _spriteRight.style.backgroundImage = bg;
+            if (_spriteLeft != null) _spriteLeft.style.backgroundImage = new StyleBackground();
         }
 
         void OnChoiceMade(bool cyan)

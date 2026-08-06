@@ -53,7 +53,8 @@ public class LevelRuntimeController : MonoBehaviour
         _gameState = FindAnyObjectByType<GameStateController>();
         if (_gameState == null)
             _gameState = new GameObject("GameStateController").AddComponent<GameStateController>();
-    }
+
+        }
 
     void Start()
     {

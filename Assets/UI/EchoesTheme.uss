@@ -30,7 +30,6 @@
 .hidden {
     display: none;
 }
-}
 
 .disabled {
     opacity: 0.3;
@@ -126,103 +125,8 @@
 }
 
 /* ============================================================
-   SCHOOL FILE FOLDER LAYOUT (MAIN MENU) — REDISEÑO AAA
+   SCHOOL FILE FOLDER LAYOUT (MAIN MENU) — delegado a MainMenuUI.uss
    ============================================================ */
-
-.main-menu-folder {
-    /* Fondo semi-transparente para que el mundo 3D cinemático se vea detrás */
-    background-color: rgba(6, 8, 12, 0.55);
-    border-width: 0;
-    border-top-width: 1px;
-    border-top-color: rgba(255, 191, 0, 0.3);
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    flex-direction: row;
-}
-
-.side-nav {
-    width: 420px;
-    background-color: var(--color-surface-deepest);
-    border-right-width: 1px;
-    border-right-color: rgba(255, 191, 0, 0.2);
-    padding: 48px 32px;
-    justify-content: space-between;
-    flex-shrink: 0;
-}
-
-.folder-tabs-group {
-    flex-direction: column;
-}
-
-/* Estilo fallback del nav-item (cuando nav-item-v2 no está activo) */
-.nav-item {
-    padding: 16px 20px;
-    color: rgba(220, 225, 235, 0.85);
-    background-color: transparent;
-    border-width: 0;
-    border-left-width: 2px;
-    border-left-color: transparent;
-    -unity-text-align: middle-left;
-    font-size: 20px;
-    letter-spacing: 1px;
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
-    -unity-text-transform: uppercase;
-    margin-bottom: 4px;
-    transition-property: color, background-color, border-left-color;
-    transition-duration: 0.15s;
-}
-
-.nav-item:hover {
-    color: var(--color-fluorescent-sick);
-    background-color: rgba(201, 212, 176, 0.06);
-    border-left-color: rgba(201, 212, 176, 0.6);
-}
-
-.nav-item--active {
-    color: var(--color-memory-amber);
-    background-color: rgba(255, 191, 0, 0.08);
-    border-left-color: var(--color-memory-amber);
-    border-left-width: 3px;
-}
-
-/* Área de contenido de la derecha */
-#right-content-container {
-    position: absolute;
-    left: 420px;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--color-surface-elevate);
-    border-left-width: 1px;
-    border-left-color: rgba(201, 212, 176, 0.08);
-}
-
-/* Selector combinado por si el C# lo usa */
-.main-content {
-    position: absolute;
-    left: 420px;
-    top: 0;
-    right: 0;
-    bottom: 0;
-}
-
-.preview-panel {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    padding: 56px 48px;
-    display: none;
-    flex-direction: column;
-}
-
-.preview-panel--visible {
-    display: flex;
-}
 
 /* ============================================================
    WIDGETS & MARCADORES / RECUENTO — REDISEÑO

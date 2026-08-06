@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 
 public class LevelEnvironmentBootstrap : MonoBehaviour
 {
@@ -60,6 +61,8 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         ApplyArchitectureMaterialStyling();
         ApplyEchoPlateVisuals();
         EnsureExperienceSystems();
+        EnsureInteractionPromptUI();
+        EnsureLevelIntro();
     }
 
     static void EnsureExperienceSystems()
@@ -75,6 +78,21 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
             GameObject escape = new GameObject("LevelEscapeSequence");
             escape.AddComponent<LevelEscapeSequence>();
         }
+    }
+
+    static void EnsureInteractionPromptUI()
+    {
+        if (Object.FindAnyObjectByType<InteractionPromptInitializer>() == null)
+        {
+            var go = new GameObject("InteractionPromptBootstrap");
+            go.AddComponent<InteractionPromptInitializer>();
+        }
+    }
+
+    static void EnsureLevelIntro()
+    {
+        var go = new GameObject("LevelIntroBootstrap");
+        go.AddComponent<LevelIntroTrigger>();
     }
 
     static void OnSceneUnloaded(Scene scene)

@@ -47,40 +47,33 @@
 .nav-item-v2 {
     /* Layout */
     position: relative;
-    padding: 16px 20px 16px 22px;
+    padding: 18px 24px;
     overflow: visible;
 
     /* Apariencia base */
-    background-color: transparent;
-    border-width: 0;
-    border-left-width: 0;
-    border-left-color: rgba(255, 191, 0, 0);
+    background-color: #1b1c18;
+    border-width: 1px;
+    border-color: #4a463f;
+    border-left-width: 5px;
+    border-left-color: #E8B262;
 
     /* Tipografía */
     -unity-text-align: middle-left;
     font-size: 20px;
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
-    -unity-text-transform: uppercase;
-    color: rgba(45, 42, 38, 0.92);
+    color: #e4e2dc;
 
-    /* Transform — origen en borde izquierdo para que escale hacia la derecha */
+    /* Transform */
     transform-origin: left center;
     translate: 0px 0px;
     scale: 1.0 1.0;
 
     /* Transiciones base */
-    transition-property: color, translate, scale, border-left-width, border-left-color, background-color, opacity;
-    transition-duration: var(--duration-hover-mouse), var(--duration-hover-mouse), var(--duration-hover-mouse), var(--duration-hover-mouse), var(--duration-hover-mouse), var(--duration-hover-mouse), var(--duration-hover-mouse);
-    transition-timing-function:
-        ease-out,
-        cubic-bezier(0.25, 0.46, 0.45, 0.94),
-        cubic-bezier(0.34, 1.56, 0.64, 1),
-        ease-out,
-        ease-out,
-        ease-out,
-        ease-out;
-    transition-delay: 0ms, 0ms, 0ms, 0ms, 0ms, 0ms, 0ms;
+    transition-property: color, translate, scale, border-left-width, border-left-color, background-color, border-color;
+    transition-duration: 150ms;
+    transition-timing-function: linear;
+    transition-delay: 0ms;
 }
 
 /* ============================================================
@@ -90,21 +83,21 @@
 
 .nav-item-v2:hover,
 .nav-item-v2:focus {
-    /* Color del texto — transición inmediata */
-    color: rgba(59, 90, 110, 1.0);
+    color: #fffeff;
 
     /* Movimiento: desliza 6px a la derecha */
     translate: 6px 0px;
 
-    /* Escala con overshoot: cubic-bezier(0.34, 1.56, 0.64, 1) */
+    /* Escala con overshoot */
     scale: 1.035 1.035;
 
-    /* Línea de profundidad izquierda — aparece al hover */
-    border-left-width: 2px;
-    border-left-color: rgba(255, 191, 0, 0.9);
+    /* Linea de profundidad izquierda */
+    border-left-width: 5px;
+    border-left-color: #fffeff;
 
-    /* Fondo sutil para separar del fondo */
-    background-color: rgba(59, 90, 110, 0.04);
+    /* Fondo hover Stich */
+    background-color: #2a2a26;
+    border-color: #E8B262;
 }
 
 /* Focus pip (controller) — indicador ▸ a la izquierda */
@@ -135,19 +128,10 @@
 .nav-item-v2:active {
     scale: 0.97 0.97;
     translate: 2px 0px;
-    color: rgba(255, 191, 0, 1.0);
-    background-color: rgba(255, 191, 0, 0.08);
-    border-left-color: rgba(255, 191, 0, 1.0);
-    border-left-width: 3px;
-    transition-duration: var(--duration-active), var(--duration-active), var(--duration-active), var(--duration-active), var(--duration-active), var(--duration-active), var(--duration-active);
-    transition-timing-function:
-        ease-in,
-        cubic-bezier(0.68, -0.55, 0.27, 1.55),
-        cubic-bezier(0.68, -0.55, 0.27, 1.55),
-        ease-in,
-        ease-in,
-        ease-in,
-        ease-in;
+    color: #E8B262;
+    background-color: #353530;
+    border-left-color: #E8B262;
+    border-left-width: 5px;
 }
 
 /* ============================================================
@@ -155,10 +139,10 @@
    ============================================================ */
 
 .nav-item-v2.nav-item--active {
-    color: rgba(255, 191, 0, 1.0);
-    border-left-width: 2px;
-    border-left-color: rgba(255, 191, 0, 1.0);
-    background-color: rgba(255, 191, 0, 0.06);
+    color: #E8B262;
+    border-left-width: 5px;
+    border-left-color: #E8B262;
+    background-color: #2a2a26;
     translate: 4px 0px;
     scale: 1.02 1.02;
 }
@@ -178,11 +162,10 @@
     /* Misma tipografía que el botón pero transparente en idle */
     -unity-text-align: middle-left;
     font-size: 20px;
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
-    -unity-text-transform: uppercase;
-    color: rgba(59, 90, 110, 0.0);
-    padding: 16px 20px 16px 26px;
+    color: rgba(232, 178, 98, 0.0);
+    padding: 18px 24px;
 
     /* No debe capturar eventos */
     pointer-events: none;

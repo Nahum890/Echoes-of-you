@@ -157,7 +157,7 @@ public class EchoRecorder : MonoBehaviour
         // Echo system disabled for this level
         if (maxEchoes <= 0) return;
 
-        bool hold = Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.R);
+        bool hold = Input.GetKey(KeyCode.R);
 
         if (hold && !_recording)
             StartRecording();

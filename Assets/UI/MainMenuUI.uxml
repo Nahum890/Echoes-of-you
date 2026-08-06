@@ -3,8 +3,8 @@
     <Style src="project://database/Assets/UI/EchoesHoverEffects.uss" />
     <Style src="project://database/Assets/UI/MainMenuUI.uss" />
     
-    <ui:VisualElement name="root" class="root-fullscreen crt-vignette crt-scanlines" style="background-color: #0A0A0D; width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
-        <ui:VisualElement name="menu-bg" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: #0A0A0D; opacity: 1;" />
+    <ui:VisualElement name="root" class="root-fullscreen" style="background-color: transparent; width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
+        <ui:VisualElement name="menu-bg" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: transparent; opacity: 0;" />
 
         <!-- ==========================================
              SPLASH SCREEN (VOID INTRO)
@@ -266,7 +266,7 @@
                 <!-- ==========================================
                      PANEL 4: DISCONNECT OFFLINE (EXIT CONFIRM)
                      ========================================== -->
-                <ui:VisualElement name="panel-disconnect-offline" class="preview-panel" style="justify-content: center; align-items: center; background-color: #0A0A0D;">
+                <ui:VisualElement name="panel-disconnect-offline" class="preview-panel" style="justify-content: center; align-items: center; background-color: transparent;">
                     <ui:Label text="CLAUSURAR EXPEDIENTE" class="font-serif-bold text-headline-xl" style="color: #B23A3A; margin-bottom: 12px;" />
                     <ui:Label text="┬┐Deseas cerrar el expediente y abandonar la sinton├¡a?" class="font-serif text-body-lg" style="margin-bottom: 32px; -unity-text-align: middle-center; max-width: 400px;" />
                     
@@ -284,7 +284,7 @@
 
         <!-- Reset progress confirmation overlay popup -->
         <ui:VisualElement name="reset-progress-panel" class="hidden" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgba(10,10,13,0.88); justify-content: center; align-items: center;">
-            <ui:VisualElement style="background-color: #0A0A0D; border-width: 2px; border-color: #B23A3A; padding: 32px; width: 400px;">
+            <ui:VisualElement style="background-color: transparent; border-width: 2px; border-color: #B23A3A; padding: 32px; width: 400px;">
                 <ui:Label text="BORRAR HISTORIAL" class="font-mono-bold text-headline-md" style="color: #B23A3A; margin-bottom: 12px;" />
                 <ui:Label text="Esta acci├│n borrar├í todas las memorias sintonizadas de forma permanente. No se puede deshacer." class="font-serif text-body-lg" style="color: #E2E4E8; margin-bottom: 24px;" />
                 

@@ -28,6 +28,7 @@ namespace Echoes.UI
         Button _btnReiniciar;
         Button _btnSettings;
         Button _btnHub;
+        Button _btnFooterMenu;
 
         void OnEnable() { InitializeUI(); }
 
@@ -49,6 +50,7 @@ namespace Echoes.UI
             _btnReiniciar = _pauseRoot.Q<Button>("btn-reiniciar");
             _btnSettings  = _pauseRoot.Q<Button>("btn-settings");
             _btnHub       = _pauseRoot.Q<Button>("btn-hub");
+            _btnFooterMenu = _pauseRoot.Q<Button>("btn-footer-menu");
 
             // Wire button events just once
             if (_btnResume != null && !_btnResume.name.EndsWith("_wired"))
@@ -58,6 +60,7 @@ namespace Echoes.UI
                 _btnReiniciar.clicked += ConfirmReiniciar;
                 _btnSettings.clicked += ShowSettings;
                 _btnHub.clicked += ConfirmHub;
+                if (_btnFooterMenu != null) _btnFooterMenu.clicked += ConfirmHub;
             }
 
             _settingsPanel?.AddToClassList("hidden");
