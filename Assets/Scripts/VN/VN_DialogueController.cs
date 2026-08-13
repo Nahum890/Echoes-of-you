@@ -35,11 +35,15 @@ namespace Echoes.VN
         VisualElement _spriteCenter;
         VisualElement _spriteRight;
         VisualElement _dialoguePanel;
+        VisualElement _container;
 
         readonly Queue<DialogueLine> _queue = new();
         DialogueLine _current;
         bool _active;
+        bool _uiReady;
+        bool _playRequested;
         bool _typing;
+        Coroutine _uiInitializationCoroutine;
         Coroutine _typeCoroutine;
         AudioSource _voiceSource;
 
@@ -64,29 +68,78 @@ namespace Echoes.VN
                 return;
             }
             Instance = this;
+
+            // The dialogue overlay must be a top-level document. A child
+            // UIDocument inherits its parent layout and can collapse when a
+            // sibling UI (such as the choice gate) is hidden.
+            if (transform.parent != null)
+                transform.SetParent(null);
+
             DontDestroyOnLoad(gameObject);
 
-            _voiceSource = gameObject.AddComponent<AudioSource>();
+            _doc = GetComponent<UIDocument>();
+            if (_doc != null)
+            {
+                _doc.sortingOrder = 500;
+            }
+
+            _voiceSource = GetComponent<AudioSource>();
+            if (_voiceSource == null)
+                _voiceSource = gameObject.AddComponent<AudioSource>();
             _voiceSource.playOnAwake = false;
             _voiceSource.loop = false;
         }
 
         void OnEnable()
         {
-            _doc = GetComponent<UIDocument>();
-            if (_doc == null) return;
-            _root = _doc.rootVisualElement;
-            if (_root == null) return;
+            _doc ??= GetComponent<UIDocument>();
+            if (_doc == null)
+            {
+                Debug.LogError("[VN_Dialogue] Missing UIDocument component.");
+                return;
+            }
 
-            _nameLabel     = _root.Q<Label>("character-name");
-            _textLabel     = _root.Q<Label>("dialogue-text");
-            _counterLabel  = _root.Q<Label>("line-counter");
-            _spriteLeft    = _root.Q("sprite-left");
-            _spriteCenter  = _root.Q("sprite-center");
-            _spriteRight   = _root.Q("sprite-right");
-            _dialoguePanel = _root.Q("dialogue-panel");
+            if (_uiInitializationCoroutine != null)
+                StopCoroutine(_uiInitializationCoroutine);
+            _uiInitializationCoroutine = StartCoroutine(InitializeUiWhenAttached());
+        }
 
+        void OnDestroy()
+        {
+            if (Instance == this)
+                Instance = null;
+        }
+
+        IEnumerator InitializeUiWhenAttached()
+        {
+            _uiReady = false;
+            _root = null;
+
+            // UIDocument owns the panel root. Build the visual-novel tree only
+            // after that root is connected to the runtime panel.
+            const int maxFramesToWait = 180;
+            for (int frame = 0; frame < maxFramesToWait; frame++)
+            {
+                _container = _doc != null ? _doc.rootVisualElement : null;
+                if (_container != null && _container.panel != null)
+                    break;
+
+                yield return null;
+            }
+
+            if (_container == null || _container.panel == null)
+            {
+                Debug.LogError("[VN_Dialogue] UIDocument did not attach to a runtime panel.");
+                yield break;
+            }
+
+            BuildRuntimeUi();
             Hide();
+            _uiReady = true;
+            _uiInitializationCoroutine = null;
+
+            if (_playRequested && _queue.Count > 0)
+                BeginPlayback();
         }
 
         void Update()
@@ -130,8 +183,22 @@ namespace Echoes.VN
                 Debug.LogWarning("[VN_Dialogue] Play() called with empty queue.");
                 return;
             }
-            Show();
-            Advance();
+
+            _playRequested = true;
+            if (_uiReady && !_active)
+                BeginPlayback();
+        }
+
+        /// <summary>Replace the current dialogue with one complete sequence.</summary>
+        public void PlaySequence(IEnumerable<DialogueLine> lines)
+        {
+            StopCurrentLine();
+            _queue.Clear();
+            _active = false;
+            _playRequested = false;
+
+            Enqueue(lines);
+            Play();
         }
 
         /// <summary>Stop all dialogue, clear queue, hide UI.</summary>
@@ -140,28 +207,78 @@ namespace Echoes.VN
             _queue.Clear();
             _current = default;
             _active = false;
-            if (_typeCoroutine != null)
-            {
-                StopCoroutine(_typeCoroutine);
-                _typeCoroutine = null;
-            }
-            _typing = false;
+            _playRequested = false;
+            StopCurrentLine();
             if (_voiceSource != null) _voiceSource.Stop();
             Hide();
         }
 
         /// <summary>True if the dialogue UI is currently active.</summary>
         public bool IsActive => _active;
+        /// <summary>True once the UXML tree is attached to its runtime panel.</summary>
+        public bool IsReady => _uiReady;
+
+        public IEnumerator WaitUntilReady(float timeoutSeconds = 3f)
+        {
+            float deadline = Time.realtimeSinceStartup + Mathf.Max(0.1f, timeoutSeconds);
+            while (!_uiReady && Time.realtimeSinceStartup < deadline)
+                yield return null;
+        }
+
+        void BeginPlayback()
+        {
+            if (!_uiReady || _queue.Count == 0 || _active)
+                return;
+
+            _playRequested = false;
+            _active = true;
+            _container.schedule.Execute(() =>
+            {
+                Show();
+                Advance();
+            }).ExecuteLater(1);
+        }
 
         void Show()
         {
-            _active = true;
-            _root?.RemoveFromClassList("vn-hidden");
+            if (_root != null)
+                _root.RemoveFromClassList("vn-hidden");
         }
 
         void Hide()
         {
-            _root?.AddToClassList("vn-hidden");
+            if (_root != null)
+                _root.AddToClassList("vn-hidden");
+        }
+
+        void BuildRuntimeUi()
+        {
+            _root = _container.Q<VisualElement>("vn-dialogue-root");
+            if (_root == null)
+            {
+                Debug.LogError("[VN_Dialogue] 'vn-dialogue-root' not found in UXML.");
+                return;
+            }
+
+            _spriteLeft = _root.Q<VisualElement>("sprite-left");
+            _spriteCenter = _root.Q<VisualElement>("sprite-center");
+            _spriteRight = _root.Q<VisualElement>("sprite-right");
+            _dialoguePanel = _root.Q<VisualElement>("dialogue-panel");
+            _nameLabel = _root.Q<Label>("character-name");
+            _counterLabel = _root.Q<Label>("line-counter");
+            _textLabel = _root.Q<Label>("dialogue-text");
+
+            if (_spriteLeft != null) _spriteLeft.style.backgroundSize = new BackgroundSize { sizeType = BackgroundSizeType.Contain };
+        }
+
+        void StopCurrentLine()
+        {
+            if (_typeCoroutine != null)
+            {
+                StopCoroutine(_typeCoroutine);
+                _typeCoroutine = null;
+            }
+            _typing = false;
         }
 
         void Advance()
@@ -202,7 +319,7 @@ namespace Echoes.VN
             if (_textLabel != null)
                 _textLabel.text = string.Empty;
 
-            float delay = 1f / typewriterSpeed;
+            float delay = 1f / Mathf.Max(1f, typewriterSpeed);
             for (int i = 0; i < text.Length; i++)
             {
                 if (_textLabel != null)

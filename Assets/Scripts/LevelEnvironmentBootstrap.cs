@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
+using Echoes.VN;
 
 public class LevelEnvironmentBootstrap : MonoBehaviour
 {
@@ -62,6 +63,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         ApplyEchoPlateVisuals();
         EnsureExperienceSystems();
         EnsureInteractionPromptUI();
+        EnsureVNSystem();
         EnsureLevelIntro();
     }
 
@@ -93,6 +95,35 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
     {
         var go = new GameObject("LevelIntroBootstrap");
         go.AddComponent<LevelIntroTrigger>();
+    }
+
+    static void EnsureVNSystem()
+    {
+        if (Object.FindAnyObjectByType<VN_DialogueController>() == null)
+        {
+            var prefab = Resources.Load<GameObject>("EchoesVNBootstrap");
+            if (prefab != null)
+            {
+                var go = Object.Instantiate(prefab);
+                go.name = "EchoesVNBootstrap";
+                DontDestroyOnLoad(go);
+
+                var docs = go.GetComponentsInChildren<UIDocument>();
+                foreach (var doc in docs)
+                {
+                    if (doc.GetComponent<VN_DialogueController>() != null)
+                        doc.sortingOrder = 50;
+                    else
+                        doc.sortingOrder = 40;
+                }
+
+                Debug.Log("[LevelEnvironmentBootstrap] EchoesVNBootstrap instantiated.");
+            }
+            else
+            {
+                Debug.LogWarning("[LevelEnvironmentBootstrap] EchoesVNBootstrap prefab not found in Resources.");
+            }
+        }
     }
 
     static void OnSceneUnloaded(Scene scene)
@@ -508,7 +539,6 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
             if (r == null) continue;
 
             Material[] mats = r.sharedMaterials;
-            bool modified = false;
 
             for (int m = 0; m < mats.Length; m++)
             {
@@ -527,7 +557,6 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
                         if (instMat.HasProperty("_DitherStrength"))
                             instMat.SetFloat("_DitherStrength", 0.35f);
                         styledCount++;
-                        modified = true;
                     }
                 }
             }

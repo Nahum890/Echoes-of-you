@@ -218,9 +218,12 @@
     top: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(19, 20, 16, 0.85);
+    background-color: var(--color-glass-bg-strong);
+    border-width: 1px;
+    border-color: var(--color-glass-border);
     border-left-width: 2px;
     border-left-color: #4a463f;
+    border-radius: 4px;
     padding: 48px;
     flex-direction: column;
     overflow: hidden;

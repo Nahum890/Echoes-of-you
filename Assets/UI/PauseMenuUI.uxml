@@ -1,4 +1,5 @@
 <UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+    <Style src="project://database/Assets/UI/GlassPanel.uss" />
     <Style src="project://database/Assets/UI/EchoesDesignTokens.uss" />
     <Style src="project://database/Assets/UI/EchoesTheme.uss" />
     <Style src="project://database/Assets/UI/PauseMenuUI.uss" />

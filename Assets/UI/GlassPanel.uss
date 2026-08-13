@@ -1,0 +1,12 @@
+/* ============================================================
+   GLASS‑PANEL – estilo base Stitch (translúcido, borde sutil)
+   ============================================================ */
+.glass-panel {
+    /* Fondo semitransparente */
+    background-color: var(--color-glass-bg-strong);
+    /* Borde fino */
+    border-width: 1px;
+    border-color: var(--color-glass-border);
+    /* Esquinas redondeadas */
+    border-radius: 4px;
+}

@@ -8,7 +8,10 @@
 @import "EchoesDesignTokens.uss";
 
 .level-complete-root {
-    background-color: var(--color-stich-surface);
+    background-color: var(--color-glass-bg-strong);
+    border-width: 1px;
+    border-color: var(--color-glass-border);
+    border-radius: 4px;
     overflow: hidden;
     justify-content: center;
     align-items: center;
@@ -37,7 +40,7 @@
 }
 
 .complete-title {
-    font-family: var(--font-display-bold);
+    -unity-font: var(--font-display-bold);
     font-size: var(--size-display-md);
     color: var(--color-stich-amber);
     letter-spacing: 2px;
@@ -61,7 +64,7 @@
 }
 
 .complete-stat-label {
-    font-family: var(--font-interface-bold);
+    -unity-font: var(--font-interface-bold);
     font-size: var(--size-label-caps);
     color: var(--color-stich-on-surface-variant);
     letter-spacing: 0.1em;
@@ -72,7 +75,7 @@
 }
 
 .complete-stat-value {
-    font-family: var(--font-interface-bold);
+    -unity-font: var(--font-interface-bold);
     font-size: var(--size-interface-lg);
     color: var(--color-stich-on-surface);
     -unity-text-align: middle-center;
@@ -86,7 +89,7 @@
 }
 
 .complete-btn {
-    font-family: var(--font-interface);
+    -unity-font: var(--font-interface);
     font-size: var(--size-interface-sm);
     color: var(--color-stich-on-surface);
     background-color: transparent;

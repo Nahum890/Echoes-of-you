@@ -13,19 +13,20 @@
 
 .gate-frame {
     background-color: var(--color-corridor-navy);
-    border-left: 3px solid var(--color-memory-amber);
+    border-left-width: 3px;
+    border-left-color: var(--color-memory-amber);
     padding: var(--space-3xl);
     min-width: 540px;
     max-width: 920px;
 }
 
 .gate-prompt {
-    font-definition: resource("Fonts/Inter-Regular SDF");
+    -unity-font-definition: url("project://database/Assets/UI/Fonts/Inter-Regular SDF.asset");
     font-size: var(--size-option);
     color: var(--color-paper);
     margin-bottom: var(--space-xl);
     white-space: normal;
-    text-align: center;
+    -unity-text-align: middle-center;
 }
 
 .gate-buttons-row {
@@ -56,6 +57,6 @@
 .gate-hint {
     font-size: var(--size-small);
     color: var(--color-fluorescent-sick);
-    text-align: center;
+    -unity-text-align: middle-center;
     opacity: 0.6;
 }

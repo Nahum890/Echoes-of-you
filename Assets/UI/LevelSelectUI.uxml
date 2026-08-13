@@ -1,15 +1,161 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
-    <!-- LevelSelectUI — Grid 15 EchoCard (01-15).
-         Estados: locked / available / completed / current.
-         Grid responsive: 3 cols 1080p, 2 cols 720p, 1 col mobile.
-         Metadatos por tarjeta: nombre, ecos, quiebres, tiempo. -->
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/EchoesTheme.uss" />
+    <Style src="project://database/Assets/UI/LevelSelectUI.uss" />
 
-    <ui:VisualElement class="level-select-root" name="levelSelectRoot">
-        <ui:Label class="level-select-title" text="Capítulos del Cuaderno" />
-        <ui:Label class="level-select-subtitle" text="Elige página del cuaderno" />
+    <ui:VisualElement name="levelSelectRoot" class="level-select-stitch-root">
 
-        <ui:VisualElement class="level-card-grid" name="levelCardGrid" />
+        <!-- Background layer -->
+        <ui:VisualElement class="lvl-bg-overlay" />
+        <ui:VisualElement class="lvl-scanline-overlay" />
 
-        <ui:Button class="echo-button echo-button--secondary" name="btnBack" text="Volver" />
+        <!-- Main layout -->
+        <ui:VisualElement class="lvl-main">
+
+            <!-- LEFT SIDEBAR -->
+            <ui:VisualElement class="lvl-sidebar">
+                <ui:VisualElement class="lvl-sidebar-header">
+                    <ui:Label text="SCHOOL_ARCHIVE_01" class="lvl-logo-title" />
+                    <ui:Label text="STATUS: CORRUPTED" class="lvl-logo-subtitle" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="lvl-nav-list">
+                    <ui:Label text="ARCHIVE" class="lvl-nav-item lvl-nav-item--active" />
+                    <ui:Label text="ECHOS" class="lvl-nav-item" />
+                    <ui:Label text="CHRONOS" class="lvl-nav-item" />
+                    <ui:Label text="MEMORY" class="lvl-nav-item" />
+                </ui:VisualElement>
+
+                <ui:Button name="btnBack" text="EXIT" class="lvl-exit-btn" />
+            </ui:VisualElement>
+
+            <!-- RIGHT CONTENT -->
+            <ui:VisualElement class="lvl-content">
+
+                <ui:VisualElement class="lvl-content-header">
+                    <ui:Label text="DIRECTORIO_PRINCIPAL // 001" class="lvl-header-tag" />
+                    <ui:Label text="Índice de Recuerdos" class="lvl-header-title" />
+                </ui:VisualElement>
+
+                <!-- Chapter list -->
+                <ui:ScrollView class="lvl-chapter-list" name="levelCardGrid">
+
+                    <!-- Chapter 01 (active/expanded) -->
+                    <ui:VisualElement class="lvl-chapter lvl-chapter--active">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb lvl-chapter-thumb--active">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: I" class="lvl-chapter-rec" />
+                                    <ui:Label text="Pasillo Norte" class="lvl-chapter-location" />
+                                    <ui:Label text="75% ECHOES" class="lvl-chapter-progress" />
+                                </ui:VisualElement>
+                                <ui:Label text="El Susurro del Aula" class="lvl-chapter-title" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+
+                        <ui:VisualElement class="lvl-chapter-expanded">
+                            <ui:Label text="El eco de pasos que no te pertenecen aún resuena cerca de las taquillas. Un fragmento temporal inestable donde la memoria del primer día se mezcla con el último." class="lvl-chapter-desc" />
+                            <ui:Button name="btn-level-01" text="ENTRAR EN EL RECUERDO" class="lvl-chapter-enter-btn">
+                                <ui:Label text="ENTRAR EN EL RECUERDO" class="lvl-chapter-enter-label" />
+                            </ui:Button>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- Chapter 02 (collapsed) -->
+                    <ui:VisualElement class="lvl-chapter">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: II" class="lvl-chapter-rec" />
+                                    <ui:Label text="Patio Interior" class="lvl-chapter-location" />
+                                    <ui:Label text="42% ECHOES" class="lvl-chapter-progress lvl-chapter-progress--dim" />
+                                </ui:VisualElement>
+                                <ui:Label text="Lluvia Estática" class="lvl-chapter-title lvl-chapter-title--dim" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:Button name="btn-level-02" text="→" class="lvl-chapter-arrow-btn" />
+                    </ui:VisualElement>
+
+                    <!-- Chapter 03 (locked) -->
+                    <ui:VisualElement class="lvl-chapter lvl-chapter--locked">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb lvl-chapter-thumb--locked">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                                <ui:Label text="ERR" class="lvl-chapter-thumb-err" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: III" class="lvl-chapter-rec lvl-chapter-rec--locked" />
+                                    <ui:Label text="[DATOS DAÑADOS]" class="lvl-chapter-location lvl-chapter-location--locked" />
+                                    <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                </ui:VisualElement>
+                                <ui:Label text="El Reloj del Director" class="lvl-chapter-title lvl-chapter-title--locked" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- Chapters 04-15 (collapsed, generated via code or additional entries) -->
+                    <ui:VisualElement class="lvl-chapter">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: IV" class="lvl-chapter-rec" />
+                                    <ui:Label text="Biblioteca" class="lvl-chapter-location" />
+                                    <ui:Label text="0% ECHOES" class="lvl-chapter-progress lvl-chapter-progress--dim" />
+                                </ui:VisualElement>
+                                <ui:Label text="Entre Páginas Silenciosas" class="lvl-chapter-title lvl-chapter-title--dim" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:Button name="btn-level-04" text="→" class="lvl-chapter-arrow-btn" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="lvl-chapter">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: V" class="lvl-chapter-rec" />
+                                    <ui:Label text="Aula de Lyra" class="lvl-chapter-location" />
+                                    <ui:Label text="0% ECHOES" class="lvl-chapter-progress lvl-chapter-progress--dim" />
+                                </ui:VisualElement>
+                                <ui:Label text="Caos Controlado" class="lvl-chapter-title lvl-chapter-title--dim" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:Button name="btn-level-05" text="→" class="lvl-chapter-arrow-btn" />
+                    </ui:VisualElement>
+
+                    <!-- Store buttons 06-15 in a hidden container for compatibility -->
+                </ui:ScrollView>
+
+                <!-- Bottom padding -->
+                <ui:VisualElement class="lvl-bottom-padding" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- Hidden buttons for remaining levels (06-15) for C# compatibility -->
+        <ui:VisualElement style="display: none;">
+            <ui:Button name="btn-level-03" />
+            <ui:Button name="btn-level-06" />
+            <ui:Button name="btn-level-07" />
+            <ui:Button name="btn-level-08" />
+            <ui:Button name="btn-level-09" />
+            <ui:Button name="btn-level-10" />
+            <ui:Button name="btn-level-11" />
+            <ui:Button name="btn-level-12" />
+            <ui:Button name="btn-level-13" />
+            <ui:Button name="btn-level-14" />
+            <ui:Button name="btn-level-15" />
+        </ui:VisualElement>
+
     </ui:VisualElement>
-</UXML>
+</ui:UXML>

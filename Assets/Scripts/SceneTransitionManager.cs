@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 
 public class SceneTransitionManager : MonoBehaviour
 {
@@ -10,8 +9,6 @@ public class SceneTransitionManager : MonoBehaviour
 
     const float FadeSpeed = 4f; // más rápido
 
-    UIDocument _doc;
-    VisualElement _fadeOverlay;
     bool _isTransitioning;
     bool _initialized;
 
@@ -98,14 +95,6 @@ public class SceneTransitionManager : MonoBehaviour
         // Safety: try/finally para garantizar ResetFade incluso si hay excepción
         try
         {
-            if (_fadeOverlay != null)
-            {
-                _fadeOverlay.pickingMode = PickingMode.Position;
-                Debug.Log("[SceneTransitionManager] Fading to black...");
-                yield return FadeTo(1f);
-                Debug.Log("[SceneTransitionManager] Fade to black complete");
-            }
-
             AsyncOperation loadOperation = null;
             try
             {

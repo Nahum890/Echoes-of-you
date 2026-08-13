@@ -41,7 +41,7 @@
 }
 
 .prompt-key-icon {
-    font-family: var(--font-interface-bold);
+    -unity-font: var(--font-interface-bold);
     font-size: var(--size-interface-lg);
     color: var(--color-stich-amber);
     -unity-text-align: middle-center;
@@ -51,7 +51,7 @@
 }
 
 .prompt-action-label {
-    font-family: var(--font-interface);
+    -unity-font: var(--font-interface);
     font-size: var(--size-interface-lg);
     color: var(--color-stich-amber);
     -unity-text-align: middle-left;

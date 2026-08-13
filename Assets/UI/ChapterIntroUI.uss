@@ -37,7 +37,7 @@
 }
 
 .chapter-label {
-    font-family: var(--font-interface-bold);
+    -unity-font: var(--font-interface-bold);
     font-size: var(--size-label-caps);
     color: var(--color-stich-on-surface-variant);
     letter-spacing: 0.1em;
@@ -47,7 +47,7 @@
 }
 
 .chapter-title {
-    font-family: var(--font-display);
+    -unity-font: var(--font-display);
     font-size: var(--size-display-md);
     color: var(--color-stich-amber);
     letter-spacing: -0.02em;
@@ -64,7 +64,7 @@
 }
 
 .chapter-description {
-    font-family: var(--font-interface);
+    -unity-font: var(--font-interface);
     font-size: var(--size-interface-sm);
     color: var(--color-stich-on-surface);
     -unity-text-align: middle-center;
@@ -76,7 +76,7 @@
 }
 
 .chapter-start-btn {
-    font-family: var(--font-interface-bold);
+    -unity-font: var(--font-interface-bold);
     font-size: var(--size-interface-sm);
     color: var(--color-stich-pure-white);
     background-color: transparent;

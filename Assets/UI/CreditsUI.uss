@@ -7,7 +7,7 @@
 
 /* ===== ROOT ===== */
 .credits-root {
-    background-color: #0A0A0D;
+    background-color: var(--color-glass-bg-strong);
 }
 
 /* ===== HEADER FIJO ===== */
@@ -44,7 +44,7 @@
 .credits-container {
     position: absolute;
     left: 0; top: 100px; right: 0; bottom: 0;
-    background-color: #0A0A0D;
+    background-color: var(--color-glass-bg-strong);
 }
 
 .credits-scroll {

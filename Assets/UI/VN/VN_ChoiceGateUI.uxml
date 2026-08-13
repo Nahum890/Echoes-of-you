@@ -1,19 +1,19 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-  <Style src="project://database/Assets/UI/EchoesTheme.uss" />
-  <Style src="VN_ChoiceGateUI.uss" />
-  <VisualElement name="gate-root" class="gate-overlay hidden" style="width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
+  <ui:Style src="project://database/Assets/UI/EchoesTheme.uss" />
+  <ui:Style src="VN_ChoiceGateUI.uss" />
+  <ui:VisualElement name="gate-root" class="gate-overlay hidden" style="width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
 
     <!-- Character sprites (background layer, like VN_DialogueUI) -->
     <ui:VisualElement name="gate-sprite-left" class="vn-sprite vn-sprite--left" />
     <ui:VisualElement name="gate-sprite-right" class="vn-sprite vn-sprite--right" />
 
-    <VisualElement class="gate-frame">
-      <Label name="gate-prompt" class="gate-prompt" text="..." />
-      <VisualElement class="gate-buttons-row">
+    <ui:VisualElement class="gate-frame">
+      <ui:Label name="gate-prompt" class="gate-prompt" text="..." />
+      <ui:VisualElement class="gate-buttons-row">
         <ui:Button name="gate-cyan" class="gate-button gate-button--cyan" text="Cyan" />
         <ui:Button name="gate-amber" class="gate-button gate-button--amber" text="Amber" />
-      </VisualElement>
-      <Label name="gate-hint" class="gate-hint" text="A = abrir  /  D = mantener" />
-    </VisualElement>
-  </VisualElement>
+      </ui:VisualElement>
+      <ui:Label name="gate-hint" class="gate-hint" text="A = abrir  /  D = mantener" />
+    </ui:VisualElement>
+  </ui:VisualElement>
 </ui:UXML>

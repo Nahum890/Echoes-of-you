@@ -1,74 +1,378 @@
 /* ============================================================
-   LevelSelectUI — Grid 15 EchoCard responsive.
+   LevelSelectUI — STITCH ÍNDICE DE RECUERDOS
+   Basado en: stitch_echoes_of_you_ui_system/chapter_select/code.html
    ============================================================ */
 
 @import "EchoesDesignTokens.uss";
-@import "Components/EchoCard.uss";
-@import "Components/EchoButton.uss";
 
-.level-select-root {
+/* ===== ROOT ===== */
+.level-select-stitch-root {
     position: absolute;
-    left: 0; top: 0; right: 0; bottom: 0;
-    background-color: var(--color-void-black);
-    overflow-y: auto;
-    padding: var(--space-2xl) var(--space-3xl);
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #131410;
+    overflow: hidden;
+}
+
+.lvl-bg-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #131410;
+    opacity: 0.85;
+}
+
+.lvl-scanline-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.12;
+}
+
+/* ===== MAIN LAYOUT ===== */
+.lvl-main {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    flex-direction: row;
+}
+
+/* ============================================================
+   LEFT SIDEBAR
+   ============================================================ */
+
+.lvl-sidebar {
+    width: 320px;
+    flex-shrink: 0;
+    background-color: rgba(19, 20, 16, 0.85);
+    border-right-width: 1px;
+    border-right-color: rgba(74, 70, 63, 0.5);
+    padding-top: 64px;
+    padding-bottom: 64px;
+    padding-left: 48px;
+    padding-right: 48px;
     flex-direction: column;
+}
+
+.lvl-sidebar-header {
+    margin-bottom: 48px;
+}
+
+.lvl-logo-title {
+    font-size: 32px;
+    color: #fffeff;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    letter-spacing: -0.5px;
+}
+
+.lvl-logo-subtitle {
+    font-size: 14px;
+    color: #959087;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    margin-top: 4px;
+}
+
+/* ===== NAV LINKS ===== */
+
+.lvl-nav-list {
+    flex-grow: 1;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.lvl-nav-item {
+    font-size: 16px;
+    color: #959087;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    letter-spacing: 2.4px;
+    padding: 12px 0px 12px 16px;
+    border-left-width: 2px;
+    border-left-color: transparent;
+    transition: color 200ms, translate 200ms;
+}
+
+.lvl-nav-item:hover {
+    color: #63d4fa;
+    translate: 2px 0px;
+}
+
+.lvl-nav-item--active {
+    color: #fffeff;
+    border-left-width: 2px;
+    border-left-color: #fffeff;
+    background-color: rgba(255, 254, 255, 0.1);
+}
+
+/* ===== EXIT BTN ===== */
+.lvl-exit-btn {
+    background-color: transparent;
+    border-width: 0px;
+    padding: 14px 0;
+    font-size: 16px;
+    color: #959087;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    letter-spacing: 2.4px;
+    -unity-text-align: middle-left;
+    margin-top: auto;
+    padding-top: 24px;
+    border-top-width: 1px;
+    border-top-color: rgba(149, 144, 135, 0.2);
+    transition: color 200ms;
+}
+
+.lvl-exit-btn:hover {
+    color: #ffb4ab;
+}
+
+/* ============================================================
+   RIGHT CONTENT
+   ============================================================ */
+
+.lvl-content {
+    flex-grow: 1;
+    padding-top: 64px;
+    padding-bottom: 48px;
+    padding-left: 64px;
+    padding-right: 64px;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.lvl-content-header {
+    margin-bottom: 48px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(149, 144, 135, 0.3);
+    padding-bottom: 20px;
+}
+
+.lvl-header-tag {
+    font-size: 16px;
+    color: #959087;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    letter-spacing: 1.6px;
+    margin-bottom: 8px;
+}
+
+.lvl-header-title {
+    font-size: 48px;
+    color: #fffeff;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Garamond.ttf');
+    letter-spacing: -1px;
+}
+
+/* ===== CHAPTER LIST ===== */
+
+.lvl-chapter-list {
+    flex-grow: 1;
+}
+
+/* ===== CHAPTER ENTRY ===== */
+.lvl-chapter {
+    flex-direction: column;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(149, 144, 135, 0.5);
+    padding-top: 24px;
+    padding-bottom: 24px;
+    padding-left: 24px;
+    margin-left: -24px;
+    border-left-width: 1px;
+    border-left-color: transparent;
+    transition: background-color 300ms, border-left-color 300ms;
+}
+
+.lvl-chapter:hover {
+    background-color: rgba(57, 57, 53, 0.2);
+    border-left-width: 1px;
+    border-left-color: #959087;
+}
+
+/* Active (expanded) chapter */
+.lvl-chapter--active {
+    background-color: rgba(68, 76, 89, 0.05);
+    border-left-width: 1px;
+    border-left-color: #fffeff;
+}
+
+.lvl-chapter--active:hover {
+    border-left-color: #fffeff;
+}
+
+/* Locked chapter */
+.lvl-chapter--locked {
+    opacity: 0.5;
+}
+
+/* ===== CHAPTER MAIN ROW ===== */
+.lvl-chapter-main {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+/* ===== THUMBNAIL ===== */
+.lvl-chapter-thumb {
+    width: 96px;
+    height: 72px;
+    flex-shrink: 0;
+    border-width: 1px;
+    border-color: rgba(149, 144, 135, 0.3);
+    overflow: hidden;
+}
+
+.lvl-chapter-thumb--active {
+    width: 128px;
+    height: 96px;
+}
+
+.lvl-chapter-thumb--locked {
+    border-color: rgba(147, 0, 10, 0.3);
+}
+
+.lvl-chapter-thumb-placeholder {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #353530;
+}
+
+.lvl-chapter-thumb-err {
+    position: absolute;
+    font-size: 16px;
+    color: #ffb4ab;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+}
+
+/* ===== CHAPTER METADATA ===== */
+.lvl-chapter-meta {
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+.lvl-chapter-meta-row {
+    flex-direction: row;
     align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
 }
 
-.level-select-title {
-    font-size: var(--size-screen-title);
-    color: var(--color-memory-amber);
-    letter-spacing: 1px;
-    margin-bottom: var(--space-xs);
+.lvl-chapter-rec {
+    font-size: 16px;
+    color: #959087;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    letter-spacing: 1.6px;
 }
 
-.level-select-subtitle {
-    font-size: var(--size-body);
-    color: var(--color-fluorescent-sick);
-    margin-bottom: var(--space-2xl);
+.lvl-chapter-rec--locked {
+    color: rgba(255, 180, 171, 0.7);
 }
 
-/* Grid responsive */
-.level-card-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-lg);
-    width: 100%;
-    max-width: 1200px;
+.lvl-chapter-location {
+    font-size: 16px;
+    color: #959087;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    letter-spacing: 1.6px;
 }
 
-@media (max-width: 1280px) {
-    .level-card-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.lvl-chapter-location--locked {
+    color: rgba(255, 180, 171, 0.7);
 }
 
-@media (max-width: 768px) {
-    .level-card-grid {
-        grid-template-columns: 1fr;
-    }
+.lvl-chapter-progress {
+    font-size: 16px;
+    color: #63d4fa;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    margin-left: auto;
 }
 
-/* EchoCard integration */
-.level-card-grid .echo-card {
-    width: 100%;
-    min-height: 100px;
-    padding: var(--space-lg);
-    flex-direction: column;
-    justify-content: space-between;
+.lvl-chapter-progress {
+    color: #63d4fa;
 }
 
-.level-card-grid .echo-card__name {
-    font-size: var(--size-option);
-    color: var(--color-memory-amber);
-    margin-bottom: var(--space-sm);
+.lvl-chapter-progress--dim {
+    color: #959087;
 }
 
-.level-card-grid .echo-card__meta {
-    font-size: var(--size-small);
-    color: var(--color-fluorescent-sick);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
+.lvl-chapter-progress--locked {
+    color: rgba(255, 180, 171, 0.7);
+}
+
+.lvl-chapter-title {
+    font-size: 36px;
+    color: #fffeff;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Garamond.ttf');
+}
+
+.lvl-chapter-title {
+    color: #fffeff;
+}
+
+.lvl-chapter-title--dim {
+    color: #e4e2dc;
+}
+
+.lvl-chapter-title--locked {
+    color: rgba(228, 226, 220, 0.5);
+    text-decoration: line-through;
+}
+
+/* ===== EXPANDED CONTENT ===== */
+.lvl-chapter-expanded {
+    margin-top: 16px;
+    padding-left: 152px;
+    border-left-width: 1px;
+    border-left-color: rgba(149, 144, 135, 0.3);
+}
+
+.lvl-chapter-desc {
+    font-size: 18px;
+    color: #ccc6bc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    margin-bottom: 20px;
+    white-space: normal;
+}
+
+.lvl-chapter-enter-btn {
+    background-color: transparent;
+    border-width: 1px;
+    border-color: #959087;
+    padding: 16px 32px;
+}
+
+.lvl-chapter-enter-label {
+    font-size: 16px;
+    color: #fffeff;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    letter-spacing: 2px;
+}
+
+/* ===== ARROW BTN ===== */
+.lvl-chapter-arrow-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    translate: 0 -50%;
+    background-color: transparent;
+    border-width: 0px;
+    font-size: 20px;
+    color: #959087;
+    transition: color 200ms;
+}
+
+.lvl-chapter-arrow-btn:hover {
+    color: #fffeff;
+}
+
+/* ===== BOTTOM PADDING ===== */
+.lvl-bottom-padding {
+    height: 128px;
 }

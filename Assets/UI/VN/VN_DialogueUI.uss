@@ -76,7 +76,7 @@
 }
 
 .vn-character-name {
-    font-family: var(--font-display-bold);
+    -unity-font: var(--font-display-bold);
     font-size: 28px;
     color: var(--color-stich-amber);
     letter-spacing: 2px;
@@ -85,7 +85,7 @@
 }
 
 .vn-line-counter {
-    font-family: var(--font-interface);
+    -unity-font: var(--font-interface);
     font-size: var(--size-label-caps);
     color: var(--color-stich-amber);
     letter-spacing: 1px;
@@ -102,7 +102,7 @@
 
 /* ===== DIALOGUE TEXT ===== */
 .vn-dialogue-text {
-    font-family: var(--font-interface);
+    -unity-font: var(--font-interface);
     font-size: 24px;
     color: #FFFFFF;
     line-height: 36px;
@@ -127,7 +127,7 @@
 }
 
 .vn-advance-prompt {
-    font-family: var(--font-interface);
+    -unity-font: var(--font-interface);
     font-size: 16px;
     color: var(--color-stich-amber);
     letter-spacing: 2px;

@@ -6,7 +6,6 @@ namespace Echoes.VN
 {
     public class VN_EpilogueController : MonoBehaviour
     {
-        [SerializeField] string creditsScene = "CreditsScene";
         [SerializeField] float startupDelay = 0.5f;
 
         IEnumerator Start()

@@ -15,7 +15,6 @@ namespace Echoes.UI
     {
         [Header("Scenes")]
         [SerializeField] string hubSceneName = "MainMenu";
-        [SerializeField] string mainMenuScene = "MainMenu";
 
         bool _paused;
         UIDocument _doc;

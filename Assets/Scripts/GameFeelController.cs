@@ -83,7 +83,6 @@ public class GameFeelController : MonoBehaviour
     float _slowMotionTimer;
 
     [Header("FOV Pulse")]
-    [SerializeField] float baseFOV = 50f;
     float _fovPulseTarget;
     float _fovPulseTimer;
     float _fovPulseDuration;
@@ -456,7 +455,7 @@ public class GameFeelController : MonoBehaviour
         PulseVignette(0.55f, 0.2f);
         PulseExposure(-0.2f, 0.15f);
         PulseGrain(0.6f, 0.2f);
-        ApplySlowMotion(slowMotionScale, 0.2f);
+        ApplySlowMotion(slowMotionScale, slowMotionDuration);
     }
 
     public void PlayRecordStart(Vector3 position, Vector3 up)

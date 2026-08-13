@@ -15,7 +15,6 @@ namespace Echoes.VN
 
         [SerializeField] VN_ChoiceRegistry registry;
         [SerializeField] UIDocument document;
-        [SerializeField] float fadeInSeconds = 0.3f;
         [SerializeField] float fadeOutSeconds = 0.2f;
 
         VisualElement _root;

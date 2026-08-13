@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -78,10 +78,8 @@ public class MenuHoverSystem : MonoBehaviour
 
     readonly Dictionary<Button, MenuButtonHoverState> _buttonStates = new();
 
-    Button _btnNewGame, _btnLevels, _btnSettings, _btnExit;
+    Button _btnNewGame, _btnLevels, _btnChapters, _btnSettings, _btnCredits, _btnExit;
 
-    bool _isControllerNavigation = false;
-    bool _wasPreviouslyHovering = false;
     float _lastHoverExitTime = -1f;
 
     // ═══════════════════════════════════════════════════════════════
@@ -139,14 +137,18 @@ public class MenuHoverSystem : MonoBehaviour
 
     void InitializeButtons()
     {
-        _btnNewGame  = _root.Q<Button>("nav-newgame");
-        _btnLevels   = _root.Q<Button>("nav-levels");
-        _btnSettings = _root.Q<Button>("nav-settings");
-        _btnExit     = _root.Q<Button>("nav-exit");
+        _btnNewGame   = _root.Q<Button>("nav-newgame");
+        _btnLevels    = _root.Q<Button>("nav-levels");
+        _btnChapters  = _root.Q<Button>("nav-chapters");
+        _btnSettings  = _root.Q<Button>("nav-settings");
+        _btnCredits   = _root.Q<Button>("nav-credits");
+        _btnExit      = _root.Q<Button>("nav-exit");
 
         RegisterButton(_btnNewGame,  "INICIAR RECUERDO");
         RegisterButton(_btnLevels,   "ARCHIVOS");
+        RegisterButton(_btnChapters, "SELECCION CAPITULOS");
         RegisterButton(_btnSettings, "CONFIGURAR");
+        RegisterButton(_btnCredits,  "CREDITOS");
         RegisterButton(_btnExit,     "DESCONECTAR");
     }
 
@@ -183,8 +185,6 @@ public class MenuHoverSystem : MonoBehaviour
     {
         if (!_buttonStates.TryGetValue(btn, out var state)) return;
 
-        _isControllerNavigation = false;
-
         // Determinar duración: si venimos de otro botón, la transición es más rápida
         float duration = (Time.unscaledTime - _lastHoverExitTime < 0.5f)
             ? 0.15f * 0.6f  // 90ms
@@ -192,7 +192,6 @@ public class MenuHoverSystem : MonoBehaviour
 
         state.EnterHover(duration, isController: false);
         PlayHoverIn();
-        _wasPreviouslyHovering = true;
     }
 
     void OnButtonMouseLeave(Button btn, MouseLeaveEvent evt)
@@ -216,7 +215,6 @@ public class MenuHoverSystem : MonoBehaviour
     {
         if (!_buttonStates.TryGetValue(btn, out var state)) return;
 
-        _isControllerNavigation = true;
         state.EnterHover(0.20f, isController: true); // 200ms controller
         PlayNavMove();
     }

@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/UI/EchoesTheme.uss" />
     <Style src="project://database/Assets/UI/VN/VN_DialogueUI.uss" />
 
-    <ui:VisualElement name="vn-dialogue-root" class="vn-dialogue-root vn-hidden" style="width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
+    <ui:VisualElement name="vn-dialogue-root" class="vn-dialogue-root vn-hidden" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; flex-direction: column;">
 
         <!-- Character sprite containers (background layer) -->
         <ui:VisualElement name="sprite-left" class="vn-sprite vn-sprite--left" />

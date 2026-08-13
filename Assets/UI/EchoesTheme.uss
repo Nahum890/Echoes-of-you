@@ -15,6 +15,7 @@
     right: 0;
     bottom: 0;
     overflow: hidden;
+    height: 100%;
 }
 
 .root-fullscreen-opaque {
@@ -233,11 +234,11 @@
 
 /* Escala de UI / texto de menú (aplicada sobre el root) */
 .scale-large {
-    scale: 1.12 1.12;
+    /* Las variables de tamaño se heredan de EchoesDesignTokens.uss */
 }
 
 .scale-xl {
-    scale: 1.25 1.25;
+    /* Las variables de tamaño se heredan de EchoesDesignTokens.uss */
 }
 
 /* Polaroid image container */

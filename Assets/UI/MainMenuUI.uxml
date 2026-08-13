@@ -2,105 +2,160 @@
     <Style src="project://database/Assets/UI/EchoesTheme.uss" />
     <Style src="project://database/Assets/UI/EchoesHoverEffects.uss" />
     <Style src="project://database/Assets/UI/MainMenuUI.uss" />
-    
-    <ui:VisualElement name="root" class="root-fullscreen" style="background-color: transparent; width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
-        <ui:VisualElement name="menu-bg" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: transparent; opacity: 0;" />
 
-        <!-- ==========================================
-             SPLASH SCREEN (VOID INTRO)
-             ========================================== -->
-        <ui:VisualElement name="main-content" class="main-menu-folder ">
-            <!-- Left tabs (Side Nav) -->
-            <ui:VisualElement name="side-nav" class="side-nav">
+    <ui:VisualElement name="root" class="root-fullscreen menu-stitch-root" style="width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
 
-                <ui:VisualElement class="folder-tabs-group">
-                    <!-- Logo -->
-                    <ui:VisualElement name="logo" class="menu-logo" />
+        <!-- BACKGROUND IMAGE LAYER -->
+        <ui:VisualElement name="menu-bg-image" class="menu-bg-image" />
 
-                    <!-- Navigation Tab Buttons – sistema de hover v2 -->
+        <!-- DARK OVERLAY GRADIENT -->
+        <ui:VisualElement name="menu-bg-gradient" class="menu-bg-gradient" />
+
+        <!-- SCANLINES OVERLAY -->
+        <ui:VisualElement name="menu-scanlines" class="menu-scanlines" picking-mode="Ignore" />
+
+        <!-- NOISE OVERLAY -->
+        <ui:VisualElement name="menu-noise" class="menu-noise" picking-mode="Ignore" />
+
+        <!-- VOID INTRO (hidden, only exists for controller compatibility) -->
+        <ui:VisualElement name="void-intro" class="hidden" style="display: none;" />
+
+        <!-- MAIN CONTENT -->
+        <ui:VisualElement name="main-content" class="main-menu-content">
+
+            <!-- LEFT SIDEBAR -->
+            <ui:VisualElement name="side-nav" class="menu-sidebar">
+
+                <!-- LOGO -->
+                <ui:VisualElement class="menu-logo-area">
+                    <ui:VisualElement name="menu-logo-img" class="menu-logo-image" />
+                    <ui:Label text="Archivo de Memoria" class="menu-logo-subtitle" />
+                </ui:VisualElement>
+
+                <!-- NAVIGATION -->
+                <ui:VisualElement class="menu-nav-list">
+
+                    <!-- Continuar (active state with progress) -->
                     <ui:VisualElement class="nav-item-wrapper">
-                        <ui:Button name="nav-newgame" text="I. Acceder a Memoria" class="nav-item nav-item-v2" />
+                        <ui:Button name="nav-newgame" text="Continuar" class="nav-item-v2 menu-nav-btn menu-nav-btn--continue" />
+                        <ui:VisualElement name="nav-ghost-newgame" class="menu-nav-ghost" picking-mode="Ignore">
+                            <ui:Label text="Continuar" class="menu-nav-ghost-text" />
+                        </ui:VisualElement>
                     </ui:VisualElement>
+
+                    <!-- Progress info under Continuar -->
+                    <ui:VisualElement class="menu-ctn-progress">
+                        <ui:VisualElement class="menu-ctn-progress-row">
+                            <ui:Label text="Último guardado:" class="menu-ctn-progress-label" />
+                        </ui:VisualElement>
+                        <ui:Label name="lbl-user-rank" text="Aula 204 | 04:12:15" class="menu-ctn-progress-value" />
+                        <ui:Label name="lbl-user-integrity" text="Integridad: 12%" class="menu-ctn-progress-integrity" />
+                    </ui:VisualElement>
+
+                    <!-- Nuevo expediente -->
                     <ui:VisualElement class="nav-item-wrapper">
-                        <ui:Button name="nav-levels" text="II. Archivo de Memorias" class="nav-item nav-item-v2" />
+                        <ui:Button name="nav-levels" text="Nuevo expediente" class="menu-nav-btn nav-item-v2" />
+                        <ui:VisualElement class="menu-nav-ghost" picking-mode="Ignore">
+                            <ui:Label text="Nuevo expediente" class="menu-nav-ghost-text" />
+                        </ui:VisualElement>
                     </ui:VisualElement>
+
+                    <!-- Selección de capítulos -->
                     <ui:VisualElement class="nav-item-wrapper">
-                        <ui:Button name="nav-settings" text="III. Configurar Receptor" class="nav-item nav-item-v2" />
+                        <ui:Button name="nav-chapters" text="Selección de capítulos" class="menu-nav-btn nav-item-v2" />
+                        <ui:VisualElement class="menu-nav-ghost" picking-mode="Ignore">
+                            <ui:Label text="Selección de capítulos" class="menu-nav-ghost-text" />
+                        </ui:VisualElement>
                     </ui:VisualElement>
+
+                    <!-- Ajustes -->
                     <ui:VisualElement class="nav-item-wrapper">
-                        <ui:Button name="nav-credits" text="IV. Creditos" class="nav-item nav-item-v2" />
+                        <ui:Button name="nav-settings" text="Ajustes" class="menu-nav-btn nav-item-v2" />
+                        <ui:VisualElement class="menu-nav-ghost" picking-mode="Ignore">
+                            <ui:Label text="Ajustes" class="menu-nav-ghost-text" />
+                        </ui:VisualElement>
                     </ui:VisualElement>
-                    <ui:VisualElement class="nav-item-wrapper" style="margin-top: 24px;">
-                        <ui:Button name="nav-exit" text="V. Clausurar" class="nav-item nav-item-v2" style="color: #ffb4ab;" />
+
+                    <!-- Créditos -->
+                    <ui:VisualElement class="nav-item-wrapper">
+                        <ui:Button name="nav-credits" text="Créditos" class="menu-nav-btn nav-item-v2" />
+                        <ui:VisualElement class="menu-nav-ghost" picking-mode="Ignore">
+                            <ui:Label text="Créditos" class="menu-nav-ghost-text" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- Salir -->
+                    <ui:VisualElement class="nav-item-wrapper" style="margin-top: 32px;">
+                        <ui:Button name="nav-exit" text="Salir" class="menu-nav-btn menu-nav-btn--exit nav-item-v2" />
+                        <ui:VisualElement class="menu-nav-ghost" picking-mode="Ignore">
+                            <ui:Label text="Salir" class="menu-nav-ghost-text menu-nav-ghost-text--exit" />
+                        </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>
 
-                <!-- File metadata bottom label -->
-                <ui:VisualElement style="border-top-width: 2px; border-top-color: #4a463f; padding-top: 16px;">
-                    <ui:Label name="lbl-user-rank" text="ESTADO: INCOMPLETO" style="font-size: 15px; letter-spacing: 1px; color: #B23A3A; -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');" />
-                    <ui:Label name="lbl-user-integrity" text="Integridad: 12%" style="font-size: 15px; color: #ccc6bc; margin-top: 6px; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');" />
-                    <ui:Label name="lbl-user-sessions" text="Sintonizaciones: 1" style="font-size: 15px; color: #ccc6bc; margin-top: 4px; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');" />
+                <!-- FOOTER -->
+                <ui:VisualElement class="menu-sidebar-footer">
+                    <ui:Label text="SYS.VER 1.04_b" class="menu-footer-text" />
+                    <ui:Label text="© 199X-202X SYSTEM CORRUPTION." class="menu-footer-text" />
                 </ui:VisualElement>
+
             </ui:VisualElement>
 
-            <!-- Right panels container -->
-            <ui:VisualElement name="right-content-container">
-                <!-- CRT blink overlay ÔÇö parpadeo al cambiar de ambience -->
-                <ui:VisualElement name="right-panel-crt-blink" class="right-panel-crt-blink" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; pointer-events: none;" picking-mode="Ignore" />
-                
-                <!-- ==========================================
-                     PANEL 1: EXPEDIENTE DE AUSENCIA (INFORMACION)
-                     ========================================== -->
-                <ui:VisualElement name="panel-neural-archives" class="preview-panel preview-panel--visible">
-                    <ui:Label text="Expediente de Ausencia" class="font-serif-bold text-headline-xl" style="-unity-text-align: middle-left; margin-bottom: 4px;" />
-                    <ui:Label text="registro y telemetria residual del eco" class="font-mono text-label-caps" style="color: #8C96A5; margin-bottom: 20px;" />
-                    <ui:VisualElement class="accent-line" />
 
-                    <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
-                        <!-- Left col: log & telemetria -->
+            <!-- ==========================================
+                 PANELS (hidden by default, shown on click)
+                 ========================================== -->
+            <ui:VisualElement name="right-content-container" class="menu-panels-container">
+
+                <!-- Panel 1: Continuar / Expediente -->
+                <ui:VisualElement name="panel-neural-archives" class="menu-panel">
+                    <ui:Label text="Expediente de Ausencia" class="menu-panel-title" />
+                    <ui:Label text="registro y telemetría residual del eco" class="menu-panel-subtitle" />
+                    <ui:VisualElement class="menu-panel-separator" />
+
+                    <ui:VisualElement style="flex-direction: row; flex-grow: 1; min-height: 0;">
                         <ui:VisualElement style="width: 55%; padding-right: 24px;">
-                            <ui:Label text="Registro de Actividad" class="font-mono-bold text-label-caps" style="color: #E8B262; margin-bottom: 8px;" />
-                            <ui:VisualElement class="terminal-log-box" style="margin-bottom: 24px;">
-                                <ui:Label text="[OK] Receptor analogico sintonizado." class="terminal-log-line" />
-                                <ui:Label name="lbl-archive-log-1" text="[OK] Fragmentos escolares mapeados." class="terminal-log-line" />
-                                <ui:Label name="lbl-archive-log-2" text="[OK] Frecuencia de eco establecida (15 FPS)." class="terminal-log-line" />
-                                <ui:Label name="lbl-archive-log-3" text="Esperando entrada del observador..." class="terminal-log-line" style="color: #E8B262;" />
+                            <ui:Label text="Registro de Actividad" class="menu-section-label" />
+                            <ui:VisualElement class="menu-terminal-box">
+                                <ui:Label text="[OK] Receptor analógico sintonizado." class="menu-terminal-line" />
+                                <ui:Label name="lbl-archive-log-1" text="[OK] Fragmentos escolares mapeados." class="menu-terminal-line" />
+                                <ui:Label name="lbl-archive-log-2" text="[OK] Frecuencia de eco establecida (15 FPS)." class="menu-terminal-line" />
+                                <ui:Label name="lbl-archive-log-3" text="Esperando entrada del observador..." class="menu-terminal-line" style="color: #E8B262;" />
                             </ui:VisualElement>
 
-                            <ui:Label text="Datos Acumulados" class="font-mono-bold text-label-caps" style="color: #E8B262; margin-bottom: 8px;" />
-                            <ui:VisualElement class="telemetry-row">
-                                <ui:VisualElement class="telemetry-chip">
-                                    <ui:Label text="Objetos" class="telemetry-chip-label" />
-                                    <ui:Label name="lbl-archive-fragments" text="0/15" class="telemetry-chip-value" />
+                            <ui:Label text="Datos Acumulados" class="menu-section-label" />
+                            <ui:VisualElement class="menu-chips-row">
+                                <ui:VisualElement class="menu-chip">
+                                    <ui:Label text="Objetos" class="menu-chip-label" />
+                                    <ui:Label name="lbl-archive-fragments" text="0/15" class="menu-chip-value" />
                                 </ui:VisualElement>
-                                <ui:VisualElement class="telemetry-chip">
-                                    <ui:Label text="Ecos" class="telemetry-chip-label" />
-                                    <ui:Label name="lbl-archive-echoes" text="0" class="telemetry-chip-value" />
+                                <ui:VisualElement class="menu-chip">
+                                    <ui:Label text="Ecos" class="menu-chip-label" />
+                                    <ui:Label name="lbl-archive-echoes" text="0" class="menu-chip-value" />
                                 </ui:VisualElement>
-                                <ui:VisualElement class="telemetry-chip">
-                                    <ui:Label text="Colapsos" class="telemetry-chip-label" />
-                                    <ui:Label name="lbl-archive-deaths" text="0" class="telemetry-chip-value" />
+                                <ui:VisualElement class="menu-chip">
+                                    <ui:Label text="Colapsos" class="menu-chip-label" />
+                                    <ui:Label name="lbl-archive-deaths" text="0" class="menu-chip-value" />
                                 </ui:VisualElement>
-                                <ui:VisualElement class="telemetry-chip">
-                                    <ui:Label text="Tiempo" class="telemetry-chip-label" />
-                                    <ui:Label name="lbl-archive-time" text="00:00" class="telemetry-chip-value" style="font-size: 14px;" />
+                                <ui:VisualElement class="menu-chip">
+                                    <ui:Label text="Tiempo" class="menu-chip-label" />
+                                    <ui:Label name="lbl-archive-time" text="00:00" class="menu-chip-value" />
                                 </ui:VisualElement>
                             </ui:VisualElement>
                         </ui:VisualElement>
 
-                        <!-- Right col: polaroid preview & stability -->
                         <ui:VisualElement style="width: 40%; margin-left: 5%; align-items: center;">
-                            <ui:VisualElement class="polaroid-frame">
-                                <ui:VisualElement class="polaroid-photo" />
-                                <ui:Label text="Entrada Principal (Vacio)" class="polaroid-label" />
+                            <ui:VisualElement class="menu-polaroid">
+                                <ui:VisualElement class="menu-polaroid-photo" />
+                                <ui:Label text="Entrada Principal (Vacío)" class="menu-polaroid-caption" />
                             </ui:VisualElement>
 
-                            <ui:VisualElement style="margin-top: 20px; width: 100%; padding: 12px; background-color: #080A10; border-width: 1px; border-color: rgba(201,212,176,0.2);">
-                                <ui:Label text="RETENCION DE MEMORIA" class="font-mono-bold" style="font-size: 13px; letter-spacing: 1px; color: #6C788A; -unity-text-transform: uppercase; margin-bottom: 8px;" />
+                            <ui:VisualElement class="menu-memory-meter">
+                                <ui:Label text="RETENCIÓN DE MEMORIA" class="menu-meter-title" />
                                 <ui:VisualElement style="flex-direction: row; align-items: center; justify-content: space-between;">
-                                    <ui:Label name="lbl-archive-stability-pct" text="0%" class="font-mono-bold" style="font-size: 18px; color: #C9D4B0;" />
-                                    <ui:VisualElement style="width: 120px; height: 6px; background-color: #1C2430; border-width: 1px; border-color: #2B4A4A;">
-                                        <ui:VisualElement name="bar-archive-stability" style="width: 0%; height: 100%; background-color: #C9D4B0;" />
+                                    <ui:Label name="lbl-archive-stability-pct" text="0%" class="menu-meter-value" />
+                                    <ui:VisualElement class="menu-meter-bar-bg">
+                                        <ui:VisualElement name="bar-archive-stability" class="menu-meter-bar-fill" />
                                     </ui:VisualElement>
                                 </ui:VisualElement>
                             </ui:VisualElement>
@@ -108,124 +163,97 @@
                     </ui:VisualElement>
                 </ui:VisualElement>
 
-                <!-- ==========================================
-                     PANEL 2: STABILITY MAP (TAPE ARCHIVE)
-                     ========================================== -->
-                <ui:VisualElement name="panel-stability-map" class="preview-panel">
-                    <!-- Panel header -->
-                    <ui:Label text="Archivo de Memorias" class="font-serif-bold" style="font-size: 32px; color: #E8B262; margin-bottom: 4px;" />
-                    <ui:Label text="seleccionar un recuerdo registrado" class="font-mono" style="font-size: 13px; letter-spacing: 2px; color: #A8B4A0; -unity-text-transform: uppercase; margin-bottom: 20px;" />
-                    <ui:VisualElement class="accent-line" />
+                <!-- Panel 2: Niveles / Archivo -->
+                <ui:VisualElement name="panel-stability-map" class="menu-panel">
+                    <ui:Label text="Archivo de Memorias" class="menu-panel-title" />
+                    <ui:Label text="seleccionar un recuerdo registrado" class="menu-panel-subtitle" />
+                    <ui:VisualElement class="menu-panel-separator" />
 
                     <ui:VisualElement style="flex-direction: row; flex-grow: 1; min-height: 0;">
-                        <!-- Left: List of memory tapes -->
                         <ui:ScrollView style="flex: 1; padding-right: 24px;">
-                            <ui:Button name="btn-level-01" text="01  Entrada Escolar  ÔÇö  Primer eco"     class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-02" text="02  Pasillo de Aulas  ÔÇö  Espacio dinamico"  class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-03" text="03  Escalera  ÔÇö  Galeria del eco"       class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-04" text="04  Biblioteca  ÔÇö  Cruce doble"         class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-05" text="05  Aula de Lyra  ÔÇö  Caos controlado"   class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-06" text="06  Escalera Central  ÔÇö  Dominio"       class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-07" text="07  Sala de Profesores  ÔÇö  Enlace"      class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-08" text="08  Laboratorio  ÔÇö  Puente del vacio"   class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-09" text="09  Gimnasio  ÔÇö  Muro de energia"       class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-10" text="10  Aceptacion  ÔÇö  Archivo dual"        class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-11" text="11  Depresion  ÔÇö  Puente fantasma"      class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-12" text="12  Aceptacion  ÔÇö  Ascenso roto"        class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-13" text="13  Verdad  ÔÇö  Memoria viva"            class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-14" text="14  Liberacion  ÔÇö  Umbral"              class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
-                            <ui:Button name="btn-level-15" text="15  Integracion  ÔÇö  Final"              class="level-card" style="font-size: 15px; -unity-text-align: middle-left; -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf'); color: #C9D4B0;" />
+                            <ui:Button name="btn-level-01" text="01  Entrada Escolar — Primer eco" class="menu-level-btn" />
+                            <ui:Button name="btn-level-02" text="02  Pasillo de Aulas — Espacio dinámico" class="menu-level-btn" />
+                            <ui:Button name="btn-level-03" text="03  Escalera — Galería del eco" class="menu-level-btn" />
+                            <ui:Button name="btn-level-04" text="04  Biblioteca — Cruce doble" class="menu-level-btn" />
+                            <ui:Button name="btn-level-05" text="05  Aula de Lyra — Caos controlado" class="menu-level-btn" />
+                            <ui:Button name="btn-level-06" text="06  Escalera Central — Dominio" class="menu-level-btn" />
+                            <ui:Button name="btn-level-07" text="07  Sala de Profesores — Enlace" class="menu-level-btn" />
+                            <ui:Button name="btn-level-08" text="08  Laboratorio — Puente del vacío" class="menu-level-btn" />
+                            <ui:Button name="btn-level-09" text="09  Gimnasio — Muro de energía" class="menu-level-btn" />
+                            <ui:Button name="btn-level-10" text="10  Aceptación — Archivo dual" class="menu-level-btn" />
+                            <ui:Button name="btn-level-11" text="11  Depresión — Puente fantasma" class="menu-level-btn" />
+                            <ui:Button name="btn-level-12" text="12  Aceptación — Ascenso roto" class="menu-level-btn" />
+                            <ui:Button name="btn-level-13" text="13  Verdad — Memoria viva" class="menu-level-btn" />
+                            <ui:Button name="btn-level-14" text="14  Liberación — Umbral" class="menu-level-btn" />
+                            <ui:Button name="btn-level-15" text="15  Integración — Final" class="menu-level-btn" />
                         </ui:ScrollView>
 
-                        <!-- Right: Selected tape stats + actions -->
                         <ui:VisualElement style="width: 260px; flex-shrink: 0; margin-left: 24px; justify-content: space-between;">
-                            <!-- Stats block -->
-                            <ui:VisualElement style="padding: 20px; background-color: #06080E; border-width: 1px; border-color: rgba(201,212,176,0.2); margin-bottom: 16px;">
-                                <ui:Label text="ESTADISTICAS" class="font-mono-bold" style="font-size: 12px; letter-spacing: 3px; color: #E8B262; margin-bottom: 16px; -unity-text-transform: uppercase;" />
-
-                                <ui:VisualElement style="flex-direction: row; justify-content: space-between; margin-bottom: 10px;">
-                                    <ui:Label text="Objetos" class="font-mono" style="font-size: 14px; color: #A8B4B8;" />
-                                    <ui:Label name="lbl-telemetry-fragments" text="0/0" class="font-mono-bold" style="font-size: 14px; color: #DCE4D0;" />
+                            <ui:VisualElement class="menu-stats-box">
+                                <ui:Label text="ESTADÍSTICAS" class="menu-stats-box-title" />
+                                <ui:VisualElement class="menu-stat-row">
+                                    <ui:Label text="Objetos" class="menu-stat-label" />
+                                    <ui:Label name="lbl-telemetry-fragments" text="0/0" class="menu-stat-value" />
                                 </ui:VisualElement>
-                                <ui:VisualElement style="flex-direction: row; justify-content: space-between; margin-bottom: 10px;">
-                                    <ui:Label text="Ecos" class="font-mono" style="font-size: 14px; color: #A8B4B8;" />
-                                    <ui:Label name="lbl-telemetry-echoes" text="0" class="font-mono-bold" style="font-size: 14px; color: #DCE4D0;" />
+                                <ui:VisualElement class="menu-stat-row">
+                                    <ui:Label text="Ecos" class="menu-stat-label" />
+                                    <ui:Label name="lbl-telemetry-echoes" text="0" class="menu-stat-value" />
                                 </ui:VisualElement>
-                                <ui:VisualElement style="flex-direction: row; justify-content: space-between; margin-bottom: 10px;">
-                                    <ui:Label text="Colapsos" class="font-mono" style="font-size: 14px; color: #A8B4B8;" />
-                                    <ui:Label name="lbl-telemetry-deaths" text="0" class="font-mono-bold" style="font-size: 14px; color: #B23A3A;" />
+                                <ui:VisualElement class="menu-stat-row">
+                                    <ui:Label text="Colapsos" class="menu-stat-label" />
+                                    <ui:Label name="lbl-telemetry-deaths" text="0" class="menu-stat-value menu-stat-value--danger" />
                                 </ui:VisualElement>
-                                <ui:VisualElement style="height: 1px; background-color: rgba(201,212,176,0.15); margin-bottom: 10px;" />
-                                <ui:VisualElement style="flex-direction: row; justify-content: space-between;">
-                                    <ui:Label text="Tiempo total" class="font-mono" style="font-size: 14px; color: #A8B4B8;" />
-                                    <ui:Label name="lbl-telemetry-time" text="0s" class="font-mono-bold" style="font-size: 14px; color: #DCE4D0;" />
+                                <ui:VisualElement class="menu-stat-separator" />
+                                <ui:VisualElement class="menu-stat-row">
+                                    <ui:Label text="Tiempo total" class="menu-stat-label" />
+                                    <ui:Label name="lbl-telemetry-time" text="0s" class="menu-stat-value" />
                                 </ui:VisualElement>
                             </ui:VisualElement>
 
-                            <!-- Hidden stats for C# script binding -->
-                            <ui:VisualElement style="display: none; height: 0; width: 0;">
-                                <ui:Label name="lbl-stat-stability-val" text="0" />
-                                <ui:VisualElement name="bar-stat-stability-fill" />
-                                <ui:Label name="lbl-stat-recall-val" text="0" />
-                                <ui:VisualElement name="bar-stat-recall-fill" />
-                                <ui:Label name="lbl-stat-errors-val" text="0" />
-                                <ui:VisualElement name="bar-stat-errors-fill" />
-                            </ui:VisualElement>
-
-                            <!-- Action buttons -->
                             <ui:VisualElement style="width: 100%;">
-                                <ui:Button name="btn-levels-back" text="&#8592;  Volver al inicio" class="btn-classic" style="margin-bottom: 8px; width: 100%; -unity-text-align: middle-left;" />
-                                <ui:Button name="btn-reset-progress" text="Borrar Historial" class="btn-classic btn-classic-accent" style="width: 100%;" />
+                                <ui:Button name="btn-levels-back" text="←  Volver al inicio" class="menu-action-btn" />
+                                <ui:Button name="btn-reset-progress" text="Borrar Historial" class="menu-action-btn menu-action-btn--danger" />
                             </ui:VisualElement>
                         </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>
 
-                <!-- ==========================================
-                     PANEL 3: CALIBRATION PREVIEW (SETTINGS)
-                     ========================================== -->
-                <ui:VisualElement name="panel-calibration-preview" class="preview-panel">
-                    <ui:Label text="Ajustes de Sintonia" class="font-serif-bold" style="font-size: 32px; color: #E8B262; margin-bottom: 4px;" />
-                    <ui:Label text="calibrar la recepcion de la memoria" class="font-mono" style="font-size: 13px; letter-spacing: 2px; color: #A8B4A0; -unity-text-transform: uppercase; margin-bottom: 20px;" />
-                    <ui:VisualElement class="accent-line" />
+                <!-- Panel 3: Ajustes -->
+                <ui:VisualElement name="panel-calibration-preview" class="menu-panel">
+                    <ui:Label text="Ajustes de Sintonía" class="menu-panel-title" />
+                    <ui:Label text="calibrar la recepción de la memoria" class="menu-panel-subtitle" />
+                    <ui:VisualElement class="menu-panel-separator" />
 
                     <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
-                        <!-- Left: Volume, Video settings -->
                         <ui:ScrollView style="width: 52%; max-height: 380px; padding-right: 24px;">
-                            <ui:Label text="Audio" class="settings-group-title" />
-                            
-                            <ui:VisualElement style="flex-direction: row; align-items: center; margin-bottom: 12px;">
-                                <ui:Slider name="sld-master" label="Volumen General" low-value="0" high-value="1" style="flex-grow: 1; margin-bottom: 0;" />
-                                <ui:Label name="lbl-master-val" text="100%" class="font-mono text-body-sm" style="color: #E8B262; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
+                            <ui:Label text="Audio" class="menu-section-label" />
+                            <ui:VisualElement class="menu-slider-row">
+                                <ui:Slider name="sld-master" label="Volumen General" low-value="0" high-value="1" style="flex-grow: 1;" />
+                                <ui:Label name="lbl-master-val" text="100%" class="menu-slider-value" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="menu-slider-row">
+                                <ui:Slider name="sld-music" label="Música" low-value="0" high-value="1" style="flex-grow: 1;" />
+                                <ui:Label name="lbl-music-val" text="100%" class="menu-slider-value" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="menu-slider-row">
+                                <ui:Slider name="sld-sfx" label="Efectos" low-value="0" high-value="1" style="flex-grow: 1;" />
+                                <ui:Label name="lbl-sfx-val" text="100%" class="menu-slider-value" />
                             </ui:VisualElement>
 
-                            <ui:VisualElement style="flex-direction: row; align-items: center; margin-bottom: 12px;">
-                                <ui:Slider name="sld-music" label="Musica" low-value="0" high-value="1" style="flex-grow: 1; margin-bottom: 0;" />
-                                <ui:Label name="lbl-music-val" text="100%" class="font-mono text-body-sm" style="color: #E8B262; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
-                            </ui:VisualElement>
-
-                            <ui:VisualElement style="flex-direction: row; align-items: center; margin-bottom: 16px;">
-                                <ui:Slider name="sld-sfx" label="Efectos" low-value="0" high-value="1" style="flex-grow: 1; margin-bottom: 0;" />
-                                <ui:Label name="lbl-sfx-val" text="100%" class="font-mono text-body-sm" style="color: #E8B262; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
-                            </ui:VisualElement>
-
-                            <ui:Label text="Pantalla" class="settings-group-title" style="margin-top: 12px;" />
-                            <ui:DropdownField name="ResolutionDropdown" label="Resolucion" />
+                            <ui:Label text="Pantalla" class="menu-section-label" style="margin-top: 12px;" />
+                            <ui:DropdownField name="ResolutionDropdown" label="Resolución" />
                             <ui:Toggle name="FullscreenToggle" label="Pantalla Completa" />
-                            <ui:Toggle name="VsyncToggle" label="Sincronizacion Vertical" />
+                            <ui:Toggle name="VsyncToggle" label="Sincronización Vertical" />
                             <ui:DropdownField name="ScaleDropdown" label="Escala Interfaz" style="display: none;" />
                         </ui:ScrollView>
 
-                        <!-- Right: Gameplay, Lighting presets & Actions -->
                         <ui:VisualElement style="width: 43%; margin-left: 5%; justify-content: space-between; height: 380px;">
                             <ui:ScrollView style="width: 100%; max-height: 280px;">
-                                <ui:Label text="Controles" class="settings-group-title" />
-                                
-                                <ui:VisualElement style="flex-direction: row; align-items: center; margin-bottom: 16px;">
-                                    <ui:Slider name="SensitivitySlider" label="Sensibilidad Raton" low-value="0.1" high-value="4" style="flex-grow: 1; margin-bottom: 0;" />
-                                    <ui:Label name="lbl-cam-sens-val" text="1.0" class="font-mono text-body-sm" style="color: #E8B262; font-size: 14px; width: 48px; -unity-text-align: middle-right; margin-left: 12px; font-weight: bold;" />
+                                <ui:Label text="Controles" class="menu-section-label" />
+                                <ui:VisualElement class="menu-slider-row">
+                                    <ui:Slider name="SensitivitySlider" label="Sensibilidad Ratón" low-value="0.1" high-value="4" style="flex-grow: 1;" />
+                                    <ui:Label name="lbl-cam-sens-val" text="1.0" class="menu-slider-value" />
                                 </ui:VisualElement>
-                                
                                 <ui:VisualElement style="display: none;">
                                     <ui:Button name="btn-sens-low" />
                                     <ui:Button name="btn-sens-med" />
@@ -233,15 +261,14 @@
                                     <ui:Label name="lbl-sens-val" />
                                 </ui:VisualElement>
 
-                                <ui:Label text="Iluminacion" class="settings-group-title" style="margin-top: 12px;" />
-                                <ui:VisualElement style="flex-direction: row; flex-wrap: wrap;">
-                                    <ui:Button name="btn-light-liminal" text="Liminal" class="btn-classic" style="margin-right: 8px; margin-bottom: 8px; width: 45%;" />
-                                    <ui:Button name="btn-light-bruma" text="Bruma" class="btn-classic" style="margin-right: 8px; margin-bottom: 8px; width: 45%;" />
-                                    <ui:Button name="btn-light-claridad" text="Claridad" class="btn-classic" style="margin-right: 8px; margin-bottom: 8px; width: 45%;" />
-                                    <ui:Button name="btn-light-penumbra" text="Penumbra" class="btn-classic" style="margin-right: 8px; margin-bottom: 8px; width: 45%;" />
+                                <ui:Label text="Iluminación" class="menu-section-label" style="margin-top: 12px;" />
+                                <ui:VisualElement class="menu-light-presets">
+                                    <ui:Button name="btn-light-liminal" text="Liminal" class="menu-light-btn" />
+                                    <ui:Button name="btn-light-bruma" text="Bruma" class="menu-light-btn" />
+                                    <ui:Button name="btn-light-claridad" text="Claridad" class="menu-light-btn" />
+                                    <ui:Button name="btn-light-penumbra" text="Penumbra" class="menu-light-btn" />
                                 </ui:VisualElement>
 
-                                <!-- Developer variables dummy mapping to satisfy script links -->
                                 <ui:VisualElement style="display: none;">
                                     <ui:Slider name="sld-fog" /><ui:Label name="lbl-fog-val" />
                                     <ui:Slider name="sld-echo" /><ui:Label name="lbl-echo-val" />
@@ -253,50 +280,54 @@
                                 </ui:VisualElement>
                             </ui:ScrollView>
 
-                            <!-- Actions -->
-                            <ui:VisualElement style="flex-direction: row; justify-content: space-between;">
-                                <ui:Button name="btn-restore-defaults" text="Por Defecto" class="btn-classic" style="width: 30%;" />
-                                <ui:Button name="btn-settings-back" text="Cancelar" class="btn-classic" style="width: 30%;" />
-                                <ui:Button name="btn-settings-apply" text="Guardar" class="btn-classic btn-classic-accent" style="width: 35%;" />
+                            <ui:VisualElement class="menu-settings-actions">
+                                <ui:Button name="btn-restore-defaults" text="Por Defecto" class="menu-action-btn" />
+                                <ui:Button name="btn-settings-back" text="Cancelar" class="menu-action-btn" />
+                                <ui:Button name="btn-settings-apply" text="Guardar" class="menu-action-btn menu-action-btn--primary" />
                             </ui:VisualElement>
                         </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>
 
-                <!-- ==========================================
-                     PANEL 4: DISCONNECT OFFLINE (EXIT CONFIRM)
-                     ========================================== -->
-                <ui:VisualElement name="panel-disconnect-offline" class="preview-panel" style="justify-content: center; align-items: center; background-color: transparent;">
-                    <ui:Label text="CLAUSURAR EXPEDIENTE" class="font-serif-bold text-headline-xl" style="color: #B23A3A; margin-bottom: 12px;" />
-                    <ui:Label text="┬┐Deseas cerrar el expediente y abandonar la sinton├¡a?" class="font-serif text-body-lg" style="margin-bottom: 32px; -unity-text-align: middle-center; max-width: 400px;" />
-                    
-                    <ui:VisualElement style="flex-direction: row; justify-content: center; width: 100%;">
-                        <ui:Button name="btn-exit-cancel" text="Permanecer" class="btn-classic" style="margin-right: 16px; padding: 12px 24px;" />
-                        <ui:Button name="btn-exit-confirm" text="Abandonar" class="btn-classic btn-classic-accent" style="padding: 12px 24px;" />
+                <!-- Panel 4: Exit confirm -->
+                <ui:VisualElement name="panel-disconnect-offline" class="menu-panel menu-panel--centered">
+                    <ui:Label text="CLAUSURAR EXPEDIENTE" class="menu-panel-title" style="color: #B23A3A;" />
+                    <ui:Label text="¿Deseas cerrar el expediente y abandonar la sintonía?" class="menu-panel-subtitle" style="max-width: 400px; -unity-text-align: middle-center;" />
+                    <ui:VisualElement style="flex-direction: row; justify-content: center; margin-top: 32px;">
+                        <ui:Button name="btn-exit-cancel" text="Permanecer" class="menu-action-btn" style="margin-right: 16px;" />
+                        <ui:Button name="btn-exit-confirm" text="Abandonar" class="menu-action-btn menu-action-btn--danger" />
                     </ui:VisualElement>
                 </ui:VisualElement>
 
             </ui:VisualElement>
+
         </ui:VisualElement>
 
-        <!-- Dummy parent setting panel so script bindings don't crash -->
-        <ui:VisualElement name="settings-panel" class="hidden" style="display: none;" />
-
-        <!-- Reset progress confirmation overlay popup -->
-        <ui:VisualElement name="reset-progress-panel" class="hidden" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgba(10,10,13,0.88); justify-content: center; align-items: center;">
-            <ui:VisualElement style="background-color: transparent; border-width: 2px; border-color: #B23A3A; padding: 32px; width: 400px;">
-                <ui:Label text="BORRAR HISTORIAL" class="font-mono-bold text-headline-md" style="color: #B23A3A; margin-bottom: 12px;" />
-                <ui:Label text="Esta acci├│n borrar├í todas las memorias sintonizadas de forma permanente. No se puede deshacer." class="font-serif text-body-lg" style="color: #E2E4E8; margin-bottom: 24px;" />
-                
+        <!-- Reset progress confirmation overlay -->
+        <ui:VisualElement name="reset-progress-panel" class="hidden menu-reset-overlay">
+            <ui:VisualElement class="menu-reset-dialog">
+                <ui:Label text="BORRAR HISTORIAL" class="menu-reset-dialog-title" />
+                <ui:Label text="Esta acción borrará todas las memorias sintonizadas de forma permanente. No se puede deshacer." class="menu-reset-dialog-text" />
                 <ui:VisualElement style="flex-direction: row; justify-content: flex-end;">
-                    <ui:Button name="btn-reset-progress-cancel" text="Cancelar" class="btn-classic" style="margin-right: 12px;" />
-                    <ui:Button name="btn-reset-progress-confirm" text="BORRAR TODO" class="btn-classic btn-classic-accent" />
+                    <ui:Button name="btn-reset-progress-cancel" text="Cancelar" class="menu-action-btn" style="margin-right: 12px;" />
+                    <ui:Button name="btn-reset-progress-confirm" text="BORRAR TODO" class="menu-action-btn menu-action-btn--danger" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
 
-        <!-- Dynamic level select panel dummy (to avoid null checks in C#) -->
-        <ui:VisualElement name="level-select-panel" class="hidden" style="display: none;" />
+        <!-- Hidden stat labels for C# bindings -->
+        <ui:VisualElement style="display: none;">
+            <ui:Label name="lbl-stat-stability-val" />
+            <ui:VisualElement name="bar-stat-stability-fill" />
+            <ui:Label name="lbl-stat-recall-val" />
+            <ui:VisualElement name="bar-stat-recall-fill" />
+            <ui:Label name="lbl-stat-errors-val" />
+            <ui:VisualElement name="bar-stat-errors-fill" />
+            <ui:VisualElement name="settings-panel" />
+            <ui:VisualElement name="level-select-panel" />
+            <ui:Label name="lbl-user-sessions" />
+            <ui:VisualElement name="menu-bg" />
+        </ui:VisualElement>
+
     </ui:VisualElement>
 </ui:UXML>
-
