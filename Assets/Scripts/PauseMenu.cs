@@ -131,7 +131,14 @@ namespace Echoes.UI
 
         void ConfirmReiniciar()
         {
-            ModalManager.Instance?.ShowModal(
+            if (ModalManager.Instance == null)
+            {
+                Resume();
+                PostProcessingSetup.PrepareForSceneReload();
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                return;
+            }
+            ModalManager.Instance.ShowModal(
                 "Reiniciar Capítulo",
                 "Se perderá el progreso del capítulo actual.",
                 onConfirm: () =>
@@ -146,7 +153,14 @@ namespace Echoes.UI
 
         void ConfirmHub()
         {
-            ModalManager.Instance?.ShowModal(
+            if (ModalManager.Instance == null)
+            {
+                UnpauseForMenu();
+                PostProcessingSetup.PrepareForSceneReload();
+                SceneManager.LoadScene(hubSceneName);
+                return;
+            }
+            ModalManager.Instance.ShowModal(
                 "Volver al Cuaderno",
                 "¿Deseas salir al Cuaderno de Aiden? El progreso se guardará.",
                 onConfirm: () =>

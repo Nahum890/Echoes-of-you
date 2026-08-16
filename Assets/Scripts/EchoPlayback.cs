@@ -10,7 +10,7 @@ public class EchoPlayback : MonoBehaviour
     [SerializeField] float skinWidth = 0.08f;
     [SerializeField] Material _matEcho;
 
-    const float EchoHeight = 2.1f;
+    const float EchoHeight = 2.2f;
     const float EchoRadius = 0.36f;
     const string ModelChildName = "Model";
     const string ScalerChildName = "EchoScaler";
@@ -463,7 +463,7 @@ PhaseChanged?.Invoke(EchoPlaybackPhase.Gone);
         visualRoot.localScale = Vector3.one;
 
         Transform model = FindModelTransform(visualRoot);
-        if (model == null || !HasRenderableModel(model))
+        if (model == null || !HasRenderableModel(model) || IsStaleModel(model))
         {
             ClearVisualRoot(visualRoot);
             model = SpawnEchoModel(visualRoot);
@@ -508,6 +508,45 @@ PhaseChanged?.Invoke(EchoPlaybackPhase.Gone);
         return model.GetComponentInChildren<SkinnedMeshRenderer>(true) != null;
     }
 
+    // Reject the LowPolyCharacter asset explicitly — it is the wrong visual identity
+    // for the Echo and causes bind-pose deformation when skinned to the Woman avatar.
+    static bool IsStaleModel(Transform model)
+    {
+        if (model == null)
+            return true;
+
+        SkinnedMeshRenderer smr = model.GetComponentInChildren<SkinnedMeshRenderer>(true);
+        if (smr == null || smr.sharedMesh == null)
+            return true;
+
+        return smr.sharedMesh.name.Contains("LowPoly");
+    }
+
+    // Auto-fit scale so the model height matches EchoHeight (collider height) exactly,
+    // mirroring PlayerCharacterVisualSetup so the Echo renders at the same height as Aiden.
+    static void ApplyModelAutoFit(Transform scaler, Transform model)
+    {
+        scaler.localScale = Vector3.one * EchoesPresentationSettings.CharacterVisualScale;
+        model.localPosition = Vector3.zero;
+        model.localRotation = Quaternion.identity;
+        model.localScale = Vector3.one;
+
+        Renderer[] tempRenderers = model.GetComponentsInChildren<Renderer>(true);
+        if (tempRenderers.Length == 0)
+            return;
+
+        Bounds b = tempRenderers[0].bounds;
+        for (int i = 1; i < tempRenderers.Length; i++)
+            b.Encapsulate(tempRenderers[i].bounds);
+
+        float rawHeight = b.size.y;
+        if (rawHeight > 0.05f)
+        {
+            float autoScale = (EchoHeight / rawHeight) * EchoesPresentationSettings.CharacterVisualScale;
+            scaler.localScale = Vector3.one * autoScale;
+        }
+    }
+
     void ClearVisualRoot(Transform visualRoot)
     {
         if (visualRoot == null)
@@ -545,7 +584,7 @@ PhaseChanged?.Invoke(EchoPlaybackPhase.Gone);
         scalerObject.transform.SetParent(visualRoot, false);
         scalerObject.transform.localPosition = Vector3.zero;
         scalerObject.transform.localRotation = Quaternion.identity;
-        scalerObject.transform.localScale = Vector3.one * EchoesPresentationSettings.CharacterVisualScale;
+        scalerObject.transform.localScale = Vector3.one;
 
         GameObject instance = Instantiate(source, scalerObject.transform);
         instance.name = ModelChildName;
@@ -556,6 +595,7 @@ PhaseChanged?.Invoke(EchoPlaybackPhase.Gone);
         foreach (Collider col in instance.GetComponentsInChildren<Collider>(true))
             DestroySafe(col);
 
+        ApplyModelAutoFit(scalerObject.transform, instance.transform);
         return instance.transform;
     }
 
@@ -608,7 +648,6 @@ PhaseChanged?.Invoke(EchoPlaybackPhase.Gone);
 
         scaler.localPosition = Vector3.zero;
         scaler.localRotation = Quaternion.identity;
-        scaler.localScale = Vector3.one * EchoesPresentationSettings.CharacterVisualScale;
         model.localPosition = Vector3.zero;
         model.localRotation = Quaternion.identity;
         model.localScale = Vector3.one;
@@ -616,6 +655,7 @@ PhaseChanged?.Invoke(EchoPlaybackPhase.Gone);
         foreach (Collider col in model.GetComponentsInChildren<Collider>(true))
             DestroySafe(col);
 
+        ApplyModelAutoFit(scaler, model);
         ApplyEchoMaterials(model.gameObject);
 
         Animator animator = model.GetComponent<Animator>();

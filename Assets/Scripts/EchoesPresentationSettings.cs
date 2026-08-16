@@ -13,7 +13,7 @@ public static class EchoesPresentationSettings
 
     public const float DefaultVisualScale = 1f;
     public const float DefaultAnimSpeed = 1f;
-    public const float DefaultMenuTextScale = 1.25f;
+    public const float DefaultMenuTextScale = 1.0f;
     public const float DefaultGameFogDensity = 0.008f;
     public const float DefaultGameSunIntensity = 0.85f;
     public const float DefaultGamePointLightMul = 1.0f;

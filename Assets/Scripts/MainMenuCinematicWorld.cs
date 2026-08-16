@@ -631,7 +631,7 @@ void Start()
     {
         Transform echoRoot = new GameObject("DistantEchoes").transform;
         echoRoot.SetParent(transform);
-        GameObject echoModelSource = Resources.Load<GameObject>("EchoesCharacterVisual");
+        GameObject echoModelSource = Resources.Load<GameObject>("EchoesEchoVisual");
 
         for (int i = 0; i < distantEchoWalkers; i++)
         {

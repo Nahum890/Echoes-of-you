@@ -1,0 +1,15 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+    <!-- EchoModal — diálogo de confirmación con focus trap.
+         ModalManager.cs abre esto vía Push(NavigationManager.ScreenLayer.Modal).
+         Botones: Confirmar / Cancelar. Tecla ESC cierra. -->
+    <ui:VisualElement class="echo-modal" name="echoModal">
+        <ui:VisualElement class="echo-modal__content" name="modalContent">
+            <ui:Label class="echo-modal__title" name="modalTitle" text="Confirmación" />
+            <ui:Label class="echo-modal__message" name="modalMessage" text="¿Estás seguro?" />
+            <ui:VisualElement class="echo-modal__actions" name="modalActions">
+                <ui:Button class="echo-button echo-button--primary" name="modalConfirmBtn" text="Confirmar" />
+                <ui:Button class="echo-button echo-button--secondary" name="modalCancelBtn" text="Cancelar" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</UXML>
