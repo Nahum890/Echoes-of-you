@@ -187,6 +187,16 @@ public static class GameProgress
         return Mathf.Max(0, PlayerPrefs.GetInt(DeathsPrefix + sceneName, 0));
     }
 
+    public static float GetScenePlayTimeSeconds(string sceneName)
+    {
+        return Mathf.Max(0f, PlayerPrefs.GetFloat("PlayTime_" + sceneName, 0f));
+    }
+
+    public static int GetSceneEchoesCreated(string sceneName)
+    {
+        return Mathf.Max(0, PlayerPrefs.GetInt("Echoes_" + sceneName, 0));
+    }
+
     public static int GetTotalDeathCount()
     {
         int total = 0;
@@ -258,10 +268,22 @@ public static class GameProgress
         PlayerPrefs.SetFloat(TotalPlayTimeKey, total);
     }
 
-    public static void SavePlayTime()
-    {
-        PlayerPrefs.Save();
-    }
+        public static void SavePlayTime()
+        {
+            PlayerPrefs.Save();
+        }
+
+        public static void SaveNarrativeState()
+        {
+            Echoes.Narrative.NarrativeSaveBridge.Save();
+        }
+
+        public static void LoadNarrativeState()
+        {
+            var data = Echoes.Narrative.NarrativeSaveBridge.Load();
+            if (data != null)
+                Echoes.Narrative.NarrativeSaveBridge.ApplyToRuntime(data);
+        }
 
     /// <summary>Siguiente fragmento a jugar: primero incompleto desbloqueado; si todo está hecho, el último nivel.</summary>
     public static string GetContinueSceneName()
@@ -303,11 +325,11 @@ public static class GameProgress
     public static string GetActiveProtocolMessage(int completedLevels, int totalLevels)
     {
         if (completedLevels == 0)
-            return "El Archivo aguarda tu primera decisión. Proyecta un eco antes de cruzar lo imposible.";
+            return "El Cuaderno aguarda tu primera decisión. Proyecta un eco antes de cruzar lo imposible.";
         if (completedLevels < totalLevels / 2)
-            return "Varios fragmentos siguen desalineados. Usa la proyección (F) para actuar sin mover tu cuerpo.";
+            return "Varios capítulos siguen desalineados. Usa la proyección (F) para actuar sin mover tu cuerpo.";
         if (completedLevels < totalLevels)
-            return "La coherencia mejora. Evita ecos en rutas que cierran tu propio camino.";
+            return "El recorrido avanza. Evita ecos en rutas que cierran tu propio camino.";
         return "Todos los nodos de memoria están activos. El Archivo reconoce tu patrón.";
     }
 
@@ -327,9 +349,10 @@ public static class GameProgress
         return $"{secs}s";
     }
 
-    public static void ResetProgress()
-    {
-        PlayerPrefs.DeleteKey(UnlockedCountKey);
+        public static void ResetProgress()
+        {
+            Echoes.Narrative.NarrativeSaveBridge.ClearSave();
+            PlayerPrefs.DeleteKey(UnlockedCountKey);
         PlayerPrefs.DeleteKey(TotalEchoesKey);
         PlayerPrefs.DeleteKey(TotalPlayTimeKey);
         PlayerPrefs.DeleteKey(LastPlayedKey);

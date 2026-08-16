@@ -72,15 +72,18 @@ public static class EchoesUrpSetup
 
     static UniversalRenderPipelineAsset FindUrpAsset()
     {
-        string knownPath = "Assets/UnityTechnologies/ParticlePack/URP.asset";
-        var knownAsset = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(knownPath);
-        if (knownAsset != null)
-            return knownAsset;
+        // 1. Buscar PRIMERO el URP Asset canónico del proyecto (prioridad máxima)
+        var projectAsset = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(UrpAssetPath);
+        if (projectAsset != null)
+            return projectAsset;
 
+        // 2. Buscar cualquier URP Asset que NO sea del ParticlePack de Unity Technologies
         string[] guids = AssetDatabase.FindAssets("t:UniversalRenderPipelineAsset");
         foreach (string g in guids)
         {
             string path = AssetDatabase.GUIDToAssetPath(g);
+            if (path.Contains("UnityTechnologies/ParticlePack"))
+                continue; // Ignorar pipelines de ejemplo del ParticlePack
             var asset = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(path);
             if (asset != null)
                 return asset;

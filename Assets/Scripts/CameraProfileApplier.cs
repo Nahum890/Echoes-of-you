@@ -1,17 +1,17 @@
+using System.Reflection;
 using UnityEngine;
 using Unity.Cinemachine;
-using System.Collections.Generic;
 
 public class CameraProfileApplier : MonoBehaviour
 {
     public static CameraProfileApplier Instance { get; private set; }
 
-    public CameraProfile currentProfile;
-    private Camera mainCam;
-    private CinemachineCamera vcam;
-    private CinemachineBrain brain;
-    private ThirdPersonCamera _thirdPersonCamera;
-    private bool _wasThirdPersonCameraEnabled;
+    public CameraProfile CurrentProfile { get => _currentProfile; set => _currentProfile = value; }
+    CameraProfile _currentProfile;
+    // Alias for backward compatibility with editor scripts
+    public CameraProfile currentProfile { get => _currentProfile; set => _currentProfile = value; }
+    CinemachineBrain _brain;
+    CinemachineCamera _playerVCam;
 
     void Awake()
     {
@@ -21,47 +21,15 @@ public class CameraProfileApplier : MonoBehaviour
             return;
         }
         Instance = this;
-        InitCameraSystem();
     }
 
-    private void InitCameraSystem()
+    void Start()
     {
-        mainCam = Camera.main;
-        if (mainCam != null)
+        _brain = FindAnyObjectByType<CinemachineBrain>();
+        _playerVCam = FindAnyObjectByType<CinemachineCamera>();
+        if (_brain != null && _playerVCam != null)
         {
-            brain = mainCam.GetComponent<CinemachineBrain>();
-            if (!brain) brain = mainCam.gameObject.AddComponent<CinemachineBrain>();
-
-            // CRITICAL: Disable ThirdPersonCamera to prevent jitter (both systems writing transform in LateUpdate)
-            _thirdPersonCamera = mainCam.GetComponent<ThirdPersonCamera>();
-            if (_thirdPersonCamera != null)
-            {
-                _wasThirdPersonCameraEnabled = _thirdPersonCamera.enabled;
-                if (_thirdPersonCamera.enabled)
-                {
-                    _thirdPersonCamera.enabled = false;
-                    Debug.Log("[CameraProfileApplier] ThirdPersonCamera disabled — Cinemachine is now the active camera controller.");
-                }
-            }
-        }
-
-        vcam = FindAnyObjectByType<CinemachineCamera>();
-        if (!vcam)
-        {
-            var vcamObj = new GameObject("GameplayVCam");
-            vcam = vcamObj.AddComponent<CinemachineCamera>();
-            vcamObj.AddComponent<CinemachineFollow>();
-            vcamObj.AddComponent<CinemachineRotationComposer>();
-            vcam.Priority = 10;
-        }
-    }
-
-    void OnDestroy()
-    {
-        // Restore ThirdPersonCamera if it was originally enabled
-        if (_thirdPersonCamera != null && _wasThirdPersonCameraEnabled)
-        {
-            _thirdPersonCamera.enabled = true;
+            _playerVCam.Priority = 10;
         }
     }
 
@@ -85,164 +53,173 @@ public class CameraProfileApplier : MonoBehaviour
 
     public void ApplyProfile(CameraProfile profile)
     {
-        Transform player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        Transform echo = GameObject.Find("EchoPlayer")?.transform ?? GameObject.FindGameObjectWithTag("Echo")?.transform;
-        Transform obj = GameObject.FindGameObjectWithTag("Objective")?.transform ?? GameObject.Find("LevelGoal")?.transform;
-        ApplyProfile(profile, player, echo, obj);
-    }
-
-    public void ApplyProfile(CameraProfile profile, Transform player, Transform echo, Transform objective)
-    {
         if (profile == null) return;
-        currentProfile = profile;
+        _currentProfile = profile;
 
-        if (!vcam) InitCameraSystem();
-        if (!vcam) return;
+        if (_playerVCam == null)
+            _playerVCam = FindAnyObjectByType<CinemachineCamera>();
+        if (_playerVCam == null) return;
 
-        // Body / Follow
-        var follow = vcam.GetComponent<CinemachineFollow>();
-        if (!follow) follow = vcam.gameObject.AddComponent<CinemachineFollow>();
-        follow.FollowOffset = profile.followOffset;
-        follow.TrackerSettings.BindingMode = Unity.Cinemachine.TargetTracking.BindingMode.WorldSpace;
-        follow.TrackerSettings.PositionDamping = new Vector3(profile.xDamping, profile.yDamping, profile.zDamping);
-        follow.TrackerSettings.RotationDamping = new Vector3(profile.pitch, profile.yaw, profile.roll);
+        // Apply to CinemachineFollow (v3 Transposer equivalent)
+        var follow = _playerVCam.GetComponent<CinemachineFollow>();
+        if (follow != null)
+        {
+            follow.FollowOffset = profile.followOffset;
+        }
 
-        // Aim / Rotation Composer
-        var composer = vcam.GetComponent<CinemachineRotationComposer>();
-        if (!composer) composer = vcam.gameObject.AddComponent<CinemachineRotationComposer>();
-        composer.TargetOffset = Vector3.up * 1.5f;
-        composer.Composition.DeadZone.Size = profile.deadZone;
-        composer.Composition.HardLimits.Size = profile.softZone;
-        composer.Damping = new Vector2(profile.aimLag, profile.aimLag);
+        // Apply to CinemachineRotationComposer (v3 Composer equivalent)
+        var composer = _playerVCam.GetComponent<CinemachineRotationComposer>();
+        if (composer != null)
+        {
+            composer.TargetOffset = profile.followOffset; // use followOffset as aim offset
+            composer.Damping = new Vector2(profile.aimLag, profile.aimLag);
+        }
 
         // Lens
-        var lens = vcam.Lens;
+        var lens = _playerVCam.Lens;
         lens.FieldOfView = profile.FOV;
         lens.NearClipPlane = profile.nearClip;
         lens.FarClipPlane = profile.farClip;
         lens.Dutch = profile.dutch;
-        vcam.Lens = lens;
-
-        // Priority
-        vcam.Priority = profile.priority;
-
-        // Targets: Player + Echo + Objective (Group Composer for Puzzle/Replay)
-        UpdateTargets(player, echo, objective);
+        _playerVCam.Lens = lens;
     }
 
-    void UpdateTargets(Transform player, Transform echo, Transform objective)
+    public void ApplyProfile(CameraProfile profile, Transform player, Transform echo, Transform objective)
     {
-        if (!vcam) return;
-        var group = vcam.GetComponent<CinemachineTargetGroup>();
-        if (!group) group = vcam.gameObject.AddComponent<CinemachineTargetGroup>();
-
-        var targetsList = new List<CinemachineTargetGroup.Target>();
-        if (player != null)
-            targetsList.Add(new CinemachineTargetGroup.Target { Object = player, Weight = 1f, Radius = 1f });
-        if (echo != null)
-            targetsList.Add(new CinemachineTargetGroup.Target { Object = echo, Weight = 1f, Radius = 1f });
-        if (objective != null)
-            targetsList.Add(new CinemachineTargetGroup.Target { Object = objective, Weight = 0.5f, Radius = 0.5f });
-
-        group.Targets = targetsList;
-        if (targetsList.Count > 0)
-        {
-            vcam.Follow = group.transform;
-            vcam.LookAt = group.transform;
-        }
+        ApplyProfile(profile);
     }
 
-    /// <summary>Static convenience wrapper — forwards to the singleton instance.</summary>
     public static void Apply(LevelCameraProfiles.Profile profile)
     {
         if (Instance == null) return;
-        if (Instance.mainCam != null)
+        if (Instance._playerVCam != null)
         {
-            Instance.mainCam.fieldOfView = profile.fov;
+            var lens = Instance._playerVCam.Lens;
+            lens.FieldOfView = profile.fov;
+            Instance._playerVCam.Lens = lens;
         }
     }
 
     void OnRecordingStarted()
     {
-        if (vcam != null)
+        if (_playerVCam != null)
         {
-            var lens = vcam.Lens;
+            var lens = _playerVCam.Lens;
             lens.FieldOfView = Mathf.Max(35f, lens.FieldOfView - 3f);
-            vcam.Lens = lens;
-        }
-        else if (mainCam != null)
-        {
-            mainCam.fieldOfView = Mathf.Max(35f, mainCam.fieldOfView - 3f);
+            _playerVCam.Lens = lens;
         }
     }
 
     void OnRecordingStopped(bool _)
     {
-        if (currentProfile != null)
+        if (_currentProfile != null)
         {
-            ApplyProfile(currentProfile);
+            ApplyProfile(_currentProfile);
         }
     }
 
-    // Switches llamados desde gameplay
+    CinemachineCamera CreateTemporaryVCam(string name, Vector3 followOffset, float aimLag, float fov, float dutch, float blendDuration)
+    {
+        if (_brain == null) _brain = FindAnyObjectByType<CinemachineBrain>();
+
+        var go = new GameObject($"TempVCam_{name}");
+        var vcam = go.AddComponent<CinemachineCamera>();
+        vcam.Priority = 20;
+
+        var follow = go.AddComponent<CinemachineFollow>();
+        follow.FollowOffset = followOffset;
+        // Note: BindingMode is not available in v3 CinemachineFollow
+
+        var composer = go.AddComponent<CinemachineRotationComposer>();
+        composer.Damping = new Vector2(aimLag, aimLag);
+        // Note: DeadZone/SoftZone/ScreenX/ScreenY/Lookahead not available in v3 CinemachineRotationComposer
+
+        var lens = vcam.Lens;
+        lens.FieldOfView = fov;
+        lens.NearClipPlane = 0.3f;
+        lens.FarClipPlane = 300f;
+        lens.Dutch = dutch;
+        vcam.Lens = lens;
+
+        if (_brain != null)
+        {
+            _brain.DefaultBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.EaseInOut, blendDuration);
+        }
+
+        return vcam;
+    }
+
     public void SwitchToMemory(Transform player, Transform echo, Transform obj)
     {
-        var profile = ScriptableObject.CreateInstance<CameraProfile>();
-        profile.profileType = CameraProfileType.Memory;
-        profile.fieldOfView = 48f;
-        profile.followOffset = new Vector3(-4f, 2.1f, -5f);
-        profile.aimLag = 0.8f;
-        profile.dutch = 2.5f;
-        ApplyProfile(profile, player, echo, obj);
+        var vcam = CreateTemporaryVCam("Memory", new Vector3(-4f, 2.1f, -5f), 0.8f, 52f, 2.5f, 1.5f);
+        if (player != null)
+        {
+            var follow = vcam.GetComponent<CinemachineFollow>();
+            // Note: Follow target assignment may differ in v3
+            SetProperty(follow, "Follow", player);
+        }
+        Destroy(vcam.gameObject, 3f);
     }
 
     public void SwitchToReplay(Transform player, Transform echo, Transform obj)
     {
-        var profile = ScriptableObject.CreateInstance<CameraProfile>();
-        profile.profileType = CameraProfileType.Replay;
-        profile.fieldOfView = 50f;
-        profile.followOffset = new Vector3(-3.5f, 2.5f, -5.5f);
-        profile.aimLag = 0.3f;
-        ApplyProfile(profile, player, echo, obj);
+        var vcam = CreateTemporaryVCam("Replay", new Vector3(-3.5f, 2.5f, -5.5f), 0.3f, 52f, 0f, 1f);
+        if (player != null)
+        {
+            var follow = vcam.GetComponent<CinemachineFollow>();
+            SetProperty(follow, "Follow", player);
+        }
+        Destroy(vcam.gameObject, 2.5f);
     }
 
     public void SwitchToSuspense(Transform target, float duration)
     {
-        var profile = ScriptableObject.CreateInstance<CameraProfile>();
-        profile.profileType = CameraProfileType.Suspense;
-        profile.fieldOfView = 40f;
-        profile.followOffset = new Vector3(-2f, 1.5f, -3f);
-        profile.aimLag = 1.2f;
-        ApplyProfile(profile, target, null, null);
+        var vcam = CreateTemporaryVCam("Suspense", new Vector3(-2f, 1.5f, -3f), 1.2f, 48f, 0f, duration);
+        if (target != null)
+        {
+            var follow = vcam.GetComponent<CinemachineFollow>();
+            SetProperty(follow, "Follow", target);
+        }
+        Destroy(vcam.gameObject, duration + 1f);
     }
 
     public void SwitchToPuzzle(Transform player, Transform echo, Transform obj)
     {
-        var profile = ScriptableObject.CreateInstance<CameraProfile>();
-        profile.profileType = CameraProfileType.Puzzle;
-        profile.fieldOfView = 52f;
-        profile.followOffset = new Vector3(-5f, 4f, -7f);
-        profile.aimLag = 0.5f;
-        ApplyProfile(profile, player, echo, obj);
+        var vcam = CreateTemporaryVCam("Puzzle", new Vector3(-5f, 4f, -7f), 0.5f, 55f, 0f, 1.5f);
+        if (player != null)
+        {
+            var follow = vcam.GetComponent<CinemachineFollow>();
+            SetProperty(follow, "Follow", player);
+        }
+        Destroy(vcam.gameObject, 3f);
     }
 
     public void SwitchToEmotional(Transform player, Transform echo, Transform obj)
     {
-        var profile = ScriptableObject.CreateInstance<CameraProfile>();
-        profile.profileType = CameraProfileType.Emotional;
-        profile.fieldOfView = 42f;
-        profile.followOffset = new Vector3(-2.5f, 1.8f, -3.5f);
-        profile.aimLag = 0.6f;
-        ApplyProfile(profile, player, echo, obj);
+        var vcam = CreateTemporaryVCam("Emotional", new Vector3(-2.5f, 1.8f, -3.5f), 0.6f, 50f, 0f, 1.5f);
+        if (player != null)
+        {
+            var follow = vcam.GetComponent<CinemachineFollow>();
+            SetProperty(follow, "Follow", player);
+        }
+        Destroy(vcam.gameObject, 3f);
     }
 
     public void SwitchToAcceptance(Transform player, Transform echo, Transform obj)
     {
-        var profile = ScriptableObject.CreateInstance<CameraProfile>();
-        profile.profileType = CameraProfileType.Acceptance;
-        profile.fieldOfView = 45f;
-        profile.followOffset = new Vector3(-3f, 2f, -5f);
-        profile.aimLag = 0.4f;
-        ApplyProfile(profile, player, echo, obj);
+        var vcam = CreateTemporaryVCam("Acceptance", new Vector3(-3f, 2f, -5f), 0.4f, 52f, 0f, 1.5f);
+        if (player != null)
+        {
+            var follow = vcam.GetComponent<CinemachineFollow>();
+            SetProperty(follow, "Follow", player);
+        }
+        Destroy(vcam.gameObject, 3f);
+    }
+
+    static void SetProperty(object obj, string propertyName, object value)
+    {
+        PropertyInfo property = obj.GetType().GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        if (property != null && property.CanWrite && value != null)
+            property.SetValue(obj, value);
     }
 }

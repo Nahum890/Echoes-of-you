@@ -12,95 +12,91 @@ public class CinemachineRuntimeSetup : MonoBehaviour
         if (cameraRef == null || player == null)
             return;
 
-        // ThirdPersonCamera es el sistema canónico de cámara en gameplay.
-        // Si está presente y activo, no inyectar CinemachineBrain: ambos sistemas
-        // escriben el camera transform en LateUpdate simultáneamente → jitter (BUG 1).
-        ThirdPersonCamera tpc = cameraRef.GetComponent<ThirdPersonCamera>();
-        if (tpc != null && tpc.enabled)
+        // Skip if SimpleFollowCamera exists on main camera (gameplay camera)
+        var simpleCam = cameraRef.GetComponent<ThirdPersonCamera>();
+        if (simpleCam != null)
             return;
 
-        Type cameraType = ResolveType("Unity.Cinemachine.CinemachineCamera");
+        // Skip if this is a gameplay level (Level_XX)
+        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        if (sceneName.StartsWith("Level_"))
+            return;
+
+        // Ensure CinemachineBrain on main camera
         Type brainType = ResolveType("Unity.Cinemachine.CinemachineBrain");
-        if (cameraType == null || brainType == null)
-            return;
-
+        if (brainType == null) return;
+        
         if (cameraRef.GetComponent(brainType) == null)
             cameraRef.gameObject.AddComponent(brainType);
 
-        if (FindExisting(cameraType) != null)
-            return; // Ya existe una cámara de Cinemachine en escena
+        // Check if PlayerVCam already exists
+        Type vcamType = ResolveType("Unity.Cinemachine.CinemachineCamera");
+        if (vcamType == null) return;
 
+        Component existingVCam = FindExistingVCam(vcamType);
+        if (existingVCam != null)
+        {
+            SetProperty(existingVCam, "Priority", 10);
+            return;
+        }
+
+        // Create PlayerVCam
         Transform followTarget = player.transform.Find("CameraFocus") ?? player.transform;
-        GameObject rig = new GameObject("CinematicPlayerVCam");
-        Component vcam = rig.AddComponent(cameraType);
-        SetProperty(vcam, "Follow", followTarget);
-        SetProperty(vcam, "LookAt", followTarget);
+        GameObject rig = new GameObject("PlayerVCam");
+        Component vcam = rig.AddComponent(vcamType);
+        SetProperty(vcam, "Priority", 10);
 
-        // Set Priority using PrioritySettings
-        Type prioritySettingsType = ResolveType("Unity.Cinemachine.PrioritySettings");
-        if (prioritySettingsType != null)
-        {
-            object prioritySettings = Activator.CreateInstance(prioritySettingsType);
-            FieldInfo valueField = prioritySettingsType.GetField("Value", BindingFlags.Public | BindingFlags.Instance);
-            if (valueField != null)
-                valueField.SetValue(prioritySettings, 20);
-            SetField(vcam, "Priority", prioritySettings);
-        }
-
-        // Set Lens
-        FieldInfo lensField = cameraType.GetField("Lens", BindingFlags.Instance | BindingFlags.Public);
-        if (lensField != null)
-        {
-            object lens = lensField.GetValue(vcam);
-            FieldInfo fovField = lensField.FieldType.GetField("FieldOfView", BindingFlags.Instance | BindingFlags.Public);
-            if (fovField != null)
-                fovField.SetValue(lens, 52f);
-            lensField.SetValue(vcam, lens);
-        }
-
-        // Add CinemachineFollow (transposer)
+        // Transposer/Follow component (CinemachineFollow in v3)
         Type followType = ResolveType("Unity.Cinemachine.CinemachineFollow");
         if (followType != null)
         {
             Component follow = rig.AddComponent(followType);
-            SetField(follow, "FollowOffset", new Vector3(-5.5f, 3.2f, -9.5f));
-
-            Type trackerSettingsType = ResolveType("Unity.Cinemachine.TargetTracking.TrackerSettings");
+            SetProperty(follow, "Follow", followTarget);
+            SetProperty(follow, "FollowOffset", new Vector3(0f, 1.4f, -4.1f));
+            SetProperty(follow, "Damping", new Vector3(25f, 25f, 25f));
+            
+            // BindingMode
             Type bindingModeType = ResolveType("Unity.Cinemachine.TargetTracking.BindingMode");
-            if (trackerSettingsType != null && bindingModeType != null)
+            if (bindingModeType != null)
             {
-                object trackerSettings = Activator.CreateInstance(trackerSettingsType);
-                FieldInfo bindingModeField = trackerSettingsType.GetField("BindingMode", BindingFlags.Public | BindingFlags.Instance);
-                FieldInfo posDampingField = trackerSettingsType.GetField("PositionDamping", BindingFlags.Public | BindingFlags.Instance);
-                
-                if (bindingModeField != null)
-                    bindingModeField.SetValue(trackerSettings, Enum.Parse(bindingModeType, "WorldSpace"));
-                if (posDampingField != null)
-                    posDampingField.SetValue(trackerSettings, new Vector3(0.55f, 0.65f, 0.5f));
-
-                SetField(follow, "TrackerSettings", trackerSettings);
+                object bindingMode = Enum.Parse(bindingModeType, "LockToTargetOnAssign");
+                SetProperty(follow, "BindingMode", bindingMode);
             }
         }
 
-        // Add CinemachineRotationComposer (composer)
-        Type rotationComposerType = ResolveType("Unity.Cinemachine.CinemachineRotationComposer");
-        if (rotationComposerType != null)
+        // Composer (CinemachineRotationComposer in v3)
+        Type composerType = ResolveType("Unity.Cinemachine.CinemachineRotationComposer");
+        if (composerType != null)
         {
-            Component composer = rig.AddComponent(rotationComposerType);
-            SetField(composer, "TargetOffset", new Vector3(0f, 0.35f, 0f));
-            SetField(composer, "Damping", new Vector2(0.45f, 0.55f));
-
-            Type screenComposerSettingsType = ResolveType("Unity.Cinemachine.ScreenComposerSettings");
-            if (screenComposerSettingsType != null)
-            {
-                object screenComposerSettings = Activator.CreateInstance(screenComposerSettingsType);
-                FieldInfo screenPosField = screenComposerSettingsType.GetField("ScreenPosition", BindingFlags.Public | BindingFlags.Instance);
-                if (screenPosField != null)
-                    screenPosField.SetValue(screenComposerSettings, new Vector2(0.48f, 0.42f));
-                
-                SetField(composer, "Composition", screenComposerSettings);
-            }
+            Component composer = rig.AddComponent(composerType);
+            SetProperty(composer, "TargetOffset", new Vector3(0f, 0f, 0f));
+            SetProperty(composer, "Damping", new Vector2(8f, 8f));
+            SetProperty(composer, "DeadZoneWidth", 0.1f);
+            SetProperty(composer, "DeadZoneHeight", 0.1f);
+            SetProperty(composer, "SoftZoneWidth", 0.8f);
+            SetProperty(composer, "SoftZoneHeight", 0.8f);
+            SetProperty(composer, "ScreenX", 0.5f);
+            SetProperty(composer, "ScreenY", 0.5f);
+            SetProperty(composer, "LookaheadTime", 0.1f);
+            SetProperty(composer, "LookaheadSmoothing", 8f);
         }
+
+        // Lens
+        PropertyInfo lensProperty = vcamType.GetProperty("Lens", BindingFlags.Instance | BindingFlags.Public);
+        if (lensProperty != null)
+        {
+            object lens = lensProperty.GetValue(vcam);
+            Type lensType = lensProperty.PropertyType;
+            
+            SetProperty(lens, "FieldOfView", 52f);
+            SetProperty(lens, "NearClipPlane", 0.3f);
+            SetProperty(lens, "FarClipPlane", 300f);
+            SetProperty(lens, "Dutch", 0f);
+            
+            lensProperty.SetValue(vcam, lens);
+        }
+
+        Debug.Log("[CinemachineRuntimeSetup] PlayerVCam created with PS1 settings (v3 API)");
     }
 
     static Type ResolveType(string typeName)
@@ -116,19 +112,17 @@ public class CinemachineRuntimeSetup : MonoBehaviour
             if (type != null)
                 return type;
         }
-
         return null;
     }
 
-    static UnityEngine.Object FindExisting(Type type)
+    static Component FindExistingVCam(Type vcamType)
     {
-        UnityEngine.Object[] objects = Resources.FindObjectsOfTypeAll(type);
+        UnityEngine.Object[] objects = Resources.FindObjectsOfTypeAll(vcamType);
         for (int i = 0; i < objects.Length; i++)
         {
             if (objects[i] != null && !objects[i].hideFlags.HasFlag(HideFlags.HideAndDontSave))
-                return objects[i];
+                return objects[i] as Component;
         }
-
         return null;
     }
 
@@ -139,10 +133,10 @@ public class CinemachineRuntimeSetup : MonoBehaviour
             property.SetValue(component, value);
     }
 
-    static void SetField(Component component, string fieldName, object value)
+    static void SetProperty(object obj, string propertyName, object value)
     {
-        FieldInfo field = component.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-        if (field != null)
-            field.SetValue(component, value);
+        PropertyInfo property = obj.GetType().GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        if (property != null && property.CanWrite && value != null)
+            property.SetValue(obj, value);
     }
 }

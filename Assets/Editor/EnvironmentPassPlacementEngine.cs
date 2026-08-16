@@ -410,7 +410,7 @@ namespace Echoes.EnvironmentPass
             }
             else if (levelNumber <= 11) // Chapter 4 (part 2) & Chapter 5: amber
             {
-                ColorUtility.TryParseHtmlString("#E8B262", out lightColor);
+                ColorUtility.TryParseHtmlString("#FFBF00", out lightColor);
                 intensity = 1.6f;
                 range = 14f;
             }

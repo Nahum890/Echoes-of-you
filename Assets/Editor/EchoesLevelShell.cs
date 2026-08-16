@@ -3,8 +3,8 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
-using Unity.Cinemachine;
 using System.Collections.Generic;
+using Echoes.UI;
 
 public static class EchoesLevelShell
 {
@@ -274,79 +274,12 @@ public static class EchoesLevelShell
         SetSerializedValue(gfc, "industrialDroneClip", loop2);
         SetSerializedValue(gfc, "ventilationHumClip", loop3);
         SetSerializedValue(gfc, "clockChimeClip", chime);
-        cameraObject.AddComponent<CinematicRecordingOverlay>();
-        CinematicCameraDynamics cameraDynamics = cameraObject.AddComponent<CinematicCameraDynamics>();
-        FixedPuzzleCameraController fixedCamera = cameraObject.AddComponent<FixedPuzzleCameraController>();
-        cameraObject.AddComponent<EchoCameraTargetGroupManager>();
-        cameraObject.AddComponent<EventCameraDirector>();
-
-        CinemachineBrain brain = cameraObject.AddComponent<CinemachineBrain>();
-        brain.DefaultBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.EaseInOut, 0.35f);
-
-        Transform playerFocus = player.Find("CameraFocus");
-
-        GameObject targetGroupObject = new GameObject("GameplayCameraTargets");
-        targetGroupObject.transform.SetParent(cameraRoot, false);
-        CinemachineTargetGroup targetGroup = targetGroupObject.AddComponent<CinemachineTargetGroup>();
-        targetGroup.Targets = new List<CinemachineTargetGroup.Target>
-        {
-            new CinemachineTargetGroup.Target
-            {
-                Object = playerFocus != null ? playerFocus : player,
-                Weight = 1.35f,
-                Radius = 0.6f
-            },
-            new CinemachineTargetGroup.Target
-            {
-                Object = goalFocus != null ? goalFocus : player,
-                Weight = goalFocus != null ? 0.52f : 0f,
-                Radius = 1.4f
-            }
-        };
-
-        GameObject eventFocus = new GameObject("CameraEventFocus");
-        eventFocus.transform.SetParent(targetGroupObject.transform, false);
-        eventFocus.transform.position = goalFocus != null ? goalFocus.position : player.position;
-
-        GameObject vcamObj = new GameObject("PlayerVCam");
-        vcamObj.transform.SetParent(cameraRoot, false);
-        CinemachineCamera vcam = vcamObj.AddComponent<CinemachineCamera>();
-        vcam.Priority = new PrioritySettings { Value = 20 };
-        vcam.Follow = player;
-        vcam.LookAt = targetGroup.transform;
-        var lens = vcam.Lens;
-        lens.FieldOfView = 52f;
-        vcam.Lens = lens;
-
-        CinemachineFollow transposer = vcamObj.AddComponent<CinemachineFollow>();
-        transposer.FollowOffset = offset;
-        transposer.TrackerSettings = new Unity.Cinemachine.TargetTracking.TrackerSettings
-        {
-            BindingMode = Unity.Cinemachine.TargetTracking.BindingMode.WorldSpace,
-            PositionDamping = new Vector3(0.55f, 0.65f, 0.5f)
-        };
-
-        CinemachineRotationComposer composer = vcamObj.AddComponent<CinemachineRotationComposer>();
-        composer.TargetOffset = new Vector3(0f, 0.35f, 0f);
-        composer.Damping = new Vector2(0.45f, 0.55f);
-        composer.Composition = new ScreenComposerSettings
-        {
-            ScreenPosition = new Vector2(0.48f, 0.42f)
-        };
-
-        fixedCamera.virtualCamera = vcam;
-        fixedCamera.targetGroup = targetGroup;
-        fixedCamera.followTarget = player;
-        fixedCamera.playerFocus = playerFocus != null ? playerFocus : player;
-        fixedCamera.goalFocus = goalFocus;
-        fixedCamera.eventFocus = eventFocus.transform;
-        fixedCamera.baseFov = 52f;
-        fixedCamera.playerWeight = 1.35f;
-        fixedCamera.goalWeight = 0.52f;
-
-        SetSerializedValue(cameraDynamics, "virtualCamera", vcam);
-        SetSerializedValue(cameraDynamics, "followTarget", player);
-        SetSerializedValue(cameraDynamics, "baseOffset", offset);
+        var simpleCam = cameraObject.AddComponent<SimpleFollowCamera>();
+        simpleCam.target = player;
+        simpleCam.targetOffset = new Vector3(0f, 1.8f, 0f);
+        simpleCam.distance = 5.5f;
+        simpleCam.pitch = 22f;
+        simpleCam.yaw = 0f;
     }
 
     public static void SpawnExperienceSystems(
@@ -418,6 +351,15 @@ public static class EchoesLevelShell
         SetSerializedValue(runtime, "objectiveText", blueprint.puzzleObjectiveText);
         SetSerializedValue(runtime, "readyPrompt", blueprint.puzzleActiveText);
         SetSerializedValue(runtime, "completionToast", blueprint.puzzleCompleteText);
+        SetSerializedValue(runtime, "introLine", blueprint.narrativeIntroDesc);
+        SetSerializedValue(runtime, "completionLine", blueprint.puzzleCompleteText);
+        SetSerializedValue(runtime, "echoMode", blueprint.echoMode);
+        SetSerializedValue(runtime, "recordFuture", blueprint.recordFuture);
+        SetSerializedValue(runtime, "degradationPerReplay", blueprint.degradationPerReplay);
+        SetSerializedValue(runtime, "lockEchoSlots", blueprint.lockEchoSlots);
+        SetSerializedValue(runtime, "lockedSlotIndices", blueprint.lockedSlotIndices);
+        SetSerializedValue(runtime, "imposedEchoData", blueprint.imposedEchoData);
+        SetSerializedValue(runtime, "ambientEchoData", blueprint.ambientEchoData);
     }
 
     private static void CreateCharacterVisual(Transform player)

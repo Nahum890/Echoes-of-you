@@ -1,7 +1,10 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using Echoes.UI;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 
-public static class UIBootstrap
+public static partial class UIBootstrap
 {
     const string PanelSettingsPath = "Assets/UI/EchoesPanelSettings.asset";
 
@@ -18,6 +21,7 @@ public static class UIBootstrap
 #else
                 _panelSettings = Resources.Load<PanelSettings>("EchoesPanelSettings");
 #endif
+                EnsureInputSystemUI();
             }
             return _panelSettings;
         }

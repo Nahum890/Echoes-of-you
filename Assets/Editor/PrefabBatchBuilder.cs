@@ -167,25 +167,25 @@ public static class PrefabBatchBuilder
     private static void BuildNarrativePropPrefabs()
     {
         // model-name (or null for primitive), primitive type, primitive scale, mat token, hint hex, hint intensity, prefab scale
-        BuildProp("Prop_Coat",           "coatRackStanding", PrimitiveType.Cube,     Vector3.one,                    "MemoryMat", "E8B262", 1.5f, 1.0f);
-        BuildProp("Prop_Notebook",       "books",            PrimitiveType.Cube,     Vector3.one,                    "MemoryMat", "E8B262", 1.0f, 0.5f);
-        BuildProp("Prop_PhotoFrame",     null,               PrimitiveType.Cube,     new Vector3(0.4f, 0.3f, 0.05f), "MemoryMat", "E8B262", 1.2f, 0.8f);
+        BuildProp("Prop_Coat",           "coatRackStanding", PrimitiveType.Cube,     Vector3.one,                    "MemoryMat", "FFBF00", 1.5f, 1.0f);
+        BuildProp("Prop_Notebook",       "books",            PrimitiveType.Cube,     Vector3.one,                    "MemoryMat", "FFBF00", 1.0f, 0.5f);
+        BuildProp("Prop_PhotoFrame",     null,               PrimitiveType.Cube,     new Vector3(0.4f, 0.3f, 0.05f), "MemoryMat", "FFBF00", 1.2f, 0.8f);
         BuildProp("Prop_StoppedClock",   null,               PrimitiveType.Cylinder, new Vector3(0.2f, 0.03f, 0.2f), "ArchMat",   "C9D4B0", 1.5f, 0.8f);
-        BuildProp("Prop_TeacherNotebook","books",             PrimitiveType.Cube,     Vector3.one,                    "MemoryMat", "E8B262", 1.0f, 0.5f);
+        BuildProp("Prop_TeacherNotebook","books",             PrimitiveType.Cube,     Vector3.one,                    "MemoryMat", "FFBF00", 1.0f, 0.5f);
         BuildProp("Prop_ChalkDrawing",   null,               PrimitiveType.Cube,     new Vector3(1.5f, 1.0f, 0.08f), "MemoryMat", "4A3438", 1.5f, 1.0f);
-        BuildProp("Prop_Backpack",       "cardboardBoxClosed",PrimitiveType.Cube,    Vector3.one,                    "MemoryMat", "E8B262", 1.5f, 0.7f);
+        BuildProp("Prop_Backpack",       "cardboardBoxClosed",PrimitiveType.Cube,    Vector3.one,                    "MemoryMat", "FFBF00", 1.5f, 0.7f);
         BuildProp("Prop_DriedFlowers",   "plantSmall1",      PrimitiveType.Sphere,   Vector3.one,                    "MemoryMat", "4A3438", 1.0f, 0.6f);
-        BuildProp("Prop_BlankBook",      "books",            PrimitiveType.Cube,     Vector3.one,                    "MemoryMat", "E8B262", 0.8f, 0.4f);
-        BuildProp("Prop_LibraryStamp",   null,               PrimitiveType.Cube,     new Vector3(0.08f, 0.12f, 0.08f),"ArchMat",  "E8B262", 0.8f, 0.3f);
+        BuildProp("Prop_BlankBook",      "books",            PrimitiveType.Cube,     Vector3.one,                    "MemoryMat", "FFBF00", 0.8f, 0.4f);
+        BuildProp("Prop_LibraryStamp",   null,               PrimitiveType.Cube,     new Vector3(0.08f, 0.12f, 0.08f),"ArchMat",  "FFBF00", 0.8f, 0.3f);
         BuildProp("Prop_JanitorCart",    null,               PrimitiveType.Cube,     new Vector3(0.6f, 0.8f, 0.4f),  "ArchMat",   "B23A3A", 1.0f, 1.0f);
         BuildPropGraffiti();  // special: Quad
         BuildProp("Prop_SoccerBall",     null,               PrimitiveType.Sphere,   new Vector3(0.22f, 0.22f, 0.22f),"ArchMat",  "C9D4B0", 0.8f, 0.3f);
         BuildPropOverturnedDesk();  // special: rotated desk
-        BuildProp("Prop_CenterBackpack", "cardboardBoxClosed",PrimitiveType.Cube,    Vector3.one,                    "MemoryMat", "E8B262", 1.5f, 0.7f);
+        BuildProp("Prop_CenterBackpack", "cardboardBoxClosed",PrimitiveType.Cube,    Vector3.one,                    "MemoryMat", "FFBF00", 1.5f, 0.7f);
         BuildPropCoffeeCups();  // special: 2 cups
-        BuildProp("Prop_AttendanceList", null,               PrimitiveType.Cube,     new Vector3(0.2f, 0.3f, 0.02f), "MemoryMat", "E8B262", 1.2f, 0.5f);
+        BuildProp("Prop_AttendanceList", null,               PrimitiveType.Cube,     new Vector3(0.2f, 0.3f, 0.02f), "MemoryMat", "FFBF00", 1.2f, 0.5f);
         BuildProp("Prop_Stopwatch",      null,               PrimitiveType.Cylinder, new Vector3(0.06f, 0.01f, 0.06f),"ArchMat",  "B23A3A", 1.5f, 0.3f);
-        BuildProp("Prop_RecordsBoard",   null,               PrimitiveType.Cube,     new Vector3(1.2f, 0.9f, 0.05f), "MemoryMat", "E8B262", 1.0f, 1.2f);
+        BuildProp("Prop_RecordsBoard",   null,               PrimitiveType.Cube,     new Vector3(1.2f, 0.9f, 0.05f), "MemoryMat", "FFBF00", 1.0f, 1.2f);
 
         Debug.Log("[PrefabBatchBuilder]   Narrative Props: 19 prefabs done.");
     }
@@ -228,7 +228,7 @@ public static class PrefabBatchBuilder
         var col = go.AddComponent<BoxCollider>();
         col.size = new Vector3(1f, 1f, 0.01f);
 
-        SetupNarrativeProp(go, "Prop_ChalkGraffiti", "E8B262", 1.2f);
+        SetupNarrativeProp(go, "Prop_ChalkGraffiti", "FFBF00", 1.2f);
         SavePrefab(go, NarrativeFolder, "Prop_ChalkGraffiti");
     }
 
@@ -272,7 +272,7 @@ public static class PrefabBatchBuilder
         col.center = new Vector3(0f, 0.03f, 0f);
         col.size = new Vector3(0.2f, 0.12f, 0.1f);
 
-        SetupNarrativeProp(root, "Prop_CoffeeCups", "E8B262", 1.0f);
+        SetupNarrativeProp(root, "Prop_CoffeeCups", "FFBF00", 1.0f);
         SavePrefab(root, NarrativeFolder, "Prop_CoffeeCups");
     }
 

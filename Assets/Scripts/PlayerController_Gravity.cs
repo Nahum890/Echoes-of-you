@@ -90,14 +90,21 @@ public partial class PlayerController
     GroundProbe ProbeGround(Vector3 probeUp)
     {
         Vector3 normalizedUp = probeUp.sqrMagnitude > 0.001f ? probeUp.normalized : transform.up;
+        CharacterController cc = GetComponent<CharacterController>();
+        // Origen en la base del CharacterController (pies). Si groundCheck está bien
+        // reposicionado por RepositionGroundCheck(), usar su posición; si no, caer
+        // a transform.position - up*(height/2 - radius) para no iniciar el cast
+        // dentro de la cápsula y auto-detectar al propio jugador (causa de hundimiento).
         Vector3 origin = groundCheck != null
-            ? groundCheck.position + normalizedUp * groundProbeRadius
-            : transform.position + normalizedUp * groundProbeRadius;
+            ? groundCheck.position
+            : transform.position - transform.up * (cc != null ? cc.height * 0.5f - cc.radius : 1.1f);
 
-        // Usar DefaultRaycastLayers (~0 excluyendo la capa Ignore Raycast)
-        // para detectar el suelo sin importar en qué capa esté configurado (e.g. Default, Ground, etc.)
-        // ya que el CharacterController.isGrounded (que quitamos por el softblock) detectaba cualquier capa.
-        int mask = Physics.DefaultRaycastLayers;
+        // Use the serialized groundCheckMask (Layer 6 — Ground) instead of
+        // Physics.DefaultRaycastLayers. DefaultRaycastLayers can auto-hit the
+        // player's own colliders when groundCheck is inside the CC capsule,
+        // producing false "grounded" readings that cause the player to sink.
+        // Fallback to DefaultRaycastLayers only if mask is empty (misconfigured).
+        int mask = groundCheckMask != 0 ? groundCheckMask : Physics.DefaultRaycastLayers;
 
         RaycastHit[] hits = Physics.SphereCastAll(
             origin,
@@ -165,8 +172,18 @@ public partial class PlayerController
             groundCheck = gc.transform;
         }
 
-        // Spec: Ground check: SphereCast de radio 0.25m en y = -0.02m.
-        groundCheck.localPosition = new Vector3(0f, -0.02f, 0f);
+        RepositionGroundCheck();
+    }
+
+    public void RepositionGroundCheck()
+    {
+        if (groundCheck == null) return;
+        var cc = _controller;
+        if (cc == null) return;
+
+        // GroundCheck en la BASE del CharacterController (pies)
+        float baseY = cc.center.y - (cc.height * 0.5f) + 0.02f; // -1.08f para h=2.2
+        groundCheck.localPosition = new Vector3(0f, baseY, 0f);
         groundCheck.localRotation = Quaternion.identity;
     }
 

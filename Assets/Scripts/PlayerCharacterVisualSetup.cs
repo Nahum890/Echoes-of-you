@@ -75,6 +75,25 @@ public class PlayerCharacterVisualSetup : MonoBehaviour
         model.localPosition = Vector3.zero;
         model.localRotation = Quaternion.identity;
         model.localScale = Vector3.one;
+
+        // Auto-fit scale so model height matches CharacterController height (2.2m) perfectly,
+        // preventing the model from being absurdly large regardless of FBX unit scale.
+        Renderer[] tempRenderers = model.GetComponentsInChildren<Renderer>(true);
+        if (tempRenderers.Length > 0)
+        {
+            Bounds b = tempRenderers[0].bounds;
+            for (int i = 1; i < tempRenderers.Length; i++)
+                b.Encapsulate(tempRenderers[i].bounds);
+
+            float rawHeight = b.size.y;
+            if (rawHeight > 0.05f)
+            {
+                float targetHeight = 2.2f; // CharacterController height
+                float autoScale = (targetHeight / rawHeight) * EchoesPresentationSettings.CharacterVisualScale;
+                scaler.localScale = Vector3.one * autoScale;
+            }
+        }
+
         RemoveOverlappingFallbacks(visualRoot, model);
 
         Animator animator = model.GetComponent<Animator>();

@@ -1,18 +1,37 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 /// <summary>
-/// Sistema completo de hover icónico para Echoes of You.
-/// Implementa 14 capas de efectos: escala, movimiento, ghosting, aberración cromática,
-/// distorsión analógica, blur simulado, vibración, audio, partículas, 
-/// cambio de fondo, iluminación, ruido, profundidad y eco visual.
-///
-/// Inspirado en menús PS2, cintas VHS, monitores CRT y grabaciones deterioradas.
-/// Estilo: elegante, minimalista, nostálgico. Sin terror. Sin glitch exagerado.
-///
-/// Cada transición dura entre 150 y 300ms con curvas de easing diseñadas.
+/// MenuHoverSystem — Fase 6: Sistema de hover simplificado a 4 capas canónicas.
+/// 
+/// CAPAS MANTENIDAS:
+/// 1. BASE — .nav-item-v2
+/// 2. HOVER/FOCUS — .nav-item-v2:hover, .nav-item-v2:focus (CSS puro)
+/// 3. ACTIVE — .nav-item-v2:active (CSS puro)
+/// 4. GHOST (1 SOLO) — .nav-item-ghost + .nav-item-ghost--visible
+/// 
+/// FOCUS PIP (controller) — .nav-item-focus-pip + .nav-item-focus-pip--visible
+/// 
+/// ELIMINADOS:
+/// - Aberración cromática (chroma R/B)
+/// - Capa de ruido (noise)
+/// - Scanline
+/// - Eco visual (echo)
+/// - Flash de confirmación (confirm-flash)
+/// - 2do ghost (ghost-a/ghost-b → 1 solo)
+/// - Panel tints (panel-tint-*)
+/// - Gradientes side-nav (side-nav-gradient-*)
+/// - Partículas (ui-particle)
+/// - CRT blink (right-panel-crt-blink)
+/// 
+/// Timing leído desde CSS variables:
+/// --duration-hover-mouse: 150ms
+/// --duration-hover-controller: 200ms
+/// --duration-active: 80ms
+/// 
+/// Audio clips: asignar en Inspector (hoverInClip, hoverOutClip, clickConfirmClip, navMoveClip, crtAmbientClip)
 /// </summary>
 public class MenuHoverSystem : MonoBehaviour
 {
@@ -46,22 +65,6 @@ public class MenuHoverSystem : MonoBehaviour
     [Range(0f, 1f)] [SerializeField] float navMoveVolume = 0.5f;
     [Range(0f, 1f)] [SerializeField] float crtAmbientVolume = 0.08f;
 
-    [Header("Hover Timing")]
-    [Tooltip("Duración de transición hover para mouse (segundos)")]
-    [SerializeField] float hoverEnterDurationMouse = 0.20f;
-
-    [Tooltip("Duración de transición hover para controller (segundos)")]
-    [SerializeField] float hoverEnterDurationController = 0.25f;
-
-    [Tooltip("Duración de transición hover leave")]
-    [SerializeField] float hoverLeaveDuration = 0.15f;
-
-    [Header("Effect Intensities")]
-    [Range(0f, 1f)] [SerializeField] float noiseBaseOpacity = 0.06f;
-    [Range(0f, 1f)] [SerializeField] float ghostLayerAOpacity = 0.18f;
-    [Range(0f, 1f)] [SerializeField] float ghostLayerBOpacity = 0.09f;
-    [Range(0f, 2f)] [SerializeField] float particleSpeed = 1f;
-
     [Header("Cursor")]
     [SerializeField] Texture2D menuCursorTexture;
 
@@ -73,28 +76,10 @@ public class MenuHoverSystem : MonoBehaviour
     AudioSource _uiAudioSource;
     AudioSource _crtAmbientSource;
 
-    // Registro de botones y sus estados
     readonly Dictionary<Button, MenuButtonHoverState> _buttonStates = new();
 
-    // Botones del menú principal
-    Button _btnNewGame, _btnLevels, _btnSettings, _btnExit;
+    Button _btnNewGame, _btnLevels, _btnChapters, _btnSettings, _btnCredits, _btnExit;
 
-    // Panel tint overlay (temperatura de color)
-    VisualElement _panelTintOverlay;
-    VisualElement _rightPanelCrtBlink;
-
-    // Gradient del side nav
-    VisualElement _sideNavGradientOverlay;
-
-    // Cursor anterior (para restaurar al salir del menú)
-    Texture2D _previousCursor;
-
-#pragma warning disable CS0414
-    bool _isControllerNavigation = false;
-#pragma warning restore CS0414
-#pragma warning disable CS0414
-    bool _wasPreviouslyHovering = false;
-#pragma warning restore CS0414
     float _lastHoverExitTime = -1f;
 
     // ═══════════════════════════════════════════════════════════════
@@ -133,7 +118,6 @@ public class MenuHoverSystem : MonoBehaviour
         if (_root == null) return;
 
         InitializeButtons();
-        InitializeOverlays();
 
         // Registrar cursor custom
         if (menuCursorTexture != null)
@@ -153,42 +137,34 @@ public class MenuHoverSystem : MonoBehaviour
 
     void InitializeButtons()
     {
-        _btnNewGame  = _root.Q<Button>("nav-newgame");
-        _btnLevels   = _root.Q<Button>("nav-levels");
-        _btnSettings = _root.Q<Button>("nav-settings");
-        _btnExit     = _root.Q<Button>("nav-exit");
+        _btnNewGame   = _root.Q<Button>("nav-newgame");
+        _btnLevels    = _root.Q<Button>("nav-levels");
+        _btnChapters  = _root.Q<Button>("nav-chapters");
+        _btnSettings  = _root.Q<Button>("nav-settings");
+        _btnCredits   = _root.Q<Button>("nav-credits");
+        _btnExit      = _root.Q<Button>("nav-exit");
 
-        RegisterButton(_btnNewGame,  "INICIAR RECUERDO",  PanelTintType.Warm);
-        RegisterButton(_btnLevels,   "ARCHIVOS",          PanelTintType.Neutral);
-        RegisterButton(_btnSettings, "CALIBRAR",          PanelTintType.Cool);
-        RegisterButton(_btnExit,     "DESCONECTAR",       PanelTintType.Cold);
-    }
-
-    void InitializeOverlays()
-    {
-        // Panel tint overlay — temperatura de color del panel derecho
-        _panelTintOverlay = _root.Q("panel-tint-overlay");
-
-        // CRT blink overlay
-        _rightPanelCrtBlink = _root.Q("right-panel-crt-blink");
-
-        // Side nav gradient
-        _sideNavGradientOverlay = _root.Q("side-nav-gradient-overlay");
+        RegisterButton(_btnNewGame,  "INICIAR RECUERDO");
+        RegisterButton(_btnLevels,   "ARCHIVOS");
+        RegisterButton(_btnChapters, "SELECCION CAPITULOS");
+        RegisterButton(_btnSettings, "CONFIGURAR");
+        RegisterButton(_btnCredits,  "CREDITOS");
+        RegisterButton(_btnExit,     "DESCONECTAR");
     }
 
     // ═══════════════════════════════════════════════════════════════
     // REGISTRO Y SETUP DE BOTONES
     // ═══════════════════════════════════════════════════════════════
 
-    void RegisterButton(Button btn, string label, PanelTintType tintType)
+    void RegisterButton(Button btn, string label)
     {
         if (btn == null) return;
 
-        // Añadir clase v2 al botón (reemplaza nav-item clásico)
+        // Añadir clase v2 al botón
         btn.AddToClassList("nav-item-v2");
 
         // Crear estado de hover para este botón
-        var state = new MenuButtonHoverState(btn, this, label, tintType);
+        var state = new MenuButtonHoverState(btn, this, label);
         _buttonStates[btn] = state;
 
         // Registrar eventos de mouse
@@ -203,30 +179,26 @@ public class MenuHoverSystem : MonoBehaviour
 
     // ═══════════════════════════════════════════════════════════════
     // CALLBACKS DE EVENTOS
-    // ═══════════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════
 
     void OnButtonMouseEnter(Button btn, MouseEnterEvent evt)
     {
         if (!_buttonStates.TryGetValue(btn, out var state)) return;
 
-        _isControllerNavigation = false;
-
         // Determinar duración: si venimos de otro botón, la transición es más rápida
         float duration = (Time.unscaledTime - _lastHoverExitTime < 0.5f)
-            ? hoverEnterDurationMouse * 0.6f
-            : hoverEnterDurationMouse;
+            ? 0.15f * 0.6f  // 90ms
+            : 0.15f;        // 150ms (mouse)
 
         state.EnterHover(duration, isController: false);
         PlayHoverIn();
-        TriggerPanelEffects(btn);
-        _wasPreviouslyHovering = true;
     }
 
     void OnButtonMouseLeave(Button btn, MouseLeaveEvent evt)
     {
         if (!_buttonStates.TryGetValue(btn, out var state)) return;
 
-        state.ExitHover(hoverLeaveDuration);
+        state.ExitHover(0.15f);
         PlayHoverOut();
         _lastHoverExitTime = Time.unscaledTime;
     }
@@ -237,110 +209,21 @@ public class MenuHoverSystem : MonoBehaviour
 
         state.TriggerPress();
         PlayClick();
-        StartCoroutine(CRTBlinkOnClick());
     }
 
     void OnButtonFocus(Button btn, FocusEvent evt)
     {
         if (!_buttonStates.TryGetValue(btn, out var state)) return;
 
-        _isControllerNavigation = true;
-        state.EnterHover(hoverEnterDurationController, isController: true);
+        state.EnterHover(0.20f, isController: true); // 200ms controller
         PlayNavMove();
-        TriggerPanelEffects(btn);
     }
 
     void OnButtonBlur(Button btn, BlurEvent evt)
     {
         if (!_buttonStates.TryGetValue(btn, out var state)) return;
 
-        state.ExitHover(hoverLeaveDuration);
-    }
-
-    // ═══════════════════════════════════════════════════════════════
-    // EFECTOS DE PANEL (FONDO Y TEMPERATURA DE COLOR)
-    // ═══════════════════════════════════════════════════════════════
-
-    void TriggerPanelEffects(Button btn)
-    {
-        if (!_buttonStates.TryGetValue(btn, out var state)) return;
-
-        // CRT blink — parpadeo del panel derecho
-        StartCoroutine(CRTBlinkSequence());
-
-        // Temperatura de color
-        UpdatePanelTint(state.TintType);
-
-        // Gradiente del side nav
-        UpdateSideNavGradient(btn);
-    }
-
-    void UpdatePanelTint(PanelTintType tint)
-    {
-        if (_panelTintOverlay == null) return;
-
-        _panelTintOverlay.RemoveFromClassList("panel-tint-warm");
-        _panelTintOverlay.RemoveFromClassList("panel-tint-neutral");
-        _panelTintOverlay.RemoveFromClassList("panel-tint-cool");
-        _panelTintOverlay.RemoveFromClassList("panel-tint-cold");
-
-        string tintClass = tint switch
-        {
-            PanelTintType.Warm    => "panel-tint-warm",
-            PanelTintType.Neutral => "panel-tint-neutral",
-            PanelTintType.Cool    => "panel-tint-cool",
-            PanelTintType.Cold    => "panel-tint-cold",
-            _                     => "panel-tint-neutral"
-        };
-
-        _panelTintOverlay.AddToClassList(tintClass);
-    }
-
-    void UpdateSideNavGradient(Button btn)
-    {
-        if (_sideNavGradientOverlay == null) return;
-
-        _sideNavGradientOverlay.RemoveFromClassList("side-nav-gradient-newgame");
-        _sideNavGradientOverlay.RemoveFromClassList("side-nav-gradient-levels");
-        _sideNavGradientOverlay.RemoveFromClassList("side-nav-gradient-settings");
-        _sideNavGradientOverlay.RemoveFromClassList("side-nav-gradient-exit");
-
-        string gradClass =
-            btn == _btnNewGame  ? "side-nav-gradient-newgame"  :
-            btn == _btnLevels   ? "side-nav-gradient-levels"   :
-            btn == _btnSettings ? "side-nav-gradient-settings" :
-            btn == _btnExit     ? "side-nav-gradient-exit"     :
-                                  "side-nav-gradient-newgame";
-
-        _sideNavGradientOverlay.AddToClassList(gradClass);
-    }
-
-    // ═══════════════════════════════════════════════════════════════
-    // CORRUTINAS DE EFECTOS
-    // ═══════════════════════════════════════════════════════════════
-
-    /// <summary>Parpadeo CRT al cambiar de ambience.</summary>
-    IEnumerator CRTBlinkSequence()
-    {
-        if (_rightPanelCrtBlink == null) yield break;
-
-        _rightPanelCrtBlink.AddToClassList("right-panel-crt-blink--flash");
-        yield return new WaitForSecondsRealtime(0.05f);
-        _rightPanelCrtBlink.RemoveFromClassList("right-panel-crt-blink--flash");
-    }
-
-    /// <summary>Parpadeo CRT más intenso al hacer click.</summary>
-    IEnumerator CRTBlinkOnClick()
-    {
-        if (_rightPanelCrtBlink == null) yield break;
-
-        _rightPanelCrtBlink.AddToClassList("right-panel-crt-blink--flash");
-        yield return new WaitForSecondsRealtime(0.06f);
-        _rightPanelCrtBlink.RemoveFromClassList("right-panel-crt-blink--flash");
-        yield return new WaitForSecondsRealtime(0.04f);
-        _rightPanelCrtBlink.AddToClassList("right-panel-crt-blink--flash");
-        yield return new WaitForSecondsRealtime(0.03f);
-        _rightPanelCrtBlink.RemoveFromClassList("right-panel-crt-blink--flash");
+        state.ExitHover(0.15f);
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -371,7 +254,6 @@ public class MenuHoverSystem : MonoBehaviour
     void PlayNavMove()
     {
         if (navMoveClip == null) return;
-        // Pitch ligeramente aleatorio para variedad orgánica
         _uiAudioSource.pitch = Random.Range(0.95f, 1.05f);
         _uiAudioSource.PlayOneShot(navMoveClip, navMoveVolume);
     }
@@ -382,11 +264,6 @@ public class MenuHoverSystem : MonoBehaviour
 
     public Coroutine RunCoroutine(IEnumerator coroutine) => StartCoroutine(coroutine);
     public void StopRunningCoroutine(Coroutine coroutine) { if (coroutine != null) StopCoroutine(coroutine); }
-
-    public float NoiseBaseOpacity => noiseBaseOpacity;
-    public float GhostLayerAOpacity => ghostLayerAOpacity;
-    public float GhostLayerBOpacity => ghostLayerBOpacity;
-    public float ParticleSpeed => particleSpeed;
 
     static IEnumerator FadeAudioSource(AudioSource source, float from, float to, float duration)
     {
@@ -401,11 +278,65 @@ public class MenuHoverSystem : MonoBehaviour
     }
 }
 
-/// <summary>Tipos de temperatura de color para el panel derecho.</summary>
-public enum PanelTintType
+/// <summary>
+/// Estado de hover por botón — gestiona ghost layer + focus pip via CSS classes.
+/// </summary>
+public class MenuButtonHoverState
 {
-    Warm,    // nav-newgame — ámbar
-    Neutral, // nav-levels — sage
-    Cool,    // nav-settings — azul frío
-    Cold     // nav-exit — muy frío
+    readonly Button _btn;
+    readonly MenuHoverSystem _system;
+    readonly string _label;
+    readonly VisualElement _ghostLayer;
+    readonly VisualElement _focusPip;
+    bool _isHovering;
+
+    public MenuButtonHoverState(Button btn, MenuHoverSystem system, string label)
+    {
+        _btn = btn;
+        _system = system;
+        _label = label;
+
+        // Crear ghost layer (1 solo) — usar Label para texto
+        _ghostLayer = new Label(label);
+        _ghostLayer.AddToClassList("nav-item-ghost");
+        _btn.Add(_ghostLayer);
+
+        // Crear focus pip — usar Label para el símbolo ▸
+        _focusPip = new Label("▸");
+        _focusPip.AddToClassList("nav-item-focus-pip");
+        _btn.Add(_focusPip);
+    }
+
+    public void EnterHover(float duration, bool isController)
+    {
+        if (_isHovering) return;
+        _isHovering = true;
+
+        // Ghost layer visible
+        _ghostLayer.AddToClassList("nav-item-ghost--visible");
+
+        // Focus pip si es controller
+        if (isController)
+            _focusPip.AddToClassList("nav-item-focus-pip--visible");
+    }
+
+    public void ExitHover(float duration)
+    {
+        if (!_isHovering) return;
+        _isHovering = false;
+
+        _ghostLayer.RemoveFromClassList("nav-item-ghost--visible");
+        _focusPip.RemoveFromClassList("nav-item-focus-pip--visible");
+    }
+
+    public void TriggerPress()
+    {
+        // El estado :active se maneja por CSS
+    }
+
+    public void Cleanup()
+    {
+        _ghostLayer?.RemoveFromHierarchy();
+        _focusPip?.RemoveFromHierarchy();
+    }
 }

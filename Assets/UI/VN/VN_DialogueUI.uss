@@ -1,0 +1,139 @@
+/* ============================================================
+   VN_DialogueUI — Visual Novel dialogue panel (Stich aesthetic)
+   Source: Stich/DESIGN.md
+   - Bottom panel with high contrast
+   - Garamond for character name (display)
+   - Courier for dialogue text (interface)
+   - Amber accent for name, White for text
+   ============================================================ */
+
+@import "../EchoesDesignTokens.uss";
+
+.vn-dialogue-root {
+    background-color: transparent;
+    overflow: hidden;
+}
+
+.vn-hidden {
+    display: none;
+}
+
+/* ===== CHARACTER SPRITES ===== */
+.vn-sprite {
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    opacity: 1;
+    transition-property: opacity, translate;
+    transition-duration: var(--duration-slow);
+    transition-timing-function: linear;
+    pointer-events: none;
+}
+
+.vn-sprite--left {
+    left: 80px;
+    bottom: 240px;
+    width: 520px;
+    height: 760px;
+}
+
+.vn-sprite--center {
+    left: 700px;
+    bottom: 240px;
+    width: 520px;
+    height: 760px;
+}
+
+.vn-sprite--right {
+    right: 80px;
+    bottom: 240px;
+    width: 520px;
+    height: 760px;
+}
+
+/* ===== DIALOGUE PANEL (High Contrast Stich) ===== */
+.vn-dialogue-panel {
+    position: absolute;
+    left: 64px;
+    right: 64px;
+    bottom: 48px;
+    min-height: 220px;
+    background-color: rgba(12, 14, 18, 0.96);
+    border-width: 2px;
+    border-color: var(--color-stich-amber);
+    border-radius: 8px; /* subtle rounded corners */
+    padding: var(--space-lg) var(--space-xl) var(--space-md) var(--space-xl);
+    flex-direction: column;
+}
+
+/* ===== NAME BAR ===== */
+.vn-name-bar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-sm);
+}
+
+.vn-character-name {
+    -unity-font: var(--font-display-bold);
+    font-size: 28px;
+    color: var(--color-stich-amber);
+    letter-spacing: 2px;
+    -unity-text-transform: uppercase;
+    opacity: 1;
+}
+
+.vn-line-counter {
+    -unity-font: var(--font-interface);
+    font-size: var(--size-label-caps);
+    color: var(--color-stich-amber);
+    letter-spacing: 1px;
+    opacity: 1;
+}
+
+/* ===== SEPARATOR ===== */
+.vn-separator {
+    height: 2px;
+    background-color: var(--color-stich-amber);
+    margin-bottom: var(--space-md);
+    opacity: 0.7;
+}
+
+/* ===== DIALOGUE TEXT ===== */
+.vn-dialogue-text {
+    -unity-font: var(--font-interface);
+    font-size: 24px;
+    color: #FFFFFF;
+    line-height: 36px;
+    white-space: normal;
+    -unity-text-align: middle-left;
+    flex-grow: 1;
+    padding-right: var(--space-lg);
+    opacity: 1;
+}
+
+/* Typewriter cursor */
+.vn-typewriter-cursor {
+    color: var(--color-stich-amber);
+    opacity: 1;
+}
+
+/* ===== ADVANCE PROMPT ===== */
+.vn-advance-row {
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: var(--space-sm);
+}
+
+.vn-advance-prompt {
+    -unity-font: var(--font-interface);
+    font-size: 16px;
+    color: var(--color-stich-amber);
+    letter-spacing: 2px;
+    opacity: 1;
+}
+
+.vn-dialogue-root:not(.vn-hidden) .vn-dialogue-panel {
+    border-color: var(--color-stich-amber);
+}

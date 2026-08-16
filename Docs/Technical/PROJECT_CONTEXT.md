@@ -143,7 +143,7 @@ Orden real de inicialización:
 | `LevelEnvironmentBootstrap.cs` | Bootstrap runtime de escena (escala, iluminación, inyección de cámara/HUD) |
 | `GameStateController.cs` | Máquina de estados de nivel + notificaciones a GameFeel/cámara |
 | `LevelRuntimeController.cs` | Objetivo, **Q = soft reset** (`IResettableLevelObject`), **T (hold 0.5 s) = hard reset**, telemetría |
-| `GameProgress.cs` | Progresión en **PlayerPrefs** (no JSON). ⚠️ Ver §4: solo registra 10 niveles |
+| `GameProgress.cs` | Progresión en **PlayerPrefs** (no JSON). Lista los 15 niveles (`LevelScenes[]` + `LevelDisplayNames[]`). |
 | `SceneTransitionManager.cs` | Fade UI Toolkit + carga de escenas |
 | `GameFeelController.cs` | Singleton de juice: partículas, shake, hitstop, post-proceso por evento |
 | `EchoesAudioManager.cs` | Singleton de audio; AudioMixer con 4 buses: Master/Music/SFX/Echo; volúmenes en PlayerPrefs |
@@ -167,14 +167,17 @@ contenido no construido): `PuzzleWire`, `GravityZone`,
 
 **Huérfanos totales** (0 referencias de código y 0 instancias — no asumir
 que funcionan): `GhostBridge`, `MemoryPlatform`, `EchoDisintegrationZone`,
-`Echo/EchoModeController` (nadie llama a `Configure()` — **rompe la cadena
-de modos de eco avanzados** Ambient/Imposed/Inversion/Mirror, que están
-implementados en `EchoPlayback` pero sin ruta de datos que los active),
-`EchoTemporalFragmentBurst`, `Paradox/ErosionSystem`,
-`Paradox/LivingArchitectureSystem`, `HubSceneController` + `HubPortal`
-(no existe escena de hub), `Lighting/LightingApplier` (la luz real la
-maneja `LevelLightingSettings`), `UIBootstrap`, `ParkourPlatformMarker`,
-`EchoPathHint` (`LevelBlueprint.pathHints` nunca se consume en runtime).
+`Echo/EchoModeController` (configurable desde `LevelRuntimeController.Start`
+vía `LevelBlueprint` pero `EchoRecorder.SetMode` sigue ignorando los
+parámetros `mode` y `degradation`), `EchoTemporalFragmentBurst`,
+`Paradox/ErosionSystem`, `Paradox/LivingArchitectureSystem`,
+`HubSceneController` + `HubPortal` (no existe escena de hub — el código
+está completo y listo para cuando se cree, no eliminar),
+`Lighting/LightingApplier` (la luz real la maneja
+`LevelLightingSettings`), `UIBootstrap`, `ParkourPlatformMarker`,
+`EchoPathHint` (`LevelBlueprint.pathHints` se consume vía
+`EchoesNewProductionBuilder.SpawnPathHintLights` + instancia
+`EchoPathHint` en el builder, no en runtime).
 
 Nota: `EchoRecorder.SetMode()` ignora los parámetros `mode` y
 `degradation` — solo aplica `recordFuture` y el bloqueo de slots.
@@ -331,11 +334,10 @@ Organización por capítulos emocionales:
 | 14 | Aceptación | VI — Aceptación | Fragmentos flotantes en void-black |
 | 15 | Integración | VI — Aceptación | Pasillo del Nivel 1, ahora con salida real |
 
-**⚠️ Desajuste de conteo CONFIRMADO:** `GameProgress.LevelScenes[]` solo
-lista `Level_01..Level_10` (`TotalLevels == 10`). **Los niveles 11–15
-existen en disco pero están fuera de la progresión, el desbloqueo y la
-selección de nivel del menú.** Resolver antes de tocar cualquier archivo
-de progreso.
+**⚠️ Desajuste de conteo RESUELTO:** `GameProgress.LevelScenes[]` ahora
+lista `Level_01..Level_15` (`TotalLevels == 15`). Los niveles 11–15
+están dentro de la progresión, el desbloqueo y la selección de nivel del
+menú. Verificado en `GameProgress.cs:15-32`.
 
 ---
 

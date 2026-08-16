@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Echoes.UI;
 
 [RequireComponent(typeof(CharacterController))]
 public class EchoPlayback : MonoBehaviour
@@ -22,6 +24,9 @@ public class EchoPlayback : MonoBehaviour
     const float DefaultPlaybackAlpha = 0.45f;
     const float ResidualSeconds = 2.5f;
     const float ResidualStartAlpha = 0.3f;
+
+    public enum EchoPlaybackPhase { Latency, Playback, Residual, Gone }
+    public event System.Action<EchoPlaybackPhase> PhaseChanged;
 
     CharacterController _cc;
     readonly List<RecordFrame> _frames = new List<RecordFrame>();
@@ -190,6 +195,7 @@ public class EchoPlayback : MonoBehaviour
 
         // Estado Latency: 0.8s congelado a alpha 0.2 antes de empezar a moverse.
         _latencyRemaining = LatencySeconds;
+        PhaseChanged?.Invoke(EchoPlaybackPhase.Latency);
         SetEchoAlpha(LatencyAlpha);
         if (_anim != null)
             _anim.speed = 0f;
@@ -212,6 +218,7 @@ public class EchoPlayback : MonoBehaviour
     {
         _latencyRemaining = 0f;
         SetEchoAlpha(PlaybackAlpha);
+        PhaseChanged?.Invoke(EchoPlaybackPhase.Playback);
         if (_audioSource != null && _pendingVoiceClip != null)
             _audioSource.Play();
     }
@@ -267,7 +274,8 @@ public class EchoPlayback : MonoBehaviour
         GameFeelController.Instance?.PlayEchoFade(transform.position);
         if (!gameObject.activeInHierarchy)
         {
-            Destroy(gameObject);
+PhaseChanged?.Invoke(EchoPlaybackPhase.Gone);
+        Destroy(gameObject);
             return;
         }
 
@@ -281,6 +289,7 @@ public class EchoPlayback : MonoBehaviour
         // No usar StopPlayback() aquí: cortaría la voz en seco en vez de fundirla.
         _playing = false;
         SwapToResidualMaterials();
+        PhaseChanged?.Invoke(EchoPlaybackPhase.Residual);
 
         float startVolume = _audioSource != null ? _audioSource.volume : 0f;
         float elapsed = 0f;
@@ -379,7 +388,7 @@ public class EchoPlayback : MonoBehaviour
                 if (playbackMode == EchoPlaybackMode.Inversion)
                 {
                     // Sync HUD feedback
-                    var hud = Object.FindAnyObjectByType<GameHUD>();
+                    var hud = UnityEngine.Object.FindAnyObjectByType<GameHUD>();
                     if (hud != null)
                     {
                         string syncStatus = dist < 0.5f ? "Sincronizado (<0.5m)" : (dist > 1.0f ? "Desincronizado (>1.0m)" : "Cerca");
@@ -523,9 +532,11 @@ public class EchoPlayback : MonoBehaviour
         if (source == null)
             source = FindLivePlayerModelSource();
 
-        // Priority 3: generic prefab from Resources (last resort — may be LowPolyCharacter)
+        // Priority 3: generic prefab from Resources (last resort).
+        // "EchoesEchoVisual" reemplaza al antiguo "EchoesCharacterVisual" (LowPolyCharacter
+        // bakeado) — usar un prefab dedicado para el eco evita el modelo lowpoly incorrecto.
         if (source == null)
-            source = Resources.Load<GameObject>(ResourcesPrefabPath);
+            source = Resources.Load<GameObject>("EchoesEchoVisual");
 
         if (source == null)
             return null;
@@ -687,7 +698,7 @@ public class EchoPlayback : MonoBehaviour
             DestroySafe(animationBootstrap);
     }
 
-    static void DestroySafe(Object obj)
+    static void DestroySafe(UnityEngine.Object obj)
     {
         if (obj == null)
             return;

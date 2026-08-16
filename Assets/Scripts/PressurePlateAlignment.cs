@@ -67,11 +67,13 @@ public class PressurePlateAlignment : MonoBehaviour
             playerFeetY = player.transform.position.y;
 
         float plateY = transform.position.y;
-        float top = Mathf.Max(playerFeetY + 0.35f, plateY + 0.15f);
-        float bottom = plateY - 0.05f;
+        float top = Mathf.Max(1.6f, playerFeetY + 0.35f);
+        float bottom = plateY - 0.2f;
         float height = Mathf.Max(echoTriggerHeight, top - bottom);
 
-        box.size = new Vector3(Mathf.Max(box.size.x, 2.4f), height, Mathf.Max(box.size.z, 2.4f));
-        box.center = new Vector3(0f, (height * 0.5f) - 0.04f, 0f);
+        // XZ ampliados: la proyección del eco abarca un área más ancha que la placa
+        // (antes 2.4f muy delgado → el eco en movimiento la atravesaba por los lados).
+        box.size = new Vector3(Mathf.Max(box.size.x, 2.8f), height, Mathf.Max(box.size.z, 2.8f));
+        box.center = new Vector3(0f, (height * 0.5f) - 0.1f, 0f);
     }
 }

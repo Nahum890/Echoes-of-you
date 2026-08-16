@@ -1,440 +1,266 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using System.Collections;
 
-/// <summary>
-/// HUD de gameplay usando UI Toolkit.
-/// Muestra indicador de grabación, estado del eco, objetivo, toasts y timeline.
-/// Requiere un UIDocument component con GameHUDUI.uxml asignado.
-/// </summary>
-[RequireComponent(typeof(UIDocument))]
-public class GameHUD : MonoBehaviour
+namespace Echoes.UI
 {
-    [Header("Visibility")]
-    [SerializeField] bool showHUD = true;
-
-    UIDocument _doc;
-    VisualElement _root;
-
-    // Record panel elements
-    VisualElement _recordPanel;
-    VisualElement _recordDot;
-    VisualElement _echoIcon;
-    VisualElement _recordBarBg;
-    VisualElement _recordBarFill;
-    Label _echoLabel;
-    VisualElement _echoSlotsContainer;
-
-    // HUD bars
-    VisualElement _stabilityFill;
-    VisualElement _recallFill;
-
-    // Text elements
-    Label _objectiveText;
-    Label _toastText;
-    Label _echoStateLabel;
-
-    // Footer status
-    VisualElement _recordingStatus;
-    VisualElement _playbackStatus;
-
-    // --- Protocol & Schematic Elements ---
-    VisualElement _protocolStatus;
-    Label _protocolTitle;
-    Label _protocolSubtitle;
-
-    VisualElement _modePanel;
-    Label _modeTitle;
-    Label _modeDesc;
-    Label _modeKey;
-
-    VisualElement _nodeLeft;
-    VisualElement _nodeRight;
-    VisualElement _keyPromptArea;
-    Label _keyPromptLabel;
-
-    // Timeline elements
-    VisualElement _timeline;
-    VisualElement _timelineFill;
-    VisualElement _timelinePlayhead;
-    Label _timelineStart;
-    Label _timelineEnd;
-
-    // State
-    int _echoCurrent;
-    int _echoMax;
-    int _lastEchoCurrent = -1;
-    int _lastEchoMax = -1;
-    bool _recording;
-    float _recordNorm;
-    string _echoState = "";
-
-    string _objective = "";
-    string _prompt = "";
-    bool _promptSticky;
-    float _promptUntil;
-    string _toast = "";
-    Color _toastColor;
-    float _toastUntil;
-
-    void OnEnable()
+    /// <summary>
+    /// GameHUD — Fase 4: Mínimo esencial.
+    /// Opacidad base 0.0. Fade 0.0→0.85 en 0.10s SOLO grabando (RULE-UI-004).
+    /// Elementos visibles:
+    ///   - Grabando: REC● + barra 12s + slots
+    ///   - Reproduciendo: ECO▶ + slots
+    ///   - Objetivo contextual, Toast, Key Prompt, Chalkboard, Footer states
+    /// </summary>
+    [RequireComponent(typeof(UIDocument))]
+    public class GameHUD : MonoBehaviour
     {
-        _doc = GetComponent<UIDocument>();
-        if (_doc == null || _doc.rootVisualElement == null) return;
-        _root = _doc.rootVisualElement;
+        UIDocument _doc;
+        VisualElement _root;
 
-        // Apply saved UI scale immediately
-        ApplySavedUIScale();
+        // Elements
+        VisualElement _recordPanel;
+        VisualElement _recordDot;
+        VisualElement _recordBarFill;
+        VisualElement _echoSlots;
+        VisualElement _hudContainer;
+        VisualElement _stabilityFill;
+        VisualElement _recallFill;
+        Label _objectiveText;
+        Label _toastText;
+        Label _echoStateLabel;
+        Label _keyPromptLabel;
+        VisualElement _chalkboardBox;
+        Label _chalkboardTitle;
+        Label _chalkboardText;
+        VisualElement _recordingStatus;
+        VisualElement _playbackStatus;
 
-        QueryElements();
-    }
+        // State
+        bool _recording;
+        float _recordNorm;
+        int _echoCurrent, _echoMax;
+        float _targetOpacity;
+        float _currentOpacity;
 
-    void QueryElements()
-    {
-        // Query all elements
-        _recordPanel = _root.Q("hud-record-panel");
-        _recordDot = _root.Q("hud-record-dot");
-        _echoIcon = _root.Q("hud-echo-icon");
-        _recordBarBg = _root.Q("hud-record-bar-bg");
-        _recordBarFill = _root.Q("hud-record-bar-fill");
-        _echoLabel = _root.Q<Label>("hud-echo-label");
-        _echoSlotsContainer = _root.Q("hud-echo-slots");
-
-        _stabilityFill = _root.Q("hud-stability-fill");
-        _recallFill = _root.Q("hud-recall-fill");
-
-        _objectiveText = _root.Q<Label>("hud-objective-text");
-        _toastText = _root.Q<Label>("hud-toast-text");
-        _echoStateLabel = _root.Q<Label>("hud-echo-state-label");
-
-        _recordingStatus = _root.Q("hud-recording-status");
-        _playbackStatus = _root.Q("hud-playback-status");
-
-        // Protocol & Schematic Elements
-        _protocolStatus = _root.Q("protocol-status");
-        _protocolTitle = _root.Q<Label>("protocol-title");
-        _protocolSubtitle = _root.Q<Label>("protocol-subtitle");
-
-        _modePanel = _root.Q("mode-panel");
-        _modeTitle = _root.Q<Label>("mode-title");
-        _modeDesc = _root.Q<Label>("mode-desc");
-        _modeKey = _root.Q<Label>("mode-key");
-
-        _nodeLeft = _root.Q("node-left");
-        _nodeRight = _root.Q("node-right");
-        _keyPromptArea = _root.Q("key-prompt-area");
-        _keyPromptLabel = _root.Q<Label>("key-prompt-label");
-
-        // Timeline elements
-        _timeline = _root.Q("timeline");
-        _timelineFill = _root.Q("timeline-fill");
-        _timelinePlayhead = _root.Q("timeline-playhead");
-        _timelineStart = _root.Q<Label>("timeline-start");
-        _timelineEnd = _root.Q<Label>("timeline-end");
-    }
-
-    // --- Public API (compatible with existing code) ---
-
-    public void SetEchoCount(int current, int max)
-    {
-        _echoCurrent = Mathf.Max(0, current);
-        _echoMax = Mathf.Max(0, max);
-    }
-
-    public void SetRecording(bool recording, float normalizedTime01)
-    {
-        _recording = recording;
-        _recordNorm = Mathf.Clamp01(normalizedTime01);
-    }
-
-    public void SetEchoState(string state) { _echoState = state ?? string.Empty; }
-
-    public void SetObjective(string objective) { _objective = objective ?? string.Empty; }
-
-    public void SetPrompt(string prompt, float duration = 2.4f)
-    {
-        _prompt = prompt ?? string.Empty;
-        _promptSticky = duration <= 0f;
-        _promptUntil = _promptSticky ? float.PositiveInfinity : Time.unscaledTime + duration;
-    }
-
-    public void ClearPrompt()
-    {
-        _prompt = string.Empty;
-        _promptSticky = false;
-        _promptUntil = 0f;
-    }
-
-    public void ShowToast(string message, Color color, float duration = 1.5f)
-    {
-        _toast = message ?? string.Empty;
-        _toastColor = color;
-        _toastUntil = Time.unscaledTime + Mathf.Max(0.1f, duration);
-    }
-
-    void Update()
-    {
-        // Reintentar la inicialización si el árbol UI no estaba listo en OnEnable
-        if (_root == null)
+        void OnEnable()
         {
-            if (_doc == null) _doc = GetComponent<UIDocument>();
-            if (_doc != null && _doc.rootVisualElement != null)
+            _doc = GetComponent<UIDocument>();
+            if (_doc == null || _doc.rootVisualElement == null) return;
+            _root = _doc.rootVisualElement;
+
+            ApplySavedUIScale();
+            QueryElements();
+            _root.style.opacity = 0f; // Base opacity 0.0
+            _currentOpacity = 0f;
+        }
+
+        void QueryElements()
+        {
+            _recordPanel      = _root.Q("hud-record-panel");
+            _recordDot        = _root.Q("hud-record-dot");
+            _recordBarFill    = _root.Q("hud-record-bar-fill");
+            _echoSlots        = _root.Q("hud-echo-slots");
+            _hudContainer     = _root.Q("hud-container");
+            _stabilityFill    = _root.Q("hud-stability-fill");
+            _recallFill       = _root.Q("hud-recall-fill");
+            _objectiveText    = _root.Q<Label>("hud-objective-text");
+            _toastText        = _root.Q<Label>("hud-toast-text");
+            _echoStateLabel   = _root.Q<Label>("hud-echo-state-label");
+            _keyPromptLabel   = _root.Q<Label>("key-prompt-label");
+            _chalkboardBox    = _root.Q("chalkboard-box");
+            _chalkboardTitle  = _root.Q<Label>("chalkboard-title");
+            _chalkboardText   = _root.Q<Label>("chalkboard-text");
+            _recordingStatus  = _root.Q("hud-recording-status");
+            _playbackStatus   = _root.Q("hud-playback-status");
+        }
+
+        void Update()
+        {
+            if (_root == null) return;
+
+            // Fade logic
+            if (Mathf.Abs(_currentOpacity - _targetOpacity) > 0.01f)
             {
-                _root = _doc.rootVisualElement;
-                ApplySavedUIScale();
-                QueryElements();
+                _currentOpacity = Mathf.MoveTowards(_currentOpacity, _targetOpacity, Time.unscaledDeltaTime / 0.10f);
+                _root.style.opacity = _currentOpacity;
+            }
+
+            // Pulse record dot
+            if (_recording && _recordDot != null)
+            {
+                float pulse = Mathf.Sin(Time.unscaledTime * 4f) * 0.3f + 0.7f;
+                _recordDot.style.opacity = pulse;
+            }
+
+            // Update record bar
+            if (_recording && _recordBarFill != null)
+                _recordBarFill.style.width = Length.Percent(_recordNorm * 100f);
+
+            // Footer states
+            UpdateFooterStates();
+        }
+
+        void UpdateFooterStates()
+        {
+            if (_recordingStatus != null)
+            {
+                if (_recording)
+                    _recordingStatus.RemoveFromClassList("footer-item--inactive");
+                else
+                    _recordingStatus.AddToClassList("footer-item--inactive");
+            }
+
+            if (_playbackStatus != null)
+            {
+                if (_echoCurrent > 0 && !_recording)
+                    _playbackStatus.RemoveFromClassList("footer-item--inactive");
+                else
+                    _playbackStatus.AddToClassList("footer-item--inactive");
             }
         }
 
-        if (!showHUD || _root == null) return;
+        // ===== Public API =====
 
-        // Expire prompt / toast
-        if (!_promptSticky && Time.unscaledTime > _promptUntil) _prompt = string.Empty;
-        if (Time.unscaledTime > _toastUntil) _toast = string.Empty;
-
-        UpdateRecordPanel();
-        UpdateObjective();
-        UpdateToast();
-        UpdateEchoState();
-        UpdateFooterStatus();
-        UpdateSchematicHUD();
-    }
-
-    void UpdateRecordPanel()
-    {
-        bool showPanel = _recording || _echoCurrent > 0 || _echoMax > 0;
-
-        if (_recordPanel == null) return;
-
-        if (showPanel)
-            _recordPanel.RemoveFromClassList("hidden");
-        else
-            _recordPanel.AddToClassList("hidden");
-
-        if (!showPanel) return;
-
-        if (_recording)
+        public void SetRecording(bool recording, float normalizedTime01)
         {
-            Show(_recordDot);
-            Show(_recordBarBg);
-            Hide(_echoIcon);
-            Hide(_echoLabel);
-            Hide(_echoSlotsContainer);
+            _recording = recording;
+            _recordNorm = Mathf.Clamp01(normalizedTime01);
+            _targetOpacity = recording ? 0.85f : 0f; // RULE-UI-004
 
-            float pulse = Mathf.Sin(Time.unscaledTime * 4f) * 0.3f + 0.7f;
-            if (_recordDot != null)
-                _recordDot.style.opacity = pulse;
+            // Show/hide record panel
+            if (_recordPanel != null)
+            {
+                if (recording)
+                    _recordPanel.RemoveFromClassList("hidden");
+                else
+                    _recordPanel.AddToClassList("hidden");
+            }
 
-            if (_recordBarFill != null)
-                _recordBarFill.style.width = Length.Percent(_recordNorm * 100f);
+            // Record dot pulse handled in Update
         }
-        else
-        {
-            Hide(_recordDot);
-            Hide(_recordBarBg);
-            Show(_echoIcon);
-            Hide(_echoLabel);
-            Show(_echoSlotsContainer);
 
+        public void SetEchoCount(int current, int max)
+        {
+            _echoCurrent = Mathf.Max(0, current);
+            _echoMax = Mathf.Max(0, max);
             RebuildEchoSlots();
         }
-    }
 
-    void RebuildEchoSlots()
-    {
-        if (_echoSlotsContainer == null) return;
-
-        if (_echoCurrent == _lastEchoCurrent && _echoMax == _lastEchoMax)
-            return;
-
-        _lastEchoCurrent = _echoCurrent;
-        _lastEchoMax = _echoMax;
-
-        _echoSlotsContainer.Clear();
-
-        for (int i = 0; i < _echoMax; i++)
+        public void SetEchoState(string state)
         {
-            VisualElement slot = new VisualElement();
-            slot.AddToClassList("hud-echo-slot");
-            if (i < _echoCurrent)
+            if (_echoStateLabel != null)
             {
-                slot.AddToClassList("hud-echo-slot--filled");
-            }
-            _echoSlotsContainer.Add(slot);
-        }
-    }
-
-    void UpdateObjective()
-    {
-        if (_objectiveText != null)
-            _objectiveText.text = _objective;
-    }
-
-    void UpdateToast()
-    {
-        if (_toastText == null) return;
-
-        string txt = !string.IsNullOrEmpty(_toast) ? _toast : _prompt;
-        Color col = !string.IsNullOrEmpty(_toast) ? _toastColor : new Color(0.1f, 0.5f, 1f, 0.6f);
-
-        _toastText.text = txt;
-        _toastText.style.color = new StyleColor(col);
-    }
-
-    void UpdateEchoState()
-    {
-        if (_echoStateLabel == null) return;
-        _echoStateLabel.text = _echoState;
-
-        if (!string.IsNullOrEmpty(_echoState))
-        {
-            string lower = _echoState.ToLowerInvariant();
-            Color stateColor;
-            if (lower.Contains("grab"))
-                stateColor = new Color(0.9f, 0.15f, 0.15f, 1f);
-            else if (lower.Contains("repro") || lower.Contains("eco"))
-                stateColor = new Color(0.5f, 0.2f, 1f, 1f);
-            else
-                stateColor = new Color(0.8f, 0.8f, 0.8f, 1f);
-
-            _echoStateLabel.style.color = new StyleColor(stateColor);
-        }
-    }
-
-    void UpdateFooterStatus()
-    {
-        if (_recordingStatus != null)
-        {
-            if (_recording)
-            {
-                _recordingStatus.RemoveFromClassList("footer-item--inactive");
-                _recordingStatus.AddToClassList("footer-item--active");
-            }
-            else
-            {
-                _recordingStatus.RemoveFromClassList("footer-item--active");
-                _recordingStatus.AddToClassList("footer-item--inactive");
+                _echoStateLabel.text = state ?? "";
+                _echoStateLabel.RemoveFromClassList("hidden");
             }
         }
 
-        if (_playbackStatus != null)
+        public void SetObjective(string objective)
         {
-            if (_echoCurrent > 0 && !_recording)
+            if (_objectiveText != null)
             {
-                _playbackStatus.RemoveFromClassList("footer-item--inactive");
-                _playbackStatus.AddToClassList("footer-item--active");
-            }
-            else
-            {
-                _playbackStatus.RemoveFromClassList("footer-item--active");
-                _playbackStatus.AddToClassList("footer-item--inactive");
-            }
-        }
-    }
-
-    // --- Schematic / Timeline HUD updates ---
-
-    void UpdateSchematicHUD()
-    {
-        // 1. Dynamic Mode Panel based on recording / playback state
-        if (_modePanel != null)
-        {
-            _modePanel.RemoveFromClassList("hidden");
-            if (_recording)
-            {
-                if (_modeTitle != null) _modeTitle.text = "GRABANDO";
-                if (_modeDesc != null) _modeDesc.text = "Registrando linea de tiempo...";
-                if (_modeKey != null) _modeKey.text = "R";
-            }
-            else if (_echoCurrent > 0)
-            {
-                if (_modeTitle != null) _modeTitle.text = "REPRODUCIENDO ECO";
-                if (_modeDesc != null) _modeDesc.text = "Reproduciendo secuencia temporal.";
-                if (_modeKey != null) _modeKey.text = "E";
-            }
-            else
-            {
-                if (_modeTitle != null) _modeTitle.text = "LISTO";
-                if (_modeDesc != null) _modeDesc.text = "Buscando anclas de memoria.";
-                if (_modeKey != null) _modeKey.text = "R";
+                _objectiveText.text = objective ?? "";
+                _objectiveText.RemoveFromClassList("hidden");
             }
         }
 
-        // 2. Timeline Progress Bar
-        if (_timeline != null)
+        public void SetPrompt(string prompt)
         {
-            float fillPct = _recordNorm * 100f;
-            if (_timelineFill != null)
-                _timelineFill.style.width = Length.Percent(fillPct);
-
-            if (_timelinePlayhead != null)
-                _timelinePlayhead.style.left = Length.Percent(fillPct);
-
-            // Display dynamic time stamps (seconds)
-            float totalSecs = EchoRecorder.Instance?.MaxRecordSeconds ?? 10f;
-            float currentSecs = _recordNorm * totalSecs;
-            if (_timelineStart != null)
-                _timelineStart.text = $"00:00:{currentSecs:00.00}";
-            if (_timelineEnd != null)
-                _timelineEnd.text = $"00:00:{totalSecs:00.00}";
-        }
-
-        // 3. Floating Schematic Nodes & Prompts
-        if (_recording)
-        {
-            _nodeLeft?.RemoveFromClassList("hidden");
-            _nodeRight?.AddToClassList("hidden");
-            _keyPromptArea?.AddToClassList("hidden");
-        }
-        else if (_echoCurrent > 0)
-        {
-            _nodeLeft?.AddToClassList("hidden");
-            _nodeRight?.RemoveFromClassList("hidden");
-            _keyPromptArea?.AddToClassList("hidden");
-        }
-        else
-        {
-            // If near puzzle plate or objective, show key prompt area
-            if (!string.IsNullOrEmpty(_prompt) && (_prompt.Contains("placa") || _prompt.Contains("puerta") || _prompt.Contains("botón")))
+            if (_keyPromptLabel != null)
             {
-                _keyPromptArea?.RemoveFromClassList("hidden");
-                if (_keyPromptLabel != null)
-                {
-                    if (_prompt.Contains("ESPACIO")) _keyPromptLabel.text = "ESPACIO";
-                    else if (_prompt.Contains("E")) _keyPromptLabel.text = "E";
-                    else if (_prompt.Contains("R")) _keyPromptLabel.text = "R";
-                    else _keyPromptLabel.text = "ACCION";
-                }
+                _keyPromptLabel.text = prompt ?? "";
+                _keyPromptLabel.RemoveFromClassList("hidden");
             }
-            else
+        }
+
+        public void SetPrompt(string prompt, float duration)
+        {
+            SetPrompt(prompt); // Duration ignored - prompt is sticky until ClearPrompt()
+        }
+
+        public void ClearPrompt()
+        {
+            if (_keyPromptLabel != null)
+                _keyPromptLabel.AddToClassList("hidden");
+        }
+
+        public void ShowToast(string message, Color color, float duration = 1.5f)
+        {
+            if (_toastText == null) return;
+            _toastText.text = message ?? "";
+            _toastText.style.color = new StyleColor(color);
+            _toastText.RemoveFromClassList("hidden");
+            if (_toastCoroutine != null) StopCoroutine(_toastCoroutine);
+            _toastCoroutine = StartCoroutine(HideToastAfter(duration));
+        }
+
+        Coroutine _toastCoroutine;
+        IEnumerator HideToastAfter(float delay)
+        {
+            yield return new WaitForSecondsRealtime(delay);
+            if (_toastText != null) _toastText.AddToClassList("hidden");
+        }
+
+        public void ShowChalkboard(string title, string text)
+        {
+            if (_chalkboardBox != null)
             {
-                _keyPromptArea?.AddToClassList("hidden");
+                _chalkboardTitle.text = title ?? "";
+                _chalkboardText.text = text ?? "";
+                _chalkboardBox.RemoveFromClassList("hidden");
             }
-            _nodeLeft?.AddToClassList("hidden");
-            _nodeRight?.AddToClassList("hidden");
+        }
+
+        public void HideChalkboard()
+        {
+            _chalkboardBox?.AddToClassList("hidden");
+        }
+
+        // ===== Inspección (Voz Interna de Aiden — pop-ups ≤42 chars, 1ª persona) =====
+        // RULE-INSPECT-007: auto-dismiss a 2.5s (±1.0s tolerancia). Usa el
+        // canal Chalkboard HUD, no un componente nuevo (RULE-INSPECT-009).
+        public void ShowInspection(string title, string text)
+        {
+            ShowChalkboard(title, text);
+            if (_inspectionCoroutine != null) StopCoroutine(_inspectionCoroutine);
+            _inspectionCoroutine = StartCoroutine(HideInspectionAfter(2.5f));
+        }
+
+        Coroutine _inspectionCoroutine;
+        IEnumerator HideInspectionAfter(float delay)
+        {
+            yield return new WaitForSecondsRealtime(delay);
+            HideChalkboard();
+        }
+
+        void RebuildEchoSlots()
+        {
+            if (_echoSlots == null) return;
+            _echoSlots.Clear();
+            for (int i = 0; i < _echoMax; i++)
+            {
+                var slot = new VisualElement();
+                slot.AddToClassList("hud-echo-slot");
+                if (i < _echoCurrent) slot.AddToClassList("hud-echo-slot--filled");
+                _echoSlots.Add(slot);
+            }
+        }
+
+        public void SetVisible(bool visible)
+        {
+            // Called by PauseMenu
+            _root.style.opacity = visible ? _currentOpacity : 0f;
+        }
+
+        public void ApplySavedUIScale()
+        {
+            if (_root == null) return;
+            string scale = PlayerPrefs.GetString("UIScale", "Normal");
+            _root.RemoveFromClassList("scale-large");
+            _root.RemoveFromClassList("scale-xl");
+            if (scale == "Large") _root.AddToClassList("scale-large");
+            else if (scale == "Extra Large") _root.AddToClassList("scale-xl");
         }
     }
-
-    // Apply scaling styles to root UXML element
-    public void ApplySavedUIScale()
-    {
-        if (_root == null) return;
-
-        string scale = PlayerPrefs.GetString("UIScale", "Normal");
-        _root.RemoveFromClassList("scale-large");
-        _root.RemoveFromClassList("scale-xl");
-
-        if (scale == "Large")
-        {
-            _root.AddToClassList("scale-large");
-        }
-        else if (scale == "Extra Large")
-        {
-            _root.AddToClassList("scale-xl");
-        }
-    }
-
-    // --- Helpers ---
-
-    void Show(VisualElement el) { el?.RemoveFromClassList("hidden"); }
-    void Hide(VisualElement el) { el?.AddToClassList("hidden"); }
 }

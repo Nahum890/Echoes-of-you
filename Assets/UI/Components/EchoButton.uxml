@@ -1,0 +1,10 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+    <!-- EchoButton — plantilla reutilizable.
+         Uso:
+           <ui:Button class="echo-button echo-button--primary" text="Continuar" />
+           <ui:Button class="echo-button echo-button--destructive" text="Borrar" />
+         Estados gestionados por USS (:hover, :focus, :active, :disabled) y clase
+         .echo-button--loading aplicada desde C#. -->
+
+    <ui:Button class="echo-button echo-button--primary" name="echoButton" text="Continuar" />
+</UXML>

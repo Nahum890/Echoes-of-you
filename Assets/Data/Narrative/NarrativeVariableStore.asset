@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1aecfd15c98194438d172f4ed7bac69, type: 3}
+  m_Name: NarrativeVariableStore
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.Narrative.Data.NarrativeVariableStore
+  _variables:
+  - _name: comprehension_score
+    _type: 0
+    _defaultValue: 0
+    _description: Acumulado via flags comprehension_*
+  - _name: lyra_artifact_seen_count
+    _type: 0
+    _defaultValue: 0
+    _description: Veces que el jugador inspecciono un objeto amber
+  - _name: objects_inspected_count
+    _type: 0
+    _defaultValue: 0
+    _description: Total de objetos inspeccionados
+  - _name: echoes_created_total
+    _type: 0
+    _defaultValue: 0
+    _description: Total de ecos creados en la partida
+  - _name: levels_completed_count
+    _type: 0
+    _defaultValue: 0
+    _description: Niveles completados

@@ -1,0 +1,6 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+    <!-- EchoDropdown — wrapper sobre ui:DropdownField.
+         Navegación por teclado en lista abierta gestionada por Unity de base;
+         la clase .echo-dropdown--open se aplica por C# para el diseño extendido. -->
+    <ui:DropdownField class="echo-dropdown" name="echoDropdown" label="" />
+</UXML>

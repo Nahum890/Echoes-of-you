@@ -1,22 +1,43 @@
-schema_version: "1.0"
+schema_version: "2.0"
 catalog_type: emotional_arc_catalog
+source: Docs/GameDesign/NARRATIVA_INTERNA.md
+note: |
+  v2.0 (2026-08-02) — Reescritura narrativa dual. Aiden es una chica procesando
+  errores con Lyra. El emotional_arc ahora describe el placer de procesamiento
+  psicológico: negación → culpa → realización → aceptación. El tono de los
+  pop-ups (RULE-PHI-005) se acopla a este arco. La comprensión del jugador
+  puede atascar a Aiden en una etapa previa si no acumula flags de comprensión
+  (Catch-22 Rule, ver DESIGN_PHILOSOPHY.md Algorithm 8.2).
 
 levels:
-  N01: {start: disorientation, exploration: uncertainty, puzzle: persistence, failure: repetition, resolution: curiosity}
-  N02: {start: repetition, exploration: recognition, puzzle: coordination, failure: frustration, resolution: understanding}
-  N03: {start: indecision, exploration: doubt, puzzle: choice, failure: self_doubt, resolution: commitment}
-  N04: {start: waiting, exploration: anticipation, puzzle: timing, failure: impatience, resolution: patience}
-  N05: {start: guilt, exploration: avoidance, puzzle: consequence, failure: entrapment, resolution: responsibility}
-  N06: {start: denial, exploration: evidence, puzzle: revelation, failure: refusal, resolution: acknowledgement}
-  N07: {start: avoidance, exploration: distance, puzzle: future_recording, failure: evasion, resolution: approach}
-  N08: {start: self_sabotage, exploration: contradiction, puzzle: multi_echo, failure: conflict, resolution: honesty}
-  N09: {start: control, exploration: exposure, puzzle: open_space, failure: overcontrol, resolution: trust}
-  N10: {start: memories, exploration: recognition, puzzle: ambient_echo, failure: attachment, resolution: clarity}
-  N11: {start: connection, exploration: ascent, puzzle: vertical_coordination, failure: separation, resolution: alignment}
-  N12: {start: conflict, exploration: confrontation, puzzle: paradox, failure: contradiction, resolution: consequence}
-  N13: {start: truth, exploration: fragmentation, puzzle: one_recording, failure: denial, resolution: acceptance_beginning}
-  N14: {start: acceptance, exploration: surrender, puzzle: follow_echo, failure: falling, resolution: release}
-  N15: {start: integration, exploration: return, puzzle: final_exit, failure: temptation_to_repeat, resolution: continuation}
+  # ─── Etapa 1: NEGACIÓN / CONVICCIÓN (N01-N04) ───
+  # Aiden está segura de tener razón. El tono es defensivo, corto, deflectivo.
+  N01: {start: denial, exploration: avoidance, puzzle: confrontation, failure: shame, resolution: "apertura_a_ver"}
+  N02: {start: repulsion, exploration: pattern_recognition, puzzle: intento_cambiar, failure: frustracion, resolution: "ligero_reconocimiento"}
+  N03: {start: paralysis, exploration: opciones_perdidas, puzzle: disyuntiva, failure: arrepentimiento, resolution: "decidir"}
+  N04: {start: espera, exploration: silencio, puzzle: callar_otra_vez, failure: dolor_mudo, resolution: "primera_pregunta"}
+
+  # ─── Etapa 2: CULPA / PRIMER QUIEBRE (N05-N08) ───
+  # El peso empieza a sentirse. El tono se vuelve más pesado, fragmentado, autoacusatorio.
+  N05: {start: culpa, exploration: inspeccionar_recuerdo_lyra, puzzle: responsabilidad, failure: abrume, resolution: "asumir_parcial"}
+  N06: {start: distorsion, exploration: filtro_interno, puzzle: evidencia_lacerante, failure: rage_stg2, resolution: "no_culparla_tampoco"}
+  N07: {start: huida, exploration: patio_fantasma, puzzle: conversacion_perdida, failure: aislamiento, resolution: "acercarse"}
+  N08: {start: self_sabotage, exploration: dos_versiones_de_si, puzzle: conflicto_interno, failure: contradiccion, resolution: "honestidad"}
+
+  # ─── Etapa 3: REALIZACIÓN / CONOCIMIENTO PARCIAL (N09-N12) ───
+  # Aiden empieza a ver el panorama. El tono es tentativo, en búsqueda, incosmesis.
+  N09: {start: control, exploration: jaula_mental, puzzle: exposicion_del_yo, failure: sobrecontrol, resolution: "confiar_sin_ataduras"}
+  N10: {start: visita_lyra, exploration: nostalgia_quemada, puzzle: licuefaccion_del_recuerdo, failure: asimiento, resolution: "tocar_sin_romper"}
+  N11: {start: conexion_vertical, exploration: escalar_desde_abajo, puzzle: coordinacion_alturas, failure: union_fallida, resolution: "alineamiento"}
+  N12: {start: contradiccion_paradoja, exploration: luchar_contra_la_verdad, puzzle: verdad_insana, failure: choque, resolution: "consecuencia_en_paz"}
+
+  # ─── Etapa 4: ACEPTACIÓN / SOLTAR (N13-N15) ───
+  # Aiden puede sostener el recuerdo sin apretarlo. El tono es calmo, presente, hacia adelante.
+  # NOTE: Estos tonos solo se activan si comprehension_score es suficiente; de lo contrario,
+  # Aiden permanece atascada en una etapa anterior (Catch-22 Rule).
+  N13: {start: verdad_irreversible, exploration: fragmento_visceral, puzzle: elegir_que_guardar, failure: olvidar, resolution: "memoria_activa_sin_cadenas"}
+  N14: {start: fluir, exploration: soltar, puzzle: seguir_al_alma, failure: caer_desconfiando, resolution: "descanso_completo"}
+  N15: {start: ser_en_paz, exploration: clausura_apertura, puzzle: volver_decidiendo, failure: repeticion_patron, resolution: "continuacion"}
 
 validation:
   - id: EMO-VAL-001
@@ -24,7 +45,7 @@ validation:
     status: active
     severity: error
     scope: [level, narrative]
-    rule: "Every level must define all five emotional beats"
+    rule: "Every level must define all five emotional beats: start, exploration, puzzle, failure, resolution"
     validator: validators/blueprint_validator.yaml#emotional_arc
   - id: EMO-VAL-002
     type: validation
@@ -33,3 +54,34 @@ validation:
     scope: [level]
     rule: "Visual and audio profile should reference the declared emotional arc"
     validator: validators/level_validator.yaml#emotional_consistency
+  - id: EMO-VAL-003
+    type: validation
+    status: active
+    severity: error
+    scope: [narrative, ui]
+    rule: |
+      Los interaction.* pop-ups deben mapear su tone_by_level al arco de su nivel.
+      N01-N04 → denial | N05-N08 → guilt | N09-N12 → realization | N13-N15 → acceptance.
+      Un pop-up "acceptance" en N02 = FAIL-EMO-03. Ver RULE-PHI-005 y Catch-22.
+    validator: validators/text_inspector.yaml#tone_by_stage
+  - id: EMO-VAL-004
+    type: validation
+    status: active
+    severity: error
+    scope: [narrative]
+    rule: |
+      Comprehension Catch-22: El tone_by_level efectivo de un interaction.* puede ser
+      CLAMPADO a una etapa anterior si VN_EndingFlags.comprehension_score <
+      stage_threshold[level_index]. El clamp es determinista, no aleatorio.
+    validator: validators/text_inspector.yaml#catch22_comprehension
+
+change_history:
+  - version: "1.0"
+    date: "2026-07-25"
+    note: "Initial 5-beat emotional arc per level"
+  - version: "2.0"
+    date: "2026-08-02"
+    note: |
+      Reescritura narrativa dual. Beats ahora describen el procesamiento psicológico
+      de Aiden (negación → culpa → realización → aceptación). Tono de pop-ups acoplado
+      vía RULE-PHI-005. EMO-VAL-003 (tone_by_stage) y EMO-VAL-004 (Catch-22) añadidos.

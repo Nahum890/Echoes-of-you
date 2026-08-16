@@ -19,7 +19,7 @@ public class LevelExit : MonoBehaviour
 #pragma warning restore CS0414
 
     bool _triggered;
-    bool _isUnlocked = true;
+    bool _isUnlocked = false;
     LevelGoal _goal;
     Collider _collider;
     Renderer[] _renderers;
@@ -45,7 +45,7 @@ public class LevelExit : MonoBehaviour
 
         if (!_isUnlocked)
         {
-            Debug.Log($"[LevelExit] Exit locked. Objective incomplete.");
+            Debug.Log("[LevelExit] Locked — resolve the puzzle first.");
             return;
         }
 
@@ -62,7 +62,14 @@ public class LevelExit : MonoBehaviour
             ? completionToast
             : (_goal != null ? _goal.GetCompletionToast() : ResolveCompletionToast(sceneName));
         LevelRuntimeController.Instance?.OnLevelCompleted(transform.position, toast);
-        Invoke(nameof(LoadNext), delaySeconds);
+        
+        // N15: no invocar Invoke(nameof(LoadNext)) si VN gate activo en LevelRuntimeController
+        // El gate manejará la carga del siguiente nivel
+        var lrc = LevelRuntimeController.Instance;
+        if (lrc != null && !lrc.IsLevelCompletedAndGateActive())
+        {
+            Invoke(nameof(LoadNext), delaySeconds);
+        }
     }
 
     void OnTriggerStay(Collider other)
@@ -75,7 +82,7 @@ public class LevelExit : MonoBehaviour
     public void BindGoal(LevelGoal goal)
     {
         _goal = goal;
-        SetUnlocked(_goal != null ? _goal.IsReady : true);
+        SetUnlocked(_goal != null ? _goal.IsReady : false);
     }
 
     public void SetUnlocked(bool unlocked)
@@ -87,6 +94,15 @@ public class LevelExit : MonoBehaviour
 
     void LoadNext()
     {
+        // Race condition guard: si VN_ChoiceGateController está mostrando una
+        // elección, él gestiona la transición de escena. Evitar doble LoadScene.
+        var vnGate = Echoes.VN.VN_ChoiceGateController.Instance;
+        if (vnGate != null && vnGate.IsShowing)
+        {
+            Debug.Log("[LevelExit] LoadNext pospuesto — VN gate activo.");
+            return;
+        }
+
         Debug.Log($"[LevelExit] LoadNext => target={nextSceneName}");
         PostProcessingSetup.PrepareForSceneReload();
 
@@ -107,11 +123,13 @@ public class LevelExit : MonoBehaviour
             target = "MainMenu";
         }
 
-        // Use SceneTransitionManager for smooth fade when available
-        SceneTransitionManager stm = SceneTransitionManager.Instance;
-        if (stm != null)
+        if (LoadingScreenController.Instance != null)
         {
-            stm.LoadScene(target);
+            LoadingScreenController.Instance.LoadScene(target);
+        }
+        else if (SceneTransitionManager.Instance != null)
+        {
+            SceneTransitionManager.Instance.LoadScene(target);
         }
         else
         {

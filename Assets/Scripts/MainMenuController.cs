@@ -1,14 +1,14 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 /// <summary>
-/// Controlador del menú principal usando UI Toolkit.
-/// Diseño "EXPEDIENTE DE RECUERDOS" — Escuela Liminal 2.0.
+/// Controlador del men├║ principal usando UI Toolkit.
+/// Dise├▒o "EXPEDIENTE DE RECUERDOS" ÔÇö Escuela Liminal 2.0.
 /// Requiere un UIDocument component en el mismo GameObject.
-/// El sistema de hover icónico (PS2/VHS/CRT) es gestionado por MenuHoverSystem.cs,
-/// que se añade automáticamente como componente requerido.
+/// El sistema de hover ic├│nico (PS2/VHS/CRT) es gestionado por MenuHoverSystem.cs,
+/// que se a├▒ade autom├íticamente como componente requerido.
 /// </summary>
 [RequireComponent(typeof(UIDocument))]
 [RequireComponent(typeof(MenuHoverSystem))]
@@ -18,7 +18,7 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] string firstLevelScene = "Level_01";
 
     [Header("Debug")]
-    [Tooltip("Si es true, carga Level_01 automáticamente sin esperar input")]
+    [Tooltip("Si es true, carga Level_01 autom├íticamente sin esperar input")]
     [SerializeField] bool autoStartGame = false;
 
 
@@ -30,7 +30,7 @@ public class MainMenuController : MonoBehaviour
     VisualElement _voidIntro;
     VisualElement _mainContent;
 
-    // Sistema de hover icónico (PS2/VHS/CRT) — gestionado por MenuHoverSystem.cs
+    // Sistema de hover ic├│nico (PS2/VHS/CRT) ÔÇö gestionado por MenuHoverSystem.cs
     MenuHoverSystem _hoverSystem;
 
     // Panels
@@ -51,6 +51,7 @@ public class MainMenuController : MonoBehaviour
     Button _btnLevels;
     Button _btnSettings;
     Button _btnExit;
+    Button _btnCredits;
     Button _activeNavButton;
 
     // Settings Controls - Audio
@@ -100,7 +101,7 @@ public class MainMenuController : MonoBehaviour
 
     List<Resolution> _filteredResolutions;
 
-    // Evita registrar callbacks (clicks/hover) más de una vez si el componente se re-activa.
+    // Evita registrar callbacks (clicks/hover) m├ís de una vez si el componente se re-activa.
     bool _wired;
 
     void OnEnable()
@@ -109,11 +110,11 @@ public class MainMenuController : MonoBehaviour
         if (_doc == null || _doc.rootVisualElement == null) return;
         _root = _doc.rootVisualElement;
 
-        // Inicializar el sistema de hover icónico
+        // Inicializar el sistema de hover ic├│nico
         // MenuHoverSystem se auto-configura desde su propio OnEnable,
         // pero necesita el UIDocument que ya tenemos.
         _hoverSystem = GetComponent<MenuHoverSystem>();
-        // (MenuHoverSystem.OnEnable() se llama automáticamente por Unity)
+        // (MenuHoverSystem.OnEnable() se llama autom├íticamente por Unity)
 
         ApplySavedUIScale();
         ApplySavedMenuTextScale();
@@ -140,20 +141,22 @@ public class MainMenuController : MonoBehaviour
         _btnLevels = _root.Q<Button>("nav-levels");
         _btnSettings = _root.Q<Button>("nav-settings");
         _btnExit = _root.Q<Button>("nav-exit");
+        _btnCredits = _root.Q<Button>("nav-credits");
 
         // Setup hover behaviors + acciones de nav (una sola vez)
         if (!_wired)
         {
             SetupHoverCallbacks();
-            SetupFocusNavigation();
 
             RegisterButtonClick("nav-newgame", StartNewGame);
             RegisterButtonClick("nav-levels", ShowStabilityMap);
             RegisterButtonClick("nav-settings", ShowSettings);
             RegisterButtonClick("nav-exit", QuitGame);
+            RegisterButtonClick("nav-credits", ShowCredits);
         }
 
         GameProgress.EnsureInitialized();
+        GameProgress.RecordSessionStarted();
 
         // Settings panel bindings
         _sldMaster = _root.Q<Slider>("sld-master");
@@ -229,9 +232,9 @@ public class MainMenuController : MonoBehaviour
 
     void Start()
     {
-        SetMenuCursor();
-
-        GameProgress.RecordSessionStarted();
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
+        UnityEngine.Cursor.visible = true;
+        Time.timeScale = 1f;
 
         // Debug auto-start
         if (autoStartGame)
@@ -240,59 +243,17 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    void OnDisable()
-    {
-        UnregisterButtonClick("nav-newgame", StartNewGame);
-        UnregisterButtonClick("nav-levels", ShowStabilityMap);
-        UnregisterButtonClick("nav-settings", ShowSettings);
-        UnregisterButtonClick("nav-exit", QuitGame);
-
-        if (_btnNewGame != null)
-        {
-            _btnNewGame.UnregisterCallback<MouseEnterEvent>(_ => {});
-            _btnNewGame.UnregisterCallback<MouseLeaveEvent>(_ => {});
-        }
-        if (_btnLevels != null)
-        {
-            _btnLevels.UnregisterCallback<MouseEnterEvent>(_ => {});
-            _btnLevels.UnregisterCallback<MouseLeaveEvent>(_ => {});
-        }
-        if (_btnSettings != null)
-        {
-            _btnSettings.UnregisterCallback<MouseEnterEvent>(_ => {});
-            _btnSettings.UnregisterCallback<MouseLeaveEvent>(_ => {});
-        }
-        if (_btnExit != null)
-        {
-            _btnExit.UnregisterCallback<MouseEnterEvent>(_ => {});
-            _btnExit.UnregisterCallback<MouseLeaveEvent>(_ => {});
-        }
-    }
-
-    public static void SetGameplayCursor()
-    {
-        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-        UnityEngine.Cursor.visible = false;
-    }
-
-    public static void SetMenuCursor()
-    {
-        UnityEngine.Cursor.lockState = CursorLockMode.None;
-        UnityEngine.Cursor.visible = true;
-        Time.timeScale = 1f;
-    }
-
     void Update()
     {
-        // Descartar la intro ("presionar cualquier tecla para sintonizar") y mostrar el menú.
-        // Sin esto el menú queda atascado en void-intro con main-content oculto.
+        // Descartar la intro ("presionar cualquier tecla para sintonizar") y mostrar el men├║.
+        // Sin esto el men├║ queda atascado en void-intro con main-content oculto.
         if (_voidIntro != null && !_voidIntro.ClassListContains("hidden") && Input.anyKeyDown)
         {
             DismissIntro();
         }
     }
 
-    /// <summary>Oculta la intro y revela el menú principal (main-content).</summary>
+    /// <summary>Oculta la intro y revela el men├║ principal (main-content).</summary>
     void DismissIntro()
     {
         _voidIntro?.AddToClassList("hidden");
@@ -300,7 +261,7 @@ public class MainMenuController : MonoBehaviour
         _rightContentContainer?.RemoveFromClassList("hidden");
 
         SetActiveNav(_btnNewGame);
-        ShowPreviewPanel("panel-neural-archives");
+        HideAllPreviewPanels();
     }
 
     void AutoStart()
@@ -321,47 +282,6 @@ public class MainMenuController : MonoBehaviour
             if (el != null)
                 el.RegisterCallback<ClickEvent>(_ => action());
         }
-    }
-
-    void UnregisterButtonClick(string name, System.Action action)
-    {
-        var btn = _root.Q<Button>(name);
-        if (btn != null)
-        {
-            btn.clicked -= action;
-        }
-    }
-
-    void SetupFocusNavigation()
-    {
-        if (_btnNewGame != null)
-        {
-            _btnNewGame.RegisterCallback<FocusEvent>(_ => OnNavFocus(_btnNewGame, MainMenuCinematicWorld.MenuAmbience.Void, "Aula 104"));
-        }
-        if (_btnLevels != null)
-        {
-            _btnLevels.RegisterCallback<FocusEvent>(_ => OnNavFocus(_btnLevels, MainMenuCinematicWorld.MenuAmbience.Stability, "Archivos Escolares"));
-        }
-        if (_btnSettings != null)
-        {
-            _btnSettings.RegisterCallback<FocusEvent>(_ => OnNavFocus(_btnSettings, MainMenuCinematicWorld.MenuAmbience.System, "Ajustar Receptor"));
-        }
-        if (_btnExit != null)
-        {
-            _btnExit.RegisterCallback<FocusEvent>(_ => OnNavFocus(_btnExit, MainMenuCinematicWorld.MenuAmbience.Disconnect, "Salir del Recuerdo"));
-        }
-    }
-
-    void OnNavFocus(Button btn, MainMenuCinematicWorld.MenuAmbience ambience, string title)
-    {
-        if (MainMenuCinematicWorld.Instance != null)
-            MainMenuCinematicWorld.Instance.SetAmbience(ambience);
-
-        if (_heroTitle != null)
-            _heroTitle.text = title;
-
-        SetActiveNav(btn);
-        ShowPreviewPanel(GetPanelNameForButton(btn));
     }
 
     // --- Hover Background & Title Swap ---
@@ -403,9 +323,6 @@ public class MainMenuController : MonoBehaviour
         }
 
         btn.AddToClassList("nav-item--active");
-
-        // Show the corresponding preview panel
-        ShowPreviewPanel(GetPanelNameForButton(btn));
     }
 
     void OnNavHoverLeave(Button btn)
@@ -526,9 +443,17 @@ public class MainMenuController : MonoBehaviour
             _heroTitle.text = "Aula 104";
 
         SetActiveNav(_btnNewGame);
-        _activePreviewPanelName = "";
-        ShowPreviewPanel("panel-neural-archives");
+        HideAllPreviewPanels();
         RefreshNeuralArchives();
+    }
+
+    void HideAllPreviewPanels()
+    {
+        _activePreviewPanelName = "";
+        _panelNeuralArchives?.RemoveFromClassList("preview-panel--visible");
+        _panelStabilityMap?.RemoveFromClassList("preview-panel--visible");
+        _panelCalibrationPreview?.RemoveFromClassList("preview-panel--visible");
+        _panelDisconnectOffline?.RemoveFromClassList("preview-panel--visible");
     }
 
     void ShowStabilityMap()
@@ -560,7 +485,7 @@ public class MainMenuController : MonoBehaviour
         _rightContentContainer?.RemoveFromClassList("hidden");
 
         if (_heroTitle != null)
-            _heroTitle.text = "Configuración";
+            _heroTitle.text = "Configuraci├│n";
 
         SetActiveNav(_btnSettings);
         _activePreviewPanelName = ""; // reset para forzar refresco
@@ -607,6 +532,14 @@ public class MainMenuController : MonoBehaviour
 #else
         Application.Quit();
 #endif
+    }
+
+    void ShowCredits()
+    {
+        if (SceneTransitionManager.Instance != null)
+            SceneTransitionManager.Instance.LoadScene("CreditsScene");
+        else
+            UnityEngine.SceneManagement.SceneManager.LoadScene("CreditsScene");
     }
 
     // --- Settings & Calibration logic ---
@@ -1007,12 +940,12 @@ public class MainMenuController : MonoBehaviour
         float sfx = audioMgr != null ? audioMgr.GetSFXVolume() : PlayerPrefs.GetFloat("SfxVolume", 0.72f);
 
         SetLabelText("lbl-preview-audio-master", $"Master: {Mathf.RoundToInt(master * 100f)}%");
-        SetLabelText("lbl-preview-audio-music", $"Música: {Mathf.RoundToInt(music * 100f)}%");
+        SetLabelText("lbl-preview-audio-music", $"M├║sica: {Mathf.RoundToInt(music * 100f)}%");
         SetLabelText("lbl-preview-audio-sfx", $"SFX: {Mathf.RoundToInt(sfx * 100f)}%");
 
         // Get actual resolution
         string resText = $"{Screen.width} x {Screen.height}";
-        SetLabelText("lbl-preview-video-res", $"Resolución: {resText}");
+        SetLabelText("lbl-preview-video-res", $"Resoluci├│n: {resText}");
         SetLabelText("lbl-preview-video-fs", $"Pantalla Completa: {(Screen.fullScreen ? "SI" : "NO")}");
         SetLabelText("lbl-preview-video-scale", $"Escala UI: {PlayerPrefs.GetString("UIScale", "Normal")}");
 
@@ -1026,23 +959,23 @@ public class MainMenuController : MonoBehaviour
 
     readonly string[] _diagnosticLines = new[]
     {
-        "[RECUERDO] Sintonización de expediente completada.",
-        "[OK] Vínculos de recuerdo establecidos.",
+        "[RECUERDO] Sintonizaci├│n de expediente completada.",
+        "[OK] V├¡nculos de recuerdo establecidos.",
         "[OK] Estabilidad del aula sincronizada.",
-        "[BÚSQUEDA] Comprobando integridad de pasillos...",
+        "[B├ÜSQUEDA] Comprobando integridad de pasillos...",
         "[OK] Nodos de pasillo respondieron: despejado.",
         "[SINC] Resonancia de fragmento calibrando...",
         "[OK] Puntos de anclaje de eco registrados.",
-        "[AVISO] Inestabilidad en fragmento — sector 07.",
-        "[OK] Memoria en recuperación.",
+        "[AVISO] Inestabilidad en fragmento ÔÇö sector 07.",
+        "[OK] Memoria en recuperaci├│n.",
         "[SINC] Deriva temporal dentro del margen: 0.003ms.",
         "[OK] Integridad del expediente verificada.",
-        "[BÚSQUEDA] Escaneando nodos de memoria profunda...",
-        "[OK] Sin señales anómalas detectadas.",
-        "[SISTEMA] Latido: 72 ppm — NOMINAL.",
-        "[OK] Telemetría de sesión activa.",
-        "[SINC] Resonancia del vacío: ESTABLE.",
-        "Esperando comando de sintonización...",
+        "[B├ÜSQUEDA] Escaneando nodos de memoria profunda...",
+        "[OK] Sin se├▒ales an├│malas detectadas.",
+        "[SISTEMA] Latido: 72 ppm ÔÇö NOMINAL.",
+        "[OK] Telemetr├¡a de sesi├│n activa.",
+        "[SINC] Resonancia del vac├¡o: ESTABLE.",
+        "Esperando comando de sintonizaci├│n...",
     };
 
     IEnumerator AnimateTerminalLogs()
@@ -1094,14 +1027,14 @@ public class MainMenuController : MonoBehaviour
 
         SetBarStat("lbl-stat-stability-val", "bar-stat-stability-fill", "lbl-stat-stability-desc",
             stability, completedLevels, totalLevels,
-            "Sincronización de recuerdos iniciando...",
-            "Sincronización de recuerdos en curso...",
-            "Sincronización de recuerdos completada.");
+            "Sincronizaci├│n de recuerdos iniciando...",
+            "Sincronizaci├│n de recuerdos en curso...",
+            "Sincronizaci├│n de recuerdos completada.");
 
         SetBarStat("lbl-stat-coherence-val", "bar-stat-coherence-fill", "lbl-stat-coherence-desc",
             coherence, completedLevels, totalLevels,
             "Coherencia de memoria inestable.",
-            "Señal de memoria intermitente.",
+            "Se├▒al de memoria intermitente.",
             "Coherencia de memoria estable.");
 
         SetBarStat("lbl-stat-progress-val", "bar-stat-progress-fill", "lbl-stat-progress-desc",
@@ -1123,14 +1056,14 @@ public class MainMenuController : MonoBehaviour
 
         string continueScene = GameProgress.GetContinueSceneName();
         int continueIndex = GameProgress.GetSceneIndex(continueScene);
-        string continueName = continueIndex >= 0 ? GameProgress.GetLevelDisplayName(continueScene) : "—";
+        string continueName = continueIndex >= 0 ? GameProgress.GetLevelDisplayName(continueScene) : "ÔÇö";
         string lastFragmentLine = continueIndex >= 0
-            ? $"{continueName} · Nivel {continueIndex + 1:D2}"
+            ? $"{continueName} ┬À Nivel {continueIndex + 1:D2}"
             : continueName;
         SetLabelText("lbl-last-fragment", lastFragmentLine);
 
         if (completedLevels >= totalLevels && totalLevels > 0)
-            SetLabelText("lbl-continue-hint", "VOID reinicia · elige cualquier fragmento en el mapa.");
+            SetLabelText("lbl-continue-hint", "VOID reinicia ┬À elige cualquier fragmento en el mapa.");
         else if (completedLevels == 0)
             SetLabelText("lbl-continue-hint", "VOID inicia el primer fragmento.");
         else
@@ -1190,7 +1123,7 @@ public class MainMenuController : MonoBehaviour
             if (GameProgress.IsSceneCompleted(sceneName))
             {
                 int deaths = GameProgress.GetSceneDeathCount(sceneName);
-                lbl.text = deaths > 0 ? $"COMPLETO · {deaths} colapsos" : "COMPLETO";
+                lbl.text = deaths > 0 ? $"COMPLETO ┬À {deaths} colapsos" : "COMPLETO";
             }
             else if (sceneName == GameProgress.GetContinueSceneName())
             {
@@ -1219,7 +1152,7 @@ public class MainMenuController : MonoBehaviour
     {
         _resetArmed = false;
         GameProgress.ResetProgress();
-        SetLabelText("lbl-reset-hint", "Expediente borrado. Solo el primer recuerdo está disponible.");
+        SetLabelText("lbl-reset-hint", "Expediente borrado. Solo el primer recuerdo est├í disponible.");
         if (_heroTitle != null)
             _heroTitle.text = "Recuerdo Aislado";
         RefreshDashboard();

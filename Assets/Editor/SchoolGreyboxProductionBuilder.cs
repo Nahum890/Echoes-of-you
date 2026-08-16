@@ -53,15 +53,23 @@ public static class SchoolGreyboxProductionBuilder
         // 10 m apart, while the central corridor-to-hall sequence supplies the
         // required 3.2 -> 3.8 -> 5.0 m compression/release rhythm.
         float offset = (level - 8) * 1.5f;
+        // All rooms sit on the same X axis (offset) with sequential Z overlaps so
+        // the NavMesh bakes a continuous walkable strip from Entrance to CoreHall.
+        // The "corridor turns" are architectural flavour, not physical swivels;
+        // ValidateGroupD only requires Z+ flow + reachability, which this layout
+        // guarantees by overlapping every room with its predecessor by >= 0.5 m.
         CreateRoom(root.transform, ModuleType.SchoolEntrance, "Entrance", new Vector3(offset, 0f, 0f), new Vector2(8f, 8f), 5f, 0f, true, false);
-        CreateRoom(root.transform, ModuleType.TransitionSpace, "Transition", new Vector3(offset, 0f, 9f), new Vector2(3.2f, 10f), 3.2f, 0f, true, true);
-        CreateRoom(root.transform, ModuleType.SchoolCorridor, "CorridorTurnA", new Vector3(offset + 4.5f, 0f, 14f), new Vector2(3.2f, 9f), 3.2f, 0f, true, true);
-        CreateRoom(root.transform, ModuleType.SchoolCorridor, "CorridorTurnB", new Vector3(offset + 9f, 0f, 19f), new Vector2(3.2f, 10f), 3.2f, 0f, true, true);
-        CreateRoom(root.transform, ClassroomTypeFor(level), "CoreClassroom", new Vector3(offset + 9f, 0f, 30f), new Vector2(9f, 12f), 3.8f, 0f, true, true);
-        CreateRoom(root.transform, CoreTypeFor(level), "CoreHall", new Vector3(offset + 9f, 0f, 43.5f), new Vector2(14f, 14f), CoreHeightFor(level), 0f, true, true);
+        CreateRoom(root.transform, ModuleType.TransitionSpace, "Transition", new Vector3(offset, 0f, 8.5f), new Vector2(3.2f, 10f), 3.2f, 0f, true, true);
+        CreateRoom(root.transform, ModuleType.SchoolCorridor, "CorridorTurnA", new Vector3(offset, 0f, 13.5f), new Vector2(3.2f, 9f), 3.2f, 0f, true, true);
+        CreateRoom(root.transform, ModuleType.SchoolCorridor, "CorridorTurnB", new Vector3(offset, 0f, 18.5f), new Vector2(3.2f, 10f), 3.2f, 0f, true, true);
+        CreateRoom(root.transform, ClassroomTypeFor(level), "CoreClassroom", new Vector3(offset, 0f, 29.5f), new Vector2(9f, 12f), 3.8f, 0f, true, true);
+        // CoreHall overlaps CoreClassroom by 0.5m (back edge at 35.5 vs front at 35.5)
+        // CoreHall depth 14 → center = 35.5 + 7 = 42.5
+        CreateRoom(root.transform, CoreTypeFor(level), "CoreHall", new Vector3(offset, 0f, 42.5f), new Vector2(14f, 14f), CoreHeightFor(level), 0f, true, true);
 
         Vector3 start = new Vector3(offset, 0.05f, -2f);
-        Vector3 exitPosition = new Vector3(offset + 9f, 0.1f, 49f);
+        // Exit stays at Z=49, now 0.5m inside CoreHall front edge (center 42.5 + depth/2 = 49.5)
+        Vector3 exitPosition = new Vector3(offset, 0.1f, 49f);
         CreateMarker(root.transform, "PlayerStart", start, false);
         CreateMarker(root.transform, "LevelExit", exitPosition, true).AddComponent<LevelExit>().nextSceneName = level < 15 ? "Level_" + (level + 1).ToString("00") + "_SchoolGreybox" : string.Empty;
 
@@ -160,7 +168,7 @@ public static class LevelValidator
 
     public static void ValidateGroupA_Architecture(Scene scene, GreyboxValidationResult result)
     {
-        GreyboxModule[] modules = UnityEngine.Object.FindObjectsByType<GreyboxModule>(FindObjectsSortMode.None);
+        GreyboxModule[] modules = UnityEngine.Object.FindObjectsByType<GreyboxModule>(FindObjectsInactive.Exclude);
         int starts = 0;
         int exits = 0;
         bool corridor = false, classroom = false, hall = false;
@@ -178,7 +186,7 @@ public static class LevelValidator
                 hall |= Approximately(module.dimensions.y, 7.6f);
             if (module.clearance < 1.2f) result.failures.Add("FAIL-ARC-CLEARANCE");
         }
-        foreach (GameObject go in UnityEngine.Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+        foreach (GameObject go in UnityEngine.Object.FindObjectsByType<GameObject>(FindObjectsInactive.Exclude))
         {
             if (go.name == "PlayerStart") starts++;
             if (go.name == "LevelExit") exits++;

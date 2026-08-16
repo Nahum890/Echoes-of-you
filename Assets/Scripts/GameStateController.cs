@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -24,6 +25,7 @@ public class GameStateController : MonoBehaviour
     public static GameStateController Instance { get; private set; }
 
     public GameFlowState CurrentState { get; private set; } = GameFlowState.Exploration;
+    public event System.Action<GameFlowState, GameFlowState> StateChanged;
 
     bool _restartQueued;
 
@@ -108,7 +110,9 @@ public class GameStateController : MonoBehaviour
         if (CurrentState == nextState)
             return;
 
+        var oldState = CurrentState;
         CurrentState = nextState;
+        StateChanged?.Invoke(oldState, nextState);
         if (!react)
             return;
 

@@ -1,0 +1,155 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f0ac50d3afa57943b71a06b14330d80, type: 3}
+  m_Name: NarrativeFlagCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.Narrative.Data.NarrativeFlagCatalog
+  _flags:
+  - _flagName: allow_to_see
+    _category: 0
+    _comprehensionDelta: 1
+    _description: 
+  - _flagName: pattern_seen
+    _category: 0
+    _comprehensionDelta: 1
+    _description: 
+  - _flagName: allow_other_version
+    _category: 0
+    _comprehensionDelta: 1
+    _description: 
+  - _flagName: trust_echo
+    _category: 0
+    _comprehensionDelta: 1
+    _description: 
+  - _flagName: admit_silence
+    _category: 0
+    _comprehensionDelta: 1
+    _description: 
+  - _flagName: touched_locker
+    _category: 0
+    _comprehensionDelta: 1
+    _description: 
+  - _flagName: memory_is_real
+    _category: 0
+    _comprehensionDelta: 1
+    _description: 
+  - _flagName: single_take
+    _category: 0
+    _comprehensionDelta: 1
+    _description: 
+  - _flagName: release_control
+    _category: 0
+    _comprehensionDelta: 1
+    _description: 
+  - _flagName: touch_lyra_object
+    _category: 0
+    _comprehensionDelta: 1
+    _description: 
+  - _flagName: self_coordination
+    _category: 0
+    _comprehensionDelta: 1
+    _description: 
+  - _flagName: carry_two
+    _category: 0
+    _comprehensionDelta: 1
+    _description: 
+  - _flagName: let_go_pain
+    _category: 0
+    _comprehensionDelta: 1
+    _description: 
+  - _flagName: imperfect_take
+    _category: 0
+    _comprehensionDelta: 1
+    _description: 
+  - _flagName: follow_echo
+    _category: 0
+    _comprehensionDelta: 1
+    _description: 
+  - _flagName: break_pattern_n15
+    _category: 0
+    _comprehensionDelta: 1
+    _description: 
+  - _flagName: avoid_looking
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: pattern_denied
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: hold_my_version
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: doubt_echo
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: justify_silence
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: refused_locker
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: memory_defensive
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: fix_future
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: grab_second_take
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: pick_one_self
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: control_persist
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: observe_lyra_object_only
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: solo_climb
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: demand_truth
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: salvage_pain
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: perfect_take
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: control_echo
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: repeat_pattern_n15
+    _category: 1
+    _comprehensionDelta: 0
+    _description: 
+  - _flagName: salir_del_colegio
+    _category: 2
+    _comprehensionDelta: 0
+    _description: 

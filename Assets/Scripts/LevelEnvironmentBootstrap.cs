@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering;
+using UnityEngine.UIElements;
+using Echoes.VN;
 
 public class LevelEnvironmentBootstrap : MonoBehaviour
 {
@@ -31,18 +34,40 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         ScaledScenes.Clear();
     }
 
+    static bool _sceneLoadHooked;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     static void BootstrapAfterLoad()
     {
         SceneManager.sceneUnloaded += OnSceneUnloaded;
 
+        if (!_sceneLoadHooked)
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            _sceneLoadHooked = true;
+        }
+
         string scene = SceneManager.GetActiveScene().name;
         if (!scene.StartsWith("Level_"))
             return;
 
+        RunBootstrapForScene(scene);
+    }
+
+    static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (!scene.name.StartsWith("Level_"))
+            return;
+
+        RunBootstrapForScene(scene.name);
+    }
+
+    static void RunBootstrapForScene(string scene)
+    {
         ApplyLevelGeometryScale(scene);
         ApplyPlayerAnimationSetup();
         UnlockPlayerControl();
+        EnsureGroundLayerOnEnvironment();
         ApplyHazardScales();
         ApplyObstacleHeights();
         CullLegacyOverlappingDressing();
@@ -55,8 +80,15 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
             _lightingApplied = true;
         }
         ApplyLighting();
+        BoostEarlyLevelLighting(scene);
+        ApplyArchitectureMaterialStyling();
         ApplyEchoPlateVisuals();
         EnsureExperienceSystems();
+        EnsureInteractionPromptUI();
+        EnsureVNSystem();
+        EnsureInteractableProps();
+        EnsureLoadingScreen();
+        EnsureLevelIntro();
     }
 
     static void EnsureExperienceSystems()
@@ -71,6 +103,131 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         {
             GameObject escape = new GameObject("LevelEscapeSequence");
             escape.AddComponent<LevelEscapeSequence>();
+        }
+    }
+
+    static void EnsureInteractionPromptUI()
+    {
+        if (Object.FindAnyObjectByType<InteractionPromptInitializer>() == null)
+        {
+            var go = new GameObject("InteractionPromptBootstrap");
+            go.AddComponent<InteractionPromptInitializer>();
+        }
+    }
+
+    static void EnsureLevelIntro()
+    {
+        var go = new GameObject("LevelIntroBootstrap");
+        go.AddComponent<LevelIntroTrigger>();
+    }
+
+    static void EnsureLoadingScreen()
+    {
+        if (LoadingScreenController.Instance == null)
+        {
+            var go = new GameObject("LoadingScreenController");
+            go.AddComponent<LoadingScreenController>();
+        }
+    }
+
+    static void EnsureInteractableProps()
+    {
+        var existing = Object.FindObjectsByType<Echoes.Interaction.InteractableObject>(FindObjectsInactive.Exclude);
+        if (existing != null && existing.Length >= 3)
+            return;
+
+        string scene = SceneManager.GetActiveScene().name;
+        int levelNum = 1;
+        if (int.TryParse(scene.Replace("Level_", "").Replace("N", ""), out var parsed))
+            levelNum = parsed;
+
+        var player = GameObject.FindGameObjectWithTag("Player");
+        Vector3 basePos = player != null ? player.transform.position : new Vector3(0, 1, 0);
+
+        string[][] propDefs =
+        {
+            new[] { "Prop_AmberCube_1", "Cubo de memoria 1", "interaction.amber_cube_1" },
+            new[] { "Prop_AmberCube_2", "Cubo de memoria 2", "interaction.amber_cube_2" },
+            new[] { "Prop_AmberCube_3", "Cubo de memoria 3", "interaction.amber_cube_3" },
+            new[] { "Prop_AmberCube_4", "Cubo de memoria 4", "interaction.amber_cube_4" },
+        };
+
+        var offsets = new Vector3[]
+        {
+            new(3f, 0.5f, 2f),
+            new(-3f, 0.5f, 2f),
+            new(3f, 0.5f, -2f),
+            new(-3f, 0.5f, -2f),
+        };
+
+        int needed = Mathf.Max(0, 3 - (existing != null ? existing.Length : 0));
+        for (int i = 0; i < needed && i < propDefs.Length; i++)
+        {
+            var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            go.name = propDefs[i][0];
+            go.transform.position = basePos + offsets[i];
+            go.transform.localScale = new Vector3(0.6f, 0.6f, 0.6f);
+
+            var rend = go.GetComponent<Renderer>();
+            if (rend != null)
+            {
+                var mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+                mat.color = new Color(1f, 0.72f, 0.22f);
+                if (mat.HasProperty("_EmissionColor"))
+                {
+                    mat.EnableKeyword("_EMISSION");
+                    mat.SetColor("_EmissionColor", new Color(1f, 0.72f, 0.22f) * 0.8f);
+                }
+                rend.sharedMaterial = mat;
+            }
+
+            var io = go.AddComponent<Echoes.Interaction.InteractableObject>();
+            var ioType = io.GetType();
+            ioType.GetField("commentKey", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.SetValue(io, propDefs[i][2]);
+            ioType.GetField("displayName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.SetValue(io, propDefs[i][1]);
+            ioType.GetField("isLyraArtifact", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.SetValue(io, true);
+
+            var col = go.GetComponent<Collider>();
+            if (col != null) col.isTrigger = true;
+        }
+
+        Debug.Log($"[LevelEnvironmentBootstrap] EnsureInteractableProps: scene had {(existing != null ? existing.Length : 0)}, spawned {needed} props.");
+    }
+
+    static void EnsureVNSystem()
+    {
+        if (Object.FindAnyObjectByType<VN_DialogueController>() == null)
+        {
+            var prefab = Resources.Load<GameObject>("EchoesVNBootstrap");
+            if (prefab != null)
+            {
+                var go = Object.Instantiate(prefab);
+                go.name = "EchoesVNBootstrap";
+                DontDestroyOnLoad(go);
+
+                var docs = go.GetComponentsInChildren<UIDocument>();
+                foreach (var doc in docs)
+                {
+                    if (doc.GetComponent<VN_DialogueController>() != null)
+                    {
+                        doc.sortingOrder = -100;
+                        doc.enabled = false;
+                        var dc = doc.GetComponent<VN_DialogueController>();
+                        if (dc != null) dc.enabled = false;
+                    }
+                    else
+                    {
+                        doc.sortingOrder = -100;
+                        doc.enabled = false;
+                    }
+                }
+
+                Debug.Log("[LevelEnvironmentBootstrap] EchoesVNBootstrap instantiated.");
+            }
+            else
+            {
+                Debug.LogWarning("[LevelEnvironmentBootstrap] EchoesVNBootstrap prefab not found in Resources.");
+            }
         }
     }
 
@@ -102,23 +259,10 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
-            LevelSpawnMarker marker = player.GetComponent<LevelSpawnMarker>();
-            if (marker == null)
-            {
-                marker = player.AddComponent<LevelSpawnMarker>();
-                marker.OriginalPosition = player.transform.position;
-            }
-
-            if (!marker.PositionScaled)
-            {
-                Vector3 original = marker.OriginalPosition;
-                player.transform.position = new Vector3(
-                    original.x * scale,
-                    original.y,
-                    original.z * scale);
-                marker.PositionScaled = true;
-            }
-
+            // SPEC: El player NO se escala con LevelGeometryScale. Su CharacterController
+            // ya tiene las dimensiones canónicas (h=2.2, r=0.36, center=1.1) aplicadas en
+            // PlayerController.Awake(). Solo garantizamos que sigan correctas y repo-
+            // sicionamos el GroundCheck (bootstrap corre después de Awake).
             CharacterController cc = player.GetComponent<CharacterController>();
             if (cc != null)
             {
@@ -127,6 +271,10 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
                 cc.center = new Vector3(0f, EchoesWorldMetrics.PlayerCenterY, 0f);
                 cc.enabled = true;
             }
+
+            PlayerController pc = player.GetComponent<PlayerController>();
+            if (pc != null)
+                pc.RepositionGroundCheck();
         }
 
         if (scaledAny)
@@ -159,7 +307,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
 
         PlayerProceduralAnimator procedural = player.GetComponentInChildren<PlayerProceduralAnimator>(true);
         if (procedural != null)
-            procedural.enabled = EchoesPresentationSettings.ProceduralMotionEnabled;
+            procedural.enabled = false;
     }
 
     static void ApplyHazardScales()
@@ -322,56 +470,37 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
 
     public static void ApplyLighting()
     {
-        float fogDensity = EchoesPresentationSettings.GameFogDensity;
-        float sunIntensity = EchoesPresentationSettings.GameSunIntensity;
-        float pointMul = EchoesPresentationSettings.GamePointLightMultiplier;
-        float ambientMul = EchoesPresentationSettings.GameAmbientMultiplier;
-        const float globalLightScale = 0.95f;
-        sunIntensity *= globalLightScale;
-        pointMul *= globalLightScale;
-        ambientMul *= globalLightScale;
-
+        // SPEC COMPLIANCE: If scene has LevelLightingSettings, use its values (Flat ambient per spec).
+        // Otherwise, do NOT overwrite - let scene setup handle lighting per spec.
         LevelLightingSettings custom = Object.FindAnyObjectByType<LevelLightingSettings>();
         if (custom != null)
         {
-            custom.fogDensity = fogDensity;
-            custom.directionalIntensity = sunIntensity;
-            custom.pointLightIntensityMultiplier = pointMul;
-            custom.directionalColor = new Color(0.44f, 0.54f, 0.7f, 1f);
-            float ambientBoost = ambientMul * 2.5f;
-            custom.ambientSky = new Color(0.035f * ambientBoost, 0.05f * ambientBoost, 0.09f * ambientBoost, 1f);
-            custom.ambientEquator = new Color(0.018f * ambientBoost, 0.026f * ambientBoost, 0.048f * ambientBoost, 1f);
-            custom.ambientGround = new Color(0.006f * ambientBoost, 0.008f * ambientBoost, 0.014f * ambientBoost, 1f);
-            custom.fogColor = new Color(0.018f, 0.024f, 0.038f, 1f);
-            custom.reflectionIntensity = 0.18f;
             custom.ApplyNow();
-            if (custom.disableRuntimeFillLights)
+
+            // Always clean up any stray fill lights - scene lighting handles everything per spec
+            Light[] strayFills = Object.FindObjectsByType<Light>(FindObjectsInactive.Exclude);
+            for (int i = 0; i < strayFills.Length; i++)
             {
-                // Clean up any stray fill lights if fill lights are disabled
-                Light[] strayFills = Object.FindObjectsByType<Light>(FindObjectsInactive.Exclude);
-                for (int i = 0; i < strayFills.Length; i++)
+                if (strayFills[i] != null && strayFills[i].name.StartsWith("EchoesFill_"))
                 {
-                    if (strayFills[i] != null && strayFills[i].name.StartsWith("EchoesFill_"))
-                    {
-                        if (Application.isPlaying) Object.Destroy(strayFills[i].gameObject);
-                        else Object.DestroyImmediate(strayFills[i].gameObject);
-                    }
+                    if (Application.isPlaying) Object.Destroy(strayFills[i].gameObject);
+                    else Object.DestroyImmediate(strayFills[i].gameObject);
                 }
-                return;
             }
+            return;
         }
 
-        RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
-        float ambientBoost2 = ambientMul * 2.5f;
-        RenderSettings.ambientSkyColor = new Color(0.035f * ambientBoost2, 0.05f * ambientBoost2, 0.09f * ambientBoost2);
-        RenderSettings.ambientEquatorColor = new Color(0.018f * ambientBoost2, 0.026f * ambientBoost2, 0.048f * ambientBoost2);
-        RenderSettings.ambientGroundColor = new Color(0.006f * ambientBoost2, 0.008f * ambientBoost2, 0.014f * ambientBoost2);
-        RenderSettings.reflectionIntensity = 0.18f;
+        // FALLBACK: Only apply spec-compliant setup if NO LevelLightingSettings in scene
+        RenderSettings.ambientMode = AmbientMode.Flat;
+        RenderSettings.ambientLight = new Color(0.15f, 0.15f, 0.15f, 1f);
+        float fogDensity = EchoesPresentationSettings.GameFogDensity;
         RenderSettings.fog = fogDensity > 0.0001f;
         RenderSettings.fogMode = FogMode.ExponentialSquared;
         RenderSettings.fogColor = new Color(0.018f, 0.024f, 0.038f);
         RenderSettings.fogDensity = fogDensity;
 
+        float sunIntensity = EchoesPresentationSettings.GameSunIntensity;
+        float pointMul = EchoesPresentationSettings.GamePointLightMultiplier;
         Light[] lights = Object.FindObjectsByType<Light>(FindObjectsInactive.Exclude);
         for (int i = 0; i < lights.Length; i++)
         {
@@ -382,7 +511,8 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
             if (light.type == LightType.Directional)
             {
                 light.intensity = sunIntensity;
-                light.color = new Color(0.44f, 0.54f, 0.7f);
+                light.color = new Color(0.945f, 0.945f, 1f, 1f); // #F2F2FF per spec
+                light.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
                 continue;
             }
 
@@ -465,5 +595,145 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         light.intensity = intensity;
         light.range = range;
         light.shadows = LightShadows.None;
+    }
+
+    /// <summary>
+    /// Ensures that any collider-bearing geometry under the "--- ENVIRONMENT ---"
+    /// root is on the Ground layer (layer 6) so the player's ground probe
+    /// (which uses groundCheckMask = 1<<6) actually detects the floor.
+    /// Environment Pass props that ended up on Default (layer 0) were causing
+    /// the player to sink (the SphereCast ignored them).
+    /// </summary>
+    static void EnsureGroundLayerOnEnvironment()
+    {
+        const int GroundLayer = 6;
+        GameObject envRoot = GameObject.Find("--- ENVIRONMENT ---");
+        if (envRoot == null) return;
+
+        int fixedCount = 0;
+        Collider[] colliders = envRoot.GetComponentsInChildren<Collider>(true);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            Collider col = colliders[i];
+            if (col == null) continue;
+            // Only re-layer colliders that are currently on Default (0) layer.
+            // Avoid touching Player (8), Echo (9), Trigger, Hazard (10), PressurePlate (11), etc.
+            if (col.gameObject.layer == 0)
+            {
+                col.gameObject.layer = GroundLayer;
+                fixedCount++;
+            }
+        }
+
+        if (fixedCount > 0)
+            Debug.Log($"[LevelEnvironmentBootstrap] Re-layered {fixedCount} env colliders to Ground (layer 6).");
+    }
+
+    static void ApplyArchitectureMaterialStyling()
+    {
+        Renderer[] renderers = Object.FindObjectsByType<Renderer>(FindObjectsInactive.Exclude);
+        int styledCount = 0;
+        
+        // Colores canónicos institucionales para las paredes de los niveles liminales
+        Color wallColor = new Color(0.18f, 0.24f, 0.32f, 1f); // Corridor Navy (#1C2430 con más luz)
+        Color accentColor = new Color(0.17f, 0.29f, 0.29f, 1f); // Institutional Teal (#2B4A4A)
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer r = renderers[i];
+            if (r == null) continue;
+
+            Material[] mats = r.sharedMaterials;
+
+            for (int m = 0; m < mats.Length; m++)
+            {
+                Material mat = mats[m];
+                if (mat == null) continue;
+
+                // Si usa el shader PS1World o similar y tiene un color demasiado oscuro (< 0.15)
+                if (mat.HasProperty("_BaseColor"))
+                {
+                    Color c = mat.GetColor("_BaseColor");
+                    if (c.r < 0.12f && c.g < 0.14f && c.b < 0.18f)
+                    {
+                        // Crear una instancia única en runtime para no corromper el asset en disco
+                        Material instMat = r.materials[m];
+                        instMat.SetColor("_BaseColor", (i % 2 == 0) ? wallColor : accentColor);
+                        if (instMat.HasProperty("_DitherStrength"))
+                            instMat.SetFloat("_DitherStrength", 0.35f);
+                        styledCount++;
+                    }
+                }
+            }
+        }
+
+        if (styledCount > 0)
+            Debug.Log($"[LevelEnvironmentBootstrap] Estilizados {styledCount} materiales de arquitectura con paleta canónica liminal.");
+    }
+
+    /// <summary>
+    /// Levels 1-5 get extra brightness so the player can see the environment and props.
+    /// Increases the directional sun intensity and ambient light after the scene's own
+    /// lighting settings have been applied.
+    /// </summary>
+    static void BoostEarlyLevelLighting(string sceneName)
+    {
+        int levelNum = 0;
+        string numStr = sceneName.Replace("Level_", "");
+        int.TryParse(numStr, out levelNum);
+        if (levelNum < 1 || levelNum > 5) return;
+
+        float boostMul = levelNum switch
+        {
+            1 => 2.8f,
+            2 => 2.5f,
+            3 => 2.3f,
+            4 => 2.1f,
+            _ => 1.8f
+        };
+
+        Light[] lights = Object.FindObjectsByType<Light>(FindObjectsInactive.Exclude);
+        for (int i = 0; i < lights.Length; i++)
+        {
+            Light light = lights[i];
+            if (light == null) continue;
+
+            if (light.type == LightType.Directional)
+            {
+                light.intensity = Mathf.Max(light.intensity, 1.2f * boostMul);
+                light.color = new Color(1f, 0.95f, 0.85f, 1f);
+            }
+            else if (light.type == LightType.Point && !light.name.StartsWith("EchoesFill_"))
+            {
+                light.intensity = Mathf.Clamp(light.intensity * boostMul * 0.6f, 0.3f, 4f);
+                light.range = Mathf.Clamp(light.range * 1.2f, 3f, 20f);
+            }
+        }
+
+        Color oldAmbient = RenderSettings.ambientLight;
+        float aR = Mathf.Min(oldAmbient.r + 0.12f * boostMul, 1f);
+        float aG = Mathf.Min(oldAmbient.g + 0.13f * boostMul, 1f);
+        float aB = Mathf.Min(oldAmbient.b + 0.14f * boostMul, 1f);
+        RenderSettings.ambientLight = new Color(aR, aG, aB, 1f);
+
+        if (RenderSettings.fog)
+        {
+            float fogDensity = RenderSettings.fogDensity;
+            RenderSettings.fogDensity = Mathf.Max(fogDensity * 0.35f, 0.0005f);
+        }
+
+        Vector3 origin = Vector3.zero;
+        var player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null) origin = player.transform.position;
+
+        for (int i = 0; i < 3; i++)
+        {
+            float angle = i * Mathf.PI * 2f / 3f;
+            Vector3 offset = new Vector3(Mathf.Cos(angle) * 10f, 9f, Mathf.Sin(angle) * 10f);
+            SpawnFillLight("EchoesFill_Boost_" + i, origin + offset,
+                new Color(1f, 0.92f, 0.78f), 1.4f, 22f);
+        }
+
+        Debug.Log($"[LevelEnvironmentBootstrap] BoostEarlyLevelLighting: {sceneName} boostMul={boostMul:F1}");
     }
 }

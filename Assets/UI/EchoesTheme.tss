@@ -89,7 +89,7 @@
     font-size: 36px;
     letter-spacing: 1px;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
-    color: #E8B262;
+    color: #FFBF00;
     -unity-text-align: middle-left;
 }
 
@@ -134,7 +134,7 @@
     background-color: #06080C;
     border-width: 0;
     border-top-width: 1px;
-    border-top-color: rgba(232, 178, 98, 0.3);
+    border-top-color: rgba(255, 191, 0, 0.3);
     position: absolute;
     left: 0;
     top: 0;
@@ -147,7 +147,7 @@
     width: 420px;
     background-color: #030406;
     border-right-width: 1px;
-    border-right-color: rgba(232, 178, 98, 0.2);
+    border-right-color: rgba(255, 191, 0, 0.2);
     padding: 48px 32px;
     justify-content: space-between;
     flex-shrink: 0;
@@ -182,9 +182,9 @@
 }
 
 .nav-item--active {
-    color: #E8B262;
-    background-color: rgba(232, 178, 98, 0.08);
-    border-left-color: #E8B262;
+    color: #FFBF00;
+    background-color: rgba(255, 191, 0, 0.08);
+    border-left-color: #FFBF00;
     border-left-width: 3px;
 }
 
@@ -231,7 +231,7 @@
 .accent-line {
     height: 1px;
     width: 100%;
-    background-color: rgba(232, 178, 98, 0.4);
+    background-color: rgba(255, 191, 0, 0.4);
     margin-bottom: 28px;
     margin-top: 8px;
 }
@@ -280,7 +280,7 @@
 
 .telemetry-chip-value {
     font-size: 22px;
-    color: #E8B262;
+    color: #FFBF00;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
     margin-top: 4px;
 }
@@ -307,8 +307,8 @@
 }
 
 .level-card--active {
-    border-color: #E8B262;
-    background-color: rgba(232, 178, 98, 0.08);
+    border-color: #FFBF00;
+    background-color: rgba(255, 191, 0, 0.08);
 }
 
 .level-button--locked {
@@ -317,14 +317,14 @@
 }
 
 .level-button--completed {
-    border-color: rgba(232, 178, 98, 0.5);
-    background-color: rgba(232, 178, 98, 0.06);
+    border-color: rgba(255, 191, 0, 0.5);
+    background-color: rgba(255, 191, 0, 0.06);
 }
 
 .preset-button--active {
-    border-color: #E8B262;
-    background-color: rgba(232, 178, 98, 0.16);
-    color: #E8B262;
+    border-color: #FFBF00;
+    background-color: rgba(255, 191, 0, 0.16);
+    color: #FFBF00;
 }
 
 /* Escala de UI / texto de menú (aplicada sobre el root) */
@@ -368,9 +368,9 @@
 .settings-group-title {
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
     font-size: 18px;
-    color: #E8B262;
+    color: #FFBF00;
     border-bottom-width: 1px;
-    border-bottom-color: rgba(232, 178, 98, 0.3);
+    border-bottom-color: rgba(255, 191, 0, 0.3);
     padding-bottom: 6px;
     margin-bottom: 18px;
     -unity-text-transform: uppercase;
@@ -425,14 +425,14 @@
 }
 
 .btn-classic-accent {
-    border-color: rgba(232, 178, 98, 0.7);
-    color: #E8B262;
+    border-color: rgba(255, 191, 0, 0.7);
+    color: #FFBF00;
 }
 
 .btn-classic-accent:hover {
-    background-color: rgba(232, 178, 98, 0.15);
+    background-color: rgba(255, 191, 0, 0.15);
     color: #F5C87A;
-    border-color: #E8B262;
+    border-color: #FFBF00;
 }
 
 /* Dropdown override */
@@ -472,7 +472,7 @@
 
 .unity-toggle:checked .unity-toggle__checkmark {
     background-image: none;
-    background-color: #E8B262;
+    background-color: #FFBF00;
 }
 
 /* ============================================================
@@ -558,7 +558,7 @@
 .hud-echo-label {
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
     font-size: 11px;
-    color: #E8B262;
+    color: #FFBF00;
     margin-left: 12px;
 }
 
@@ -576,7 +576,7 @@
 }
 
 .hud-echo-slot--filled {
-    background-color: #E8B262;
+    background-color: #FFBF00;
 }
 
 /* HUD Bars (top-right) */
@@ -611,7 +611,7 @@
 }
 
 .hud-bar-fill--recall {
-    background-color: #E8B262;
+    background-color: #FFBF00;
 }
 
 .hud-bar-label {
@@ -785,9 +785,9 @@
     width: 460px;
     background-color: #05070A;
     border-width: 1px;
-    border-color: rgba(232, 178, 98, 0.35);
+    border-color: rgba(255, 191, 0, 0.35);
     border-left-width: 4px;
-    border-left-color: #E8B262;
+    border-left-color: #FFBF00;
     padding: 48px 36px;
     position: absolute;
     left: 80px;
@@ -799,7 +799,7 @@
 
 .pause-title {
     font-size: 32px;
-    color: #E8B262;
+    color: #FFBF00;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
     letter-spacing: 1px;
     margin-bottom: 2px;
@@ -853,7 +853,7 @@
 .unity-base-dropdown__container {
     background-color: #080A0E !important;
     border-width: 1px !important;
-    border-color: #E8B262 !important;
+    border-color: #FFBF00 !important;
 }
 
 .unity-base-dropdown__item {
@@ -867,11 +867,9 @@
 }
 
 .unity-base-dropdown__item:hover {
-    background-color: rgba(232, 178, 98, 0.12) !important;
+    background-color: rgba(255, 191, 0, 0.12) !important;
 }
 
 .unity-base-dropdown__item:hover .unity-label {
-    color: #E8B262 !important;
+    color: #FFBF00 !important;
 }
-
-

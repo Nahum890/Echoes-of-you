@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Echoes.UI;
 
 /// <summary>
 /// Grabación por mantener F/R: hasta 12s default / 20s max o al soltar. Genera un eco que repite el bucle.
@@ -156,7 +157,7 @@ public class EchoRecorder : MonoBehaviour
         // Echo system disabled for this level
         if (maxEchoes <= 0) return;
 
-        bool hold = Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.R);
+        bool hold = Input.GetKey(KeyCode.R);
 
         if (hold && !_recording)
             StartRecording();

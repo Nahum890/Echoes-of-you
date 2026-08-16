@@ -1,78 +1,237 @@
 # Docs/ExecutableSpecs/catalogs/asset_guid_registry.yaml (SPEC-126)
-# REGLA: Todo agente que deba instanciar un GameObject DEBE consultar este archivo primero.
+# Authoritative registry of prefab GUIDs resolved against AssetDatabase.
+# Aligned to module-composition model (Q5 locked decision): no named room
+# prefabs — rooms are composed at build time by EchoesModuleFactory from the
+# modular Arch_* primitives listed below. The Player GameObject is assembled
+# procedurally by EchoesLevelShell.SpawnPlayer (no Player.prefab asset).
+#
+# REGLA: Todo agente que deba instanciar un GameObject DEBE consultar este archivo
+# primero. Si la entrada no existe aqui, falla ACK-001 y debe documentarse antes
+# de instanciar. Validado por ExecutableSpecValidator.CheckGuidRegistry (ACK-001).
+canonical_source: Docs/ExecutableSpecs/catalogs/asset_guid_registry.yaml
+resolution_mechanism: AssetDatabase.GUIDToAssetPath
+schema_version: "1.0"
+
 registry:
-  # Personajes
-  PlayerPrefab:
-    path: "Assets/Prefabs/Player/Player.prefab"
-    addressable_key: "Player"
-    type: "GameObject"
+  # ============ Personajes ============
+  # Player: sin prefab — EchoesLevelShell.SpawnPlayer crea el GameObject en runtime
+  PlayerGameObject:
+    path: ""
+    factory_source: Assets/Editor/EchoesLevelShell.cs#SpawnPlayer
+    type: procedural GameObject
+    note: "No Player.prefab asset — assembled at spawn via code + CapsuleCollider + CinemachineBrain"
   EchoPrefab:
-    path: "Assets/Prefabs/Echo/EchoBody.prefab"
+    path: "Assets/Prefabs/EchoPrefab.prefab"
+    guid: "8d38dfd767baaa04cb84cc974dc6ea4c"
     addressable_key: "EchoBody"
     type: "GameObject"
 
-  # Arquitectura — Módulos de Sala (ModuleType enum -> prefab path)
-  SchoolHall:
-    path: "Assets/Prefabs/Rooms/SchoolHall.prefab"
-    addressable_key: "Room_SchoolHall"
-    enum_index: 31
-  SchoolCorridor:
-    path: "Assets/Prefabs/Rooms/SchoolCorridor.prefab"
-    addressable_key: "Room_SchoolCorridor"
-    enum_index: 32
-  SchoolClassroom:
-    path: "Assets/Prefabs/Rooms/SchoolClassroom.prefab"
-    addressable_key: "Room_SchoolClassroom"
-    enum_index: 33
-  SchoolLibrary:
-    path: "Assets/Prefabs/Rooms/SchoolLibrary.prefab"
-    addressable_key: "Room_SchoolLibrary"
-    enum_index: 34
-  SchoolCourtyard:
-    path: "Assets/Prefabs/Rooms/SchoolCourtyard.prefab"
-    addressable_key: "Room_SchoolCourtyard"
-    enum_index: 35
-  SchoolGym:
-    path: "Assets/Prefabs/Rooms/SchoolGym.prefab"
-    addressable_key: "Room_SchoolGym"
-    enum_index: 36
-  SchoolCafeteria:
-    path: "Assets/Prefabs/Rooms/SchoolCafeteria.prefab"
-    addressable_key: "Room_SchoolCafeteria"
-    enum_index: 37
-  SchoolAuditorium:
-    path: "Assets/Prefabs/Rooms/SchoolAuditorium.prefab"
-    addressable_key: "Room_SchoolAuditorium"
-    enum_index: 38
-  SchoolStairwell:
-    path: "Assets/Prefabs/Rooms/SchoolStairwell.prefab"
-    addressable_key: "Room_SchoolStairwell"
-    enum_index: 39
-  SchoolBathroom:
-    path: "Assets/Prefabs/Rooms/SchoolBathroom.prefab"
-    addressable_key: "Room_SchoolBathroom"
-    enum_index: 40
+  # ============ Arquitectura — Módulos modulares (ModuleType enum -> Arch_* primitive) ============
+  # Q5 decision: rooms composed at build time from these primitives, no named room prefabs.
+  Arch_Floor:
+    path: "Assets/Prefabs/Architecture/Arch_Floor.prefab"
+    guid: "50188b4f10487ce409add769f1a8f1e1"
+    category: architecture
+  Arch_Wall:
+    path: "Assets/Prefabs/Architecture/Arch_Wall.prefab"
+    guid: "aed302bead1213049b2a9dd73c70c449"
+    category: architecture
+  Arch_WallWindow:
+    path: "Assets/Prefabs/Architecture/Arch_WallWindow.prefab"
+    guid: "4afe2b7f2a5d0614cab2c66544e2013a"
+    category: architecture
+  Arch_Column:
+    path: "Assets/Prefabs/Architecture/Arch_Column.prefab"
+    guid: "d6851e1b2ad546e42a11bf0a8841dada"
+    category: architecture
+  Arch_Doorway:
+    path: "Assets/Prefabs/Architecture/Arch_Doorway.prefab"
+    guid: "b9091d0215d3eda448f327e95fa21ed5"
+    category: architecture
+  Arch_Stairs:
+    path: "Assets/Prefabs/Architecture/Arch_Stairs.prefab"
+    guid: "24367ab7c6447424e842a3ffe8da0b2e"
+    category: architecture
+  Arch_Locker:
+    path: "Assets/Prefabs/Architecture/Arch_Locker.prefab"
+    guid: "9e3f8d9adfaa7dd4981f7b6c725ad239"
+    category: architecture
+  Arch_Shelf:
+    path: "Assets/Prefabs/Architecture/Arch_Shelf.prefab"
+    guid: "a4c3384f49f91a8438237bfa30226125"
+    category: architecture
+  Arch_Desk:
+    path: "Assets/Prefabs/Architecture/Arch_Desk.prefab"
+    guid: "bd00c369a183a8e40bf343a883460559"
+    category: architecture
+  Arch_Chair:
+    path: "Assets/Prefabs/Architecture/Arch_Chair.prefab"
+    guid: "2c182b284db2b8f4caa186cb045f1249"
+    category: architecture
+  Arch_Bench:
+    path: "Assets/Prefabs/Architecture/Arch_Bench.prefab"
+    guid: "b5f764881fe93fe4e8e126a0bd1130d2"
+    category: architecture
+  Arch_Fence:
+    path: "Assets/Prefabs/Architecture/Arch_Fence.prefab"
+    guid: "0593f644be3a9544da7c21c33c89f78a"
+    category: architecture
+  Arch_Trashcan:
+    path: "Assets/Prefabs/Architecture/Arch_Trashcan.prefab"
+    guid: "8a200ea474b81dc44a5b19b0c52a42e1"
+    category: architecture
+  Arch_Tree:
+    path: "Assets/Prefabs/Architecture/Arch_Tree.prefab"
+    guid: "1fea69e82375590419236d8f36f0fffd"
+    category: architecture
 
-  # Props narrativos
+  # ============ Iluminación y Cámara ============
+  FluorescentLight:
+    path: "Assets/Prefabs/Lighting/FluorescentLight.prefab"
+    guid: "9bffa6ed97d688c40babe9175da5228e"
+    type: "GameObject"
+  EventFocusVCam:
+    path: "Assets/Prefabs/Camera/EventFocusVCam.prefab"
+    guid: "08d0831b73393c5418926e5a35bd40e9"
+    type: "GameObject"
+
+  # ============ LevelKit (mecánica jugable + estética) ============
+  EchoPathHint:
+    path: "Assets/Prefabs/LevelKit/EchoPathHint.prefab"
+    guid: "878dc8c6090179647bb53d1db7afe703"
+    category: levelkit
+  PMK_AccessBridge_4x3:
+    path: "Assets/Prefabs/LevelKit/PlayableMegakit/PMK_AccessBridge_4x3.prefab"
+    guid: "8094f2617a2e4a6449fc519b6aa4922d"
+    category: levelkit
+  PMK_BackdropColumn_Visual:
+    path: "Assets/Prefabs/LevelKit/PlayableMegakit/PMK_BackdropColumn_Visual.prefab"
+    guid: "f50a6529eec9688419cc292ab860da42"
+    category: levelkit
+  PMK_DoorFrame_8x4:
+    path: "Assets/Prefabs/LevelKit/PlayableMegakit/PMK_DoorFrame_8x4.prefab"
+    guid: "181a0e9e4f0115844a730dd05e7c740d"
+    category: levelkit
+  PMK_EchoLane_4x48:
+    path: "Assets/Prefabs/LevelKit/PlayableMegakit/PMK_EchoLane_4x48.prefab"
+    guid: "822f38421b3bb724c9b0cf40e211f204"
+    category: levelkit
+  PMK_LightPod_Visual:
+    path: "Assets/Prefabs/LevelKit/PlayableMegakit/PMK_LightPod_Visual.prefab"
+    guid: "9a792dd1ccef44a47baecce5f0e5bc24"
+    category: levelkit
+  PMK_LowParkourStep_3x3:
+    path: "Assets/Prefabs/LevelKit/PlayableMegakit/PMK_LowParkourStep_3x3.prefab"
+    guid: "916dd8eb6cf43ab48a0d45d1314146fc"
+    category: levelkit
+  PMK_MainDeck_14x10:
+    path: "Assets/Prefabs/LevelKit/PlayableMegakit/PMK_MainDeck_14x10.prefab"
+    guid: "0ebfd8e3e6069a840b3ae1cdf5cc76e6"
+    category: levelkit
+  PMK_PressurePlate_EchoOnly:
+    path: "Assets/Prefabs/LevelKit/PlayableMegakit/PMK_PressurePlate_EchoOnly.prefab"
+    guid: "27992ddb5526ae248b312b85eb108d0e"
+    category: levelkit
+  PMK_TimedBridge_6x7:
+    path: "Assets/Prefabs/LevelKit/PlayableMegakit/PMK_TimedBridge_6x7.prefab"
+    guid: "579e58c88c3f7d0458568bcb79349421"
+    category: levelkit
+  PMK_WideDeck_18x12:
+    path: "Assets/Prefabs/LevelKit/PlayableMegakit/PMK_WideDeck_18x12.prefab"
+    guid: "3e81931974847544ca4b88fefed6b6c8"
+    category: levelkit
+
+  # ============ Props narrativos (memory_amber #FFBF00) ============
+  Prop_AttendanceList:
+    path: "Assets/Prefabs/Props/Narrative/Prop_AttendanceList.prefab"
+    guid: "3432c178de3d8314ab369dae2f25923e"
+  Prop_Backpack:
+    path: "Assets/Prefabs/Props/Narrative/Prop_Backpack.prefab"
+    guid: "79fb67c5882f9754c9b3ac8f34d77ea6"
+  Prop_BlankBook:
+    path: "Assets/Prefabs/Props/Narrative/Prop_BlankBook.prefab"
+    guid: "d6b6e4be20056194596e262d37b2359a"
+  Prop_CenterBackpack:
+    path: "Assets/Prefabs/Props/Narrative/Prop_CenterBackpack.prefab"
+    guid: "55bc6de5797a0e8478f5b330ff337847"
+  Prop_ChalkDrawing:
+    path: "Assets/Prefabs/Props/Narrative/Prop_ChalkDrawing.prefab"
+    guid: "22ced674a2a90304c89010088d0ecaab"
+  Prop_ChalkGraffiti:
+    path: "Assets/Prefabs/Props/Narrative/Prop_ChalkGraffiti.prefab"
+    guid: "6846a41c09527694399a013cea1f0690"
   Prop_Coat:
-    path: "Assets/Prefabs/Narrative/Prop_Coat.prefab"
+    path: "Assets/Prefabs/Props/Narrative/Prop_Coat.prefab"
+    guid: "2a893f9d009433a498a28079f98ea63a"
     addressable_key: "Prop_Coat"
-  Prop_Desk_01:
-    path: "Assets/Prefabs/Props/Furniture/Prop_Desk_01.prefab"
-    addressable_key: "Prop_Desk_01"
-  Prop_Locker_01:
-    path: "Assets/Prefabs/Props/Furniture/Prop_Locker_01.prefab"
-    addressable_key: "Prop_Locker_01"
-    locker_spacing_m: 1.20
-    wall_offset_m: 0.10
+  Prop_CoffeeCups:
+    path: "Assets/Prefabs/Props/Narrative/Prop_CoffeeCups.prefab"
+    guid: "c57dbef30f8e2e74681f4235f9ab9380"
+  Prop_DriedFlowers:
+    path: "Assets/Prefabs/Props/Narrative/Prop_DriedFlowers.prefab"
+    guid: "aa00ef858ed9e03428a1214af6c8c29a"
+  Prop_JanitorCart:
+    path: "Assets/Prefabs/Props/Narrative/Prop_JanitorCart.prefab"
+    guid: "5a15f4f4c579b384f8d51a9d5773d727"
+  Prop_LibraryStamp:
+    path: "Assets/Prefabs/Props/Narrative/Prop_LibraryStamp.prefab"
+    guid: "55727df6b844359428058981c95a8158"
+  Prop_Notebook:
+    path: "Assets/Prefabs/Props/Narrative/Prop_Notebook.prefab"
+    guid: "d95b5b8643ccc14408268274027fe7f0"
+  Prop_OverturnedDesk:
+    path: "Assets/Prefabs/Props/Narrative/Prop_OverturnedDesk.prefab"
+    guid: "4ebd588f322504d4c88bca6c319ed20a"
+  Prop_PhotoFrame:
+    path: "Assets/Prefabs/Props/Narrative/Prop_PhotoFrame.prefab"
+    guid: "303f4874fd462674e84b84dca8f8c7dd"
+  Prop_RecordsBoard:
+    path: "Assets/Prefabs/Props/Narrative/Prop_RecordsBoard.prefab"
+    guid: "e9a3587e10a9f1049a7ba1e87fd83fc3"
+  Prop_SoccerBall:
+    path: "Assets/Prefabs/Props/Narrative/Prop_SoccerBall.prefab"
+    guid: "8c9a496b7f64bfe4f8aa2fd8c4440501"
+  Prop_StoppedClock:
+    path: "Assets/Prefabs/Props/Narrative/Prop_StoppedClock.prefab"
+    guid: "31322bfdafce3814cab5bc6bf04fcea9"
+  Prop_Stopwatch:
+    path: "Assets/Prefabs/Props/Narrative/Prop_Stopwatch.prefab"
+    guid: "3130b70457531d84b910a73235031ab7"
+  Prop_TeacherNotebook:
+    path: "Assets/Prefabs/Props/Narrative/Prop_TeacherNotebook.prefab"
+    guid: "7008d651ed482f34cbac0be866d5e999"
 
-  # Puzzle
-  PuzzleWirePrefab:
-    path: "Assets/Prefabs/Puzzle/PuzzleWire.prefab"
-    addressable_key: "PuzzleWire"
-  PressurePlatePrefab:
-    path: "Assets/Prefabs/Puzzle/PressurePlate.prefab"
-    addressable_key: "PressurePlate"
-  DoorPrefab:
-    path: "Assets/Prefabs/Architecture/Door.prefab"
-    addressable_key: "Door"
+  # ============ Props cotidianos ============
+  PupitreDoble:
+    path: "Assets/Prefabs/Props/PupitreDoble.prefab"
+    guid: "4deda25460577bb43b47236fe9d7377c"
+  Locker:
+    path: "Assets/Prefabs/Props/Locker.prefab"
+    guid: "7c1636f343c588b45b9e4a6c7b465404"
+  LockerPuertaAbierta:
+    path: "Assets/Prefabs/Props/LockerPuertaAbierta.prefab"
+    guid: "4fff775e88bb4194fb400d21d5bcc768"
+  Escritorio:
+    path: "Assets/Prefabs/Props/Escritorio.prefab"
+    guid: "2752fb04cea029942806fa8d4cd6a951"
+  MesaProfesor:
+    path: "Assets/Prefabs/Props/MesaProfesor.prefab"
+    guid: "8ebc048ced245f14c9a0bdab96dbbc71"
+  Estanteria:
+    path: "Assets/Prefabs/Props/Estanteria.prefab"
+    guid: "2c18f1c8781863b43bf722f08b7189ae"
+  EstanteriaCerrada:
+    path: "Assets/Prefabs/Props/EstanteriaCerrada.prefab"
+    guid: "0c4dca852479bf84b9456b3217c900a0"
+  Pizarra:
+    path: "Assets/Prefabs/Props/Pizarra.prefab"
+    guid: "ac40a67761ec61244806bc2b63c2abf9"
+  MochilaLyra:
+    path: "Assets/Prefabs/Props/MochilaLyra.prefab"
+    guid: "e8de793bb9225ab4d9d299f80968689a"
+
+validation:
+  - id: ACK-001
+    rule: "Todo prefab declarado con guid en este catalogo debe resolver via AssetDatabase.GUIDToAssetPath"
+    severity: fatal
+    validator: Assets/Editor/ExecutableSpecValidator.cs#CheckGuidRegistry

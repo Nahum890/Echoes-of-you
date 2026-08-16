@@ -1,0 +1,230 @@
+/* ============================================================
+   PauseMenuUI — Stich original con juego de sombras
+   - Panel izquierdo 33% con eco-silhouette (offset 4px, blur 1px)
+   - Scanline overlay
+   - Sombras grandes (box-shadow simulado con border offset)
+   - Glitch hover: text-shadow cyan + rojo
+   - Fondo backdrop blur semitransparente
+   ============================================================ */
+
+@import "EchoesDesignTokens.uss";
+
+/* ===== ROOT — blur del juego detras ===== */
+.root-fullscreen {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    overflow: hidden;
+    background-color: rgba(10, 10, 13, 0.55);
+}
+
+/* ===== SCANLINE OVERLAY ===== */
+.pause-scanline {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.04);
+    background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0, 0, 0, 0.08) 3px,
+        rgba(0, 0, 0, 0.08) 4px
+    );
+    pointer-events: none;
+}
+
+/* ===== NOTEBOOK — PANEL IZQUIERDO 33% ===== */
+.pause-notebook {
+    width: 640px;
+    height: 100%;
+    background-color: rgba(19, 20, 16, 0.75);
+    border-right-width: 2px;
+    border-right-color: #4a463f;
+    padding: 64px 48px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* ===== ECHO SILHOUETTE — sombra desplazada detras del panel ===== */
+.echo-silhouette {
+    position: absolute;
+    left: 4px;
+    top: 2px;
+    right: -4px;
+    bottom: -2px;
+    background-color: rgba(19, 20, 16, 0.45);
+    border-right-width: 2px;
+    border-right-color: #2a2a26;
+    pointer-events: none;
+    border-radius: 0;
+}
+
+/* ===== EMBLEMA (O rota) ===== */
+.pause-emblem {
+    margin-bottom: 48px;
+}
+
+.pause-emblem-text {
+    font-size: 56px;
+    color: #fffeff;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    -unity-text-align: middle-left;
+}
+
+/* ===== HEADER ===== */
+.pause-notebook__header {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom-width: 1px;
+    border-bottom-color: #4a463f;
+}
+
+.pause-title {
+    font-size: 48px;
+    color: #fffeff;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    opacity: 1;
+}
+
+.pause-subtitle {
+    font-size: 14px;
+    color: #63d4fa;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    opacity: 1;
+}
+
+.pause-location {
+    font-size: 16px;
+    color: #959087;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    opacity: 1;
+}
+
+/* ===== STATS ===== */
+.pause-stats {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(74, 70, 63, 0.50);
+}
+
+.pause-stat {
+    font-size: 16px;
+    color: #ccc6bc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    margin-bottom: 8px;
+    opacity: 1;
+}
+
+/* ===== ACTIONS ===== */
+.pause-actions {
+    flex-direction: column;
+    flex-grow: 1;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.pause-btn {
+    margin-bottom: 12px;
+    justify-content: flex-start;
+    padding: 16px 20px;
+    font-size: 18px;
+    color: #e4e2dc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    background-color: transparent;
+    border-width: 1px;
+    border-color: #959087;
+    border-radius: 0;
+    letter-spacing: 1px;
+    -unity-text-align: middle-left;
+    transition-property: color, background-color, border-color;
+    transition-duration: 150ms;
+    transition-timing-function: linear;
+    opacity: 1;
+}
+
+.pause-btn:hover {
+    color: #fffeff;
+    background-color: rgba(20, 28, 40, 0.8);
+    border-color: #63d4fa;
+}
+
+.pause-btn:active {
+    color: #E8B262;
+    border-color: #E8B262;
+    background-color: rgba(232, 178, 98, 0.10);
+}
+
+/* Boton focus (Reanudar por defecto) */
+.pause-btn--focus {
+    border-color: #63d4fa;
+    background-color: rgba(20, 28, 40, 0.8);
+    color: #fffeff;
+}
+
+/* Boton peligro (Reiniciar) */
+.pause-btn--danger:hover {
+    color: #ffb4ab;
+    border-color: #ffb4ab;
+    background-color: rgba(147, 0, 10, 0.15);
+}
+
+/* ===== FOOTER — salir al menu ===== */
+.pause-footer-btn {
+    margin-top: auto;
+    padding: 14px 20px;
+    font-size: 16px;
+    color: #959087;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    background-color: transparent;
+    border-width: 1px;
+    border-color: #959087;
+    border-radius: 0;
+    -unity-text-align: middle-left;
+    letter-spacing: 1px;
+    transition-property: color, border-color;
+    transition-duration: 200ms;
+    transition-timing-function: linear;
+}
+
+.pause-footer-btn:hover {
+    color: #ffb4ab;
+    border-color: #ffb4ab;
+}
+
+/* ===== RIGHT SIDE — texto REC residual ===== */
+.pause-rec-text {
+    position: absolute;
+    bottom: 64px;
+    right: 64px;
+    font-size: 14px;
+    color: #959087;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    -unity-text-align: middle-right;
+    opacity: 0.50;
+}
+
+/* ===== SETTINGS PANEL (overlay) ===== */
+.pause-settings-panel {
+    position: absolute;
+    left: 640px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--color-glass-bg-strong);
+    border-width: 1px;
+    border-color: var(--color-glass-border);
+    border-left-width: 2px;
+    border-left-color: #4a463f;
+    border-radius: 4px;
+    padding: 48px;
+    flex-direction: column;
+    overflow: hidden;
+}

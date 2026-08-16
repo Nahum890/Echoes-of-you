@@ -131,7 +131,7 @@ public static class BlueprintUpdater
     {
         var configs = new Dictionary<string, LevelConfig>
         {
-            ["Level_01"] = new LevelConfig { echoMode = EchoPlaybackMode.Standard, cameraProfile = "Discovery", lightProfile = "FluorescentStandard", maxEchoes = 0, maxRecordSeconds = 0 },
+            ["Level_01"] = new LevelConfig { echoMode = EchoPlaybackMode.Standard, cameraProfile = "Discovery", lightProfile = "FluorescentStandard", maxEchoes = 1, maxRecordSeconds = 12 },
             ["Level_02"] = new LevelConfig { echoMode = EchoPlaybackMode.Standard, cameraProfile = "Learning", lightProfile = "FluorescentStandard", maxEchoes = 1, maxRecordSeconds = 12 },
             ["Level_03"] = new LevelConfig { echoMode = EchoPlaybackMode.Standard, cameraProfile = "Discovery", lightProfile = "FluorescentStandard", maxEchoes = 1, maxRecordSeconds = 12 },
             ["Level_04"] = new LevelConfig { echoMode = EchoPlaybackMode.Standard, degradation = 0.02f, cameraProfile = "Learning", lightProfile = "FluorescentStandard", maxEchoes = 1, maxRecordSeconds = 10 },

@@ -1,0 +1,101 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/GlassPanel.uss" />
+    <Style src="project://database/Assets/UI/EchoesTheme.uss" />
+    <Style src="project://database/Assets/UI/CreditsUI.uss" />
+
+    <ui:VisualElement name="root" class="root-fullscreen credits-root" style="width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
+
+        <!-- HEADER FIJO -->
+        <ui:VisualElement class="credits-header">
+            <ui:Label class="credits-header-title" text="CREDITOS" />
+            <ui:Label class="credits-header-subtitle" text="Expediente de Ausencia — Registro de autores" />
+        </ui:VisualElement>
+
+        <!-- SCROLL AREA -->
+        <ui:VisualElement class="credits-container" name="creditsContainer">
+            <ui:ScrollView class="credits-scroll" name="creditsScroll">
+
+                <!-- TITULO DE APERTURA -->
+                <ui:VisualElement class="credits-section credits-section--title">
+                    <ui:Label class="credits-title-main" text="ECHOES OF YOU" />
+                    <ui:VisualElement class="credits-separator" />
+                    <ui:Label class="credits-subtitle" text="Un eco que no se puede borrar" />
+                </ui:VisualElement>
+
+                <!-- DIRECCION Y DISENO -->
+                <ui:VisualElement class="credits-section">
+                    <ui:Label class="credits-heading" text="DIRECCION Y DISENO" />
+                    <ui:Label class="credits-name" text="Nahum Velazquez" />
+                    <ui:Label class="credits-text" text="Concepto original, vision creativa y diseno general" />
+                </ui:VisualElement>
+
+                <!-- PROGRAMACION -->
+                <ui:VisualElement class="credits-section">
+                    <ui:Label class="credits-heading" text="PROGRAMACION" />
+                    <ui:Label class="credits-name" text="Nahum Velazquez" />
+                    <ui:Label class="credits-text" text="Desarrollo del motor de juego, mecanicas de eco y grabacion" />
+                </ui:VisualElement>
+
+                <!-- NARRATIVA Y ESCRITURA -->
+                <ui:VisualElement class="credits-section">
+                    <ui:Label class="credits-heading" text="NARRATIVA Y ESCRITURA" />
+                    <ui:Label class="credits-name" text="Nahum Velazquez" />
+                    <ui:Label class="credits-text" text="Historia sin palabras - el eco habla por si solo" />
+                    <ui:Label class="credits-text" text="Diseno de niveles y progresion narrativa" />
+                </ui:VisualElement>
+
+                <!-- ARTE -->
+                <ui:VisualElement class="credits-section">
+                    <ui:Label class="credits-heading" text="ARTE Y DIRECCION VISUAL" />
+                    <ui:Label class="credits-name" text="Melany Velazquez" />
+                    <ui:Label class="credits-text" text="Todo el arte del juego - paleta, texturas, ambientes" />
+                    <ui:Label class="credits-text" text="Estetica Escuela Liminal / PS1-PS2 / CRT" />
+                </ui:VisualElement>
+
+                <!-- DISENO DE MECANICAS -->
+                <ui:VisualElement class="credits-section">
+                    <ui:Label class="credits-heading" text="DISENO DE MECANICAS" />
+                    <ui:Label class="credits-name" text="Nahum Velazquez" />
+                    <ui:Label class="credits-text" text="Mecanica de eco, grabacion, colisiones y puzzles" />
+                </ui:VisualElement>
+
+                <!-- PRODUCCION Y COORDINACION -->
+                <ui:VisualElement class="credits-section">
+                    <ui:Label class="credits-heading" text="PRODUCCION Y COORDINACION" />
+                    <ui:Label class="credits-name" text="Fania Romero" />
+                    <ui:Label class="credits-text" text="Coordinacion y asistencia de produccion" />
+                </ui:VisualElement>
+
+                <!-- DISENO DE INTERFAZ -->
+                <ui:VisualElement class="credits-section">
+                    <ui:Label class="credits-heading" text="DISENO DE INTERFAZ" />
+                    <ui:Label class="credits-name" text="Fabiana Torales" />
+                    <ui:Label class="credits-text" text="Asistencia de usabilidad y documentacion" />
+                </ui:VisualElement>
+
+                <!-- AGRADECIMIENTOS -->
+                <ui:VisualElement class="credits-section">
+                    <ui:Label class="credits-heading" text="AGRADECIMIENTOS" />
+                    <ui:Label class="credits-name" text="Fuentes: Inter (Rasmus Andersson) - Garamond - Courier" />
+                    <ui:Label class="credits-name" text="Motor: Unity 6000.4 - URP 17.4" />
+                    <ui:Label class="credits-name" text="Sistema de diseno: Stich" />
+                </ui:VisualElement>
+
+                <!-- CIERRE -->
+                <ui:VisualElement class="credits-section credits-section--close">
+                    <ui:Label class="credits-heading credits-heading--close" text="Cuaderno cerrado." />
+                    <ui:VisualElement class="credits-separator" />
+                    <ui:Label class="credits-subtitle" text="Gracias por jugar." />
+                </ui:VisualElement>
+
+                <!-- PADDING FINAL -->
+                <ui:VisualElement class="credits-end-padding" />
+
+            </ui:ScrollView>
+        </ui:VisualElement>
+
+        <!-- BOTON VOLVER AL MENU PRINCIPAL -->
+        <ui:Button class="credit-back-btn" name="btnBack" text="Volver al Menu Principal" />
+
+    </ui:VisualElement>
+</ui:UXML>

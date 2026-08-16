@@ -23,32 +23,33 @@ public partial class PlayerController : MonoBehaviour
     const string AnimatorParamDeath = "Death";
     const string AnimatorParamRespawn = "Respawn";
 
-    [Header("Movimiento")]
-    public float moveSpeed = 2.8f;
-    public float sprintMultiplier = 1.5f;
-    public float acceleration = 36f;
-    public float deceleration = 38f;
-    [Tooltip("Turn damping time constant (seconds). Spec: 0.12s. Sharpness = 1 / dampingTime.")]
-    public float turnDampingSeconds = 0.12f;
-    [Range(0.1f, 1f)]
-    public float airControlFactor = 0.35f;
+    [Header("Movimiento PS1 Modern Liminal")]
+    public float acceleration = 8f;
+    public float deceleration = 12f;
+    public float maxSpeed = 4.5f;
+    public float sprintMultiplier = 1.35f; // solo speed, no momentum
+    public float turnSpeed = 8f;
+    public float airControl = 0.15f;
+    public float coyoteTime = 0.12f;
+    public float jumpBuffer = 0.1f;
+    public float gravityScale = 2.5f;
+    public float landingVelocityRetention = 0.0f; // FRENO TOTAL al aterrizar
 
-    [Header("Salto / Gravedad")]
+    [Header("Salto / Gravedad (Legacy - usar gravityScale arriba)")]
     public float jumpForce = 5.5f;
     public float gravityStrength = 18.0f;
     public Vector3 defaultGravityDirection = Vector3.down;
-    public float groundedStickForce = 5f;
+    public float groundedStickForce = 2f;
     public float gravityBlendSpeed = 12f;
     public float fallGravityMultiplier = 2.0f;
     public float maxFallSpeed = 25.0f;
-    public bool alignToGroundNormal = true;
+    public bool alignToGroundNormal = false;
 
     /// <summary>Theoretical max jump height calculated from jumpForce and gravity (v²/2g).</summary>
     public float JumpHeight => (jumpForce * jumpForce) / (2f * gravityStrength);
 
     [Header("Jump Assist")]
     public float jumpBufferTime = 0.10f;
-    public float coyoteTime = 0.12f;
 
     [Header("Peso / Game Feel")]
     [SerializeField] float hardLandingSpeed = 13f;
@@ -98,7 +99,6 @@ public partial class PlayerController : MonoBehaviour
     float _distanceSinceFootstep;
     float _lastPlanarSpeed;
     float _turnAmount;
-    float _sprintMomentumBonus;
     float _gravityScale = 1f;
     Vector3 _platformVelocity;
     float _notGroundedTimer;
@@ -143,9 +143,9 @@ public partial class PlayerController : MonoBehaviour
         {
             _controller.stepOffset = 0.30f;
             _controller.slopeLimit = 45.0f;
-            _controller.radius = 0.35f;
-            _controller.height = 1.80f;
-            _controller.center = new Vector3(0f, 0.90f, 0f);
+            _controller.radius = EchoesWorldMetrics.PlayerRadius;       // 0.36f
+            _controller.height = EchoesWorldMetrics.PlayerHeight;       // 2.2f
+            _controller.center = new Vector3(0f, EchoesWorldMetrics.PlayerCenterY, 0f); // 1.1f
             _controller.skinWidth = 0.08f;
         }
 
@@ -170,6 +170,7 @@ public partial class PlayerController : MonoBehaviour
         _targetGravity = SafeGravity(defaultGravityDirection, gravityStrength);
         _currentGravity = _targetGravity;
         _currentUp = -_currentGravity.normalized;
+        _gravityScale = gravityScale; // PS1 heavier gravity (2.5x)
 
         Vector3 initialForward = Vector3.ProjectOnPlane(transform.forward, _currentUp);
         if (initialForward.sqrMagnitude < 0.001f)
@@ -203,7 +204,7 @@ public partial class PlayerController : MonoBehaviour
             {
                 // Spawn en el suelo
                 _controller.enabled = false;
-                transform.position = hit.point + Vector3.up * 1f;
+                transform.position = hit.point + Vector3.up * 1.0f;
                 _controller.enabled = true;
                 _planarVelocity = Vector3.zero;
                 _verticalVelocity = Vector3.zero;
@@ -223,7 +224,7 @@ public partial class PlayerController : MonoBehaviour
                     if (sphereHit.distance > 0.5f && sphereHit.distance < 4f && !Physics.CheckSphere(sphereHit.point + Vector3.up, 0.6f))
                     {
                         _controller.enabled = false;
-                        transform.position = sphereHit.point + Vector3.up * 1f;
+                        transform.position = sphereHit.point + Vector3.up * 1.0f;
                         _controller.enabled = true;
                         _planarVelocity = Vector3.zero;
                         _verticalVelocity = Vector3.zero;
@@ -406,7 +407,7 @@ public partial class PlayerController : MonoBehaviour
 
     public void AddPlatformVelocity(Vector3 velocity) => _platformVelocity += velocity;
 
-    public void SetSprintMomentumBonus(float bonus) => _sprintMomentumBonus = Mathf.Max(0f, bonus);
+    public void SetSprintMomentumBonus(float bonus) { } // No-op for PS1 mode
 
     public void ApplyGravityScale(float scale) => _gravityScale = Mathf.Clamp(scale, 0.05f, 2f);
 
@@ -444,13 +445,13 @@ public partial class PlayerController : MonoBehaviour
 
         if (_cam != null)
         {
-            cameraForward = Vector3.ProjectOnPlane(_cam.forward, movementUp).normalized;
-            if (cameraForward.sqrMagnitude < 0.001f)
-                cameraForward = Vector3.ProjectOnPlane(_cam.up, movementUp).normalized;
-
-            cameraRight = Vector3.ProjectOnPlane(_cam.right, movementUp).normalized;
-            if (cameraRight.sqrMagnitude < 0.001f)
-                cameraRight = Vector3.Cross(movementUp, cameraForward).normalized;
+            // Use camera yaw only for movement direction (ignore pitch) to avoid zigzag when camera looks down
+            Vector3 flatForward = _cam.forward;
+            flatForward.y = 0f;
+            cameraForward = flatForward.sqrMagnitude > 0.001f ? flatForward.normalized : Vector3.forward;
+            Vector3 flatRight = _cam.right;
+            flatRight.y = 0f;
+            cameraRight = flatRight.sqrMagnitude > 0.001f ? flatRight.normalized : Vector3.right;
         }
 
         Vector3 desiredDirection = cameraForward * input.z + cameraRight * input.x;
@@ -458,36 +459,26 @@ public partial class PlayerController : MonoBehaviour
         if (desiredDirection.sqrMagnitude > 1f)
             desiredDirection.Normalize();
 
-        float speed = moveSpeed * (1f + _sprintMomentumBonus);
+        float currentMaxSpeed = maxSpeed;
         if (Input.GetKey(KeyCode.LeftShift))
-            speed *= sprintMultiplier;
-        Vector3 desiredVelocity = desiredDirection * speed;
+            currentMaxSpeed *= sprintMultiplier;
+        Vector3 desiredVelocity = desiredDirection * currentMaxSpeed;
 
         _planarVelocity = Vector3.ProjectOnPlane(_planarVelocity, movementUp);
         float sharpness = desiredVelocity.sqrMagnitude > 0.001f ? acceleration : deceleration;
         if (!_grounded)
-            sharpness *= airControlFactor;
+            sharpness *= airControl;
+        
+        // Landing: FRENO TOTAL (landingVelocityRetention = 0.0f)
         if (_landingLockTimer > 0f)
         {
             _landingLockTimer -= Time.deltaTime;
-            float retention = EchoesLocomotionSettings.Instance != null
-                ? EchoesLocomotionSettings.Instance.landingVelocityRetention
-                : 1f;
-            
-            // Rebuild landing impact: apply a physical stumble/slowdown depending on whether landing was hard
-            float penaltyFactor = _lastHardLanding ? 0.15f : 0.65f;
-            desiredVelocity = Vector3.Lerp(desiredVelocity * penaltyFactor, _planarVelocity, retention);
+            float retention = landingVelocityRetention; // 0.0 = full stop
+            // Apply retention to current planar velocity
+            _planarVelocity *= retention;
+            desiredVelocity *= retention;
         }
         _planarVelocity = DampVector(_planarVelocity, desiredVelocity, sharpness, Time.deltaTime);
-
-        // Anti-stuck: Si player intenta moverse pero no se mueve, pequeño push
-        if (_planarVelocity.sqrMagnitude < 0.01f && _grounded)
-        {
-            if (input.sqrMagnitude > 0.1f)
-            {
-                _planarVelocity += desiredDirection * 0.5f;
-            }
-        }
     }
 
     void HandleJumpInput(Vector3 movementUp)
@@ -554,7 +545,7 @@ public partial class PlayerController : MonoBehaviour
 
         Quaternion targetRotation = Quaternion.LookRotation(_lastFacing, _currentUp);
         Vector3 oldForward = Vector3.ProjectOnPlane(transform.forward, _currentUp).normalized;
-        float rotationSharpness = 1f / Mathf.Max(0.001f, turnDampingSeconds);
+        float rotationSharpness = turnSpeed; // PS1: turn speed directly as sharpness
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, DampingFactor(rotationSharpness, deltaTime));
         Vector3 newForward = Vector3.ProjectOnPlane(transform.forward, _currentUp).normalized;
         if (oldForward.sqrMagnitude > 0.001f && newForward.sqrMagnitude > 0.001f)
@@ -618,4 +609,45 @@ public partial class PlayerController : MonoBehaviour
         public bool isGrounded;
         public RaycastHit hit;
     }
+
+#if UNITY_EDITOR
+    void OnDrawGizmos()
+    {
+        if (!Application.isPlaying) return;
+        CharacterController cc = _controller != null ? _controller : GetComponent<CharacterController>();
+        if (cc == null) return;
+
+        // CharacterController bounds (cyan-blue wireframe)
+        Gizmos.color = new Color(0f, 0.5f, 1f, 0.3f);
+        Gizmos.DrawWireSphere(transform.position + cc.center, cc.radius);
+        Gizmos.DrawWireSphere(transform.position + cc.center + Vector3.up * (cc.height * 0.5f), cc.radius);
+        Gizmos.DrawWireSphere(transform.position + cc.center - Vector3.up * (cc.height * 0.5f), cc.radius);
+
+        // GroundCheck probe (green if grounded, red if not)
+        if (groundCheck != null)
+        {
+            Gizmos.color = _grounded ? Color.green : Color.red;
+            Gizmos.DrawWireSphere(groundCheck.position, groundProbeRadius);
+            Gizmos.DrawRay(groundCheck.position, -_currentUp * groundProbeDistance);
+
+            // SphereCast visualization
+            if (Physics.SphereCast(
+                groundCheck.position + _currentUp * groundProbeRadius,
+                groundProbeRadius,
+                -_currentUp,
+                out RaycastHit gizmoHit,
+                groundProbeDistance + groundProbeRadius,
+                groundCheckMask != 0 ? groundCheckMask : Physics.DefaultRaycastLayers,
+                QueryTriggerInteraction.Ignore))
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawSphere(gizmoHit.point, 0.08f);
+            }
+        }
+
+        // Player velocity (yellow forward)
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawRay(transform.position, _planarVelocity);
+    }
+#endif
 }

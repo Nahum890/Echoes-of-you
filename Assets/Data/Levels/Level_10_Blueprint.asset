@@ -26,8 +26,8 @@ MonoBehaviour:
   ambientEchoData: {fileID: 11400000, guid: 4b2e49383f263c048a8505a142cee6f5, type: 2}
   lockEchoSlots: 0
   lockedSlotIndices: 
-  cameraProfile: {fileID: 0}
-  lightingProfile: {fileID: 0}
+  cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111110, type: 2}
+  lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111106, type: 2}
   activeParadoxes: 
   fogColor: {r: 0.23137255, g: 0.1882353, b: 0.14117648, a: 1}
   fogDensity: 0.015

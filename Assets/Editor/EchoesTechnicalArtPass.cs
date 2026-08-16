@@ -173,7 +173,7 @@ public static class EchoesTechnicalArtPass
         Debug.Log("[TechnicalArtPass] Iluminación por capítulo aplicada a los 15 blueprints.");
     }
 
-    static void ApplyVisualPassToScene(Scene scene, int level, List<string> report)
+    public static void ApplyVisualPassToScene(Scene scene, int level, List<string> report)
     {
         ChapterProfile profile = Chapters[LevelChapter[level]];
 
@@ -190,7 +190,7 @@ public static class EchoesTechnicalArtPass
 
         // Luz direccional del capítulo + sombras duras en TODAS las luces
         int softFixed = 0;
-        foreach (Light light in Object.FindObjectsByType<Light>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        foreach (Light light in Object.FindObjectsByType<Light>(FindObjectsInactive.Include))
         {
             if (light.type == LightType.Directional)
             {

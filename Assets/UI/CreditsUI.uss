@@ -1,0 +1,200 @@
+/* ============================================================
+   CreditsUI — Rediseño Stich (solid, crisp, legible)
+   Fondo sólido, tipografía cargada, secciones con tarjetas
+   ============================================================ */
+
+@import "EchoesDesignTokens.uss";
+
+/* ===== ROOT ===== */
+.credits-root {
+    background-color: var(--color-glass-bg-strong);
+}
+
+/* ===== HEADER FIJO ===== */
+.credits-header {
+    position: absolute;
+    left: 0; top: 0; right: 0;
+    height: 100px;
+    background-color: #131410;
+    border-bottom-width: 2px;
+    border-bottom-color: #E8B262;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 48px;
+}
+
+.credits-header-title {
+    font-size: 36px;
+    color: #E8B262;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    letter-spacing: 2px;
+    opacity: 1;
+}
+
+.credits-header-subtitle {
+    font-size: 16px;
+    color: #ccc6bc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    letter-spacing: 1px;
+    margin-left: 24px;
+    opacity: 1;
+}
+
+/* ===== SCROLL AREA ===== */
+.credits-container {
+    position: absolute;
+    left: 0; top: 100px; right: 0; bottom: 0;
+    background-color: var(--color-glass-bg-strong);
+}
+
+.credits-scroll {
+    position: absolute;
+    left: 20%; right: 20%;
+    top: 0; bottom: 0;
+    padding: 48px 0;
+    background-color: transparent;
+}
+
+/* ===== SECCIONES (tarjetas) ===== */
+.credits-section {
+    background-color: #131410;
+    border-width: 1px;
+    border-color: #4a463f;
+    border-left-width: 4px;
+    border-left-color: #E8B262;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+}
+
+.credits-section--title {
+    background-color: #1b1c18;
+    border-left-color: #fffeff;
+    border-left-width: 6px;
+    padding: 40px 36px;
+    margin-bottom: 32px;
+    align-items: center;
+}
+
+.credits-section--close {
+    background-color: #1b1c18;
+    border-left-color: #E8B262;
+    border-left-width: 6px;
+    padding: 40px 36px;
+    margin-bottom: 32px;
+    align-items: center;
+}
+
+/* ===== TITULO PRINCIPAL ===== */
+.credits-title-main {
+    font-size: 52px;
+    color: #E8B262;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    -unity-text-align: middle-center;
+    letter-spacing: 4px;
+    margin-bottom: 16px;
+    opacity: 1;
+}
+
+.credits-subtitle {
+    font-size: 22px;
+    color: #e4e2dc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Garamond.ttf');
+    -unity-text-align: middle-center;
+    margin-top: 8px;
+    letter-spacing: 1px;
+    opacity: 1;
+}
+
+/* ===== SEPARADOR ===== */
+.credits-separator {
+    height: 2px;
+    width: 240px;
+    background-color: #E8B262;
+    margin: 16px 0;
+}
+
+/* ===== HEADING DE SECCION ===== */
+.credits-heading {
+    font-size: 18px;
+    color: #E8B262;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    -unity-text-align: middle-left;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+    opacity: 1;
+}
+
+.credits-heading--close {
+    font-size: 32px;
+    color: #E8B262;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    -unity-text-align: middle-center;
+    margin-bottom: 12px;
+    letter-spacing: 2px;
+}
+
+/* ===== NOMBRES ===== */
+.credits-name {
+    font-size: 18px;
+    color: #e4e2dc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    -unity-text-align: middle-left;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    opacity: 1;
+}
+
+/* ===== TEXTO BODY ===== */
+.credits-text {
+    font-size: 16px;
+    color: #ccc6bc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    -unity-text-align: middle-left;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+    opacity: 1;
+}
+
+/* ===== BACK BUTTON — SOLID ===== */
+.credit-back-btn {
+    position: absolute;
+    left: 50%;
+    bottom: 32px;
+    translate: -50% 0;
+    min-width: 320px;
+    font-size: 18px;
+    color: #e4e2dc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    background-color: #1b1c18;
+    border-width: 1px;
+    border-color: #4a463f;
+    border-left-width: 4px;
+    border-left-color: #E8B262;
+    padding: 18px 36px;
+    letter-spacing: 2px;
+    -unity-text-align: middle-center;
+    opacity: 1;
+    transition-property: color, border-color, background-color, scale;
+    transition-duration: 150ms;
+    transition-timing-function: linear;
+    border-radius: 0;
+}
+
+.credit-back-btn:hover {
+    color: #fffeff;
+    background-color: #2a2a26;
+    border-color: #E8B262;
+    scale: 1.03 1.03;
+}
+
+.credit-back-btn:active {
+    color: #E8B262;
+    border-color: #E8B262;
+    scale: 0.97 0.97;
+}
+
+/* ===== PADDING FINAL SCROLL ===== */
+.credits-end-padding {
+    height: 160px;
+}

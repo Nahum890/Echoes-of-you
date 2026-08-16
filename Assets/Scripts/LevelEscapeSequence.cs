@@ -1,7 +1,8 @@
 using UnityEngine;
+using Echoes.UI;
 
 /// <summary>
-/// Tras resolver el puzzle, el jugador debe escapar de una secuencia en colapso
+/// Tras resolver el puzzle, el jugador debe escapar de una secuencia en quiebre
 /// antes de que la salida final se desbloquee por completo.
 /// </summary>
 public class LevelEscapeSequence : MonoBehaviour
@@ -28,14 +29,18 @@ public class LevelEscapeSequence : MonoBehaviour
         if (exits == null || exits.Length == 0)
             exits = FindObjectsByType<LevelExit>(FindObjectsInactive.Exclude);
 
-        LockExits(true);
+        // Don't lock exits in Awake — wait for Start to let LevelGoal evaluate first
+    }
+
+    void Start()
+    {
+        // Defer check to after LevelGoal.Start() has run
     }
 
     void OnEnable()
     {
         if (goal != null)
         {
-            // Re-evaluar si el goal ya estaba listo al cargar
             if (goal.IsReady)
                 BeginEscape();
         }
@@ -89,18 +94,29 @@ public class LevelEscapeSequence : MonoBehaviour
         if (_escapeActive)
             return;
 
+        // Salvagarda crítica: si no hay hazard asignado NI en el blueprint, la secuencia
+        // de escape no tiene sentido (no hay amenaza que obligue a huir). Completar al
+        // instante para que el exit se desbloquee. Esto evita el bug "no se pueden pasar
+        // los niveles" cuando el level designer olvidó configurar el ChaseHazardMotor.
+        if (hazard == null && blueprint != null)
+            hazard = blueprint.ChaseHazard;
+
+        if (hazard == null && escapeRouteEnd == null)
+        {
+            Debug.LogWarning("[LevelEscapeSequence] No hay ChaseHazard ni escapeRouteEnd — completando escape inmediatamente.");
+            CompleteEscape();
+            return;
+        }
+
         _escapeActive = true;
         _escapeTimer = blueprint != null ? blueprint.EscapeDuration : escapeTimeLimit;
         LockExits(true);
-
-        if (hazard == null && blueprint != null)
-            hazard = blueprint.ChaseHazard;
 
         hazard?.Activate();
 
         Invoke(nameof(StartCollapseFeedback), collapseDelay);
         GameHUD hud = FindAnyObjectByType<GameHUD>();
-        hud?.ShowToast("¡Escapa antes del colapso!", new Color(1f, 0.55f, 0.35f, 1f), 2.2f);
+        hud?.ShowToast("¡Escapa antes del quiebre!", new Color(1f, 0.55f, 0.35f, 1f), 2.2f);
     }
 
     void StartCollapseFeedback()
@@ -130,7 +146,12 @@ public class LevelEscapeSequence : MonoBehaviour
         for (int i = 0; i < exits.Length; i++)
         {
             if (exits[i] != null)
-                exits[i].SetUnlocked(!locked && (goal == null || goal.IsReady));
+            {
+                if (locked)
+                    exits[i].SetUnlocked(false);
+                else
+                    exits[i].SetUnlocked(goal == null || goal.IsReady);
+            }
         }
     }
 }

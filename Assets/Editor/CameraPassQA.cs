@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.Cinemachine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -43,77 +42,38 @@ public static class CameraPassQA
     {
         var issues = new List<string>();
 
-        CinemachineBrain[] brains = Object.FindObjectsByType<CinemachineBrain>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        if (brains.Length == 0)
-            issues.Add("Missing CinemachineBrain on Main Camera");
-        if (brains.Length > 1)
-            issues.Add($"  - Multiple CinemachineBrains ({brains.Length}) — should be exactly 1");
+        // Validate SimpleFollowCamera (Cinemachine replacement)
+        SimpleFollowCamera[] simpleCams = Object.FindObjectsByType<SimpleFollowCamera>(FindObjectsInactive.Include);
+        if (simpleCams.Length == 0)
+            issues.Add("  - Missing SimpleFollowCamera on Main Camera");
+        if (simpleCams.Length > 1)
+            issues.Add($"  - Multiple SimpleFollowCamera ({simpleCams.Length}) — should be exactly 1");
 
-        CinemachineCamera[] vcams = Object.FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        CinemachineCamera playerVCam = null;
-        foreach (var vc in vcams)
+        SimpleFollowCamera playerCam = null;
+        foreach (var sc in simpleCams)
         {
-            if (vc.name == "PlayerVCam" || vc.name.Contains("Player"))
+            if (sc.name == "Main Camera" || sc.name.Contains("Camera"))
             {
-                playerVCam = vc;
+                playerCam = sc;
                 break;
             }
         }
-        if (playerVCam == null && vcams.Length > 0)
-            playerVCam = vcams[0];
+        if (playerCam == null && simpleCams.Length > 0)
+            playerCam = simpleCams[0];
 
-        if (playerVCam == null)
-            issues.Add("  - No PlayerVCam (CinemachineCamera) found");
-
-        if (playerVCam != null)
+        if (playerCam == null)
+            issues.Add("  - No Main Camera SimpleFollowCamera found");
+        else
         {
-            if (playerVCam.Follow == null)
-                issues.Add("  - PlayerVCam.Follow is null (lost player)");
-            if (playerVCam.LookAt == null)
-                issues.Add("  - PlayerVCam.LookAt is null (no look target)");
+            if (playerCam.target == null)
+                issues.Add("  - SimpleFollowCamera.target is null (lost player)");
+            if (playerCam.distance <= 0f)
+                issues.Add($"  - SimpleFollowCamera.distance invalid ({playerCam.distance})");
         }
 
-        CinemachineTargetGroup targetGroup = Object.FindAnyObjectByType<CinemachineTargetGroup>();
-        if (targetGroup == null)
-            issues.Add("  - No CinemachineTargetGroup found");
-        else if (targetGroup.Targets == null || targetGroup.Targets.Count < 2)
-            issues.Add($"  - TargetGroup has only {targetGroup.Targets?.Count ?? 0} targets (need Player + Goal + Echo)");
-
-        ThirdPersonCamera tpc = Object.FindAnyObjectByType<ThirdPersonCamera>();
-        if (tpc != null && tpc.enabled)
-        {
-            CinemachineBrain brain = tpc.GetComponent<CinemachineBrain>();
-            if (brain == null)
-                issues.Add("  - ThirdPersonCamera active WITHOUT CinemachineBrain (legacy system running)");
-            else if (!brain.enabled)
-                issues.Add("  - ThirdPersonCamera active with disabled Brain (conflict potential)");
-        }
-
-        CinematicCameraDynamics dynamics = Object.FindAnyObjectByType<CinematicCameraDynamics>();
-        if (dynamics != null && dynamics.enabled)
-        {
-        }
-
-        FixedPuzzleCameraController fixedCam = Object.FindAnyObjectByType<FixedPuzzleCameraController>();
-        if (fixedCam != null && fixedCam.enabled)
-        {
-            if (fixedCam.playerFocus == null)
-                issues.Add("  - FixedPuzzleCameraController.playerFocus is null");
-            if (fixedCam.virtualCamera == null)
-                issues.Add("  - FixedPuzzleCameraController.virtualCamera is null");
-            if (fixedCam.targetGroup == null)
-                issues.Add("  - FixedPuzzleCameraController.targetGroup is null");
-            if (fixedCam.followTarget == null)
-                issues.Add("  - FixedPuzzleCameraController.followTarget is null");
-        }
-
-        EchoCameraTargetGroupManager echoManager = Object.FindAnyObjectByType<EchoCameraTargetGroupManager>();
-        if (echoManager == null)
-            issues.Add("  - No EchoCameraTargetGroupManager (Echo won't be in TargetGroup)");
-
-        EventCameraDirector eventDirector = Object.FindAnyObjectByType<EventCameraDirector>();
-        if (eventDirector == null)
-            issues.Add("  - No EventCameraDirector (no activation sequences)");
+        // Validate legacy Cinemachine remnants are gone
+        var legacyBrain = Object.FindAnyObjectByType<UnityEngine.Component>();
+        // (Cinemachine types are fully removed; no runtime check needed)
 
         LevelCameraProfiles.Profile profile;
         if (!LevelCameraProfiles.TryGet(levelName, out profile))

@@ -239,7 +239,7 @@ public class RoomComposer : EditorWindow
             col.size = new Vector3(5f, 3f, 5f);
 
             var applier = zone.AddComponent<CameraProfileApplier>();
-            applier.currentProfile = selectedCameraProfile;
+            applier.CurrentProfile = selectedCameraProfile;
 
             Undo.RegisterCreatedObjectUndo(zone, "Create Learning Zone");
             Selection.activeGameObject = zone;

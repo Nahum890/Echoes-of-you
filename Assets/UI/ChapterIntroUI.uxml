@@ -1,0 +1,29 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/EchoesTheme.uss" />
+    <Style src="project://database/Assets/UI/ChapterIntroUI.uss" />
+
+    <ui:VisualElement name="chapter-intro-root" class="chapter-intro-root chapter-hidden" style="width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
+
+        <!-- Background vignette -->
+        <ui:VisualElement class="chapter-vignette" />
+
+        <!-- Content -->
+        <ui:VisualElement class="chapter-content">
+            <!-- Chapter label (top) -->
+            <ui:Label name="chapter-label" class="chapter-label" text="CAPITULO 01" />
+
+            <!-- Title (large) -->
+            <ui:Label name="chapter-title" class="chapter-title" text="Entrada Escolar" />
+
+            <!-- Separator -->
+            <ui:VisualElement class="chapter-separator" />
+
+            <!-- Description -->
+            <ui:Label name="chapter-description" class="chapter-description" text="El primer eco. La primera ausencia." />
+
+            <!-- Comenzar button -->
+            <ui:Button name="btn-start" class="chapter-start-btn" text="COMENZAR" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a5b4a7495134754db7f5f86463ccc08, type: 3}
+  m_Name: InteractableData_N01_coat_amber
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.Narrative.Data.InteractableData
+  _interactableId: N01_coat_amber
+  _levelId: Level_01
+  _interactionType: 3
+  _promptText: Examinar
+  _commentKey: interaction.coat_amber
+  _dialogueId: 
+  _displayName: Abrigo
+  _memoryEffect:
+    _memoryId: MEM-001_COAT_SEEN
+    _isLyraArtifact: 1
+    _flagsAdded:
+    - coat_amber_seen
+    _variableChanges: []
+    _comprehensionDelta: 0
+  _choiceEffect:
+    _choiceId: 
+    _displayText: 
+    _color: 0
+    _conditions: []
+    _effects: []
+    _flagsAdded: []
+    _flagsRemoved: []
+    _variableChanges: []
+    _nextNode: 
+    _comprehensionDelta: 0
+  _oneTimeOnly: 1
+  _visualStateAfter:
+    _changeEmission: 1
+    _emissionIntensity: 0.3
+    _changeColor: 0
+    _targetColor: {r: 1, g: 1, b: 1, a: 1}
+    _disableRenderer: 0
+    _disableObject: 0
+    _changeScale: 0
+    _targetScale: {x: 1, y: 1, z: 1}
+  _isLyraArtifact: 1
+  _requireEchoActive: 0
+  _cooldown: 3
+  _triggerRadius: 2.5

@@ -9,21 +9,19 @@ public class LevelLightingSettings : MonoBehaviour
 {
     [Header("Luz direccional")]
     public bool overrideDirectional = true;
-    public float directionalIntensity = 0.98f;
-    public Color directionalColor = new Color(0.78f, 0.82f, 0.9f, 1f);
-    public Vector3 directionalEuler = new Vector3(42f, -35f, 0f);
+    public float directionalIntensity = 0.85f;
+    public Color directionalColor = new Color(0.95f, 0.95f, 1f, 1f);
+    public Vector3 directionalEuler = new Vector3(50f, -30f, 0f);
 
     [Header("Ambiente global")]
     public bool overrideAmbient = true;
-    public Color ambientSky = new Color(0.32f, 0.34f, 0.42f);
-    public Color ambientEquator = new Color(0.22f, 0.24f, 0.3f);
-    public Color ambientGround = new Color(0.12f, 0.13f, 0.17f);
-    [Range(0f, 1f)] public float reflectionIntensity = 0.42f;
+    public Color ambientColor = new Color(0.15f, 0.15f, 0.15f, 1f);
+    [Range(0f, 1f)] public float reflectionIntensity = 0.18f;
 
     [Header("Niebla")]
     public bool enableFog = true;
-    public Color fogColor = new Color(0.18f, 0.2f, 0.28f);
-    [Range(0f, 0.02f)] public float fogDensity = 0.0045f;
+    public Color fogColor = new Color(0.1f, 0.1f, 0.12f, 1f);
+    [Range(0f, 0.02f)] public float fogDensity = 0.008f;
 
     [Header("Luces puntuales (hijos de este objeto)")]
     public bool applyToChildPointLights = true;
@@ -38,10 +36,8 @@ public class LevelLightingSettings : MonoBehaviour
     {
         if (overrideAmbient)
         {
-            RenderSettings.ambientMode = AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor = ambientSky;
-            RenderSettings.ambientEquatorColor = ambientEquator;
-            RenderSettings.ambientGroundColor = ambientGround;
+            RenderSettings.ambientMode = AmbientMode.Flat;
+            RenderSettings.ambientLight = ambientColor;
             RenderSettings.reflectionIntensity = reflectionIntensity;
         }
 
@@ -62,6 +58,8 @@ public class LevelLightingSettings : MonoBehaviour
                 light.intensity = directionalIntensity;
                 light.color = directionalColor;
                 light.transform.rotation = Quaternion.Euler(directionalEuler);
+                light.shadows = LightShadows.Hard;
+                QualitySettings.shadowDistance = 40f;
                 break;
             }
         }

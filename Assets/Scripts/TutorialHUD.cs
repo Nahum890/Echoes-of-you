@@ -1,4 +1,5 @@
 using UnityEngine;
+using Echoes.UI;
 
 /// <summary>
 /// Tutorial HUD mejorado: muestra objetivo del nivel al iniciar,

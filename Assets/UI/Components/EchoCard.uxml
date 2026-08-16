@@ -1,0 +1,8 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+    <!-- EchoCard — tarjeta para level-select o selección de items.
+         6 estados via CSS: locked / available / completed / current.
+         Uso:
+           <ui:Button class="echo-card echo-card--available" text="01 — Aula 104" />
+         Gestión de metadatos (nombre, ecos, tiempo) vía C#. -->
+    <ui:Button class="echo-card echo-card--available" name="echoCard" text="Nivel 01" />
+</UXML>

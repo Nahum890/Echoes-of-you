@@ -9,12 +9,8 @@ using UnityEngine.SceneManagement;
 /// Pipeline (URP): crea un Volume global en runtime con un VolumeProfile y
 /// habilita el post-procesado en la cámara.
 ///
-/// Reemplaza la implementación anterior basada en Post-Processing Stack v2
-/// (Built-in), que no se renderizaba bajo URP.
-///
-/// Nota: el Ambient Occlusion en URP es SSAO (un Renderer Feature en el asset
-/// del renderer), no un override de Volume, por lo que se configura en el
-/// editor sobre el Universal Renderer y no aquí.
+/// Perfil ESTÁTICO con bases PS1/Liminal — NO MoveTowards cada frame.
+/// GameFeelController usa métodos de pulso discreto (coroutines) para eventos.
 /// </summary>
 public class PostProcessingSetup : MonoBehaviour
 {
@@ -28,6 +24,31 @@ public class PostProcessingSetup : MonoBehaviour
 
     /// Perfil de Volume en runtime, modulado por GameFeelController.
     public static VolumeProfile RuntimeProfile => _runtimeProfile;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void ResetCaches()
+    {
+        _instance = null;
+        CleanupStaticObjects();
+    }
+
+    static void CleanupStaticObjects()
+    {
+        if (_volumeGo != null)
+        {
+            if (Application.isPlaying) Object.Destroy(_volumeGo);
+            else Object.DestroyImmediate(_volumeGo);
+            _volumeGo = null;
+            _volume = null;
+        }
+
+        if (_runtimeProfile != null)
+        {
+            if (Application.isPlaying) Object.Destroy(_runtimeProfile);
+            else Object.DestroyImmediate(_runtimeProfile);
+            _runtimeProfile = null;
+        }
+    }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     static void AutoSetup()
@@ -133,8 +154,12 @@ public class PostProcessingSetup : MonoBehaviour
         if (cameraRef == null)
             return;
 
-        // Habilitar el post-procesado en la cámara (equivalente al checkbox
-        // "Post Processing" del UniversalAdditionalCameraData).
+        if (cameraRef.clearFlags == CameraClearFlags.Skybox && RenderSettings.skybox == null)
+        {
+            cameraRef.clearFlags = CameraClearFlags.SolidColor;
+            cameraRef.backgroundColor = new Color(0.039f, 0.039f, 0.051f, 1f);
+        }
+
         var camData = cameraRef.GetUniversalAdditionalCameraData();
         if (camData != null)
             camData.renderPostProcessing = true;
@@ -143,35 +168,40 @@ public class PostProcessingSetup : MonoBehaviour
 
         _runtimeProfile = ScriptableObject.CreateInstance<VolumeProfile>();
 
-        // Valores canónicos del pase de arte técnico (POST_PROCESSING_SPEC):
-        // GameFeelController modula sobre estas mismas bases — mantener sincronizados.
+        // Valores base PS1/LIMINAL ESTÁTICOS (GameFeelController usa pulsos discretos sobre estas bases):
+        // Bloom: intensity 0.25, threshold 0.9, scatter 0.7
         Bloom bloom = _runtimeProfile.Add<Bloom>(true);
         bloom.intensity.Override(0.25f);
         bloom.threshold.Override(0.9f);
         bloom.scatter.Override(0.7f);
 
+        // Tonemapping: None (raw PS1 feel)
         Tonemapping tonemapping = _runtimeProfile.Add<Tonemapping>(true);
         tonemapping.mode.Override(TonemappingMode.None);
 
+        // ColorAdjustments: 0 exp / 10 contrast / -5 sat
         ColorAdjustments grading = _runtimeProfile.Add<ColorAdjustments>(true);
-        grading.postExposure.Override(-0.5f);
-        grading.contrast.Override(15f);
-        grading.saturation.Override(-8f);
+        grading.postExposure.Override(0f);
+        grading.contrast.Override(10f);
+        grading.saturation.Override(-5f);
 
+        // Vignette: intensity 0.2, smoothness 0.40, color #0D0D1A
         Vignette vignette = _runtimeProfile.Add<Vignette>(true);
-        vignette.intensity.Override(0.35f);
-        vignette.smoothness.Override(0.4f);
+        vignette.intensity.Override(0.2f);
+        vignette.smoothness.Override(0.40f);
         vignette.color.Override(new Color(0.051f, 0.051f, 0.102f)); // #0D0D1A
 
+        // ChromaticAberration: intensity 0.12
         ChromaticAberration ca = _runtimeProfile.Add<ChromaticAberration>(true);
-        ca.intensity.Override(0.08f);
+        ca.intensity.Override(0.12f);
 
         LensDistortion ld = _runtimeProfile.Add<LensDistortion>(false);
         ld.intensity.Override(0f);
 
+        // FilmGrain: 0.45 Medium1
         FilmGrain grain = _runtimeProfile.Add<FilmGrain>(true);
         grain.type.Override(FilmGrainLookup.Medium1);
-        grain.intensity.Override(0.28f);
+        grain.intensity.Override(0.45f);
         grain.response.Override(0.8f);
 
         _volumeGo = new GameObject("GlobalPostProcessVolume");
@@ -180,6 +210,9 @@ public class PostProcessingSetup : MonoBehaviour
         _volume.isGlobal = true;
         _volume.priority = 1f;
         _volume.profile = _runtimeProfile;
+        
+        // Mark as don't save in runtime to prevent scene pollution
+        _volumeGo.hideFlags = HideFlags.DontSave;
     }
 
     void CleanupRuntimeObjects()

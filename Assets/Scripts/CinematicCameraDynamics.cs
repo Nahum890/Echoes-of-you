@@ -55,6 +55,11 @@ public class CinematicCameraDynamics : MonoBehaviour
         if (tpc != null && tpc.enabled)
             return;
 
+        // No inyectar si SimpleFollowCamera controla la cámara (Cinemachine reemplazado).
+        SimpleFollowCamera sfc = cameraRef.GetComponent<SimpleFollowCamera>();
+        if (sfc != null && sfc.enabled)
+            return;
+
         // No inyectar si CinemachineBrain ya controla la cámara (el usuario usa Cinemachine directamente).
         // CinematicCameraDynamics modifica el VirtualCamera cada frame; si Cinemachine ya gestiona
         // el transform de la cámara, ambos sistemas luchan entre sí causando jitter.

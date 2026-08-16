@@ -1,0 +1,176 @@
+{
+    "generated_utc":  "2026-07-29T19:59:26.5805650Z",
+    "levels":  [
+                   {
+                       "timingFloor":  0.4,
+                       "solutionAsset":  "Assets/Data/Solutions/Level_01_Solution.asset",
+                       "sequenceBreaks":  0,
+                       "level":  "Level_01",
+                       "bfsReachable":  true,
+                       "echoButtonTest":  "PASS",
+                       "status":  "PASS",
+                       "expectedSoftlocks":  0,
+                       "signalGraphValid":  true
+                   },
+                   {
+                       "timingFloor":  0.4,
+                       "solutionAsset":  "Assets/Data/Solutions/Level_02_Solution.asset",
+                       "sequenceBreaks":  0,
+                       "level":  "Level_02",
+                       "bfsReachable":  true,
+                       "echoButtonTest":  "PASS",
+                       "status":  "PASS",
+                       "expectedSoftlocks":  0,
+                       "signalGraphValid":  true
+                   },
+                   {
+                       "timingFloor":  0.4,
+                       "solutionAsset":  "Assets/Data/Solutions/Level_03_Solution.asset",
+                       "sequenceBreaks":  0,
+                       "level":  "Level_03",
+                       "bfsReachable":  true,
+                       "echoButtonTest":  "PASS",
+                       "status":  "PASS",
+                       "expectedSoftlocks":  0,
+                       "signalGraphValid":  true
+                   },
+                   {
+                       "timingFloor":  0.4,
+                       "solutionAsset":  "Assets/Data/Solutions/Level_04_Solution.asset",
+                       "sequenceBreaks":  0,
+                       "level":  "Level_04",
+                       "bfsReachable":  true,
+                       "echoButtonTest":  "PASS",
+                       "status":  "PASS",
+                       "expectedSoftlocks":  0,
+                       "signalGraphValid":  true
+                   },
+                   {
+                       "timingFloor":  0.4,
+                       "solutionAsset":  "Assets/Data/Solutions/Level_05_Solution.asset",
+                       "sequenceBreaks":  0,
+                       "level":  "Level_05",
+                       "bfsReachable":  true,
+                       "echoButtonTest":  "PASS",
+                       "status":  "PASS",
+                       "expectedSoftlocks":  0,
+                       "signalGraphValid":  true
+                   },
+                   {
+                       "timingFloor":  0.4,
+                       "solutionAsset":  "Assets/Data/Solutions/Level_06_Solution.asset",
+                       "sequenceBreaks":  0,
+                       "level":  "Level_06",
+                       "bfsReachable":  true,
+                       "echoButtonTest":  "PASS",
+                       "status":  "PASS",
+                       "expectedSoftlocks":  0,
+                       "signalGraphValid":  true
+                   },
+                   {
+                       "timingFloor":  0.4,
+                       "solutionAsset":  "Assets/Data/Solutions/Level_07_Solution.asset",
+                       "sequenceBreaks":  0,
+                       "level":  "Level_07",
+                       "bfsReachable":  true,
+                       "echoButtonTest":  "PASS",
+                       "status":  "PASS",
+                       "expectedSoftlocks":  0,
+                       "signalGraphValid":  true
+                   },
+                   {
+                       "timingFloor":  0.4,
+                       "solutionAsset":  "Assets/Data/Solutions/Level_08_Solution.asset",
+                       "sequenceBreaks":  0,
+                       "level":  "Level_08",
+                       "bfsReachable":  true,
+                       "echoButtonTest":  "PASS",
+                       "status":  "PASS",
+                       "expectedSoftlocks":  0,
+                       "signalGraphValid":  true
+                   },
+                   {
+                       "timingFloor":  0.4,
+                       "solutionAsset":  "Assets/Data/Solutions/Level_09_Solution.asset",
+                       "sequenceBreaks":  0,
+                       "level":  "Level_09",
+                       "bfsReachable":  true,
+                       "echoButtonTest":  "PASS",
+                       "status":  "PASS",
+                       "expectedSoftlocks":  0,
+                       "signalGraphValid":  true
+                   },
+                   {
+                       "timingFloor":  0.4,
+                       "solutionAsset":  "Assets/Data/Solutions/Level_10_Solution.asset",
+                       "sequenceBreaks":  0,
+                       "level":  "Level_10",
+                       "bfsReachable":  true,
+                       "echoButtonTest":  "PASS",
+                       "status":  "PASS",
+                       "expectedSoftlocks":  0,
+                       "signalGraphValid":  true
+                   },
+                   {
+                       "timingFloor":  0.4,
+                       "solutionAsset":  "Assets/Data/Solutions/Level_11_Solution.asset",
+                       "sequenceBreaks":  0,
+                       "level":  "Level_11",
+                       "bfsReachable":  true,
+                       "echoButtonTest":  "PASS",
+                       "status":  "PASS",
+                       "expectedSoftlocks":  0,
+                       "signalGraphValid":  true
+                   },
+                   {
+                       "timingFloor":  0.4,
+                       "solutionAsset":  "Assets/Data/Solutions/Level_12_Solution.asset",
+                       "sequenceBreaks":  0,
+                       "level":  "Level_12",
+                       "bfsReachable":  true,
+                       "echoButtonTest":  "PASS",
+                       "status":  "PASS",
+                       "expectedSoftlocks":  0,
+                       "signalGraphValid":  true
+                   },
+                   {
+                       "timingFloor":  0.4,
+                       "solutionAsset":  "Assets/Data/Solutions/Level_13_Solution.asset",
+                       "sequenceBreaks":  0,
+                       "level":  "Level_13",
+                       "bfsReachable":  true,
+                       "echoButtonTest":  "PASS",
+                       "status":  "PASS",
+                       "expectedSoftlocks":  0,
+                       "signalGraphValid":  true
+                   },
+                   {
+                       "timingFloor":  0.4,
+                       "solutionAsset":  "Assets/Data/Solutions/Level_14_Solution.asset",
+                       "sequenceBreaks":  0,
+                       "level":  "Level_14",
+                       "bfsReachable":  true,
+                       "echoButtonTest":  "PASS",
+                       "status":  "PASS",
+                       "expectedSoftlocks":  0,
+                       "signalGraphValid":  true
+                   },
+                   {
+                       "timingFloor":  0.4,
+                       "solutionAsset":  "Assets/Data/Solutions/Level_15_Solution.asset",
+                       "sequenceBreaks":  0,
+                       "level":  "Level_15",
+                       "bfsReachable":  true,
+                       "echoButtonTest":  "PASS",
+                       "status":  "PASS",
+                       "expectedSoftlocks":  0,
+                       "signalGraphValid":  true
+                   }
+               ],
+    "summary":  {
+                    "sequence_breaks":  0,
+                    "pass":  15,
+                    "softlocks":  0,
+                    "total":  15
+                }
+}

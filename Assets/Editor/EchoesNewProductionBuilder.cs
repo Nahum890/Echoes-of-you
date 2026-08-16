@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.IO;
+using Unity.AI.Navigation;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.AI;
 // Phase2 rebuild trigger
 using UnityEngine.SceneManagement;
 
@@ -68,6 +70,9 @@ public static class EchoesNewProductionBuilder
         EchoesLevelShell.SpawnLevelLightingSettings(envRoot, blueprint);
         EchoesLevelShell.SpawnDirectionalLight(blueprint);
 
+        // =============== FASE 1: Greybox Architecture (injected) ===============
+        BuildSchoolGreyboxArchitecture(envRoot, blueprint);
+
         // Keep track of instantiated modules to wire them up afterwards
         List<InstantiatedModule> instantiated = new List<InstantiatedModule>();
         Vector3 playerPos = Vector3.zero;
@@ -92,8 +97,8 @@ public static class EchoesNewProductionBuilder
             }
         }
 
-        // Post-spawn signal wiring (DISABLED for Phase 1 - Greybox only)
-        // WireSignals(instantiated, mechRoot);
+        // Post-spawn signal wiring (ENABLED for Phase 2 - Puzzle wiring)
+        WireSignals(instantiated, mechRoot);
 
         // Phase 2 puzzle flags (recordFuture / ambientEchoData / imposedEchoData / inversionCamera)
         // ApplyPhase2PuzzleFlags(blueprint, instantiated, mechRoot);
@@ -140,13 +145,25 @@ public static class EchoesNewProductionBuilder
         EchoesLevelShell.SpawnLevelRuntime(mechRoot, blueprint);
 
         // Spawn Pacing and Experience systems (DISABLED for Phase 1 - Greybox only)
-        // float routeStartZ = -10f;
-        // float routeEndZ = 30f;
-        // if (exit != null) routeEndZ = exit.transform.position.z;
-        // EchoesLevelShell.SpawnExperienceSystems(mechRoot, envRoot, exit, blueprint, routeStartZ, routeEndZ);
+        float routeStartZ = -10f;
+        float routeEndZ = 30f;
+        if (exit != null) routeEndZ = exit.transform.position.z;
+        EchoesLevelShell.SpawnExperienceSystems(mechRoot, envRoot, exit, blueprint, routeStartZ, routeEndZ);
 
-        // Spawn path hint lights from blueprint.pathHints (DISABLED for Phase 1 - Greybox only)
-        // SpawnPathHintLights(envRoot, blueprint, levelNum);
+        // Spawn path hint lights from blueprint.pathHints (early levels guidance)
+        SpawnPathHintLights(envRoot, blueprint, levelNum);
+
+        // Spawn EchoPathHint waypoints (interactive pulsing light orbs for N14 follow-echo path)
+        if (blueprint.pathHints != null && blueprint.pathHints.Length >= 2)
+        {
+            GameObject hintObj = new GameObject("EchoPathHint");
+            hintObj.transform.SetParent(mechRoot, false);
+            EchoPathHint pathHint = hintObj.AddComponent<EchoPathHint>();
+            var scaledWaypoints = new Vector3[blueprint.pathHints.Length];
+            for (int i = 0; i < scaledWaypoints.Length; i++)
+                scaledWaypoints[i] = blueprint.pathHints[i] * EchoesWorldMetrics.LevelGeometryScale;
+            SetSerializedValue(pathHint, "waypoints", scaledWaypoints);
+        }
 
         // Save Scene
         EditorSceneManager.SaveScene(scene, $"{SceneRoot}/{blueprint.levelName}.unity");
@@ -590,5 +607,108 @@ public static class EchoesNewProductionBuilder
         AssetDatabase.Refresh();
         Debug.Log($"[Echoes Production] Manifiesto escrito en {outputPath}");
         EditorUtility.RevealInFinder(outputPath);
+    }
+
+    // =============== Procedural Greybox Architecture ===============
+    // Analiza los módulos del blueprint y genera una envolvente arquitectónica
+    // adaptada a las posiciones reales de puzzles, player y exit por nivel.
+
+    private const float WallThickness = 0.2f;
+    private const float CorridorHeight = 3.2f;
+    private const float RoomHeight = 3.8f;
+    private const float HallHeight = 5.0f;
+    private const float Clearance = 1.2f;
+    private const float FloorThickness = 0.2f;
+
+    private struct RoomDef
+    {
+        public ModuleType type;
+        public string name;
+        public float zCenter;
+        public float zDepth;
+        public float xWidth;
+        public float height;
+        public bool openBack;
+        public bool openFront;
+    }
+
+    private static void BuildSchoolGreyboxArchitecture(Transform envRoot, LevelBlueprint blueprint)
+    {
+        int.TryParse(blueprint.levelName.Replace("Level_", ""), out int levelNum);
+
+        // Compute the span and X bounds from all modules.
+        float minZ = 999f, maxZ = -999f, minX = 999f, maxX = -999f;
+        float spawnZ = 0f, exitZ = 0f;
+        foreach (var m in blueprint.modules)
+        {
+            if (m.position.z < minZ) minZ = m.position.z;
+            if (m.position.z > maxZ) maxZ = m.position.z;
+            if (m.position.x < minX) minX = m.position.x;
+            if (m.position.x > maxX) maxX = m.position.x;
+            if (m.type == ModuleType.PlayerStart) spawnZ = m.position.z;
+            if (m.type == ModuleType.LevelExit || m.type == ModuleType.LevelGoal)
+                exitZ = Mathf.Max(exitZ, m.position.z);
+        }
+
+        // Clamp corridor width so extremities are always reachable
+        float halfCorridor = Mathf.Max(Mathf.Abs(minX), Mathf.Abs(maxX)) + 2f;
+        float corridorWidth = halfCorridor * 2f;
+
+        // Compute the route: {spawnArea, corridor, puzzleRoom, exitRoom}
+        // Overlap every segment by 0.5 m so NavMesh is continuous.
+        float overlap = 0.5f;
+
+        float zSpawnStart = minZ - 3f;
+        float zSpawnEnd = spawnZ + 2f;
+        float zExitStart = exitZ - 2f;
+        float zExitEnd = maxZ + 3f;
+
+        // Hall-like room at exit (wider + higher)
+        CreateArchRoom(envRoot, ModuleType.SchoolHall, "Hall_Salida",
+            new Vector3(0f, 0f, exitZ), corridorWidth, zExitEnd - zExitStart, HallHeight, true, false);
+
+        // Corridor - from spawn end to exit start, wraps every puzzle on the way
+        CreateArchRoom(envRoot, ModuleType.SchoolCorridor, "CorridorCentral",
+            new Vector3(0f, 0f, (zSpawnEnd + zExitStart) * 0.5f),
+            corridorWidth, Mathf.Max(3.2f, zExitStart - zSpawnEnd + overlap), CorridorHeight, true, true);
+
+        // Entrance room starts at spawn
+        CreateArchRoom(envRoot, ModuleType.SchoolEntrance, "Entrada",
+            new Vector3(0f, 0f, (minZ + (spawnZ - 7f))), corridorWidth, (spawnZ - minZ + 6f),
+            CorridorHeight, true, false);
+
+        // NavMesh surface
+        NavMeshSurface surface = envRoot.gameObject.AddComponent<NavMeshSurface>();
+        surface.collectObjects = CollectObjects.Children;
+        surface.useGeometry = NavMeshCollectGeometry.PhysicsColliders;
+        surface.agentTypeID = 0;
+        surface.BuildNavMesh();
+    }
+
+    private static void CreateArchRoom(Transform parent, ModuleType type, string name,
+        Vector3 center, float xWidth, float zDepth, float height, bool openBack, bool openFront)
+    {
+        GameObject room = new GameObject(name);
+        room.transform.SetParent(parent, false);
+        room.transform.position = center;
+
+        CreateBox("Floor", room.transform, new Vector3(0f, -0.1f, 0f), new Vector3(xWidth, 0.2f, zDepth));
+        float halfX = xWidth * 0.5f;
+        float halfZ = zDepth * 0.5f;
+        CreateBox("Wall_L", room.transform, new Vector3(-halfX + WallThickness * 0.5f, height * 0.5f, 0f), new Vector3(WallThickness, height, zDepth));
+        CreateBox("Wall_R", room.transform, new Vector3(halfX - WallThickness * 0.5f, height * 0.5f, 0f), new Vector3(WallThickness, height, zDepth));
+        if (!openBack) CreateBox("Wall_Back", room.transform, new Vector3(0f, height * 0.5f, -halfZ + WallThickness * 0.5f), new Vector3(xWidth, height, WallThickness));
+        if (!openFront) CreateBox("Wall_Front", room.transform, new Vector3(0f, height * 0.5f, halfZ - WallThickness * 0.5f), new Vector3(xWidth, height, WallThickness));
+    }
+
+    private static GameObject CreateBox(string name, Transform parent, Vector3 localPosition, Vector3 scale)
+    {
+        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.name = name;
+        cube.transform.SetParent(parent, false);
+        cube.transform.localPosition = localPosition;
+        cube.transform.localScale = scale;
+        cube.layer = 6; // Ground layer
+        return cube;
     }
 }
