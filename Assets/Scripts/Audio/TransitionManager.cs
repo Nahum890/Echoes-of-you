@@ -39,22 +39,18 @@ public class TransitionManager : MonoBehaviour
             GameStateController.Instance.StateChanged -= OnGameStateChanged;
     }
 
-    void OnGameStateChanged(GameStateController.GameState newState)
+    void OnGameStateChanged(GameStateController.GameFlowState fromState, GameStateController.GameFlowState toState)
     {
-        // Play transition out when leaving gameplay states
-        // Play transition in when entering gameplay states
-        // This is simplified - adjust per your state machine
-        switch (newState)
-        {
-            case GameStateController.GameState.Playing:
-                PlayTransitionIn();
-                break;
-            case GameStateController.GameState.Paused:
-            case GameStateController.GameState.MainMenu:
-            case GameStateController.GameState.LevelComplete:
-                PlayTransitionOut();
-                break;
-        }
+        // Play transition in when entering Exploration (gameplay)
+        if (toState == GameStateController.GameFlowState.Exploration)
+            PlayTransitionIn();
+
+        // Play transition out when leaving gameplay (to menu, pause, death, level complete, restart)
+        if (fromState == GameStateController.GameFlowState.Exploration &&
+            (toState == GameStateController.GameFlowState.LevelCompleted ||
+             toState == GameStateController.GameFlowState.PlayerDead ||
+             toState == GameStateController.GameFlowState.Restarting))
+            PlayTransitionOut();
     }
 
     public void PlayTransitionIn()
