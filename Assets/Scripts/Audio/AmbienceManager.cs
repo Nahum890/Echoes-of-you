@@ -246,4 +246,13 @@ public class AmbienceManager : MonoBehaviour
         _tapeHissSource?.Stop();
         CancelInvoke(nameof(PlayDistantClang));
     }
+
+    public static AmbienceManager EnsureExists()
+    {
+        var existing = FindAnyObjectByType<AmbienceManager>();
+        if (existing != null) return existing;
+
+        var go = new GameObject("AmbienceManager");
+        return go.AddComponent<AmbienceManager>();
+    }
 }
