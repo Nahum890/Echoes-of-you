@@ -48,18 +48,44 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         }
 
         string scene = SceneManager.GetActiveScene().name;
-        if (!scene.StartsWith("Level_"))
-            return;
-
-        RunBootstrapForScene(scene);
+        if (scene.StartsWith("Level_"))
+        {
+            RunBootstrapForScene(scene);
+        }
+        else if (scene == "MainMenu")
+        {
+            RunMainMenuAudioSetup();
+        }
     }
 
     static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (!scene.name.StartsWith("Level_"))
-            return;
+        if (scene.name.StartsWith("Level_"))
+        {
+            RunBootstrapForScene(scene.name);
+        }
+        else if (scene.name == "MainMenu")
+        {
+            RunMainMenuAudioSetup();
+        }
+    }
 
-        RunBootstrapForScene(scene.name);
+    static void RunMainMenuAudioSetup()
+    {
+        EchoesAudioManager.EnsureExists();
+        MusicStateMachine.EnsureExists();
+        AmbienceManager.EnsureExists();
+
+        var music = MusicStateMachine.EnsureExists();
+        music.SetStateImmediate(MusicStateMachine.MusicState.Menu);
+
+        var ambience = AmbienceManager.Instance;
+        if (ambience != null)
+        {
+            ambience.StopAll();
+            ambience.SetLayerVolume("tapehiss", 0.05f);
+            ambience.SetLayerVolume("roomtone", 0.08f);
+        }
     }
 
     static void RunBootstrapForScene(string scene)
@@ -89,6 +115,45 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         EnsureInteractableProps();
         EnsureLoadingScreen();
         EnsureLevelIntro();
+        EnsureAudioSetup(scene);
+    }
+
+    static void EnsureAudioSetup(string sceneName)
+    {
+        // Core audio managers (DontDestroyOnLoad)
+        EchoesAudioManager.EnsureExists();
+        MusicStateMachine.EnsureExists();
+        AmbienceManager.EnsureExists();
+        TransitionManager.EnsureExists();
+
+        // Set music state for gameplay levels
+        var music = MusicStateMachine.EnsureExists();
+        music.SetStateImmediate(MusicStateMachine.MusicState.Exploration);
+
+        // Configure ambience zone based on level
+        var ambience = AmbienceManager.Instance;
+        if (ambience == null) return;
+
+        string zone = sceneName switch
+        {
+            "Level_01" => "classroom",
+            "Level_02" => "hallway",
+            "Level_03" => "industrial",
+            "Level_04" => "classroom",
+            "Level_05" => "hallway",
+            "Level_06" => "industrial",
+            "Level_07" => "classroom",
+            "Level_08" => "memory",
+            "Level_09" => "industrial",
+            "Level_10" => "hallway",
+            "Level_11" => "memory",
+            "Level_12" => "industrial",
+            "Level_13" => "classroom",
+            "Level_14" => "memory",
+            "Level_15" => "industrial",
+            _ => "classroom"
+        };
+        ambience.SetAmbienceZone(zone);
     }
 
     static void EnsureExperienceSystems()
