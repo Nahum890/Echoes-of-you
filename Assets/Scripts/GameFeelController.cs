@@ -435,9 +435,10 @@ public class GameFeelController : MonoBehaviour
         if (Time.time < _nextScrapeTime)
             return;
 
-        _nextScrapeTime = Time.time + 0.35f;
+        _nextScrapeTime = Time.time + 1.5f;
         SpawnEffect(movementScrapePrefab, position, up);
-        PlayClip3D(movementScrapeClip, position, defaultVolume * Mathf.Lerp(0.08f, 0.22f, intensity), 1.15f);
+        // Movement scrape audio disabled per immersion feedback — only particles.
+        // If re-enabled, use a subtle clip with volume ~0.08f and 1.5s min interval.
     }
 
     public void PlayGravityShift(Vector3 position, Vector3 up)
