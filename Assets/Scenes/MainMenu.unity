@@ -5953,9 +5953,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuHoverSystem
   uiDocument: {fileID: 912787556}
-  hoverInClip: {fileID: 8300000, guid: 3707f9be0e93cdf4ab7e9067aa5ffc66, type: 3}
+  hoverInClip: {fileID: 8300000, guid: 37cc01f96fec7904db247518cdd31209, type: 3}
   hoverOutClip: {fileID: 8300000, guid: b225e8e14085cab4d85c9f9a2d7d64e8, type: 3}
-  clickConfirmClip: {fileID: 8300000, guid: abc255f8ac6cf4b45886800ca643fec9, type: 3}
+  clickConfirmClip: {fileID: 8300000, guid: 67fea059076fc2342879abd5fdeaa87d, type: 3}
   navMoveClip: {fileID: 8300000, guid: 00866bed46892de40a0d4d8cf245fe49, type: 3}
   crtAmbientClip: {fileID: 8300000, guid: 4c992ccbd0ecdcb4e90b6191b98e8973, type: 3}
   hoverInVolume: 0.6
