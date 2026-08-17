@@ -94,6 +94,9 @@ public class GameFeelController : MonoBehaviour
     float _nextFootstepTime;
     float _nextScrapeTime;
     float _nextMechanicTickTime;
+    float _nextPlatePressTime;
+    float _nextEchoSpawnTime;
+    float _nextEchoFadeTime;
 
     void Awake()
     {
@@ -421,9 +424,10 @@ public class GameFeelController : MonoBehaviour
         if (Time.time < _nextFootstepTime)
             return;
 
-        _nextFootstepTime = Time.time + Mathf.Lerp(0.16f, 0.08f, Mathf.InverseLerp(3f, 12f, speed));
+        _nextFootstepTime = Time.time + Mathf.Lerp(0.45f, 0.25f, Mathf.InverseLerp(3f, 12f, speed));
         SpawnEffect(footstepDustPrefab, position, up);
-        PlayClip3D(footstepClip, position, defaultVolume * Mathf.Lerp(0.18f, 0.42f, Mathf.InverseLerp(2f, 12f, speed)), Mathf.Lerp(0.92f, 1.08f, Random.value));
+        // Footstep audio removed per immersion feedback — only particles.
+        // If re-enabled, use a subtle clip with volume ~0.12f and 0.5s min interval.
     }
 
     public void PlayMovementScrape(Vector3 position, Vector3 up, float intensity)
@@ -431,7 +435,7 @@ public class GameFeelController : MonoBehaviour
         if (Time.time < _nextScrapeTime)
             return;
 
-        _nextScrapeTime = Time.time + 0.22f;
+        _nextScrapeTime = Time.time + 0.35f;
         SpawnEffect(movementScrapePrefab, position, up);
         PlayClip3D(movementScrapeClip, position, defaultVolume * Mathf.Lerp(0.08f, 0.22f, intensity), 1.15f);
     }
@@ -477,6 +481,10 @@ public class GameFeelController : MonoBehaviour
 
     public void PlayEchoSpawn(Vector3 position)
     {
+        if (Time.time < _nextEchoSpawnTime)
+            return;
+        _nextEchoSpawnTime = Time.time + 0.25f;
+
         PlayClip3D(echoSpawnClip, position, defaultVolume * 1.05f, 0.68f);
         cameraShake?.AddShake(echoSpawnShake * 0.45f);
         PulseCA(0.35f, 0.18f);
@@ -492,6 +500,10 @@ public class GameFeelController : MonoBehaviour
 
     public void PlayPlatePress(Vector3 position)
     {
+        if (Time.time < _nextPlatePressTime)
+            return;
+        _nextPlatePressTime = Time.time + 0.35f;
+
         PlayClip3D(platePressClip, position, defaultVolume * 0.85f, 0.9f);
         cameraShake?.AddShake(0.04f);
         PulseCA(0.15f, 0.08f);
@@ -529,6 +541,10 @@ public class GameFeelController : MonoBehaviour
 
     public void PlayEchoFade(Vector3 position)
     {
+        if (Time.time < _nextEchoFadeTime)
+            return;
+        _nextEchoFadeTime = Time.time + 0.3f;
+
         PlayClip3D(echoFadeClip, position, defaultVolume * 0.72f, 0.58f);
     }
 
@@ -537,7 +553,7 @@ public class GameFeelController : MonoBehaviour
         if (Time.time < _nextMechanicTickTime)
             return;
 
-        _nextMechanicTickTime = Time.time + 0.08f;
+        _nextMechanicTickTime = Time.time + 0.2f;
         PlayClip3D(movementScrapeClip, position, defaultVolume * Mathf.Clamp(weight, 0.25f, 1.2f), 0.92f);
     }
 
