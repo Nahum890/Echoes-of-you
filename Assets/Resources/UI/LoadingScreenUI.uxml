@@ -1,0 +1,61 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+    <Style src="project://database/Assets/UI/EchoesDesignTokens.uss" />
+    <Style src="project://database/Assets/UI/LoadingScreenUI.uss" />
+
+    <ui:VisualElement class="loading-root" name="loading-root" picking-mode="Ignore">
+
+        <ui:VisualElement name="loading-bg-base" class="loading-bg-base" picking-mode="Ignore" />
+        <ui:VisualElement name="loading-bg-gradient" class="loading-bg-gradient" picking-mode="Ignore" />
+        <ui:VisualElement name="loading-vignette" class="loading-vignette" picking-mode="Ignore" />
+        <ui:VisualElement name="loading-scanlines" class="loading-scanlines" picking-mode="Ignore" />
+
+        <ui:VisualElement name="loading-particles" class="loading-particles" picking-mode="Ignore">
+            <ui:VisualElement class="loading-particle" style="left: 15%; width: 4px; height: 4px;" />
+            <ui:VisualElement class="loading-particle" style="left: 35%; width: 6px; height: 6px;" />
+            <ui:VisualElement class="loading-particle" style="left: 65%; width: 3px; height: 3px;" />
+            <ui:VisualElement class="loading-particle" style="left: 85%; width: 5px; height: 5px;" />
+            <ui:VisualElement class="loading-particle" style="left: 50%; width: 4px; height: 4px;" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="loading-content" class="loading-content" picking-mode="Ignore">
+
+            <ui:VisualElement class="loading-header">
+                <ui:Label name="loading-sync-status" class="loading-sync-status" text="SYNC_STATUS: RECOVERING_DUAL_MEMORY" />
+                <ui:VisualElement class="loading-header-line" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="loading-emblem" class="loading-emblem" picking-mode="Ignore">
+                <ui:VisualElement class="loading-emblem-silhouette" picking-mode="Ignore" />
+                <ui:VisualElement class="loading-emblem-base" picking-mode="Ignore">
+                    <ui:VisualElement class="loading-emblem-tick loading-emblem-tick--top" />
+                    <ui:VisualElement class="loading-emblem-tick loading-emblem-tick--left" />
+                    <ui:VisualElement class="loading-emblem-tick loading-emblem-tick--bottom" />
+                </ui:VisualElement>
+                <ui:VisualElement name="loading-progress-arc" class="loading-progress-arc" picking-mode="Ignore" />
+                <ui:VisualElement name="loading-arc-fill" class="loading-arc-fill" picking-mode="Ignore" />
+                <ui:VisualElement class="loading-emblem-glitch" picking-mode="Ignore" />
+                <ui:VisualElement name="loading-emblem-core" class="loading-emblem-core" picking-mode="Ignore" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="loading-quote-section">
+                <ui:Label name="loading-quote" class="loading-quote" text="Dos voces en un solo eco..." />
+                <ui:VisualElement class="loading-quote-line" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="loading-hint" picking-mode="Ignore">
+                <ui:VisualElement class="loading-hint-key">
+                    <ui:Label class="loading-hint-key-text" text="R" />
+                </ui:VisualElement>
+                <ui:Label class="loading-hint-text" text="Mantener para sincronizar" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="loading-bar-container" class="loading-bar-container" picking-mode="Ignore">
+                <ui:VisualElement name="loading-bar-bg" class="loading-bar-bg">
+                    <ui:VisualElement name="loading-bar-fill" class="loading-bar-fill" />
+                </ui:VisualElement>
+                <ui:Label name="loading-pct" class="loading-pct" text="0%" />
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+    </ui:VisualElement>
+</UXML>

@@ -64,6 +64,13 @@ namespace Echoes.UI
             DontDestroyOnLoad(gameObject);
         }
 
+        void OnEnable()
+        {
+            // Restore static ref after domain reload (DontDestroyOnLoad objects survive but statics are cleared)
+            if (Instance == null)
+                Instance = this;
+        }
+
         void OnDestroy()
         {
             if (Instance == this) Instance = null;

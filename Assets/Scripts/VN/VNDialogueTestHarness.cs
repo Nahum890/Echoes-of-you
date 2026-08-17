@@ -28,7 +28,7 @@ namespace Echoes.VN
 
         const float ReferenceWidth = 1920f;
         const float ReferenceHeight = 1080f;
-        const string DefaultSprite = "VN/Sprites/aiden/Aiden_Perturbada";
+        const string DefaultSprite = "VN/Sprites/aiden/Aiden_Neutral";
 
         [SerializeField] Camera testCamera;
         [SerializeField, Min(1f)] float charactersPerSecond = 55f;
@@ -58,9 +58,9 @@ namespace Echoes.VN
 
             var root = new GameObject("VN Test Interactables");
             CreateTestObject(root.transform, "Reloj detenido", new Vector3(-4f, 1f, 0f), PrimitiveType.Cylinder,
-                "El reloj marca las 03:17. Aiden parece recordar algo que aun no sucedio.", "VN/Sprites/aiden/Aiden_Pensativa", new Color(0.34f, 0.78f, 1f), Vector3.one);
+                "El reloj marca las 03:17. Aiden parece recordar algo que aun no sucedio.", "VN/Sprites/aiden/Aiden_pensativa", new Color(0.34f, 0.78f, 1f), Vector3.one);
             CreateTestObject(root.transform, "Nota doblada", new Vector3(0f, 1f, 0f), PrimitiveType.Cube,
-                "La tinta dice: No olvides que la salida tambien puede ser un comienzo.", "VN/Sprites/aiden/Aiden_Perturbada", new Color(1f, 0.72f, 0.22f), Vector3.one);
+                "La tinta dice: No olvides que la salida tambien puede ser un comienzo.", "VN/Sprites/aiden/Aiden_preocupada_enplanmal", new Color(1f, 0.72f, 0.22f), Vector3.one);
             CreateTestObject(root.transform, "Espejo empañado", new Vector3(4f, 1.4f, 0f), PrimitiveType.Cube,
                 "Por un instante, el reflejo de Aiden sonríe antes que tú.", "VN/Sprites/aiden/Aiden_Feliz", new Color(0.72f, 0.48f, 1f), new Vector3(1.7f, 2.8f, 0.25f));
 

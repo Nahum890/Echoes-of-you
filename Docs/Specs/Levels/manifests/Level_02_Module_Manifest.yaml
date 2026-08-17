@@ -1,0 +1,116 @@
+# Level_02_Module_Manifest.yaml — Builder-ready module placement for N02 rebuild
+# Spec authority: Docs/Specs/Levels/LEVEL_SPEC_02.md (v4.0)
+# Enum indices: SchoolHall=31, SchoolCorridor=32, SchoolClassroom=33, SchoolLab=35,
+#   TransitionSpace=46, PressurePlate=4, Door=5, PlayerStart=7, LevelExit=6.
+
+level_id: "Level_02"
+next_level: "Level_03"
+archetype: "Experimentation"
+echo:
+  enabled: true
+  max_echoes: 2
+  max_record_seconds: 12
+  mode: "Standard"
+  record_future: false
+  timing_floor: 0.4
+
+path_hints:
+  - {x: 0.0,  y: 0.1, z: 0.0}     # hall spawn
+  - {x: -12.0, y: 0.1, z: 5.0}   # laboratorio (palanca)
+  - {x: 12.0,  y: 0.1, z: 3.0}    # ciencias (plataforma)
+  - {x: 0.0,  y: 0.1, z: 8.0}    # atrio silencioso
+  - {x: 0.0,  y: 0.1, z: 12.0}   # salida N03
+
+modules:
+  - name: "PlayerStart"
+    type: 7
+    position: {x: 0.0, y: 0.1, z: 0.0}
+
+  - name: "Hall_Central_RelojRoto"
+    type: 31                                   # SchoolHall
+    position: {x: 0.0, y: 0.0, z: 0.0}
+    scale: {x: 10.0, y: 5.0, z: 10.0}
+    customData: "landmark=RelojRoto,techo_alto=true"
+
+  - name: "Classroom_Laboratorio_Pasado"
+    type: 35                                   # SchoolLab
+    position: {x: -12.0, y: 0.0, z: 5.0}
+    scale: {x: 8.0, y: 3.5, z: 6.0}
+    customData: "role=past,ventanal_to=Classroom_Ciencias_Presente"
+
+  - name: "Classroom_Ciencias_Presente"
+    type: 33                                   # SchoolClassroom (tiered)
+    position: {x: 12.0, y: 0.0, z: 5.0}
+    scale: {x: 8.0, y: 4.5, z: 10.0}
+    customData: "role=present,tiered=true,tier_steps=3,tier_height=0.4,ventanal_to=Classroom_Laboratorio_Pasado"
+
+  - name: "Atrio_Silencioso"
+    type: 46                                   # TransitionSpace
+    position: {x: 0.0, y: 0.0, z: 8.0}
+    scale: {x: 6.0, y: 3.6, z: 8.0}
+    customData: "consequence_room=true,quiet=true"
+
+  - name: "LevelExit_N03"
+    type: 6
+    position: {x: 0.0, y: 0.0, z: 12.0}
+    customData: "nextSceneName=Level_03,completionToast=Luego pruebas."
+
+puzzle_components:
+  - name: "PressurePlate_LeverEcho"
+    type: 4
+    position: {x: -12.0, y: 0.08, z: 5.0}      # laboratorio, sobre mesa
+    customData: "accept_player=true,accept_echo=true,auto_release_timer=0.15,target_platform=TimedMovingPlatform_01"
+
+  - name: "TimedMovingPlatform_01"
+    type: 44                                   # GhostBridge reuse as moving platform proxy
+    position: {x: 12.0, y: 0.0, z: 3.0}        # ciencias presente
+    customData: "type=TimedMovingPlatform,inactiveLocal=0,0,0,activeLocal=0,0,6,travelSpeed=2.5,fastReturn=true,returnMultiplier=8.0"
+
+  - name: "PressurePlate_AtrioEcho"
+    type: 4
+    position: {x: 12.0, y: 0.08, z: 9.0}       # final de ciencias
+    customData: "accept_player=true,accept_echo=false,auto_release_timer=0.0,target_door=Door_AtrioConsequence"
+
+  - name: "Door_AtrioConsequence"
+    type: 5
+    position: {x: 0.0, y: 0.0, z: 8.0}
+    customData: "latch_open=true,plates=PressurePlate_AtrioEcho"
+
+  - name: "GoalTrigger_Diario"
+    type: 40
+    position: {x: 0.0, y: 0.9, z: 12.0}
+    customData: "use_plate_pressed_state=true,pressure_plate=PressurePlate_Diario,side_effect=advance_clock_to_12_03"
+
+  - name: "PressurePlate_Diario"
+    type: 4
+    position: {x: 0.0, y: 0.08, z: 12.0}
+    customData: "accept_player=true,auto_release_timer=0.0"
+
+  - name: "LevelGoal"
+    type: 40
+    position: {x: 0.0, y: 0.0, z: 12.0}
+    customData: "required_trigger_count=1,skip_escape_sequence=true"
+
+props:
+  - {prefab: "Prop_RelojPared",  room: "Hall_Central_RelojRoto",     position: {x: 0.0,  y: 3.0, z: 0.0},    rotation: {y: 0},   scale: 1.5, narrative: "landmark_parado_1200"}
+  - {prefab: "Prop_Escritorio",  room: "Classroom_Laboratorio_Pasado", position: {x: -12.0, y: 0.0, z: 5.0}, rotation: {y: 0}, scale: 1.0, narrative: "mesa_trabajo"}
+  - {prefab: "Prop_Cronometro",   room: "Classroom_Laboratorio_Pasado", position: {x: -12.0, y: 0.9, z: 5.0}, rotation: {y: 0}, scale: 1.0, narrative: "palanca_puzzle"}
+  - {prefab: "Prop_PupitreDoble", room: "Classroom_Ciencias_Presente", position: {x: 10.0, y: 0.0, z: 3.0},  rotation: {y: 0}, scale: 1.0, duplicate: 3, tier_offset: 0.4}
+  - {prefab: "Prop_MesaProfesor", room: "Classroom_Ciencias_Presente", position: {x: 14.0, y: 0.0, z: 8.0},  rotation: {y: 180}, scale: 1.0}
+  - {prefab: "Prop_RelojPared",   room: "Classroom_Ciencias_Presente", position: {x: 12.0, y: 3.0, z: 0.0},  rotation: {y: 180}, scale: 1.0, narrative: "landmark_B_sync_platform"}
+  - {prefab: "Prop_Libros",       room: "Atrio_Silencioso",         position: {x: -2.0, y: 0.0, z: 8.0},   rotation: {y: 0},  scale: 1.0, duplicate: 3, scatter: true}
+
+narrative:
+  intro_title: "Nivel 2 — Luego pruebas"
+  intro_desc: "Un ala del colegio con un reloj parado en el centro. Dos aulas se miran por un ventanal; lo que haces en una, lo decide el tiempo en la otra."
+  intro_duration: 7
+  objective: "Sincroniza la palanca del pasado con la plataforma del presente."
+  complete_text: "Luego pruebas."
+
+lighting:
+  token: "liminal_n02"
+  fog_color: {r: 0.1098, g: 0.1412, b: 0.1882, a: 1.0}
+  fog_density: 0.008
+  lab_warm_light:    {type: "Point", color_temp: 3200, intensity: 1.8, range: 6.0, position: {x: -12, y: 2, z: 5}}
+  sciences_cool_light: {type: "Point", color_temp: 5500, intensity: 1.2, range: 6.0, position: {x: 12,  y: 2, z: 5}}
+  atrio_zenith_light: {type: "Point", color_temp: 4300, intensity: 1.5, range: 7.0, position: {x: 0,   y: 3, z: 8}}

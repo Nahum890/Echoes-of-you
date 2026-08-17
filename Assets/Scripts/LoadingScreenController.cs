@@ -1,15 +1,22 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class LoadingScreenController : MonoBehaviour
 {
     public static LoadingScreenController Instance { get; private set; }
 
-    const float RefW = 1920f;
-    const float RefH = 1080f;
+    // UI
+    UIDocument _doc;
+    VisualElement _root;
+    VisualElement _progressArc;
+    VisualElement _arcFill;
+    VisualElement _barFill;
+    Label _pctLabel;
+    Label _quoteLabel;
+    Label _syncStatusLabel;
 
-    Texture2D _bgTex;
     bool _loading;
     float _progress;
     string _levelDisplayName;
@@ -46,12 +53,99 @@ public class LoadingScreenController : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        _bgTex = Resources.Load<Texture2D>("UI/void_fog_bg");
+        SceneManager.sceneLoaded += OnSceneLoadedCallback;
+        InitializeUI();
+    }
+
+    void OnEnable()
+    {
+        // Restore static ref after domain reload (DontDestroyOnLoad objects survive but statics are cleared)
+        if (Instance == null)
+        {
+            Instance = this;
+            // Re-query root since UIDocument may have been re-created during domain reload
+            if (_doc == null) _doc = GetComponent<UIDocument>();
+            if (_doc != null && _root == null)
+            {
+                var vta = Resources.Load<VisualTreeAsset>("UI/LoadingScreenUI");
+                if (vta != null && _doc.visualTreeAsset == null)
+                    _doc.visualTreeAsset = vta;
+                _root = _doc.rootVisualElement;
+                if (_root != null)
+                {
+                    _progressArc = _root.Q("loading-progress-arc");
+                    _arcFill = _root.Q("loading-arc-fill");
+                    _barFill = _root.Q("loading-bar-fill");
+                    _pctLabel = _root.Q<Label>("loading-pct");
+                    _quoteLabel = _root.Q<Label>("loading-quote");
+                    _syncStatusLabel = _root.Q<Label>("loading-sync-status");
+                    _root.style.display = DisplayStyle.None;
+                }
+            }
+        }
+    }
+
+    void OnSceneLoadedCallback(Scene scene, LoadSceneMode mode)
+    {
+        // After scene load, UIDocument re-attaches to panel — re-query root
+        if (_doc != null)
+        {
+            _root = _doc.rootVisualElement;
+            if (_root != null)
+            {
+                _progressArc = _root.Q("loading-progress-arc");
+                _arcFill = _root.Q("loading-arc-fill");
+                _barFill = _root.Q("loading-bar-fill");
+                _pctLabel = _root.Q<Label>("loading-pct");
+                _quoteLabel = _root.Q<Label>("loading-quote");
+                _syncStatusLabel = _root.Q<Label>("loading-sync-status");
+            }
+        }
+    }
+
+    void InitializeUI()
+    {
+        var panel = UIBootstrap.PanelSettings;
+        if (panel == null)
+        {
+            Debug.LogWarning("[LoadingScreenController] No PanelSettings found.");
+            return;
+        }
+
+        // Create UIDocument if missing
+        _doc = GetComponent<UIDocument>();
+        if (_doc == null)
+        {
+            _doc = gameObject.AddComponent<UIDocument>();
+            _doc.panelSettings = panel;
+            _doc.sortingOrder = 5000; // Above everything during load
+            var vta = Resources.Load<VisualTreeAsset>("UI/LoadingScreenUI");
+            if (vta == null)
+            {
+                Debug.LogError("[LoadingScreenController] LoadingScreenUI.uxml not found in Resources/UI/");
+                return;
+            }
+            _doc.visualTreeAsset = vta;
+        }
+
+        _root = _doc.rootVisualElement;
+        if (_root == null) return;
+
+        _progressArc = _root.Q("loading-progress-arc");
+        _arcFill = _root.Q("loading-arc-fill");
+        _barFill = _root.Q("loading-bar-fill");
+        _pctLabel = _root.Q<Label>("loading-pct");
+        _quoteLabel = _root.Q<Label>("loading-quote");
+        _syncStatusLabel = _root.Q<Label>("loading-sync-status");
+
+        // Start hidden
+        _root.style.display = DisplayStyle.None;
     }
 
     public void LoadScene(string sceneName)
     {
         if (_loading) return;
+        if (_root == null) InitializeUI();
         StartCoroutine(LoadRoutine(sceneName));
     }
 
@@ -71,6 +165,22 @@ public class LoadingScreenController : MonoBehaviour
             ? LoreQuotes[levelIdx]
             : "Algo espera al otro lado.";
 
+        // Set lore quote
+        if (_quoteLabel != null) _quoteLabel.text = $"\"{_loreQuote}\"";
+        if (_syncStatusLabel != null) _syncStatusLabel.text = "SYNC_STATUS: RECOVERING_DUAL_MEMORY";
+
+        // Show loading screen
+        if (_root != null)
+        {
+            _root.style.display = DisplayStyle.Flex;
+            _root.AddToClassList("loading-visible");
+            _root.style.opacity = 1f;
+        }
+
+        UpdateProgressUI();
+
+        const float loadTimeoutSeconds = 20f;
+
         AsyncOperation op = null;
         try
         {
@@ -84,128 +194,133 @@ public class LoadingScreenController : MonoBehaviour
             Debug.LogError($"[LoadingScreen] Failed to start loading '{sceneName}': {ex.Message}");
         }
 
+        float watchdogStart = Time.unscaledTime;
+        float lastProgressChange = Time.unscaledTime;
+        float lastProgress = 0f;
+
         if (op != null)
         {
             while (op.progress < 0.9f)
             {
                 _progress = Mathf.Clamp01(op.progress / 0.9f);
                 if (_fadeInAlpha > 0f) _fadeInAlpha -= Time.unscaledDeltaTime * 3f;
+                UpdateProgressUI();
+
+                // Watchdog: if progress stalls for too long, force activation
+                if (op.progress > lastProgress + 0.001f)
+                {
+                    lastProgress = op.progress;
+                    lastProgressChange = Time.unscaledTime;
+                }
+                if (Time.unscaledTime - lastProgressChange > loadTimeoutSeconds)
+                {
+                    Debug.LogWarning($"[LoadingScreen] Progress stalled {loadTimeoutSeconds}s — forcing activation of '{sceneName}'.");
+                    break;
+                }
+
                 yield return null;
             }
 
             _progress = 1f;
-            op.allowSceneActivation = true;
+            UpdateProgressUI();
 
-            while (!op.isDone)
-                yield return null;
+            if (!op.isDone)
+            {
+                op.allowSceneActivation = true;
+                while (!op.isDone && Time.unscaledTime - watchdogStart < loadTimeoutSeconds + 10f)
+                    yield return null;
+            }
         }
         else
         {
-            yield return new WaitForSecondsRealtime(0.5f);
+            // Fallback: simulate brief load
+            float t = 0f;
+            while (t < 0.5f)
+            {
+                t += Time.unscaledDeltaTime;
+                _progress = Mathf.Clamp01(t / 0.5f);
+                UpdateProgressUI();
+                yield return null;
+            }
+            _progress = 1f;
+            UpdateProgressUI();
         }
 
+        // Brief hold at 100% for visual completion
         yield return new WaitForSecondsRealtime(0.4f);
 
+        // Re-query root in case scene load invalidated it
+        if (_doc != null) _root = _doc.rootVisualElement;
+
+        // Fade out
         _fadingOut = true;
         _fadeOutAlpha = 0f;
         while (_fadeOutAlpha < 1f)
         {
             _fadeOutAlpha += Time.unscaledDeltaTime * 2.5f;
+            if (_root != null)
+                _root.style.opacity = 1f - Mathf.Clamp01(_fadeOutAlpha);
             yield return null;
+        }
+
+        // Re-query root before hiding (scene may have just activated)
+        if (_doc != null) _root = _doc.rootVisualElement;
+
+        // Hide
+        if (_root != null)
+        {
+            _root.style.display = DisplayStyle.None;
+            _root.RemoveFromClassList("loading-visible");
+            _root.style.opacity = 1f;
         }
 
         _loading = false;
     }
 
-    void OnGUI()
+    void UpdateProgressUI()
     {
-        if (!_loading) return;
+        if (_root == null) return;
 
-        float scale = Mathf.Min(Screen.width / RefW, Screen.height / RefH);
-        float ox = (Screen.width - RefW * scale) * 0.5f;
-        float oy = (Screen.height - RefH * scale) * 0.5f;
-        var oldMatrix = GUI.matrix;
-        GUI.matrix = Matrix4x4.TRS(new Vector3(ox, oy, 0f), Quaternion.identity, new Vector3(scale, scale, 1f));
+        // Progress bar
+        if (_barFill != null)
+            _barFill.style.width = Length.Percent(_progress * 100f);
 
-        GUI.color = new Color(0.02f, 0.02f, 0.04f, 1f);
-        GUI.DrawTexture(new Rect(0f, 0f, RefW, RefH), Texture2D.whiteTexture);
+        // Percentage label
+        if (_pctLabel != null)
+            _pctLabel.text = Mathf.RoundToInt(_progress * 100f) + "%";
 
-        if (_bgTex != null)
-            GUI.DrawTexture(new Rect(0f, 0f, RefW, RefH), _bgTex, ScaleMode.ScaleAndCrop);
-
-        GUI.color = new Color(0f, 0f, 0.04f, Mathf.Lerp(0.6f, 0.85f, _progress));
-        GUI.DrawTexture(new Rect(0f, 0f, RefW, RefH), Texture2D.whiteTexture);
-
-        int titleSize = Mathf.RoundToInt(42 * scale);
-        GUIStyle titleStyle = new GUIStyle(GUI.skin.label)
+        // Update sync status text at milestones
+        if (_syncStatusLabel != null)
         {
-            fontSize = titleSize,
-            normal = { textColor = new Color(1f, 0.7f, 0.18f) },
-            alignment = TextAnchor.MiddleCenter,
-            fontStyle = FontStyle.Bold
-        };
-        GUI.Label(new Rect(RefW * 0.1f, RefH * 0.2f, RefW * 0.8f, 60f), "Cargando memoria...", titleStyle);
-
-        int nameSize = Mathf.RoundToInt(28 * scale);
-        GUIStyle nameStyle = new GUIStyle(GUI.skin.label)
-        {
-            fontSize = nameSize,
-            normal = { textColor = new Color(0.9f, 0.9f, 0.95f) },
-            alignment = TextAnchor.MiddleCenter
-        };
-        GUI.Label(new Rect(RefW * 0.1f, RefH * 0.28f, RefW * 0.8f, 40f), _levelDisplayName, nameStyle);
-
-        int quoteSize = Mathf.RoundToInt(22 * scale);
-        GUIStyle quoteStyle = new GUIStyle(GUI.skin.label)
-        {
-            fontSize = quoteSize,
-            normal = { textColor = new Color(0.65f, 0.65f, 0.72f, 0.9f) },
-            alignment = TextAnchor.MiddleCenter,
-            fontStyle = FontStyle.Italic,
-            wordWrap = true
-        };
-        GUI.Label(new Rect(RefW * 0.15f, RefH * 0.38f, RefW * 0.7f, 100f), _loreQuote, quoteStyle);
-
-        float barW = RefW * 0.5f;
-        float barH = 12f;
-        float barX = (RefW - barW) * 0.5f;
-        float barY = RefH * 0.62f;
-
-        GUI.color = new Color(0.05f, 0.05f, 0.08f, 0.9f);
-        GUI.DrawTexture(new Rect(barX, barY, barW, barH), Texture2D.whiteTexture);
-
-        GUI.color = new Color(1f, 0.7f, 0.18f, 0.9f);
-        GUI.DrawTexture(new Rect(barX, barY, barW * _progress, barH), Texture2D.whiteTexture);
-
-        GUI.color = new Color(1f, 0.7f, 0.18f, 0.6f);
-        GUI.DrawTexture(new Rect(barX, barY, barW, 2f), Texture2D.whiteTexture);
-        GUI.DrawTexture(new Rect(barX, barY + barH - 2f, barW, 2f), Texture2D.whiteTexture);
-
-        int pctSize = Mathf.RoundToInt(20 * scale);
-        GUIStyle pctStyle = new GUIStyle(GUI.skin.label)
-        {
-            fontSize = pctSize,
-            normal = { textColor = new Color(1f, 0.7f, 0.18f) },
-            alignment = TextAnchor.MiddleCenter
-        };
-        GUI.Label(new Rect(barX, barY + 25f, barW, 30f), Mathf.RoundToInt(_progress * 100f) + "%", pctStyle);
-
-        GUI.color = Color.white;
-
-        if (_fadingOut)
-        {
-            GUI.color = new Color(0f, 0f, 0f, _fadeOutAlpha);
-            GUI.DrawTexture(new Rect(0f, 0f, RefW, RefH), Texture2D.whiteTexture);
-            GUI.color = Color.white;
+            if (_progress < 0.33f)
+                _syncStatusLabel.text = "SYNC_STATUS: RECOVERING_DUAL_MEMORY";
+            else if (_progress < 0.66f)
+                _syncStatusLabel.text = "SYNC_STATUS: ALIGNING_ECHO_SIGNATURE";
+            else if (_progress < 0.95f)
+                _syncStatusLabel.text = "SYNC_STATUS: STABILIZING_CORRIDOR";
+            else
+                _syncStatusLabel.text = "SYNC_STATUS: MEMORY_SYNCHRONIZED";
         }
 
-        if (_fadeInAlpha > 0f)
-        {
-            GUI.color = new Color(0f, 0f, 0f, Mathf.Clamp01(_fadeInAlpha));
-            GUI.DrawTexture(new Rect(0f, 0f, RefW, RefH), Texture2D.whiteTexture);
-            GUI.color = Color.white;
-        }
+        // Progress arc — toggle classes based on progress
+        _root.RemoveFromClassList("loading-arc-25");
+        _root.RemoveFromClassList("loading-arc-50");
+        _root.RemoveFromClassList("loading-arc-75");
+        _root.RemoveFromClassList("loading-arc-100");
 
-        GUI.matrix = oldMatrix;
+        if (_progress >= 0.95f)
+            _root.AddToClassList("loading-arc-100");
+        else if (_progress >= 0.70f)
+            _root.AddToClassList("loading-arc-75");
+        else if (_progress >= 0.40f)
+            _root.AddToClassList("loading-arc-50");
+        else if (_progress >= 0.15f)
+            _root.AddToClassList("loading-arc-25");
+    }
+
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoadedCallback;
+        if (Instance == this) Instance = null;
     }
 }

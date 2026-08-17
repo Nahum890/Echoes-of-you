@@ -87,6 +87,19 @@ public partial class PlayerController : MonoBehaviour
     Vector3 _targetGravity;
     Vector3 _currentUp = Vector3.up;
     Vector3 _lastFacing = Vector3.forward;
+    // Smoothed camera basis for movement-input direction.
+    // ThirdPersonCamera applies PS1 Perlin jitter (±~3.4° yaw at ~12Hz, see
+    // ThirdPersonCamera.LateUpdate lines 224-237) directly to
+    // transform.rotation. Feeding `_cam.forward` straight into
+    // `desiredDirection` propagates that jitter to `_planarVelocity` ->
+    // `_lastFacing` -> `targetRotation`, producing a visible side-to-side
+    // wobble ("zigzag") while walking forward. We filter that with a light
+    // exponential Slerp (time-constant ~45ms) that keeps real mouse-driven
+    // camera yaw responsive (filter is faster than turnSpeed) but rejects
+    // 12Hz Perlin coupling. The visual camera shake is untouched.
+    Vector3 _smoothedCamForward = Vector3.forward;
+    Vector3 _smoothedCamRight   = Vector3.right;
+    bool    _smoothedCamBasisInit;
     bool _grounded;
     bool _wasGrounded;
     bool _isDead;
@@ -448,10 +461,29 @@ public partial class PlayerController : MonoBehaviour
             // Use camera yaw only for movement direction (ignore pitch) to avoid zigzag when camera looks down
             Vector3 flatForward = _cam.forward;
             flatForward.y = 0f;
-            cameraForward = flatForward.sqrMagnitude > 0.001f ? flatForward.normalized : Vector3.forward;
+            flatForward = flatForward.sqrMagnitude > 0.001f ? flatForward.normalized : Vector3.forward;
             Vector3 flatRight = _cam.right;
             flatRight.y = 0f;
-            cameraRight = flatRight.sqrMagnitude > 0.001f ? flatRight.normalized : Vector3.right;
+            flatRight = flatRight.sqrMagnitude > 0.001f ? flatRight.normalized : Vector3.right;
+
+            // Filter out PS1 Perlin rotation jitter before it reaches the
+            // movement direction (see _smoothedCamForward docs above). Light
+            // damping: ~45ms time-constant — fast enough for mouse yaw,
+            // slow enough to kill ~12Hz camera shake from input basis.
+            if (!_smoothedCamBasisInit)
+            {
+                _smoothedCamForward = flatForward;
+                _smoothedCamRight = flatRight;
+                _smoothedCamBasisInit = true;
+            }
+            else
+            {
+                float camBlend = DampingFactor(22f, Time.deltaTime);
+                _smoothedCamForward = Vector3.Slerp(_smoothedCamForward, flatForward, camBlend);
+                _smoothedCamRight = Vector3.Slerp(_smoothedCamRight, flatRight, camBlend);
+            }
+            cameraForward = _smoothedCamForward;
+            cameraRight = _smoothedCamRight;
         }
 
         Vector3 desiredDirection = cameraForward * input.z + cameraRight * input.x;

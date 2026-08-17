@@ -78,8 +78,9 @@ namespace Echoes.VN
             var stage = AidenStageResolver.ResolveForCurrentLevel();
             string spriteName = stage switch
             {
-                AidenStage.Conviction => "VN/Sprites/aiden/Aiden_Perturbada",
-                AidenStage.Guilt => "VN/Sprites/aiden/Aiden_Pensativa",
+                AidenStage.Conviction => "VN/Sprites/aiden/Aiden_preocupada",
+                AidenStage.Guilt => "VN/Sprites/aiden/Aiden_pensativa_preocupada",
+                AidenStage.Realization => "VN/Sprites/aiden/Aiden_triste",
                 _ => "VN/Sprites/aiden/Aiden_Feliz",
             };
             var sp = Resources.Load<Sprite>(spriteName);

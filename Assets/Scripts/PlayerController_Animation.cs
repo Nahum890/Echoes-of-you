@@ -5,14 +5,16 @@ using UnityEngine;
 /// </summary>
 public partial class PlayerController
 {
-    // Grounded truth used ONLY for animator bools. The authoritative ground
-    // state consumed by movement/gravity/landing logic is `_grounded`, which
-    // is owned exclusively by Update() (SphereCast-based). Keeping the old
-    // `cc.isGrounded`+0.3s grace smoothing here, isolated in this field,
-    // preserves animation flicker-avoidance without leaking into landing
-    // detection — which was the micro-stutter root cause: a phantom
-    // `_grounded: false->true` produced a fake landing and zeroed both
-    // `_planarVelocity` *and* `desiredVelocity` for 12-28ms.
+    // Grounded truth used ONLY for animator bools. Movement/gravity/landing
+    // logic must read the probe-based `_grounded` (owned by Update).
+    //
+    // Earlier iteration reused the legacy `cc.isGrounded`+0.3s grace timer
+    // here, but that grace also delayed the not-grounded transition after a
+    // real jump for 0.3s, breaking the jump animation. The probe-based
+    // `_grounded` uses `groundProbeDistance=0.6` which is generous enough to
+    // not flicker near edges/steps, so no grace is needed for animation
+    // either. _animGrounded is kept as a separate field for future
+    // animation-only smoothing without re-coupling to movement logic.
     bool _animGrounded;
 
     void UpdateAnimator()
@@ -20,35 +22,11 @@ public partial class PlayerController
         if (_anim == null || _anim.runtimeAnimatorController == null)
             return;
 
-        // Animator-only ground state. We deliberately do NOT mutate the
-        // authoritative `_grounded` from here; movement must read the
-        // probe-based value maintained by Update().
-        if (_controller != null)
-        {
-            if (!_animGrounded && _controller.isGrounded)
-            {
-                _animGrounded = true;
-                _notGroundedTimer = 0f;
-            }
-            else if (_animGrounded && !_controller.isGrounded)
-            {
-                _notGroundedTimer += Time.deltaTime;
-                if (_notGroundedTimer > 0.3f)
-                {
-                    _animGrounded = false;
-                    _notGroundedTimer = 0f;
-                }
-            }
-            else
-            {
-                _notGroundedTimer = 0f;
-            }
-        }
-        else
-        {
-            // No CharacterController available — fall back to probe truth.
-            _animGrounded = _grounded;
-        }
+        // Animator bools track the authoritative probe value directly.
+        // We do NOT mutate `_grounded` from here: that was the original
+        // micro-stutter root cause (falsos aterrizajes via cc.isGrounded).
+        _animGrounded = _grounded;
+        _notGroundedTimer = 0f;
 
         Vector3 flatVelocity = Vector3.ProjectOnPlane(_controller.velocity, _currentUp);
         bool isRecording = _echoRecorder != null && _echoRecorder.IsRecording;

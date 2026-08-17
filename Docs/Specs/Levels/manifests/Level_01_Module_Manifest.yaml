@@ -1,0 +1,137 @@
+# Level_01_Module_Manifest.yaml — Builder-ready module placement for N01 rebuild
+# Schema: matches LevelBlueprint.modules (ModulePlacement struct) + puzzle_components extension.
+# Consumed by: EchoesNewProductionBuilder / LevelBlueprint pipeline.
+# Spec authority: Docs/Specs/Levels/LEVEL_SPEC_01.md (v4.0)
+#
+# Enum indices (ModuleType): PlayerStart=7, LevelExit=6, PressurePlate=4, Door=5,
+#   SchoolHall=31, SchoolCorridor=32, SchoolClassroom=33, SchoolEntrance=47,
+#   TransitionSpace=46, GhostBridge=44, LevelGoal=40 (index in legacy enum).
+
+level_id: "Level_01"
+next_level: "Level_02"
+archetype: "Teaching"
+echo:
+  enabled: true
+  max_echoes: 1
+  max_record_seconds: 12
+  mode: "Standard"
+  record_future: false
+
+# Path hints (Vector3[]) — keypoints the camera/path-finder uses for framing.
+path_hints:
+  - {x: 0.0, y: 0.1, z: -4.0}    # entrada spawn
+  - {x: 0.0, y: 0.1, z: 9.0}     # pasillo
+  - {x: 0.0, y: 0.1, z: 24.0}    # aula pasada
+  - {x: 0.0, y: 0.1, z: 33.0}    # aula presente (eco plate)
+  - {x: 0.0, y: 0.1, z: 46.0}    # invernadero (goal)
+
+modules:
+  - name: "PlayerStart"
+    type: 7
+    position: {x: 0.0, y: 0.1, z: -4.0}
+    rotation: {x: 0.0, y: 0.0, z: 0.0}
+    scale: {x: 1.0, y: 1.0, z: 1.0}
+
+  - name: "Entrance_Recepcion"
+    type: 47                                   # SchoolEntrance
+    position: {x: 0.0, y: 0.0, z: 1.0}
+    rotation: {x: 0.0, y: 0.0, z: 0.0}
+    scale: {x: 6.0, y: 4.0, z: 5.0}            # 6×5×4 (techo alto = respiración)
+
+  - name: "Corridor_Principal"
+    type: 32                                   # SchoolCorridor
+    position: {x: 0.0, y: 0.0, z: 9.0}
+    rotation: {x: 0.0, y: 0.0, z: 0.0}
+    scale: {x: 3.0, y: 3.2, z: 18.0}           # pasillo comprimido
+    customData: "lockers=left,lockers_spacing=1.2"
+
+  - name: "Classroom_Lyra_Pasado"
+    type: 33                                   # SchoolClassroom
+    position: {x: 0.0, y: 0.0, z: 24.0}
+    rotation: {x: 0.0, y: 0.0, z: 0.0}
+    scale: {x: 10.0, y: 3.8, z: 10.0}
+    customData: "role=past,has_pupitre=true,step_up=0.5"
+
+  - name: "Classroom_Lyra_Presente"
+    type: 33                                   # SchoolClassroom
+    position: {x: 0.0, y: 0.0, z: 33.0}
+    rotation: {x: 0.0, y: 0.0, z: 0.0}
+    scale: {x: 10.0, y: 3.8, z: 10.0}
+    customData: "role=present,has_pupitre=false,decal=polvo_centro"
+
+  - name: "Greenhouse_Reward"
+    type: 46                                   # TransitionSpace (reutilizado como recompensa)
+    position: {x: 0.0, y: 0.0, z: 43.0}
+    rotation: {x: 0.0, y: 0.0, z: 0.0}
+    scale: {x: 8.0, y: 5.0, z: 8.0}
+    customData: "reward=warm_light,landmark_window=yes"
+
+  - name: "LevelExit_N02"
+    type: 6                                   # LevelExit
+    position: {x: 0.0, y: 0.0, z: 48.0}
+    rotation: {x: 0.0, y: 0.0, z: 0.0}
+    scale: {x: 3.0, y: 3.5, z: 3.0}
+    customData: "nextSceneName=Level_02,completionToast=Primero recuerdas."
+
+# Puzzle wiring (extension; builder materializes these as components+links)
+puzzle_components:
+  - name: "PressurePlate_LyraEcho"
+    type: 4                                   # PressurePlate
+    position: {x: 0.0, y: 0.08, z: 33.0}      # centro aula presente
+    customData: "accept_player=false,accept_echo=true,auto_release_timer=8.0,target_door=Door_LyraPresent"
+
+  - name: "Door_LyraPresent"
+    type: 5                                   # Door
+    position: {x: 0.0, y: 0.0, z: 30.0}
+    customData: "latch_open=false,plates=PressurePlate_LyraEcho"
+
+  - name: "PressurePlate_SwitchHigh"
+    type: 4
+    position: {x: 0.0, y: 3.2, z: 38.0}       # interruptor alto (alcanzable desde pupitre-eco)
+    customData: "accept_player=true,auto_release_timer=0.0,target_door=Door_Greenhouse"
+
+  - name: "Door_Greenhouse"
+    type: 5
+    position: {x: 0.0, y: 0.0, z: 41.0}
+    customData: "latch_open=true,plates=PressurePlate_SwitchHigh"
+
+  - name: "GoalTrigger_Notebook"
+    type: 40                                  # LevelGoal proxy (GoalTrigger)
+    position: {x: 0.0, y: 0.9, z: 46.0}
+    customData: "use_plate_pressed_state=true,pressure_plate=PressurePlate_Notebook"
+
+  - name: "PressurePlate_Notebook"
+    type: 4
+    position: {x: 0.0, y: 0.08, z: 46.0}
+    customData: "accept_player=true,auto_release_timer=0.0"
+
+  - name: "LevelGoal"
+    type: 40
+    position: {x: 0.0, y: 0.0, z: 46.0}
+    customData: "required_trigger_count=1,skip_escape_sequence=true"
+
+# Props manifest (separate from modules; placed after architecture)
+props:
+  - {prefab: "Prop_Coat",              room: "Entrance_Recepcion",        position: {x: -1.5, y: 1.2, z: 1.0},   rotation: {y: 0},   scale: 1.0}
+  - {prefab: "Prop_Locker",            room: "Corridor_Principal",        position: {x: -1.2, y: 0.0, z: 5.0},    rotation: {y: 90},  scale: 1.0}
+  - {prefab: "Prop_RelojPared",        room: "Corridor_Principal",        position: {x: 0.0,  y: 2.4, z: 18.0},   rotation: {y: 0},   scale: 1.0}
+  - {prefab: "Prop_Pizarra",           room: "Classroom_Lyra_Pasado",     position: {x: 0.0,  y: 1.6, z: 19.5},  rotation: {y: 180}, scale: 1.0}
+  - {prefab: "Prop_PupitreDoble",      room: "Classroom_Lyra_Pasado",     position: {x: 0.0,  y: 0.0, z: 24.0},  rotation: {y: 0},   scale: 1.0, narrative: "echo_origin"}
+  - {prefab: "Prop_PlantaMaceta",      room: "Greenhouse_Reward",         position: {x: -3.0, y: 0.0, z: 43.0},  rotation: {y: 0},   scale: 1.0}
+  - {prefab: "Prop_PlantaMaceta",      room: "Greenhouse_Reward",         position: {x:  3.0, y: 0.0, z: 46.0},  rotation: {y: 0},   scale: 1.0}
+  - {prefab: "Prop_Notebook",          room: "Greenhouse_Reward",         position: {x: 0.0,  y: 0.9, z: 46.0},  rotation: {y: 0},   scale: 1.0, narrative: "lyra_artifact"}
+
+narrative:
+  intro_title: "Nivel 1 — Primero recuerdas"
+  intro_desc: "Una recepción silenciosa da paso al aula de Lyra. El pupitre que ya no está sigue marcando el suelo."
+  intro_duration: 6
+  objective: "Registra un eco en el aula pasada y úsalo para alcanzar lo que falta."
+  complete_text: "Primero recuerdas."
+
+lighting:
+  token: "liminal_n01"
+  fog_color: {r: 0.1098, g: 0.1412, b: 0.1882, a: 1.0}
+  fog_density: 0.008
+  ambient_color: {r: 0.0588, g: 0.0784, b: 0.1020, a: 1.0}
+  directional_intensity: 0.85
+  warm_greenhouse_light: {type: "Point", color_temp: 4200, intensity: 2.2, range: 8.0, position: {x: 0, y: 3, z: 44}}

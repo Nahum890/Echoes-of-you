@@ -18,7 +18,7 @@ namespace Echoes.VN
 
         const float RefW = 1920f;
         const float RefH = 1080f;
-        const string DefaultSprite = "VN/Sprites/aiden/Aiden_Perturbada";
+        const string DefaultSprite = "VN/Sprites/aiden/Aiden_Neutral";
         const float InputGracePeriod = 0.35f;
 
         [SerializeField, Min(1f)] float charactersPerSecond = 55f;

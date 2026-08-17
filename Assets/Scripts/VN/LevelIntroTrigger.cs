@@ -8,8 +8,8 @@ public class LevelIntroTrigger : MonoBehaviour
 {
     bool _playerLocked;
 
-    const string SpriteScared   = "VN/Sprites/aiden/Aiden_Perturbada";
-    const string SpriteThinking = "VN/Sprites/aiden/Aiden_Pensativa";
+    const string SpriteScared   = "VN/Sprites/aiden/Aiden_preocupada_enplanmal";
+    const string SpriteThinking = "VN/Sprites/aiden/Aiden_pensativa";
     const string SpriteCalm     = "VN/Sprites/aiden/Aiden_Feliz";
 
     void Start()

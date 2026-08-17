@@ -198,8 +198,9 @@ namespace Echoes.Interaction
 
             string spritePath = stage switch
             {
-                AidenStage.Conviction => "VN/Sprites/aiden/Aiden_Perturbada",
-                AidenStage.Guilt => "VN/Sprites/aiden/Aiden_Pensativa",
+                AidenStage.Conviction => "VN/Sprites/aiden/Aiden_preocupada",
+                AidenStage.Guilt => "VN/Sprites/aiden/Aiden_pensativa_preocupada",
+                AidenStage.Realization => "VN/Sprites/aiden/Aiden_triste",
                 _ => "VN/Sprites/aiden/Aiden_Feliz",
             };
 

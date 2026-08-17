@@ -1,0 +1,130 @@
+# Level_03_Module_Manifest.yaml — Builder-ready module placement for N03 rebuild
+# Spec authority: Docs/Specs/Levels/LEVEL_SPEC_03.md (v4.0)
+# Enum indices: SchoolLibrary=34, TransitionSpace=46, PressurePlate=4, Door=5,
+#   PlayerStart=7, LevelExit=6. (Statue is a prop, not a module.)
+
+level_id: "Level_03"
+next_level: "Level_04"
+archetype: "Decision"
+echo:
+  enabled: true
+  max_echoes: 2
+  max_record_seconds: 12
+  mode: "Standard"
+  record_future: false
+  timing_floor: 0.4
+
+path_hints:
+  - {x: 0.0, y: 0.1, z: 0.0}      # biblioteca spawn
+  - {x: 0.0, y: 0.1, z: 6.0}      # placa oculta (eco-proyector)
+  - {x: 0.0, y: 1.1, z: 14.0}     # fork mirador (zona de decisión)
+  - {x: 4.0, y: 0.1, z: 16.0}     # bifurcación derecha
+  - {x: -4.0, y: 0.1, z: 16.0}    # bifurcación izquierda
+  - {x: 0.0, y: 0.1, z: 30.0}     # punto de fusión
+
+modules:
+  - name: "PlayerStart"
+    type: 7
+    position: {x: 0.0, y: 0.1, z: 0.0}
+
+  - name: "Library_Pasada"
+    type: 34                                   # SchoolLibrary
+    position: {x: 0.0, y: 0.0, z: 6.0}
+    scale: {x: 12.0, y: 4.0, z: 12.0}
+    customData: "role=past,maze_shelves=true,shelve_height=2.5,ventanal_to_fork=true"
+
+  - name: "Fork_Mirador"
+    type: 46                                   # TransitionSpace (mirador elevado)
+    position: {x: 0.0, y: 0.0, z: 14.0}
+    scale: {x: 8.0, y: 4.0, z: 5.0}
+    customData: "elevated=1.0,decision_zone=true,statue_landmark=true"
+
+  - name: "Branch_Derecha_Puente"
+    type: 46                                   # TransitionSpace (puente abierto)
+    position: {x: 4.0, y: 0.0, z: 22.0}
+    scale: {x: 4.0, y: 4.5, z: 14.0}
+    customData: "role=reward,bridge=true,railing=true,open_sky=true,warm_light=true"
+
+  - name: "Branch_Izquierda_Pasillo"
+    type: 32                                   # SchoolCorridor (estrecho)
+    position: {x: -4.0, y: 0.0, z: 22.0}
+    scale: {x: 2.5, y: 2.8, z: 14.0}
+    customData: "role=safe,comprimido=true,cold_light=true"
+
+  - name: "Punto_Fusion"
+    type: 46
+    position: {x: 0.0, y: 0.0, z: 30.0}
+    scale: {x: 7.0, y: 4.0, z: 6.0}
+
+  - name: "LevelExit_N04"
+    type: 6
+    position: {x: 0.0, y: 0.0, z: 33.0}
+    customData: "nextSceneName=Level_04,completionToast=Dos decisiones se sostienen."
+
+puzzle_components:
+  - name: "PressurePlate_ShadowEcho"
+    type: 4
+    position: {x: 0.0, y: 0.08, z: 6.0}       # biblioteca, pared opuesta al proyector
+    customData: "accept_player=false,accept_echo=true,auto_release_timer=0.0,target_door=Door_RightBranch,side_effect=rotate_statue_15deg,side_effect=tilt_directional_light_10deg"
+
+  - name: "Door_RightBranch"
+    type: 5
+    position: {x: 4.0, y: 0.0, z: 16.0}
+    customData: "latch_open=true,plates=PressurePlate_ShadowEcho"
+
+  - name: "Door_LeftBranch"
+    type: 5
+    position: {x: -4.0, y: 0.0, z: 16.0}
+    customData: "latch_open=true,open_initially=true"
+
+  - name: "PressurePlate_GoalMayor"
+    type: 4
+    position: {x: 4.0, y: 0.0, z: 30.0}       # final puente rama derecha
+    customData: "accept_player=true,accept_echo=false,auto_release_timer=0.0,side_effect=set_var_unlock_future_echo"
+
+  - name: "GoalTrigger_Mayor"
+    type: 40
+    position: {x: 4.0, y: 0.08, z: 30.0}
+    customData: "use_plate_pressed_state=true,pressure_plate=PressurePlate_GoalMayor"
+
+  - name: "PressurePlate_GoalMinor"
+    type: 4
+    position: {x: -4.0, y: 0.0, z: 30.0}
+
+  - name: "GoalTrigger_Minor"
+    type: 40
+    position: {x: -4.0, y: 0.08, z: 30.0}
+    customData: "use_plate_pressed_state=true,pressure_plate=PressurePlate_GoalMinor"
+
+  - name: "LevelGoal_N03"
+    type: 40
+    position: {x: 0.0, y: 0.0, z: 30.0}
+    customData: "any_trigger_satisfies_goal=true,skip_escape_sequence=true"
+
+props:
+  - {prefab: "Prop_Estanteria",       room: "Library_Pasada",   position: {x: -4.0, y: 0.0, z: 4.0},  rotation: {y: 90},  scale: 1.0, duplicate: 2, row_offset: 2.0}
+  - {prefab: "Prop_Estanteria",       room: "Library_Pasada",   position: {x:  4.0, y: 0.0, z: 8.0},  rotation: {y: -90}, scale: 1.0, duplicate: 2, row_offset: 2.0}
+  - {prefab: "Prop_PhotoFrame",       room: "Library_Pasada",   position: {x: -4.0, y: 1.5, z: 4.0},  rotation: {y: -90}, scale: 1.0, duplicate: 4, scatter: true, scatter_range: 1.0}
+  - {prefab: "Prop_ChalkDrawing",     room: "Library_Pasada",   position: {x: 0.0,  y: 0.0, z: 3.0},  rotation: {y: 0},   scale: 1.0, narrative: "arrow_to_statue"}
+  - {prefab: "Prop_Radio",            room: "Library_Pasada",   position: {x: 0.0,  y: 0.9, z: 2.0},  rotation: {y: 180}, scale: 1.0, narrative: "proyector_pasado"}
+  - {prefab: "EstatuaFundador",       room: "Fork_Mirador",     position: {x: 0.0,  y: 1.0, z: 14.0}, rotation: {y: 0},   scale: 3.0, narrative: "landmark_sombra_direccional"}
+  - {prefab: "Prop_SillaOficina",     room: "Branch_Izquierda_Pasillo", position: {x: -4.5, y: 0.0, z: 20.0}, rotation: {y: 90}, scale: 1.0, duplicate: 2, spacing: 4.0}
+  - {prefab: "Prop_DriedFlowers",     room: "Branch_Derecha_Puente",    position: {x: 4.0,  y: 0.9, z: 24.0}, rotation: {y: 0},  scale: 1.0, narrative: "vida_pasada_secada"}
+  - {prefab: "Prop_TeacherNotebook",  room: "Branch_Derecha_Puente",    position: {x: 4.0,  y: 0.9, z: 30.0}, rotation: {y: 0},  scale: 1.0, narrative: "recompensa_mayor,lyra_artifact"}
+  - {prefab: "Prop_Libros",           room: "Punto_Fusion",    position: {x: 0.0,  y: 0.0, z: 30.0}, rotation: {y: 0},  scale: 1.0, duplicate: 3, scatter: true}
+
+narrative:
+  intro_title: "Nivel 3 — Dos decisiones se sostienen"
+  intro_desc: "La biblioteca precede a un mirador. La estatua del fundador proyecta una sombra que, hasta ahora, no apuntaba a ninguna parte."
+  intro_duration: 7
+  objective: "Haz que una acción del pasado abra una ruta en el presente; luego decide."
+  complete_text_mayor: "Dos decisiones se sostienen."
+  complete_text_minor: "Decidiste lo cierto. No lo mejor."
+
+lighting:
+  token: "liminal_n03"
+  fog_color: {r: 0.1098, g: 0.1412, b: 0.1882, a: 1.0}
+  fog_density: 0.008
+  statue_spotlight: {type: "Spot", color_temp: 5500, intensity: 4.0, range: 6.0, angle: 45, position: {x: 0, y: 5, z: 14}, shadows: "Soft"}
+  left_cool_light:  {type: "Point", color_temp: 5200, intensity: 1.0, range: 5.0, position: {x: -4, y: 2.5, z: 22}}
+  right_warm_light: {type: "Point", color_temp: 4000, intensity: 2.5, range: 6.0, position: {x: 4,  y: 2.5, z: 22}}

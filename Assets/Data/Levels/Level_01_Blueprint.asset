@@ -18,7 +18,7 @@ MonoBehaviour:
   archetype: 0
   echoEnabled: 1
   maxEchoes: 1
-  maxRecordSeconds: 12
+  maxRecordSeconds: 20
   echoMode: 0
   recordFuture: 0
   degradationPerReplay: 0
@@ -30,97 +30,105 @@ MonoBehaviour:
   lightingProfile: {fileID: 0}
   activeParadoxes: 
   fogColor: {r: 0.10980392, g: 0.14117648, b: 0.1882353, a: 1}
-  fogDensity: 0.008
-  skyColor: {r: 0.06, g: 0.08, b: 0.12, a: 1}
+  fogDensity: 0.012
+  skyColor: {r: 0.023529412, g: 0.03137255, b: 0.047058824, a: 1}
   ambientColor: {r: 0.05882353, g: 0.078431375, b: 0.101960786, a: 1}
   directionalLightRotation: {x: 50, y: -30, z: 0}
   directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
   directionalLightIntensity: 0.85
   narrativeIntroTitle: "Nivel 1 \u2014 Desorientaci\xF3n"
-  narrativeIntroDesc: Un porche silencioso te da la bienvenida a un pasillo escolar
-    sin fin. La memoria repite su estructura.
+  narrativeIntroDesc: Un porche silencioso abre a un pasillo escolar sin fin. El
+    primer eco de Lyra repite la estructura.
   narrativeIntroDuration: 6
-  puzzleObjectiveText: "Camina a trav\xE9s del umbral de la memoria."
-  puzzleActiveText: "La repetici\xF3n espacial oculta la salida."
+  puzzleObjectiveText: Tu eco abre el umbral que el presente no puede.
+  puzzleActiveText: "Graba un camino corto; el eco cargar\xE1 la placa por ti."
   puzzleCompleteText: "Desorientaci\xF3n superada."
   pathHints:
   - {x: 0, y: 0.1, z: -3}
-  - {x: 0, y: 0.1, z: 10}
-  - {x: 0, y: 0.1, z: 30}
-  - {x: 0, y: 0.1, z: 52}
+  - {x: 0, y: 0.1, z: 8}
+  - {x: 0, y: 0.1, z: 24}
+  - {x: 0, y: 0.1, z: 44}
   inversionCamera: 0
   timingFloor: 0.4
   modules:
-  - name: PorchHall
-    type: 31
-    position: {x: 0, y: 0, z: -3}
+  - name: Entrada
+    type: 41
+    position: {x: 0, y: 0, z: -4}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 8, y: 3, z: 6}
     customData: 
     targetSignals: []
   - name: PlayerStart
     type: 7
-    position: {x: 0, y: 0.1, z: -5}
+    position: {x: 0, y: 0.1, z: -6}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
     customData: 
     targetSignals: []
-  - name: CorridorA
+  - name: PasilloA
     type: 32
-    position: {x: 0, y: 0, z: 10}
+    position: {x: 0, y: 0, z: 6}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 6, y: 3, z: 20}
+    scale: {x: 5, y: 3, z: 20}
     customData: flicker=true
     targetSignals: []
-  - name: PlateA
-    type: 4
-    position: {x: 0, y: 0.05, z: 15}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 1, y: 1, z: 1}
-    customData: 
-    targetSignals: []
-  - name: CorridorB
+  - name: PasilloB
     type: 32
-    position: {x: 0, y: 0, z: 30}
+    position: {x: 0, y: 0, z: 24}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 6, y: 3, z: 20}
+    scale: {x: 5, y: 3, z: 18}
     customData: flicker=false
     targetSignals: []
-  - name: LiminalThreshold
-    type: 46
-    position: {x: 0, y: 0, z: 48}
+  - name: PlacaEco_Aula
+    type: 4
+    position: {x: 0, y: 0.05, z: 14}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 8, y: 3.5, z: 8}
-    customData: 
+    scale: {x: 0, y: 0, z: 0}
+    customData: EchoOnly
     targetSignals: []
-  - name: ExitGate
+  - name: PuertaAula
     type: 5
-    position: {x: 0, y: 0, z: 52}
+    position: {x: 0, y: 0, z: 30}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 4, y: 3, z: 0.5}
     customData: 
     targetSignals:
-    - PlateA
+    - PlacaEco_Aula
+  - name: AulaAusente
+    type: 33
+    position: {x: 0, y: 0, z: 38}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 8, y: 3, z: 8}
+    customData: 
+    targetSignals: []
   - name: LevelExit_Area
     type: 6
-    position: {x: 0, y: 0.1, z: 54}
+    position: {x: 0, y: 0.1, z: 44}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 1, y: 1, z: 1}
+    scale: {x: 0, y: 0, z: 0}
     customData: Level_02
     targetSignals: []
   - name: LevelGoal
     type: 13
-    position: {x: 0, y: 0.1, z: 54}
+    position: {x: 0, y: 0.1, z: 44}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
-    customData: "Camina a trav\xE9s del pasillo y abre el umbral con tu eco.|La repetici\xF3n
-      espacial oculta la salida.|Desorientaci\xF3n superada."
+    customData: "Tu eco abre el umbral que el presente no puede.|Graba un camino
+      corto; el eco cargar\xE1 la placa por ti.|Desorientaci\xF3n superada."
     targetSignals:
-    - PlateA
+    - PlacaEco_Aula
   - name: LevelRuntime
     type: 14
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
-    customData: Avanza por el pasillo.|El pasado se duplica.|Salida alcanzada.
+    customData: Avanza por el pasillo hasta el umbral.|El pasado se duplica.|Salida
+      alcanzada.
+    targetSignals: []
+  - name: Hint_Placa
+    type: 10
+    position: {x: 0, y: 3, z: 14}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: FFBF00,1.6,6
     targetSignals: []

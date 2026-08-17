@@ -46,8 +46,8 @@ namespace Echoes.Editor
             harness.SetTestCamera(camera);
 
             CreateFloor();
-            CreateInteractable("Interactuable_Reloj", new Vector3(-4f, 1f, 0f), PrimitiveType.Cylinder, "Reloj detenido", "El reloj marca las 03:17. Aiden parece recordar algo que aun no sucedio.", "VN/Sprites/aiden/Aiden_Pensativa", new Color(0.34f, 0.78f, 1f));
-            CreateInteractable("Interactuable_Nota", new Vector3(0f, 1f, 0f), PrimitiveType.Cube, "Nota doblada", "La tinta dice: No olvides que la salida tambien puede ser un comienzo.", "VN/Sprites/aiden/Aiden_Perturbada", new Color(1f, 0.72f, 0.22f));
+            CreateInteractable("Interactuable_Reloj", new Vector3(-4f, 1f, 0f), PrimitiveType.Cylinder, "Reloj detenido", "El reloj marca las 03:17. Aiden parece recordar algo que aun no sucedio.", "VN/Sprites/aiden/Aiden_pensativa", new Color(0.34f, 0.78f, 1f));
+            CreateInteractable("Interactuable_Nota", new Vector3(0f, 1f, 0f), PrimitiveType.Cube, "Nota doblada", "La tinta dice: No olvides que la salida tambien puede ser un comienzo.", "VN/Sprites/aiden/Aiden_preocupada_enplanmal", new Color(1f, 0.72f, 0.22f));
             CreateInteractable("Interactuable_Espejo", new Vector3(4f, 1.4f, 0f), PrimitiveType.Cube, "Espejo empañado", "Por un instante, el reflejo de Aiden sonríe antes que tú.", "VN/Sprites/aiden/Aiden_Feliz", new Color(0.72f, 0.48f, 1f), new Vector3(1.7f, 2.8f, 0.25f));
 
             EditorSceneManager.SaveScene(testScene, ScenePath);

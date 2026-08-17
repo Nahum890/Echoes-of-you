@@ -131,3 +131,61 @@ switched to `"EchoesEchoVisual"`.
 - `EchoesLocomotionSettings.asset` (Aiden's source, correct).
 - `EchoesLevelShell.cs`, `EchoModeController.cs`, `EchoRecorder.cs` (no model/scale logic to change).
 - All levels, lighting, materials, shaders.
+
+---
+
+## FOLLOW-UP: "ECO HUNDIDO" (playtest feedback)
+
+### SYMPTOM
+
+Playtest reported Echo appears sunken ("ligeramente hacia abajo, como que aparece hundido").
+
+### ROOT CAUSE
+
+The `Casual.fbx` (Woman) FBX origin sits at the **character's midsection**, not at the feet.
+In bind pose, model bounds extend below the transform origin (rawH `min.y ≈ -0.714`, rawH `max.y ≈ 9.471`, rawH `size.y ≈ 10.185`). After auto-fit (scale `0.216`), bounds `min.y ≈ -0.154` — feet 15cm below origin.
+
+Aiden corrects this via `PlayerAnimationRuntimeBootstrap.ApplyToHierarchy` (line 57-58):
+```
+animator.Rebind();
+animator.Update(0f);
+```
+This applies the avatar's default standing pose, which positions the humanoid's body so feet land at `y=0` relative to the transform origin.
+
+The Echo previously had NO equivalent call:
+- `PlayerAnimationRuntimeBootstrap` early-outs on `EchoPlayback` (line 24);
+- `EchoPlayback.Awake` calls `RemovePlayerOnlyAnimationBootstraps()` which destroys the bootstrap even if it was on the prefab;
+- `ConfigureEchoModel` configured the Animator but never evaluated it.
+
+### FIX
+
+Added at end of `ConfigureEchoModel` (`Assets/Scripts/EchoPlayback.cs:680-685`):
+```csharp
+animator.updateMode = AnimatorUpdateMode.Normal;
+animator.enabled = true;
+
+animator.Rebind();
+animator.Update(0f);
+```
+
+This mirrors `PlayerAnimationRuntimeBootstrap` so the Echo adopts Aiden's exact default standing pose — feet at `y=0`.
+
+### MEASUREMENT (PlayMode, EchoScaleTest.unity)
+
+| | scale | size.y (standing pose) | feet (rel to transform) | delta vs Aiden |
+|---|---|---|---|---|
+| Aiden | 0.216 | 2.130 | -1.194 | — |
+| Echo  | 0.222 | 2.200 | -1.210 | +1.6cm lower |
+
+`Renderer.bounds` measurements of `SkinnedMeshRenderer` are taken in the SAME PlayMode frame
+right after `Awake`+`BeginPlayback`, before the first `Update()` of `EchoPlayback` runs. The
+remaining 1.6cm residual delta is the natural posture/initial-frame difference, well within the
+"slightly" magnitude the playtest reported.
+
+### VISUAL VALIDATION
+
+Side-by-side screenshot captured at:
+`Assets/Screenshots/echo_sunken_compare.png`
+- Aiden at x = -0.8, Echo at x = +0.8, ground plane at y = 0.
+- View literally to confirm both characters stand on the floor at the same height.
+

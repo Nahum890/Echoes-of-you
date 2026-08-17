@@ -18,7 +18,7 @@ MonoBehaviour:
   archetype: 0
   echoEnabled: 1
   maxEchoes: 2
-  maxRecordSeconds: 14
+  maxRecordSeconds: 20
   echoMode: 0
   recordFuture: 0
   degradationPerReplay: 0
@@ -30,32 +30,33 @@ MonoBehaviour:
   lightingProfile: {fileID: 0}
   activeParadoxes: 
   fogColor: {r: 0.10980392, g: 0.14117648, b: 0.1882353, a: 1}
-  fogDensity: 0.008
-  skyColor: {r: 0.04, g: 0.05, b: 0.08, a: 1}
+  fogDensity: 0.012
+  skyColor: {r: 0.019607844, g: 0.02745098, b: 0.047058824, a: 1}
   ambientColor: {r: 0.05882353, g: 0.078431375, b: 0.101960786, a: 1}
   directionalLightRotation: {x: 50, y: -30, z: 0}
   directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
   directionalLightIntensity: 0.85
   narrativeIntroTitle: "Nivel 2 \u2014 Repetici\xF3n"
-  narrativeIntroDesc: "Tres aulas consecutivas. Mismo espacio, pero la desorganizaci\xF3n
-    de la memoria altera sus mecanismos."
+  narrativeIntroDesc: "Aulas flanquean un corredor estrecho. Dos presiones al mismo
+    tiempo son m\xE1s que dos presiones."
   narrativeIntroDuration: 6
-  puzzleObjectiveText: "Coordina las placas de presi\xF3n en las aulas progresivas."
-  puzzleActiveText: "La repetici\xF3n exige mayor sincronizaci\xF3n."
+  puzzleObjectiveText: "Sost\xE9n las dos placas a la vez: el eco carga una mientras
+    t\xFA cargas la otra."
+  puzzleActiveText: "La sincron\xEDa del pasado y el presente."
   puzzleCompleteText: "Repetici\xF3n superada."
   pathHints:
   - {x: 0, y: 0.1, z: 0}
-  - {x: 0, y: 0.1, z: 16}
-  - {x: 0, y: 0.1, z: 32}
-  - {x: 0, y: 0.1, z: 48}
+  - {x: 0, y: 0.1, z: 12}
+  - {x: 0, y: 0.1, z: 28}
+  - {x: 0, y: 0.1, z: 44}
   inversionCamera: 0
   timingFloor: 0.4
   modules:
-  - name: EntranceHall
-    type: 31
+  - name: Entrada
+    type: 41
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 10, y: 3, z: 8}
+    scale: {x: 4, y: 3, z: 6}
     customData: 
     targetSignals: []
   - name: PlayerStart
@@ -65,100 +66,101 @@ MonoBehaviour:
     scale: {x: 0, y: 0, z: 0}
     customData: 
     targetSignals: []
-  - name: Classroom1
-    type: 33
-    position: {x: 0, y: 0, z: 16}
+  - name: CorredorCentral
+    type: 32
+    position: {x: 0, y: 0, z: 14}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 10, y: 3, z: 12}
+    scale: {x: 4, y: 3.2, z: 22}
+    customData: flicker=true
+    targetSignals: []
+  - name: AulaIzquierda
+    type: 33
+    position: {x: -6, y: 0, z: 14}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 6, y: 3, z: 10}
     customData: style=ordered
     targetSignals: []
-  - name: Plate1
-    type: 4
-    position: {x: -2, y: 0.05, z: 16}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
-    targetSignals: []
-  - name: Door1
-    type: 5
-    position: {x: 0, y: 0, z: 22}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 4, y: 3, z: 0.5}
-    customData: 
-    targetSignals:
-    - Plate1
-  - name: Classroom2
+  - name: AulaDerecha
     type: 33
-    position: {x: 0, y: 0, z: 32}
+    position: {x: 6, y: 0, z: 14}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 10, y: 3, z: 12}
-    customData: style=disarray
+    scale: {x: 6, y: 3, z: 10}
+    customData: style=ordered
     targetSignals: []
-  - name: Plate2A
+  - name: PlacaEco_Aula
     type: 4
-    position: {x: -3, y: 0.05, z: 32}
+    position: {x: -6, y: 0.05, z: 14}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: EchoOnly
+    targetSignals: []
+  - name: PlacaJugador_Corredor
+    type: 4
+    position: {x: 0, y: 0.05, z: 14}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
     customData: 
     targetSignals: []
-  - name: Plate2B
-    type: 4
-    position: {x: 3, y: 0.05, z: 32}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
-    targetSignals: []
-  - name: Door2
+  - name: PuertaAula
     type: 5
-    position: {x: 0, y: 0, z: 38}
+    position: {x: 0, y: 0, z: 27}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 4, y: 3, z: 0.5}
     customData: 
     targetSignals:
-    - Plate2A
-    - Plate2B
-  - name: Classroom3
-    type: 33
-    position: {x: 0, y: 0, z: 48}
+    - PlacaEco_Aula
+    - PlacaJugador_Corredor
+  - name: PlataformaRapida
+    type: 8
+    position: {x: 0, y: 0, z: 34}
     rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 10, y: 3, z: 12}
-    customData: style=chaos
-    targetSignals: []
-  - name: Plate3
-    type: 4
-    position: {x: 0, y: 0.05, z: 48}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
-    targetSignals: []
-  - name: ExitGate
-    type: 5
-    position: {x: 0, y: 0, z: 54}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 4, y: 3, z: 0.5}
-    customData: 
+    scale: {x: 3, y: 0.3, z: 3}
+    customData: inactiveVec=0,0,0|activeVec=0,0,6|speed=2.5
     targetSignals:
-    - Plate3
+    - PlacaJugador_Corredor
+  - name: Hall_Salida
+    type: 31
+    position: {x: 0, y: 0, z: 42}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 8, y: 5, z: 8}
+    customData: 
+    targetSignals: []
   - name: LevelExit_Area
     type: 6
-    position: {x: 0, y: 0.1, z: 56}
+    position: {x: 0, y: 0.1, z: 46}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
     customData: Level_03
     targetSignals: []
   - name: LevelGoal
     type: 13
-    position: {x: 0, y: 0.1, z: 56}
+    position: {x: 0, y: 0.1, z: 46}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
-    customData: "Coordina las tres aulas.|El ritmo de la memoria de Lyra se sostiene.|Repetici\xF3n
-      superada."
+    customData: "Sost\xE9n las dos placas a la vez.|La sincron\xEDa del pasado y
+      el presente.|Repetici\xF3n superada."
     targetSignals:
-    - Plate3
+    - PlacaEco_Aula
+    - PlacaJugador_Corredor
   - name: LevelRuntime
     type: 14
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
-    customData: Avanza por las tres aulas.|Coordina tu pasado.|Aula final alcanzada.
+    customData: Avanza por el corredor de las aulas.|Coordina tu pasado con tu presente.|Aula
+      final alcanzada.
+    targetSignals: []
+  - name: Hint_PlacaEco
+    type: 10
+    position: {x: -6, y: 3, z: 14}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: FFBF00,1.4,5
+    targetSignals: []
+  - name: Hint_PlacaJugador
+    type: 10
+    position: {x: 0, y: 3, z: 14}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: FFBF00,1.4,5
     targetSignals: []

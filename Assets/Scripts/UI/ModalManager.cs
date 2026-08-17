@@ -42,6 +42,13 @@ namespace Echoes.UI
             Instance = this;
         }
 
+        void OnEnable()
+        {
+            // Restore static ref after domain reload
+            if (Instance == null)
+                Instance = this;
+        }
+
         void OnDestroy() { if (Instance == this) Instance = null; }
 
         public void Setup(VisualElement uiRoot, VisualTreeAsset template)

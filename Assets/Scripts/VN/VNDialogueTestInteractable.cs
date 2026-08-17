@@ -8,7 +8,7 @@ namespace Echoes.VN
     {
         [SerializeField] string objectTitle = "Objeto";
         [SerializeField, TextArea] string dialogueText = "Has interactuado con un objeto de prueba.";
-        [SerializeField] string spriteResourcePath = "VN/Sprites/aiden/Aiden_Perturbada";
+        [SerializeField] string spriteResourcePath = "VN/Sprites/aiden/Aiden_Neutral";
 
         public void Configure(string title, string text, string spritePath)
         {
