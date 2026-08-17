@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Echoes.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -45,6 +46,7 @@ namespace Echoes.VN
 
         public void Show(int levelIndex, bool isMicro, Action<bool> onComplete)
         {
+            // Load registry if needed
             if (registry == null)
             {
                 registry = Resources.Load<VN_ChoiceRegistry>("VN_ChoiceRegistry");
@@ -68,11 +70,49 @@ namespace Echoes.VN
             _cyanLabel = entry != null && !string.IsNullOrEmpty(entry.cyan_label) ? entry.cyan_label : "Abrir";
             _amberLabel = entry != null && !string.IsNullOrEmpty(entry.amber_label) ? entry.amber_label : "Mantener";
 
+            // Store completion callback
             _onComplete = onComplete;
             _selectedIndex = 0;
             _openedAt = Time.unscaledTime;
-            _choiceActive = true;
 
+            // Play a short pre‑decision dialogue before showing the choice UI
+            StartCoroutine(PlayPreDialogueAndShow(levelIndex));
+        }
+
+        // Coroutine: play contextual dialogue, then initialise the choice overlay UI
+        private System.Collections.IEnumerator PlayPreDialogueAndShow(int levelIndex)
+        {
+            // Build simple Aiden↔Lyra exchange; you can expand per‑level if desired.
+            var lines = new System.Collections.Generic.List<VN_DialogueController.DialogueLine>();
+            // Aiden line
+            lines.Add(new VN_DialogueController.DialogueLine
+            {
+                characterName = "Aiden",
+                text = $"¿Realmente debemos seguir adelante, nivel {levelIndex}?",
+                spritePath = "VN/Sprites/aiden/Aiden_Feliz",
+                position = VN_DialogueController.DialogueLine.SpritePosition.Left,
+                voiceClipPath = ""
+            });
+            // Lyra response
+            lines.Add(new VN_DialogueController.DialogueLine
+            {
+                characterName = "Lyra",
+                text = "El eco del pasado nos guía, aunque aún no lo comprendamos.",
+                spritePath = "VN/Sprites/lyra/Lyra_neutral",
+                position = VN_DialogueController.DialogueLine.SpritePosition.Right,
+                voiceClipPath = ""
+            });
+
+            // Play via the VN dialogue system if available
+            if (VN_DialogueController.Instance != null)
+            {
+                VN_DialogueController.Instance.PlaySequence(lines);
+                // Wait until the dialogue finishes
+                yield return new WaitUntil(() => !VN_DialogueController.Instance.IsActive);
+            }
+
+            // Now initialise the UI overlay (previous Show logic).
+            // Set up portrait and background tex, hide HUD, freeze cam, and enable choice UI.
             _backgroundTex = Resources.Load<Texture2D>("UI/void_fog_bg");
 
             var stage = AidenStageResolver.ResolveForCurrentLevel();
@@ -100,6 +140,7 @@ namespace Echoes.VN
             hud?.SetVisible(false);
 
             FreezeCamera();
+            _choiceActive = true; // finally enable the choice UI
         }
 
         void Update()

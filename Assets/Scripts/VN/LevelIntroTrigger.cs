@@ -19,13 +19,29 @@ public class LevelIntroTrigger : MonoBehaviour
 
     void Update()
     {
-        if (_playerLocked && VN_OverlayController.Instance != null && !VN_OverlayController.Instance.IsOpen)
+        if (_playerLocked)
+        {
+            // Si la instancia VN no existe o el diálogo ya está cerrado, liberar el input.
+            if (VN_OverlayController.Instance == null || !VN_OverlayController.Instance.IsOpen)
+            {
+                var pc = FindAnyObjectByType<PlayerController>();
+                if (pc != null) pc.SetInputLocked(false);
+                _playerLocked = false;
+            }
+        }
+
+        // Failsafe: si la VN lleva demasiado tiempo abierta sin input, liberar al player.
+        // Esto previene el scenario donde el usuario no descubre que debe pulsar E/Espacio.
+        if (_playerLocked && Time.time - _introStartedAt > 12f)
         {
             var pc = FindAnyObjectByType<PlayerController>();
             if (pc != null) pc.SetInputLocked(false);
             _playerLocked = false;
+            VN_OverlayController.Instance?.CloseDialogue();
         }
     }
+
+    float _introStartedAt;
 
     IEnumerator PlayIntro()
     {
@@ -51,6 +67,7 @@ public class LevelIntroTrigger : MonoBehaviour
             pc.SetInputLocked(true);
             _playerLocked = true;
         }
+        _introStartedAt = Time.time;
 
         var lines = BuildLinesForCurrentLevel();
         if (lines == null || lines.Length == 0)

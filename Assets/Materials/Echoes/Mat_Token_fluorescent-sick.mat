@@ -33,13 +33,18 @@ Material:
     - _AffineStrength: 0.5
     - _DepthJitter: 0.002
     - _DitherStrength: 0.6
-    - _FogDensity: 0.008
-    - _QuantizeColors: 64
+    - _FlatAmbient: 1
+    - _FlickerStrength: 0.15
+    - _FluorescentHum: 0.35
+    - _FogDensity: 0.016
+    - _QuantizeColors: 32
     - _ScanlineFreq: 120
+    - _StainScale: 6
+    - _StainStrength: 0.4
     - _VertexSnap: 16
     m_Colors:
-    - _BaseColor: {r: 0.1, g: 0.12, b: 0.15, a: 1}
+    - _BaseColor: {r: 0.32, g: 0.34, b: 0.36, a: 1}
     - _EmissionColor: {r: 0.9480001, g: 0.996, b: 0.828, a: 1.2}
-    - _FogColor: {r: 0.04, g: 0.04, b: 0.05, a: 1}
+    - _FogColor: {r: 0.38, g: 0.39, b: 0.41, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

@@ -24,61 +24,61 @@
 
                 <!-- DIRECCION Y DISENO -->
                 <ui:VisualElement class="credits-section">
-                    <ui:Label class="credits-heading" text="DIRECCION Y DISENO" />
+                    <ui:Label class="credits-heading" text="DIRECCIÓN Y DISEÑO" />
                     <ui:Label class="credits-name" text="Nahum Velazquez" />
-                    <ui:Label class="credits-text" text="Concepto original, vision creativa y diseno general" />
+                    <ui:Label class="credits-text" text="Concepto original, visión creativa y diseño general" />
                 </ui:VisualElement>
 
                 <!-- PROGRAMACION -->
                 <ui:VisualElement class="credits-section">
-                    <ui:Label class="credits-heading" text="PROGRAMACION" />
+                    <ui:Label class="credits-heading" text="PROGRAMACIÓN" />
                     <ui:Label class="credits-name" text="Nahum Velazquez" />
-                    <ui:Label class="credits-text" text="Desarrollo del motor de juego, mecanicas de eco y grabacion" />
+                    <ui:Label class="credits-text" text="Desarrollo del motor de juego, mecánicas de eco y grabación" />
                 </ui:VisualElement>
 
                 <!-- NARRATIVA Y ESCRITURA -->
-                <ui:VisualElement class="credits-section">
+                <ui:VisualElement class="credits-section credits-section--two-text">
                     <ui:Label class="credits-heading" text="NARRATIVA Y ESCRITURA" />
                     <ui:Label class="credits-name" text="Nahum Velazquez" />
-                    <ui:Label class="credits-text" text="Historia sin palabras - el eco habla por si solo" />
-                    <ui:Label class="credits-text" text="Diseno de niveles y progresion narrativa" />
+                    <ui:Label class="credits-text" text="Historia sin palabras - el eco habla por sí solo" />
+                    <ui:Label class="credits-text" text="Diseño de niveles y progresión narrativa" />
                 </ui:VisualElement>
 
                 <!-- ARTE -->
-                <ui:VisualElement class="credits-section">
-                    <ui:Label class="credits-heading" text="ARTE Y DIRECCION VISUAL" />
+                <ui:VisualElement class="credits-section credits-section--two-text">
+                    <ui:Label class="credits-heading" text="ARTE Y DIRECCIÓN VISUAL" />
                     <ui:Label class="credits-name" text="Melany Velazquez" />
                     <ui:Label class="credits-text" text="Todo el arte del juego - paleta, texturas, ambientes" />
-                    <ui:Label class="credits-text" text="Estetica Escuela Liminal / PS1-PS2 / CRT" />
+                    <ui:Label class="credits-text" text="Estética Escuela Liminal / PS1-PS2 / CRT" />
                 </ui:VisualElement>
 
                 <!-- DISENO DE MECANICAS -->
                 <ui:VisualElement class="credits-section">
-                    <ui:Label class="credits-heading" text="DISENO DE MECANICAS" />
+                    <ui:Label class="credits-heading" text="DISEÑO DE MECÁNICAS" />
                     <ui:Label class="credits-name" text="Nahum Velazquez" />
-                    <ui:Label class="credits-text" text="Mecanica de eco, grabacion, colisiones y puzzles" />
+                    <ui:Label class="credits-text" text="Mecánica de eco, grabación, colisiones y puzzles" />
                 </ui:VisualElement>
 
                 <!-- PRODUCCION Y COORDINACION -->
                 <ui:VisualElement class="credits-section">
-                    <ui:Label class="credits-heading" text="PRODUCCION Y COORDINACION" />
+                    <ui:Label class="credits-heading" text="PRODUCCIÓN Y COORDINACIÓN" />
                     <ui:Label class="credits-name" text="Fania Romero" />
-                    <ui:Label class="credits-text" text="Coordinacion y asistencia de produccion" />
+                    <ui:Label class="credits-text" text="Coordinación y asistencia de producción" />
                 </ui:VisualElement>
 
                 <!-- DISENO DE INTERFAZ -->
                 <ui:VisualElement class="credits-section">
-                    <ui:Label class="credits-heading" text="DISENO DE INTERFAZ" />
+                    <ui:Label class="credits-heading" text="DISEÑO DE INTERFAZ" />
                     <ui:Label class="credits-name" text="Fabiana Torales" />
-                    <ui:Label class="credits-text" text="Asistencia de usabilidad y documentacion" />
+                    <ui:Label class="credits-text" text="Asistencia de usabilidad y documentación" />
                 </ui:VisualElement>
 
                 <!-- AGRADECIMIENTOS -->
-                <ui:VisualElement class="credits-section">
+                <ui:VisualElement class="credits-section credits-section--thanks">
                     <ui:Label class="credits-heading" text="AGRADECIMIENTOS" />
                     <ui:Label class="credits-name" text="Fuentes: Inter (Rasmus Andersson) - Garamond - Courier" />
                     <ui:Label class="credits-name" text="Motor: Unity 6000.4 - URP 17.4" />
-                    <ui:Label class="credits-name" text="Sistema de diseno: Stich" />
+                    <ui:Label class="credits-name" text="Sistema de diseño: Stitch" />
                 </ui:VisualElement>
 
                 <!-- CIERRE -->

@@ -38,6 +38,25 @@ namespace Echoes.UI
 
             if (_btnBack != null)
                 _btnBack.clicked += OnBack;
+
+            if (_scrollView != null)
+                ScheduleLayoutRefresh();
+        }
+
+        void ScheduleLayoutRefresh()
+        {
+            for (int i = 1; i <= 6; i++)
+                _scrollView.schedule.Execute(ForceContentRelayout).ExecuteLater(i * 250);
+        }
+
+        void ForceContentRelayout()
+        {
+            if (_scrollView == null) return;
+
+            var container = _scrollView.contentContainer;
+            var previous = container.style.display;
+            container.style.display = DisplayStyle.None;
+            container.style.display = previous;
         }
 
         void Update()

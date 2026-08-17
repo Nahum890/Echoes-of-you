@@ -29,7 +29,17 @@ namespace Echoes.UI
         Button _btnHub;
         Button _btnFooterMenu;
 
-        void OnEnable() { InitializeUI(); }
+        void OnEnable() { InitializeUI(); SettingsController.SettingsClosed += OnSettingsClosed; }
+
+        void OnDisable() { SettingsController.SettingsClosed -= OnSettingsClosed; }
+
+        void OnSettingsClosed()
+        {
+            // Settings closed from inside (CERRAR TERMINAL / Aplicar cambios): restore pause nav
+            _settingsPanel?.AddToClassList("hidden");
+            _pauseNav?.RemoveFromClassList("hidden");
+            _btnResume?.Focus();
+        }
 
         void InitializeUI()
         {

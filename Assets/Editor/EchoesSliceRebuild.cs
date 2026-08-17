@@ -321,7 +321,7 @@ public static class EchoesSliceRebuild
     static void PatchLevel1()
     {
         // Echo plate: long auto-release so the held door gives the player time to walk through.
-        var plate = FindGameObjectByNameContains("PlacaEco_Aula")?.GetComponent<PressurePlate>();
+        var plate = FindPressurePlateByNameContains("PlacaEco_Aula");
         if (plate != null) { plate.autoReleaseTimer = 8.0f; EditorUtility.SetDirty(plate); }
         // Door latches open once the echo has pushed it (player never needs to re-press).
         var door = FindGameObjectByNameContains("PuertaAula")?.GetComponent<DoorController>();
@@ -490,6 +490,12 @@ public static class EchoesSliceRebuild
         var tone = profile.Add<Tonemapping>();
         tone.mode.Override(TonemappingMode.None);
 
+        // VolumeProfile.Add<T>() creates the components in memory; Unity's editor
+        // additionally registers them as sub-assets, otherwise they serialize as
+        // {fileID: 0} and the overrides never apply.
+        foreach (var comp in profile.components)
+            AssetDatabase.AddObjectToAsset(comp, profile);
+
         EditorUtility.SetDirty(profile);
         AssetDatabase.SaveAssets();
 
@@ -600,6 +606,15 @@ public static class EchoesSliceRebuild
         foreach (var go in Object.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None))
         {
             if (go.name.Contains(contains) && go.scene.IsValid()) return go;
+        }
+        return null;
+    }
+
+    static PressurePlate FindPressurePlateByNameContains(string contains)
+    {
+        foreach (var p in Object.FindObjectsByType<PressurePlate>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (p != null && p.name.Contains(contains) && p.gameObject.scene.IsValid()) return p;
         }
         return null;
     }

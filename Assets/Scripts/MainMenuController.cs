@@ -247,7 +247,8 @@ public class MainMenuController : MonoBehaviour
     {
         // Descartar la intro ("presionar cualquier tecla para sintonizar") y mostrar el men├║.
         // Sin esto el men├║ queda atascado en void-intro con main-content oculto.
-        if (_voidIntro != null && !_voidIntro.ClassListContains("hidden") && Input.anyKeyDown)
+        // Input.anyKeyDown NO detecta clics del mouse — añadimos GetMouseButtonDown(0) explícito.
+        if (_voidIntro != null && !_voidIntro.ClassListContains("hidden") && (Input.anyKeyDown || Input.GetMouseButtonDown(0)))
         {
             DismissIntro();
         }

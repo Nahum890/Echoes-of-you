@@ -14,6 +14,10 @@ namespace Echoes.UI
     {
         public static SettingsController Instance { get; private set; }
 
+        /// <summary>Fired when the user closes settings (CERRAR TERMINAL / Aplicar cambios).
+        /// Hosts like PauseMenu restore their previous UI state on this event.</summary>
+        public static event System.Action SettingsClosed;
+
         [Header("Templates")]
         [SerializeField] VisualTreeAsset _settingsTemplate; // SettingsUI.uxml
 
@@ -89,6 +93,14 @@ namespace Echoes.UI
 
             container.Clear();
             var panel = _settingsTemplate.CloneTree();
+            // CloneTree() returns a TemplateContainer wrapper with no classes and no height;
+            // the settings root inside is position:absolute, so the wrapper collapses to 0 height.
+            // Stretch the wrapper to fill the host panel or nothing renders and nothing is clickable.
+            panel.style.position = Position.Absolute;
+            panel.style.left = 0;
+            panel.style.top = 0;
+            panel.style.right = 0;
+            panel.style.bottom = 0;
             container.Add(panel);
             _settingsContainer = panel;
             InitializeUIFromContainer(panel);
@@ -262,25 +274,26 @@ namespace Echoes.UI
 
         void ShowTab(string tabName)
         {
-            _panelVideo?.RemoveFromClassList("preview-panel--visible");
-            _panelAudio?.RemoveFromClassList("preview-panel--visible");
-            _panelControles?.RemoveFromClassList("preview-panel--visible");
-            _panelAccesibilidad?.RemoveFromClassList("preview-panel--visible");
-            _panelGameplay?.RemoveFromClassList("preview-panel--visible");
+            // Panels use .settings-panel.hidden (display:none) and .settings-tab--active for the selected tab
+            _panelVideo?.AddToClassList("hidden");
+            _panelAudio?.AddToClassList("hidden");
+            _panelControles?.AddToClassList("hidden");
+            _panelAccesibilidad?.AddToClassList("hidden");
+            _panelGameplay?.AddToClassList("hidden");
 
-            _tabVideo?.RemoveFromClassList("echo-tab--selected");
-            _tabAudio?.RemoveFromClassList("echo-tab--selected");
-            _tabControles?.RemoveFromClassList("echo-tab--selected");
-            _tabAccesibilidad?.RemoveFromClassList("echo-tab--selected");
-            _tabGameplay?.RemoveFromClassList("echo-tab--selected");
+            _tabVideo?.RemoveFromClassList("settings-tab--active");
+            _tabAudio?.RemoveFromClassList("settings-tab--active");
+            _tabControles?.RemoveFromClassList("settings-tab--active");
+            _tabAccesibilidad?.RemoveFromClassList("settings-tab--active");
+            _tabGameplay?.RemoveFromClassList("settings-tab--active");
 
             switch (tabName)
             {
-                case "Video": _panelVideo?.AddToClassList("preview-panel--visible"); _tabVideo?.AddToClassList("echo-tab--selected"); break;
-                case "Audio": _panelAudio?.AddToClassList("preview-panel--visible"); _tabAudio?.AddToClassList("echo-tab--selected"); break;
-                case "Controles": _panelControles?.AddToClassList("preview-panel--visible"); _tabControles?.AddToClassList("echo-tab--selected"); break;
-                case "Accesibilidad": _panelAccesibilidad?.AddToClassList("preview-panel--visible"); _tabAccesibilidad?.AddToClassList("echo-tab--selected"); break;
-                case "Gameplay": _panelGameplay?.AddToClassList("preview-panel--visible"); _tabGameplay?.AddToClassList("echo-tab--selected"); break;
+                case "Video": _panelVideo?.RemoveFromClassList("hidden"); _tabVideo?.AddToClassList("settings-tab--active"); break;
+                case "Audio": _panelAudio?.RemoveFromClassList("hidden"); _tabAudio?.AddToClassList("settings-tab--active"); break;
+                case "Controles": _panelControles?.RemoveFromClassList("hidden"); _tabControles?.AddToClassList("settings-tab--active"); break;
+                case "Accesibilidad": _panelAccesibilidad?.RemoveFromClassList("hidden"); _tabAccesibilidad?.AddToClassList("settings-tab--active"); break;
+                case "Gameplay": _panelGameplay?.RemoveFromClassList("hidden"); _tabGameplay?.AddToClassList("settings-tab--active"); break;
             }
         }
 
@@ -385,6 +398,7 @@ namespace Echoes.UI
         {
             if (_settingsContainer != null)
                 _settingsContainer.AddToClassList("hidden");
+            SettingsClosed?.Invoke();
         }
 
         void ApplyAll()
