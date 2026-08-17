@@ -58,12 +58,32 @@ public class MenuHoverSystem : MonoBehaviour
     [Tooltip("Zumbido CRT de fondo — loop")]
     [SerializeField] AudioClip crtAmbientClip;
 
+    [Tooltip("Avanzar diálogo / seleccionar opción")]
+    [SerializeField] AudioClip dialogueAdvanceClip;
+
+    [Tooltip("Interacción disponible (prompt)")]
+    [SerializeField] AudioClip interactionAvailableClip;
+
+    [Tooltip("Interacción denegada (error suave)")]
+    [SerializeField] AudioClip interactionDeniedClip;
+
+    [Tooltip("Cerrar pausa / menú")]
+    [SerializeField] AudioClip pauseCloseClip;
+
+    [Tooltip("Toast / notificación")]
+    [SerializeField] AudioClip toastClip;
+
     [Header("Audio Settings")]
     [Range(0f, 1f)] [SerializeField] float hoverInVolume = 0.6f;
     [Range(0f, 1f)] [SerializeField] float hoverOutVolume = 0.3f;
     [Range(0f, 1f)] [SerializeField] float clickVolume = 0.8f;
     [Range(0f, 1f)] [SerializeField] float navMoveVolume = 0.5f;
     [Range(0f, 1f)] [SerializeField] float crtAmbientVolume = 0.08f;
+    [Range(0f, 1f)] [SerializeField] float dialogueAdvanceVolume = 0.7f;
+    [Range(0f, 1f)] [SerializeField] float interactionAvailableVolume = 0.5f;
+    [Range(0f, 1f)] [SerializeField] float interactionDeniedVolume = 0.5f;
+    [Range(0f, 1f)] [SerializeField] float pauseCloseVolume = 0.7f;
+    [Range(0f, 1f)] [SerializeField] float toastVolume = 0.6f;
 
     [Header("Cursor")]
     [SerializeField] Texture2D menuCursorTexture;
@@ -100,6 +120,15 @@ public class MenuHoverSystem : MonoBehaviour
         _crtAmbientSource.loop = true;
         _crtAmbientSource.volume = 0f;
         _crtAmbientSource.priority = 128;
+
+        // Auto-load missing clips from Resources/Audio/ui/
+        if (hoverInClip == null) hoverInClip = Resources.Load<AudioClip>("Audio/ui/ui_dialogue_open");
+        if (clickConfirmClip == null) clickConfirmClip = Resources.Load<AudioClip>("Audio/ui/ui_dialogue_advance");
+        if (dialogueAdvanceClip == null) dialogueAdvanceClip = Resources.Load<AudioClip>("Audio/ui/ui_dialogue_advance");
+        if (interactionAvailableClip == null) interactionAvailableClip = Resources.Load<AudioClip>("Audio/ui/ui_interaction_available");
+        if (interactionDeniedClip == null) interactionDeniedClip = Resources.Load<AudioClip>("Audio/ui/ui_interaction_denied");
+        if (pauseCloseClip == null) pauseCloseClip = Resources.Load<AudioClip>("Audio/ui/ui_pause_closemp3");
+        if (toastClip == null) toastClip = Resources.Load<AudioClip>("Audio/ui/ui_toast");
 
         if (crtAmbientClip != null)
         {
@@ -251,13 +280,50 @@ public class MenuHoverSystem : MonoBehaviour
         _uiAudioSource.PlayOneShot(clickConfirmClip, clickVolume);
     }
 
-    void PlayNavMove()
+void PlayNavMove()
     {
         if (navMoveClip == null) return;
         _uiAudioSource.pitch = Random.Range(0.95f, 1.05f);
         _uiAudioSource.PlayOneShot(navMoveClip, navMoveVolume);
     }
 
+    public void PlayDialogueAdvance()
+    {
+        if (dialogueAdvanceClip == null) return;
+        _uiAudioSource.pitch = 1.05f;
+        _uiAudioSource.PlayOneShot(dialogueAdvanceClip, dialogueAdvanceVolume);
+    }
+
+    public void PlayInteractionAvailable()
+    {
+        if (interactionAvailableClip == null) return;
+        _uiAudioSource.pitch = 1.0f;
+        _uiAudioSource.PlayOneShot(interactionAvailableClip, interactionAvailableVolume);
+    }
+
+    public void PlayInteractionDenied()
+    {
+        if (interactionDeniedClip == null) return;
+        _uiAudioSource.pitch = 0.9f;
+        _uiAudioSource.PlayOneShot(interactionDeniedClip, interactionDeniedVolume);
+    }
+
+    public void PlayPauseClose()
+    {
+        if (pauseCloseClip == null) return;
+        _uiAudioSource.pitch = 1.0f;
+        _uiAudioSource.PlayOneShot(pauseCloseClip, pauseCloseVolume);
+    }
+
+    public void PlayToast()
+    {
+        if (toastClip == null) return;
+        _uiAudioSource.pitch = 1.0f;
+        _uiAudioSource.PlayOneShot(toastClip, toastVolume);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // UTILIDADES
     // ═══════════════════════════════════════════════════════════════
     // UTILIDADES
     // ═══════════════════════════════════════════════════════════════

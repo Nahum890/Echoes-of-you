@@ -265,17 +265,23 @@ public class EchoPlayback : MonoBehaviour
             _audioSource.Stop();
     }
 
-    public void FadeOutAndDestroy(float fadeSeconds = ResidualSeconds)
+public void FadeOutAndDestroy(float fadeSeconds = ResidualSeconds)
     {
         if (_destroying)
             return;
 
         _destroying = true;
         GameFeelController.Instance?.PlayEchoFade(transform.position);
+        // Play echo residual tail (2.0 asset)
+        var tailClip = Resources.Load<AudioClip>("Audio/player/sfx_echo_residual_tail");
+        if (tailClip != null && _audioSource != null)
+        {
+            _audioSource.PlayOneShot(tailClip, 0.5f);
+        }
         if (!gameObject.activeInHierarchy)
         {
-PhaseChanged?.Invoke(EchoPlaybackPhase.Gone);
-        Destroy(gameObject);
+            PhaseChanged?.Invoke(EchoPlaybackPhase.Gone);
+            Destroy(gameObject);
             return;
         }
 
@@ -656,6 +662,8 @@ PhaseChanged?.Invoke(EchoPlaybackPhase.Gone);
             DestroySafe(col);
 
         ApplyModelAutoFit(scaler, model);
+        // Align the model so its feet sit on the Echo's transform origin (mirrors PlayerController.AlignModelToFeet)
+        AlignEchoModelToFeet(scaler);
         ApplyEchoMaterials(model.gameObject);
 
         Animator animator = model.GetComponent<Animator>();
@@ -674,7 +682,24 @@ PhaseChanged?.Invoke(EchoPlaybackPhase.Gone);
         EnsureAnimatorController(animator);
         animator.applyRootMotion = false;
         animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+        animator.updateMode = AnimatorUpdateMode.Normal;
         animator.enabled = true;
+
+        // Drive the Animator into the Idle grounded pose at spawn so the model's feet
+        // land at the transform origin (y=0). The FBX origin sits at the character's
+        // midsection, so the raw bind pose leaves feet ~1.2m below origin. Aiden fixes
+        // this over time via PlayerLocomotionAnimator driving SetLocomotion each frame;
+        // the Echo must do the equivalent at spawn, before BeginPlayback's Latency
+        // phase freezes the Animator (speed=0) for 0.8s. Without this fix the Echo
+        // appears "hundido" (sunken) during Latency.
+        animator.Rebind();
+        animator.Update(0f);
+        animator.speed = 1f;
+        EchoesAnimatorParams.SetLocomotion(animator, 0f, Vector3.zero, true);
+        EchoesAnimatorParams.SetBoolIfExists(animator, "IsRecording", false);
+        EchoesAnimatorParams.SetBoolIfExists(animator, "IsEchoPlayback", false);
+        animator.Update(0.2f);   // advance the state machine across the Idle transition
+        animator.Update(0f);      // settle at destination pose
     }
 
     void ApplyEchoMaterials(GameObject root)
@@ -790,5 +815,41 @@ PhaseChanged?.Invoke(EchoPlaybackPhase.Gone);
 
         if (type != null && GetComponent(type) == null)
             gameObject.AddComponent(type);
+    }
+
+    // Align the Echo's model so its feet sit at the Echo's transform origin.
+    // Mirrors the logic in PlayerController.AlignModelToFeet().
+    void AlignEchoModelToFeet(Transform scaler)
+    {
+        if (scaler == null)
+            return;
+
+        // Gather all renderers under the scaler (including SkinnedMeshRenderer).
+        Renderer[] renderers = scaler.GetComponentsInChildren<Renderer>(true);
+        if (renderers == null || renderers.Length == 0)
+            return;
+
+        // Compute world bounds.
+        Bounds bounds = renderers[0].bounds;
+        for (int i = 1; i < renderers.Length; i++)
+            bounds.Encapsulate(renderers[i].bounds);
+
+        // Lateral offset: remove any horizontal offset relative to the Echo's up axis.
+        Vector3 up = transform.up.sqrMagnitude > 0.001f ? transform.up.normalized : Vector3.up;
+        Vector3 lateralOffset = Vector3.ProjectOnPlane(bounds.center - transform.position, up);
+        scaler.position -= lateralOffset;
+
+        // Recalculate bounds after lateral correction.
+        renderers = scaler.GetComponentsInChildren<Renderer>(true);
+        if (renderers == null || renderers.Length == 0)
+            return;
+        bounds = renderers[0].bounds;
+        for (int i = 1; i < renderers.Length; i++)
+            bounds.Encapsulate(renderers[i].bounds);
+
+        // Vertical offset: align feet to the Echo's origin.
+        Vector3 currentFeet = bounds.center - up * bounds.extents.y;
+        float feetDelta = Vector3.Dot(transform.position - currentFeet, up);
+        scaler.position += up * feetDelta;
     }
 }

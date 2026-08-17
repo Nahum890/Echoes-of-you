@@ -22,6 +22,14 @@ public static class EchoesAudioMixerBuilder
     public const string MusicVolumeParam = "MusicVolume";
     public const string SFXVolumeParam = "SFXVolume";
     public const string EchoVolumeParam = "EchoVolume";
+    public const string AmbienceVolumeParam = "AmbienceVolume";
+    public const string VoiceVolumeParam = "VoiceVolume";
+    public const string UIVolumeParam = "UIVolume";
+    public const string TapeHissVolumeParam = "TapeHissVolume";
+    public const string SFXPlayerVolumeParam = "SFXPlayerVolume";
+    public const string SFXFoleyVolumeParam = "SFXFoleyVolume";
+    public const string SFXEchoVolumeParam = "SFXEchoVolume";
+    public const string SFXUIVolumeParam = "SFXUIVolume";
 
     static EchoesAudioMixerBuilder()
     {
@@ -104,21 +112,43 @@ public static class EchoesAudioMixerBuilder
         UnityEngine.Object musicGroup = CreateChildGroup(tController, tGroupController, controller, masterGroup, "Music");
         UnityEngine.Object sfxGroup = CreateChildGroup(tController, tGroupController, controller, masterGroup, "SFX");
         UnityEngine.Object echoGroup = CreateChildGroup(tController, tGroupController, controller, masterGroup, "Echo");
+        UnityEngine.Object ambienceGroup = CreateChildGroup(tController, tGroupController, controller, masterGroup, "Ambience");
+        UnityEngine.Object voiceGroup = CreateChildGroup(tController, tGroupController, controller, masterGroup, "Voice");
+        UnityEngine.Object uiGroup = CreateChildGroup(tController, tGroupController, controller, masterGroup, "UI");
+        UnityEngine.Object tapeHissGroup = CreateChildGroup(tController, tGroupController, controller, masterGroup, "TapeHiss");
+
+        // SFX subgroups
+        UnityEngine.Object sfxPlayerGroup = CreateChildGroup(tController, tGroupController, controller, sfxGroup, "SFX_Player");
+        UnityEngine.Object sfxFoleyGroup = CreateChildGroup(tController, tGroupController, controller, sfxGroup, "SFX_Foley");
+        UnityEngine.Object sfxEchoGroup = CreateChildGroup(tController, tGroupController, controller, sfxGroup, "SFX_Echo");
+        UnityEngine.Object sfxUIGroup = CreateChildGroup(tController, tGroupController, controller, sfxGroup, "SFX_UI");
 
         // Expose volume parameters on each group
         ExposeVolumeParameter(tController, tGroupController, tExposedParam, controller, masterGroup, MasterVolumeParam);
         ExposeVolumeParameter(tController, tGroupController, tExposedParam, controller, musicGroup, MusicVolumeParam);
         ExposeVolumeParameter(tController, tGroupController, tExposedParam, controller, sfxGroup, SFXVolumeParam);
         ExposeVolumeParameter(tController, tGroupController, tExposedParam, controller, echoGroup, EchoVolumeParam);
+        ExposeVolumeParameter(tController, tGroupController, tExposedParam, controller, ambienceGroup, AmbienceVolumeParam);
+        ExposeVolumeParameter(tController, tGroupController, tExposedParam, controller, voiceGroup, VoiceVolumeParam);
+        ExposeVolumeParameter(tController, tGroupController, tExposedParam, controller, uiGroup, UIVolumeParam);
+        ExposeVolumeParameter(tController, tGroupController, tExposedParam, controller, tapeHissGroup, TapeHissVolumeParam);
+        ExposeVolumeParameter(tController, tGroupController, tExposedParam, controller, sfxPlayerGroup, SFXPlayerVolumeParam);
+        ExposeVolumeParameter(tController, tGroupController, tExposedParam, controller, sfxFoleyGroup, SFXFoleyVolumeParam);
+        ExposeVolumeParameter(tController, tGroupController, tExposedParam, controller, sfxEchoGroup, SFXEchoVolumeParam);
+        ExposeVolumeParameter(tController, tGroupController, tExposedParam, controller, sfxUIGroup, SFXUIVolumeParam);
 
         EditorUtility.SetDirty(controller);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
         Debug.Log("[Echoes Audio] Created natively initialized AudioMixer at " + MixerAssetPath +
-                  " with groups: Master, Music, SFX, Echo. " +
+                  " with groups: Master, Music, SFX, Echo, Ambience, Voice, UI, TapeHiss, " +
+                  "SFX_Player, SFX_Foley, SFX_Echo, SFX_UI. " +
                   "Exposed parameters: " + MasterVolumeParam + ", " + MusicVolumeParam +
-                  ", " + SFXVolumeParam + ", " + EchoVolumeParam);
+                  ", " + SFXVolumeParam + ", " + EchoVolumeParam + ", " + AmbienceVolumeParam +
+                  ", " + VoiceVolumeParam + ", " + UIVolumeParam + ", " + TapeHissVolumeParam +
+                  ", " + SFXPlayerVolumeParam + ", " + SFXFoleyVolumeParam + ", " + SFXEchoVolumeParam +
+                  ", " + SFXUIVolumeParam);
 
         return (AudioMixer)controller;
     }

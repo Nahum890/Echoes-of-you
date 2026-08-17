@@ -19,18 +19,42 @@ public class EchoesAudioManager : MonoBehaviour
     const string MusicParam = "MusicVolume";
     const string SFXParam = "SFXVolume";
     const string EchoParam = "EchoVolume";
+    const string AmbienceParam = "AmbienceVolume";
+    const string VoiceParam = "VoiceVolume";
+    const string UIParam = "UIVolume";
+    const string TapeHissParam = "TapeHissVolume";
+    const string SFXPlayerParam = "SFXPlayerVolume";
+    const string SFXFoleyParam = "SFXFoleyVolume";
+    const string SFXEchoParam = "SFXEchoVolume";
+    const string SFXUIParam = "SFXUIVolume";
 
     // PlayerPrefs keys
     const string MasterKey = "MasterVolume";
     const string MusicKey = "MusicVolume";
     const string SFXKey = "SfxVolume";
     const string EchoKey = "EchoVolume";
+    const string AmbienceKey = "AmbienceVolume";
+    const string VoiceKey = "VoiceVolume";
+    const string UIKey = "UIVolume";
+    const string TapeHissKey = "TapeHissVolume";
+    const string SFXPlayerKey = "SFXPlayerVolume";
+    const string SFXFoleyKey = "SFXFoleyVolume";
+    const string SFXEchoKey = "SFXEchoVolume";
+    const string SFXUIKey = "SFXUIVolume";
 
     // Default linear volumes (0-1 range, shown in UI)
     const float DefaultMaster = 0.84f;
     const float DefaultMusic = 0.60f;
     const float DefaultSFX = 0.72f;
     const float DefaultEcho = 0.70f;
+    const float DefaultAmbience = 0.55f;
+    const float DefaultVoice = 0.75f;
+    const float DefaultUI = 0.65f;
+    const float DefaultTapeHiss = 0.30f;
+    const float DefaultSFXPlayer = 0.72f;
+    const float DefaultSFXFoley = 0.60f;
+    const float DefaultSFXEcho = 0.70f;
+    const float DefaultSFXUI = 0.65f;
 
     void Awake()
     {
@@ -118,6 +142,86 @@ public class EchoesAudioManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Set ambience volume. value is linear 0-1.
+    /// </summary>
+    public void SetAmbienceVolume(float linear)
+    {
+        linear = Mathf.Clamp01(linear);
+        SetMixerVolume(AmbienceParam, linear);
+        PlayerPrefs.SetFloat(AmbienceKey, linear);
+    }
+
+    /// <summary>
+    /// Set voice volume. value is linear 0-1.
+    /// </summary>
+    public void SetVoiceVolume(float linear)
+    {
+        linear = Mathf.Clamp01(linear);
+        SetMixerVolume(VoiceParam, linear);
+        PlayerPrefs.SetFloat(VoiceKey, linear);
+    }
+
+    /// <summary>
+    /// Set UI volume. value is linear 0-1.
+    /// </summary>
+    public void SetUIVolume(float linear)
+    {
+        linear = Mathf.Clamp01(linear);
+        SetMixerVolume(UIParam, linear);
+        PlayerPrefs.SetFloat(UIKey, linear);
+    }
+
+    /// <summary>
+    /// Set tape hiss volume. value is linear 0-1.
+    /// </summary>
+    public void SetTapeHissVolume(float linear)
+    {
+        linear = Mathf.Clamp01(linear);
+        SetMixerVolume(TapeHissParam, linear);
+        PlayerPrefs.SetFloat(TapeHissKey, linear);
+    }
+
+    /// <summary>
+    /// Set SFX Player sub-bus volume. value is linear 0-1.
+    /// </summary>
+    public void SetSFXPlayerVolume(float linear)
+    {
+        linear = Mathf.Clamp01(linear);
+        SetMixerVolume(SFXPlayerParam, linear);
+        PlayerPrefs.SetFloat(SFXPlayerKey, linear);
+    }
+
+    /// <summary>
+    /// Set SFX Foley sub-bus volume. value is linear 0-1.
+    /// </summary>
+    public void SetSFXFoleyVolume(float linear)
+    {
+        linear = Mathf.Clamp01(linear);
+        SetMixerVolume(SFXFoleyParam, linear);
+        PlayerPrefs.SetFloat(SFXFoleyKey, linear);
+    }
+
+    /// <summary>
+    /// Set SFX Echo sub-bus volume. value is linear 0-1.
+    /// </summary>
+    public void SetSFXEchoVolume(float linear)
+    {
+        linear = Mathf.Clamp01(linear);
+        SetMixerVolume(SFXEchoParam, linear);
+        PlayerPrefs.SetFloat(SFXEchoKey, linear);
+    }
+
+    /// <summary>
+    /// Set SFX UI sub-bus volume. value is linear 0-1.
+    /// </summary>
+    public void SetSFXUIVolume(float linear)
+    {
+        linear = Mathf.Clamp01(linear);
+        SetMixerVolume(SFXUIParam, linear);
+        PlayerPrefs.SetFloat(SFXUIKey, linear);
+    }
+
+    /// <summary>
     /// Get saved master volume (linear 0-1).
     /// </summary>
     public float GetMasterVolume() => PlayerPrefs.GetFloat(MasterKey, DefaultMaster);
@@ -138,6 +242,46 @@ public class EchoesAudioManager : MonoBehaviour
     public float GetEchoVolume() => PlayerPrefs.GetFloat(EchoKey, DefaultEcho);
 
     /// <summary>
+    /// Get saved ambience volume (linear 0-1).
+    /// </summary>
+    public float GetAmbienceVolume() => PlayerPrefs.GetFloat(AmbienceKey, DefaultAmbience);
+
+    /// <summary>
+    /// Get saved voice volume (linear 0-1).
+    /// </summary>
+    public float GetVoiceVolume() => PlayerPrefs.GetFloat(VoiceKey, DefaultVoice);
+
+    /// <summary>
+    /// Get saved UI volume (linear 0-1).
+    /// </summary>
+    public float GetUIVolume() => PlayerPrefs.GetFloat(UIKey, DefaultUI);
+
+    /// <summary>
+    /// Get saved tape hiss volume (linear 0-1).
+    /// </summary>
+    public float GetTapeHissVolume() => PlayerPrefs.GetFloat(TapeHissKey, DefaultTapeHiss);
+
+    /// <summary>
+    /// Get saved SFX Player volume (linear 0-1).
+    /// </summary>
+    public float GetSFXPlayerVolume() => PlayerPrefs.GetFloat(SFXPlayerKey, DefaultSFXPlayer);
+
+    /// <summary>
+    /// Get saved SFX Foley volume (linear 0-1).
+    /// </summary>
+    public float GetSFXFoleyVolume() => PlayerPrefs.GetFloat(SFXFoleyKey, DefaultSFXFoley);
+
+    /// <summary>
+    /// Get saved SFX Echo volume (linear 0-1).
+    /// </summary>
+    public float GetSFXEchoVolume() => PlayerPrefs.GetFloat(SFXEchoKey, DefaultSFXEcho);
+
+    /// <summary>
+    /// Get saved SFX UI volume (linear 0-1).
+    /// </summary>
+    public float GetSFXUIVolume() => PlayerPrefs.GetFloat(SFXUIKey, DefaultSFXUI);
+
+    /// <summary>
     /// Apply all saved volumes to the mixer. Call after scene load or settings change.
     /// </summary>
     public void ApplySavedVolumes()
@@ -146,6 +290,14 @@ public class EchoesAudioManager : MonoBehaviour
         SetMixerVolume(MusicParam, PlayerPrefs.GetFloat(MusicKey, DefaultMusic));
         SetMixerVolume(SFXParam, PlayerPrefs.GetFloat(SFXKey, DefaultSFX));
         SetMixerVolume(EchoParam, PlayerPrefs.GetFloat(EchoKey, DefaultEcho));
+        SetMixerVolume(AmbienceParam, PlayerPrefs.GetFloat(AmbienceKey, DefaultAmbience));
+        SetMixerVolume(VoiceParam, PlayerPrefs.GetFloat(VoiceKey, DefaultVoice));
+        SetMixerVolume(UIParam, PlayerPrefs.GetFloat(UIKey, DefaultUI));
+        SetMixerVolume(TapeHissParam, PlayerPrefs.GetFloat(TapeHissKey, DefaultTapeHiss));
+        SetMixerVolume(SFXPlayerParam, PlayerPrefs.GetFloat(SFXPlayerKey, DefaultSFXPlayer));
+        SetMixerVolume(SFXFoleyParam, PlayerPrefs.GetFloat(SFXFoleyKey, DefaultSFXFoley));
+        SetMixerVolume(SFXEchoParam, PlayerPrefs.GetFloat(SFXEchoKey, DefaultSFXEcho));
+        SetMixerVolume(SFXUIParam, PlayerPrefs.GetFloat(SFXUIKey, DefaultSFXUI));
     }
 
     /// <summary>
@@ -157,6 +309,14 @@ public class EchoesAudioManager : MonoBehaviour
         SetMusicVolume(DefaultMusic);
         SetSFXVolume(DefaultSFX);
         SetEchoVolume(DefaultEcho);
+        SetAmbienceVolume(DefaultAmbience);
+        SetVoiceVolume(DefaultVoice);
+        SetUIVolume(DefaultUI);
+        SetTapeHissVolume(DefaultTapeHiss);
+        SetSFXPlayerVolume(DefaultSFXPlayer);
+        SetSFXFoleyVolume(DefaultSFXFoley);
+        SetSFXEchoVolume(DefaultSFXEcho);
+        SetSFXUIVolume(DefaultSFXUI);
         PlayerPrefs.Save();
     }
 

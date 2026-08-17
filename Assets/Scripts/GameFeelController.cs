@@ -399,7 +399,7 @@ public class GameFeelController : MonoBehaviour
     public void PlayJump(Vector3 position, Vector3 up)
     {
         SpawnEffect(jumpEffectPrefab, position, up);
-        PlayClip3D(jumpClip, position, defaultVolume * 0.7f, 1.04f);
+        PlayClip3D(jumpClip, position, defaultVolume * 0.7f, 1.04f, "SFX_Player");
         cameraShake?.AddShake(jumpShake);
     }
 
@@ -408,7 +408,7 @@ public class GameFeelController : MonoBehaviour
         bool hard = impactSpeed >= 13f;
         SpawnEffect(hard ? hardLandingEffectPrefab : landingEffectPrefab, position, up);
         float vol = Mathf.Lerp(0.5f, 1f, Mathf.Clamp01(impactSpeed / 12f));
-        PlayClip3D(hard && hardLandingClip != null ? hardLandingClip : landingClip, position, defaultVolume * vol, hard ? 0.82f : 0.96f);
+        PlayClip3D(hard && hardLandingClip != null ? hardLandingClip : landingClip, position, defaultVolume * vol, hard ? 0.82f : 0.96f, "SFX_Player");
         cameraShake?.AddShake(Mathf.Clamp01(landingShake + impactSpeed * 0.015f));
         
         if (hard)
@@ -454,7 +454,7 @@ public class GameFeelController : MonoBehaviour
     public void PlayPuzzleSolved(Vector3 position)
     {
         SpawnEffect(puzzleSolvedEffectPrefab, position, Vector3.up);
-        PlayClip3D(puzzleSolvedClip, position, defaultVolume * 1.2f, 0.78f);
+        PlayClip3D(puzzleSolvedClip, position, defaultVolume * 1.2f, 0.78f, "SFX_Player");
         cameraShake?.AddShake(puzzleSolvedShake + 0.18f);
         PulseCA(0.4f, 0.25f);
         PulseVignette(0.55f, 0.2f);
@@ -465,7 +465,7 @@ public class GameFeelController : MonoBehaviour
 
     public void PlayRecordStart(Vector3 position, Vector3 up)
     {
-        PlayClip3D(recordClip, position, defaultVolume * 0.9f, 0.86f);
+        PlayClip3D(recordClip, position, defaultVolume * 0.9f, 0.86f, "SFX_Player");
         cameraShake?.AddShake(recordShake);
         PulseCA(0.42f, 0.3f);
         PulseVignette(0.6f, 0.25f);
@@ -477,7 +477,7 @@ public class GameFeelController : MonoBehaviour
 
     public void PlayRecordStop(Vector3 position)
     {
-        PlayClip3D(recordStopClip, position, defaultVolume * 0.9f, 1.08f);
+        PlayClip3D(recordStopClip, position, defaultVolume * 0.9f, 1.08f, "SFX_Player");
     }
 
     public void PlayEchoSpawn(Vector3 position)
@@ -486,7 +486,7 @@ public class GameFeelController : MonoBehaviour
             return;
         _nextEchoSpawnTime = Time.time + 0.25f;
 
-        PlayClip3D(echoSpawnClip, position, defaultVolume * 1.05f, 0.68f);
+        PlayClip3D(echoSpawnClip, position, defaultVolume * 1.05f, 0.68f, "SFX_Echo");
         cameraShake?.AddShake(echoSpawnShake * 0.45f);
         PulseCA(0.35f, 0.18f);
         PulseVignette(0.55f, 0.15f);
@@ -494,7 +494,7 @@ public class GameFeelController : MonoBehaviour
 
     public void PlaySoftError(Vector3 position)
     {
-        PlayClip3D(softErrorClip, position, defaultVolume * 0.6f, 0.72f);
+        PlayClip3D(softErrorClip, position, defaultVolume * 0.6f, 0.72f, "SFX_Player");
         PulseCA(0.25f, 0.12f);
         PulseVignette(0.5f, 0.1f);
     }
@@ -505,21 +505,21 @@ public class GameFeelController : MonoBehaviour
             return;
         _nextPlatePressTime = Time.time + 0.35f;
 
-        PlayClip3D(platePressClip, position, defaultVolume * 0.85f, 0.9f);
+        PlayClip3D(platePressClip, position, defaultVolume * 0.85f, 0.9f, "SFX_Foley");
         cameraShake?.AddShake(0.04f);
         PulseCA(0.15f, 0.08f);
     }
 
     public void PlayDoorMove(Vector3 position)
     {
-        PlayClip3D(doorMoveClip, position, defaultVolume * 0.9f, 0.82f);
+        PlayClip3D(doorMoveClip, position, defaultVolume * 0.9f, 0.82f, "SFX_Foley");
         cameraShake?.AddShake(0.06f);
     }
 
     public void PlayPlayerDeath(Vector3 position)
     {
         SpawnEffect(deathEffectPrefab, position, Vector3.up);
-        PlayClip3D(playerDeathClip, position, defaultVolume * 1.2f, 0.55f);
+        PlayClip3D(playerDeathClip, position, defaultVolume * 1.2f, 0.55f, "SFX_Player");
         cameraShake?.AddShake(deathShake);
         // Cinemachine bridge: impulso fuerte de muerte.
         if (_impulseSource != null && _cinemachineBrain != null)
@@ -533,7 +533,7 @@ public class GameFeelController : MonoBehaviour
     public void PlayRespawn(Vector3 position)
     {
         SpawnEffect(respawnEffectPrefab, position, Vector3.up);
-        PlayClip3D(respawnClip, position, defaultVolume, 0.92f);
+        PlayClip3D(respawnClip, position, defaultVolume, 0.92f, "SFX_Player");
         cameraShake?.AddShake(0.12f);
         PulseCA(0.4f, 0.2f);
         PulseVignette(0.55f, 0.15f);
@@ -546,7 +546,7 @@ public class GameFeelController : MonoBehaviour
             return;
         _nextEchoFadeTime = Time.time + 0.3f;
 
-        PlayClip3D(echoFadeClip, position, defaultVolume * 0.72f, 0.58f);
+        PlayClip3D(echoFadeClip, position, defaultVolume * 0.72f, 0.58f, "SFX_Echo");
     }
 
     public void PlayMechanicTick(Vector3 position, float weight = 1f)
@@ -620,7 +620,7 @@ public class GameFeelController : MonoBehaviour
         Destroy(instance.gameObject, Mathf.Max(1f, lifetime + 0.5f));
     }
 
-    void PlayClip3D(AudioClip clip, Vector3 position, float volume, float pitch = 1f)
+    void PlayClip3D(AudioClip clip, Vector3 position, float volume, float pitch = 1f, string mixerGroup = "SFX")
     {
         if (clip == null)
             return;
@@ -639,7 +639,7 @@ public class GameFeelController : MonoBehaviour
         var audioMgr = EchoesAudioManager.EnsureExists();
         if (audioMgr != null)
         {
-            source.outputAudioMixerGroup = audioMgr.FindGroup("SFX");
+            source.outputAudioMixerGroup = audioMgr.FindGroup(mixerGroup);
         }
 
         // Si el bitcrusher está activo, replicarlo en el OneShotAudio para game feel consistente
