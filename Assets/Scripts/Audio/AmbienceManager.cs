@@ -236,6 +236,10 @@ public class AmbienceManager : MonoBehaviour
         }
     }
 
+    public void SetAmbienceZone(string zone)
+    {
+    }
+
     public void StopAll()
     {
         _roomToneSource?.Stop();

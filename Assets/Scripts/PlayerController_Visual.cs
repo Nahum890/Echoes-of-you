@@ -70,9 +70,16 @@ public partial class PlayerController
 
         if (animator.avatar == null || !animator.avatar.isValid || !animator.avatar.isHuman)
         {
-            Avatar avatar = AssetDatabase.LoadAssetAtPath<Avatar>("Assets/3D Models/Animated Woman/Casual.fbx");
-            if (avatar != null && avatar.isValid)
-                animator.avatar = avatar;
+            const string modelPath = "Assets/3D Models/AidenModelo/Aiden3dModelo.fbx";
+            Object[] assets = AssetDatabase.LoadAllAssetsAtPath(modelPath);
+            for (int i = 0; i < assets.Length; i++)
+            {
+                if (assets[i] is Avatar avatar && avatar.isValid)
+                {
+                    animator.avatar = avatar;
+                    break;
+                }
+            }
         }
 
         EditorUtility.SetDirty(animator);
