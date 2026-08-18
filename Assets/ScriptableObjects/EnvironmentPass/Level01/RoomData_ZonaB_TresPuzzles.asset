@@ -1,0 +1,261 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6916307390901386426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Decal_ZonaB_TresPuzzles_dec_aviso_corcho_00
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: dec_aviso_corcho
+  narrativeTag: 0
+  localPosition: {x: 3.9, y: 1.2, z: 5}
+  localRotationEuler: {x: 0, y: 270, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &-5839636765715856384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_TresPuzzles_Basurero_05
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Basurero
+  narrativeTag: 0
+  localPosition: {x: 5.5, y: 0, z: 10}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &-4871238462423871043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_TresPuzzles_Libros_03
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Libros
+  narrativeTag: 0
+  localPosition: {x: 4, y: 0.5, z: 8}
+  localRotationEuler: {x: 0, y: 10, z: 0}
+  scale: {x: 0.6, y: 0.6, z: 0.6}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &-1518809729214333186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Decal_ZonaB_TresPuzzles_dec_nota_adhesiva_01
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: dec_nota_adhesiva
+  narrativeTag: 0
+  localPosition: {x: 3.9, y: 1, z: 8.2}
+  localRotationEuler: {x: 0, y: 270, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcf37f80f3f09549945948f90da8d33, type: 3}
+  m_Name: RoomData_ZonaB_TresPuzzles
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.RoomDataSO
+  roomId: ZonaB_TresPuzzles
+  roomType: 1
+  placements:
+  - {fileID: 6021827891990865093}
+  - {fileID: 66311308021116427}
+  - {fileID: 8290250013613011540}
+  - {fileID: -4871238462423871043}
+  - {fileID: 1982771209132239668}
+  - {fileID: -5839636765715856384}
+  - {fileID: 4355386758219636989}
+  - {fileID: 5779942316931106612}
+  - {fileID: 1462017989715908615}
+  decals:
+  - {fileID: -6916307390901386426}
+  - {fileID: -1518809729214333186}
+  validateRequiredProps: 1
+--- !u!114 &66311308021116427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_TresPuzzles_BancoMadera_01
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: BancoMadera
+  narrativeTag: 0
+  localPosition: {x: 4, y: 0, z: 8}
+  localRotationEuler: {x: 0, y: 270, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 1
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &1462017989715908615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_TresPuzzles_MochilaLyra_08
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: MochilaLyra
+  narrativeTag: 0
+  localPosition: {x: 3, y: 0, z: 12}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 2100000, guid: f75394fa110a9f84cb005f213e9f9271, type: 2}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &1982771209132239668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_TresPuzzles_Extintor_04
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Extintor
+  narrativeTag: 0
+  localPosition: {x: 5.5, y: 0, z: 5}
+  localRotationEuler: {x: 0, y: 270, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &4355386758219636989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_TresPuzzles_TazaCafe_06
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: TazaCafe
+  narrativeTag: 0
+  localPosition: {x: 4, y: 0.8, z: 8.2}
+  localRotationEuler: {x: 0, y: 30, z: 0}
+  scale: {x: 0.4, y: 0.4, z: 0.4}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &5779942316931106612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_TresPuzzles_PapeleraKenney_07
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: PapeleraKenney
+  narrativeTag: 0
+  localPosition: {x: 5.5, y: 0, z: 8}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &6021827891990865093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_TresPuzzles_Cartelera_00
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Cartelera
+  narrativeTag: 0
+  localPosition: {x: 4, y: 1.2, z: 5}
+  localRotationEuler: {x: 0, y: 270, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 2
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &8290250013613011540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_TresPuzzles_PlantaMaceta_02
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: PlantaMaceta
+  narrativeTag: 0
+  localPosition: {x: 4, y: 0, z: 10}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 1
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5

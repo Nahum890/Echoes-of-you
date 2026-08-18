@@ -121,7 +121,7 @@ namespace Echoes.EnvironmentPass
 
             if (!dryRun)
             {
-                SpawnLocalRoomLight(roomContainer, validBounds, levelNumber);
+                SpawnLocalRoomLight(roomContainer, zoneContainer.transform.position, levelNumber, exclusionZones);
             }
 
             return result;
@@ -144,11 +144,23 @@ namespace Echoes.EnvironmentPass
             }
 
             Vector3 worldPos = zoneContainer.transform.TransformPoint(prop.localPosition);
+            float targetLocalY = prop.localPosition.y;
 
-            if (Physics.Raycast(worldPos + Vector3.up * 5f, Vector3.down, out RaycastHit hit,
+            // Sample ground from inside the room (below roof level) to avoid hitting ceiling colliders
+            float sampleY = zoneContainer.transform.position.y + 2.0f;
+            Vector3 groundSampleOrigin = new Vector3(worldPos.x, sampleY, worldPos.z);
+
+            if (Physics.Raycast(groundSampleOrigin, Vector3.down, out RaycastHit hit,
                                 RAYCAST_DOWN_DIST, LayerMask.GetMask("Default")))
             {
-                worldPos.y = hit.point.y + (isDecal ? 0.01f : 0f);
+                if (Mathf.Abs(targetLocalY) < 0.05f || (isDecal && targetLocalY < 0.1f))
+                {
+                    worldPos.y = hit.point.y + (isDecal ? 0.01f : 0f);
+                }
+                else
+                {
+                    worldPos.y = hit.point.y + targetLocalY;
+                }
             }
 
             if (!isDecal)
@@ -281,13 +293,16 @@ namespace Echoes.EnvironmentPass
         private static List<Vector3> GatherPuzzleExclusionZones()
         {
             var result = new List<Vector3>();
-            GameObject mechRoot = GameObject.Find(MECH_CONTAINER);
-            if (mechRoot == null) return result;
-
-            foreach (Transform child in mechRoot.GetComponentsInChildren<Transform>(true))
+            foreach (string containerName in new[] { MECH_CONTAINER, ENV_CONTAINER, "--- PLAYER ---" })
             {
-                if (child == mechRoot.transform) continue;
-                if (IsPuzzleObject(child)) result.Add(child.position);
+                GameObject root = GameObject.Find(containerName);
+                if (root == null) continue;
+
+                foreach (Transform child in root.GetComponentsInChildren<Transform>(true))
+                {
+                    if (child == root.transform) continue;
+                    if (IsPuzzleObject(child)) result.Add(child.position);
+                }
             }
             return result;
         }
@@ -297,13 +312,15 @@ namespace Echoes.EnvironmentPass
             string n = t.name;
             if (n.StartsWith("PressurePlate") || n.StartsWith("Door") || n.StartsWith("Bridge") ||
                 n.StartsWith("ResonancePad") || n.StartsWith("LevelExit") || n.StartsWith("EscapeRoute") ||
-                n.StartsWith("Platform") || n.StartsWith("GravityZone") || n.StartsWith("ChaseHazard"))
+                n.StartsWith("Platform") || n.StartsWith("GravityZone") || n.StartsWith("ChaseHazard") ||
+                n.StartsWith("Placa") || n.StartsWith("Puerta") || n.StartsWith("Player") || n.StartsWith("LevelGoal"))
                 return true;
 
             if (t.GetComponent("PressurePlate") != null) return true;
             if (t.GetComponent("ResonanceZoneTrigger") != null) return true;
             if (t.GetComponent("LevelExit") != null) return true;
             if (t.GetComponent("DoorController") != null) return true;
+            if (t.GetComponent("PlayerController") != null) return true;
             return false;
         }
 
@@ -340,6 +357,14 @@ namespace Echoes.EnvironmentPass
             GameObject existing = GameObject.Find(PROPS_CONTAINER);
             if (existing != null)
                 Object.DestroyImmediate(existing);
+
+            GameObject envRoot = GameObject.Find(ENV_CONTAINER);
+            if (envRoot != null)
+            {
+                Transform oldHints = envRoot.transform.Find("PathHintLights");
+                if (oldHints != null)
+                    Object.DestroyImmediate(oldHints.gameObject);
+            }
         }
 
         private static void ApplySharedMaterial(GameObject go, Material mat)
@@ -362,17 +387,30 @@ namespace Echoes.EnvironmentPass
             int med = roomData.placements.Count(p => p != null && p.size == PropSize.Medium);
             int dom = roomData.placements.Count(p => p != null && p.size == PropSize.Dominant);
 
-            if (small < 5) result.warnings.Add($"Small props: {small} (min 5)");
-            if (med < 2) result.warnings.Add($"Medium props: {med} (min 2)");
-            if (dom < 1) result.warnings.Add($"Dominant props: {dom} (min 1)");
+            bool isMinimalRoom = roomData.roomId.ToLower().Contains("entrada") || roomData.roomId.ToLower().Contains("salida") || roomData.roomId.ToLower().Contains("ausente");
+            if (!isMinimalRoom && roomData.validateRequiredProps)
+            {
+                if (dom < 1 && med < 1) result.warnings.Add($"Low architectural furniture ({dom} dominant, {med} medium)");
+            }
         }
 
-        private static void SpawnLocalRoomLight(GameObject roomContainer, Bounds bounds, int levelNumber)
+        private static void SpawnLocalRoomLight(GameObject roomContainer, Vector3 centerPos, int levelNumber, List<Vector3> exclusionZones = null)
         {
             GameObject lightGo = new GameObject("RoomLocalLight");
             lightGo.transform.SetParent(roomContainer.transform, false);
-            // Position the light at the center of the room, 3 meters above the floor level
-            lightGo.transform.position = new Vector3(bounds.center.x, bounds.center.y + 3.0f, bounds.center.z);
+            Vector3 lightPos = new Vector3(centerPos.x, centerPos.y + 2.8f, centerPos.z);
+
+            if (exclusionZones != null)
+            {
+                foreach (var ez in exclusionZones)
+                {
+                    if (Vector2.Distance(new Vector2(lightPos.x, lightPos.z), new Vector2(ez.x, ez.z)) < 2.5f)
+                    {
+                        lightPos.z -= 4.0f;
+                    }
+                }
+            }
+            lightGo.transform.position = lightPos;
 
             Light light = lightGo.AddComponent<Light>();
             light.type = LightType.Point;

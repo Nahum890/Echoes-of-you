@@ -61,6 +61,11 @@ public class ThirdPersonCamera : MonoBehaviour
         return FindAnyObjectByType<ThirdPersonCamera>();
     }
 
+    void Awake()
+    {
+        CheckAndDisableIfCinemachineActive();
+    }
+
     void OnEnable()
     {
         if (GetComponent<SimpleFollowCamera>() != null && GetComponent<SimpleFollowCamera>().enabled)
@@ -83,27 +88,7 @@ public class ThirdPersonCamera : MonoBehaviour
 
     public bool IsCinemachineActiveInScene()
     {
-        if (GetComponent<Unity.Cinemachine.CinemachineBrain>() != null && GetComponent<Unity.Cinemachine.CinemachineBrain>().enabled)
-            return true;
-
-        var brain = FindAnyObjectByType<Unity.Cinemachine.CinemachineBrain>();
-        if (brain != null && brain.enabled)
-            return true;
-
-        var vcam = FindAnyObjectByType<Unity.Cinemachine.CinemachineCamera>();
-        if (vcam != null && vcam.enabled && vcam.gameObject.activeInHierarchy)
-            return true;
-
-        System.Type vcamV2Type = System.Type.GetType("Cinemachine.CinemachineVirtualCamera, Cinemachine")
-                              ?? System.Type.GetType("Cinemachine.CinemachineVirtualCamera");
-        if (vcamV2Type != null)
-        {
-            var vcamObj = FindAnyObjectByType(vcamV2Type) as MonoBehaviour;
-            if (vcamObj != null && vcamObj.enabled && vcamObj.gameObject.activeInHierarchy)
-                return true;
-        }
-
-        return false;
+        return EchoesCameraAuthority.IsCinemachineActiveInScene();
     }
 
     void Start()

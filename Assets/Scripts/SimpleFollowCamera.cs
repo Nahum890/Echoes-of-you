@@ -40,12 +40,24 @@ public class SimpleFollowCamera : MonoBehaviour
 
     void Start()
     {
+        if (EchoesCameraAuthority.IsCinemachineActiveInScene())
+        {
+            enabled = false;
+            return;
+        }
+
         mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1f);
         if (target != null) Snap();
     }
 
     void LateUpdate()
     {
+        if (EchoesCameraAuthority.IsCinemachineActiveInScene())
+        {
+            enabled = false;
+            return;
+        }
+
         if (target == null) return;
         if (!Application.isPlaying) return;
         if (_frozen) return;

@@ -4,8 +4,8 @@ using UnityEngine;
 using Echoes.UI;
 
 /// <summary>
-/// Grabación por mantener F/R: hasta 12s default / 20s max o al soltar. Genera un eco que repite el bucle.
-/// Tecla Q ejecuta SoftReset de posición y slots de eco sin destruir el progreso del nivel.
+/// Grabación por mantener F/R: duración definida por el LevelBlueprint del nivel
+/// (LevelRuntimeController aplica maxRecordSeconds vía SetMode). Genera un eco que repite el bucle.
 /// Retardo de inicio de reproducción: 0.0s (instantáneo).
 /// </summary>
 [RequireComponent(typeof(PlayerController))]
@@ -15,7 +15,7 @@ public class EchoRecorder : MonoBehaviour
     public GameObject echoPrefab;
     [SerializeField] Transform echoSpawnRoot;
     [SerializeField] int maxEchoes = 3;
-    [SerializeField] float maxRecordSeconds = 12f;
+    [SerializeField] float maxRecordSeconds = 20f;
 #pragma warning disable CS0414
     [SerializeField] float minRecordSeconds = 0.1f;
 #pragma warning restore CS0414
@@ -59,11 +59,19 @@ public class EchoRecorder : MonoBehaviour
     public float LastClipDuration => _lastRecordDuration;
     public bool HasEchoes => _echoes.Count > 0;
 
+    EchoPlaybackMode _playbackMode = EchoPlaybackMode.Standard;
+    float _degradationPerReplay;
+
     /// <summary>
     /// Configures the echo system mode from a LevelBlueprint.
+    /// Almacena mode/degradation (los usa StopRecordingAndSpawn al spawnear el eco)
+    /// y aplica maxRecordSeconds/maxEchoes cuando el blueprint los entrega (&gt; 0).
     /// </summary>
-    public void SetMode(EchoPlaybackMode mode, bool future, float degradation, bool lockSlots, int[] lockedIndices)
+    public void SetMode(EchoPlaybackMode mode, bool future, float degradation, bool lockSlots, int[] lockedIndices,
+        float maxRecordSeconds = -1f, int maxEchoes = -1)
     {
+        _playbackMode = mode;
+        _degradationPerReplay = degradation;
         recordFuture = future;
         _slotLocked = new bool[maxEchoes];
         if (lockSlots && lockedIndices != null)
@@ -72,6 +80,11 @@ public class EchoRecorder : MonoBehaviour
                 if (i >= 0 && i < maxEchoes)
                     _slotLocked[i] = true;
         }
+
+        if (maxRecordSeconds > 0f)
+            this.maxRecordSeconds = maxRecordSeconds;
+        if (maxEchoes > 0)
+            this.maxEchoes = maxEchoes;
     }
 
     public void LockSlot(int idx)
@@ -279,7 +292,7 @@ public class EchoRecorder : MonoBehaviour
             playback = instance.AddComponent<EchoPlayback>();
 
         float duration = Mathf.Max(elapsed, 0.05f);
-        playback.BeginPlayback(_frames, duration, voiceClip);
+        playback.BeginPlayback(_frames, duration, voiceClip, _playbackMode, _degradationPerReplay);
         _echoes.Add(playback);
 
         _frames.Clear();
@@ -333,7 +346,7 @@ public class EchoRecorder : MonoBehaviour
         for (int i = 0; i < _echoes.Count; i++)
         {
             if (_echoes[i] != null)
-                _echoes[i].FadeOutAndDestroy(0.5f);
+                _echoes[i].FadeOutAndDestroy();
         }
 
         _echoes.Clear();

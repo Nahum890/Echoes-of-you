@@ -29,7 +29,8 @@ public class EchoModeController : MonoBehaviour
         var rec = FindAnyObjectByType<EchoRecorder>();
         if (!rec) return;
 
-        rec.SetMode(bp.echoMode, bp.recordFuture, bp.degradationPerReplay, bp.lockEchoSlots, bp.lockedSlotIndices);
+        rec.SetMode(bp.echoMode, bp.recordFuture, bp.degradationPerReplay, bp.lockEchoSlots, bp.lockedSlotIndices,
+            bp.maxRecordSeconds, bp.maxEchoes);
 
         if (bp.echoMode == EchoPlaybackMode.Imposed || bp.echoMode == EchoPlaybackMode.Inversion)
         {

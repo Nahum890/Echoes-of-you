@@ -42,6 +42,19 @@ public class FixEchoRecorderInScenes
             so.FindProperty("maxEchoes").intValue = targetMax;
             so.FindProperty("maxRecordSeconds").floatValue = bp.maxRecordSeconds > 0 ? bp.maxRecordSeconds : 12f;
 
+            // Wire the LevelBlueprint reference on LevelRuntimeController so the
+            // runtime applies echoMode/degradation/maxRecordSeconds/maxEchoes from
+            // the blueprint (source of authority) at Start.
+            var levelRuntime = Object.FindAnyObjectByType<LevelRuntimeController>();
+            if (levelRuntime != null)
+            {
+                var lrSo = new SerializedObject(levelRuntime);
+                var bpProp = lrSo.FindProperty("levelBlueprint");
+                if (bpProp != null && bpProp.objectReferenceValue == null)
+                    bpProp.objectReferenceValue = bp;
+                lrSo.ApplyModifiedPropertiesWithoutUndo();
+            }
+
             // Fix echoPrefab if null
             var epProp = so.FindProperty("echoPrefab");
             if (epProp.objectReferenceValue == null)

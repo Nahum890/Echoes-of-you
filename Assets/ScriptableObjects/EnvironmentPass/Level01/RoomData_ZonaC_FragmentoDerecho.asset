@@ -1,0 +1,239 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-1432141635864579500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaC_FragmentoDerecho_LockerPuertaAbierta_01
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: LockerPuertaAbierta
+  narrativeTag: 0
+  localPosition: {x: 8, y: 0, z: 5}
+  localRotationEuler: {x: 0, y: 180, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 1
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcf37f80f3f09549945948f90da8d33, type: 3}
+  m_Name: RoomData_ZonaC_FragmentoDerecho
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.RoomDataSO
+  roomId: ZonaC_FragmentoDerecho
+  roomType: 9
+  placements:
+  - {fileID: 1468227843874007000}
+  - {fileID: -1432141635864579500}
+  - {fileID: 9092077160046486580}
+  - {fileID: 4904134477967512653}
+  - {fileID: 7939547872370194743}
+  - {fileID: 7374134020580108731}
+  - {fileID: 2342137929692783455}
+  - {fileID: 8066581076483015219}
+  decals:
+  - {fileID: 3204928428780654022}
+  - {fileID: 8267569247681912166}
+  validateRequiredProps: 1
+--- !u!114 &1468227843874007000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaC_FragmentoDerecho_Locker_00
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Locker
+  narrativeTag: 0
+  localPosition: {x: 8, y: 0, z: 8}
+  localRotationEuler: {x: 0, y: 180, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 2
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &2342137929692783455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaC_FragmentoDerecho_PapeleraKenney_06
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: PapeleraKenney
+  narrativeTag: 0
+  localPosition: {x: 5, y: 0, z: 9}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &3204928428780654022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Decal_ZonaC_FragmentoDerecho_dec_grieta_00
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: dec_grieta
+  narrativeTag: 0
+  localPosition: {x: 10.1, y: 1, z: 7}
+  localRotationEuler: {x: 0, y: 270, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &4904134477967512653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaC_FragmentoDerecho_Extintor_03
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Extintor
+  narrativeTag: 0
+  localPosition: {x: 10, y: 0, z: 6}
+  localRotationEuler: {x: 0, y: 270, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &7374134020580108731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaC_FragmentoDerecho_Libros_05
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Libros
+  narrativeTag: 0
+  localPosition: {x: 8, y: 1.8, z: 8}
+  localRotationEuler: {x: 0, y: 0, z: 5}
+  scale: {x: 0.7, y: 0.7, z: 0.7}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &7939547872370194743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaC_FragmentoDerecho_Basurero_04
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Basurero
+  narrativeTag: 0
+  localPosition: {x: 5, y: 0, z: 7}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &8066581076483015219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaC_FragmentoDerecho_CajaCartonCerrada_07
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: CajaCartonCerrada
+  narrativeTag: 0
+  localPosition: {x: 10, y: 0, z: 9}
+  localRotationEuler: {x: 0, y: 15, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &8267569247681912166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Decal_ZonaC_FragmentoDerecho_dec_humedad_01
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: dec_humedad
+  narrativeTag: 0
+  localPosition: {x: 10.1, y: 0.5, z: 8}
+  localRotationEuler: {x: 0, y: 270, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &9092077160046486580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaC_FragmentoDerecho_BancoMadera_02
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: BancoMadera
+  narrativeTag: 0
+  localPosition: {x: 6, y: 0, z: 5}
+  localRotationEuler: {x: 0, y: 270, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 1
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5

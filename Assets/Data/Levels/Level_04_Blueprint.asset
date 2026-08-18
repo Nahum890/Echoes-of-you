@@ -18,7 +18,7 @@ MonoBehaviour:
   archetype: 0
   echoEnabled: 1
   maxEchoes: 2
-  maxRecordSeconds: 10
+  maxRecordSeconds: 20
   echoMode: 0
   recordFuture: 0
   degradationPerReplay: 0.02

@@ -15,9 +15,8 @@ MonoBehaviour:
   levelNumber: 3
   clusterName: Indecision
   requiredPrefabNames:
-  - Casco
   - Cronometro
-  - Mochila
+  - PupitreDoble
   forbiddenMaterials:
   - Mat_Memory
   - Mat_WallRose

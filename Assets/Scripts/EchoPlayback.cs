@@ -265,7 +265,7 @@ public class EchoPlayback : MonoBehaviour
             _audioSource.Stop();
     }
 
-public void FadeOutAndDestroy(float fadeSeconds = ResidualSeconds)
+    public void FadeOutAndDestroy(float fadeSeconds = ResidualSeconds)
     {
         if (_destroying)
             return;
@@ -366,6 +366,16 @@ public void FadeOutAndDestroy(float fadeSeconds = ResidualSeconds)
         {
             _time = 0f;
             _playCount++;
+
+            // Apply incremental degradation effects to audio pitch
+            if (degradationPerReplay > 0f)
+            {
+                float totalDegradation = Mathf.Clamp01(_playCount * degradationPerReplay * 5f);
+                if (_audioSource != null)
+                {
+                    _audioSource.pitch = Mathf.Max(0.75f, 1f - totalDegradation * 0.2f);
+                }
+            }
         }
 
         // Degradation: time offset drifts slightly with each replay loop
@@ -393,7 +403,6 @@ public void FadeOutAndDestroy(float fadeSeconds = ResidualSeconds)
                 float dist = Vector3.Distance(transform.position, player.transform.position);
                 if (playbackMode == EchoPlaybackMode.Inversion)
                 {
-                    // Sync HUD feedback
                     var hud = UnityEngine.Object.FindAnyObjectByType<GameHUD>();
                     if (hud != null)
                     {
@@ -421,7 +430,7 @@ public void FadeOutAndDestroy(float fadeSeconds = ResidualSeconds)
 
         Vector3 velocity = (nextPosition - currentPosition) / Mathf.Max(Time.deltaTime, 0.0001f);
         Vector3 localVelocity = transform.InverseTransformDirection(velocity);
-        
+
         float blendSpeed = Mathf.Clamp(velocity.magnitude, 0f, 6.5f);
 
         // Eerie visual latency: Echo locomotion animations trail sluggishly behind physics frames
@@ -436,13 +445,13 @@ public void FadeOutAndDestroy(float fadeSeconds = ResidualSeconds)
 
     Animator ResolveEchoAnimator()
     {
-        Transform visual = transform.Find("Visual");
-        if (visual == null)
-            visual = transform.Find("PlayerVisual");
+        Transform vis = transform.Find("Visual");
+        if (vis == null)
+            vis = transform.Find("PlayerVisual");
 
-        if (visual != null)
+        if (vis != null)
         {
-            Animator modelAnim = visual.GetComponentInChildren<Animator>(true);
+            Animator modelAnim = vis.GetComponentInChildren<Animator>(true);
             if (modelAnim != null)
                 return modelAnim;
         }

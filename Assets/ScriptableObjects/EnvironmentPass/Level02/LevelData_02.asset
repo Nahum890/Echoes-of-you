@@ -17,9 +17,9 @@ MonoBehaviour:
   scenePath: Assets/Scenes/Level_02.unity
   chapter: 0
   rooms:
-  - {fileID: 11400000, guid: 4ca3c9168f3e3d141aa39f732f74754c, type: 2}
-  - {fileID: 11400000, guid: c4c12d844d59eac45b53a5603f349ba7, type: 2}
-  - {fileID: 11400000, guid: f52a93c162489fe45a34173b590e2a4e, type: 2}
-  - {fileID: 11400000, guid: c5a9fdc8f091bba48a9df63dc56e5a76, type: 2}
-  - {fileID: 11400000, guid: d15f08d637c1bc741bff87288f51b544, type: 2}
+  - {fileID: 11400000, guid: 9875c48db7c62fd43b521c5bed6b4469, type: 2}
+  - {fileID: 11400000, guid: 667c57c339a57874386bca2e2d9ed553, type: 2}
+  - {fileID: 11400000, guid: ac2db38c3e2064f4da9fcff27121088b, type: 2}
+  - {fileID: 11400000, guid: 87d13ea3bf3333f498d32f2a1de61275, type: 2}
+  - {fileID: 11400000, guid: 38c66469f8c1fec479509548902f2192, type: 2}
   narrativeCluster: {fileID: 0}

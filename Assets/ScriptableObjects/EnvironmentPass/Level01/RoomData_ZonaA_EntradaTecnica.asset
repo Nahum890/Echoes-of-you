@@ -1,0 +1,239 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8923537917052054335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaA_EntradaTecnica_CajaCartonCerrada_03
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: CajaCartonCerrada
+  narrativeTag: 0
+  localPosition: {x: -1.5, y: 0, z: 3}
+  localRotationEuler: {x: 0, y: 20, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &-8722981976598223103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Decal_ZonaA_EntradaTecnica_dec_humedad_01
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: dec_humedad
+  narrativeTag: 0
+  localPosition: {x: 1.6, y: 0.5, z: 1.5}
+  localRotationEuler: {x: 0, y: 180, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &-8486535343130026649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaA_EntradaTecnica_Basurero_05
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Basurero
+  narrativeTag: 0
+  localPosition: {x: 1.5, y: 0, z: 4}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &-7437110392397924249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaA_EntradaTecnica_CajaCartonAbierta_04
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: CajaCartonAbierta
+  narrativeTag: 0
+  localPosition: {x: -1.5, y: 0.5, z: 3}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &-1389998692559526588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaA_EntradaTecnica_PapeleraKenney_07
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: PapeleraKenney
+  narrativeTag: 0
+  localPosition: {x: -0.5, y: 0, z: 4}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &-721129403273753878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaA_EntradaTecnica_CarritoConserje_01
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: CarritoConserje
+  narrativeTag: 0
+  localPosition: {x: 1.5, y: 0, z: 2}
+  localRotationEuler: {x: 0, y: 180, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 1
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcf37f80f3f09549945948f90da8d33, type: 3}
+  m_Name: RoomData_ZonaA_EntradaTecnica
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.RoomDataSO
+  roomId: ZonaA_EntradaTecnica
+  roomType: 8
+  placements:
+  - {fileID: 7839667393384821229}
+  - {fileID: -721129403273753878}
+  - {fileID: 1469271138386480448}
+  - {fileID: -8923537917052054335}
+  - {fileID: -7437110392397924249}
+  - {fileID: -8486535343130026649}
+  - {fileID: 8040384641189458691}
+  - {fileID: -1389998692559526588}
+  decals:
+  - {fileID: 3682081510117325222}
+  - {fileID: -8722981976598223103}
+  validateRequiredProps: 1
+--- !u!114 &1469271138386480448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaA_EntradaTecnica_Casco_02
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Casco
+  narrativeTag: 0
+  localPosition: {x: 0, y: 0, z: 0.5}
+  localRotationEuler: {x: 0, y: 45, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 1
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &3682081510117325222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Decal_ZonaA_EntradaTecnica_dec_grieta_00
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: dec_grieta
+  narrativeTag: 0
+  localPosition: {x: -1.6, y: 1, z: 2}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &7839667393384821229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaA_EntradaTecnica_Extintor_00
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Extintor
+  narrativeTag: 0
+  localPosition: {x: -1.5, y: 0, z: 1}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 2
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &8040384641189458691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaA_EntradaTecnica_Libros_06
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Libros
+  narrativeTag: 0
+  localPosition: {x: 0.5, y: 0, z: 3}
+  localRotationEuler: {x: 0, y: 80, z: 90}
+  scale: {x: 0.5, y: 0.5, z: 0.5}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5

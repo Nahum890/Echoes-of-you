@@ -54,7 +54,7 @@ namespace Echoes
         [SerializeField] KeyCode pauseAltKey   = KeyCode.JoystickButton7;  // Start
         [SerializeField] KeyCode recordKey     = KeyCode.R;
         [SerializeField] KeyCode playbackKey    = KeyCode.E;
-        [SerializeField] KeyCode softResetKey   = KeyCode.Backspace;
+        // SoftReset has been removed in 2.0 (hard reset via Hold T is canonical)
 
         [Header("Gamepad Bindings (Unity Input Manager)")]
         [Tooltip("Eje horizontal del Input Manager (menu lateral / D-Pad X).")]
@@ -71,7 +71,6 @@ namespace Echoes
         [SerializeField] KeyCode gamepadCancel       = KeyCode.JoystickButton1; // B / East
         [SerializeField] KeyCode gamepadRecord      = KeyCode.JoystickButton3; // Y / West
         [SerializeField] KeyCode gamepadPlayback    = KeyCode.JoystickButton2; // X / North
-        [SerializeField] KeyCode gamepadSoftReset   = KeyCode.JoystickButton10; // L3
 
         [Header("Deadzone (Gamepad axes)")]
         [Range(0.05f, 0.4f)] [SerializeField] float axisDeadzone = 0.18f;
@@ -93,7 +92,6 @@ namespace Echoes
         bool _pauseDown;
         bool _recordHeld;
         bool _playbackDown;
-        bool _softResetHeld;
 
         // Repetición de navegación keyboard/gamepad (d-pad)
         Vector2Int _lastDir = Vector2Int.zero;
@@ -155,8 +153,8 @@ namespace Echoes
         /// <summary>True solo en el frame en el que se pulsó Playback (E/Gamepad-North).</summary>
         public bool PlaybackPressed => _playbackDown;
 
-        /// <summary>True mientras se mantenga SoftReset pulsado (Backspace/L3).</summary>
-        public bool SoftResetHeld   => _softResetHeld;
+        /// <summary>True mientras se mantenga SoftReset pulsado (Desactivado en 2.0).</summary>
+        public bool SoftResetHeld   => false;
 
         /// <summary>True si el último input efectivo vino de gamepad (false = keyboard/mouse).</summary>
         public bool LastInputIsGamepad => _gamepadConnected && Time.time - _gamepadCheckAt < 0.5f;
@@ -249,7 +247,6 @@ namespace Echoes
             _pauseDown      = UnityEngine.Input.GetKeyDown(pauseKey)   || UnityEngine.Input.GetKeyDown(pauseAltKey);
             _recordHeld     = UnityEngine.Input.GetKey(recordKey) || UnityEngine.Input.GetKey(gamepadRecord);
             _playbackDown   = UnityEngine.Input.GetKeyDown(playbackKey) || UnityEngine.Input.GetKeyDown(gamepadPlayback);
-            _softResetHeld  = UnityEngine.Input.GetKey(softResetKey) || UnityEngine.Input.GetKey(gamepadSoftReset);
         }
 
         void PollGamepadPresence()

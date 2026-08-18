@@ -27,240 +27,234 @@ public static class EnvironmentPassDataGenerator
         int createdCount = 0;
 
         // ============================================================
-        // LEVEL 1 - Desorientación - Cap I Persistencia
+        // LEVEL 1 - Desorientación - Cap I Persistencia (Minimalista, silencioso, casi vacío)
         // ============================================================
         {
-            var r1 = CreateRoom("ZonaA_PasilloN1", RoomType.Corridor, new[]
+            var r1 = CreateRoom(1, "Entrada", RoomType.Hall, new[]
             {
-                PP("Cartelera", new(-1,1.2f,2), Vector3.zero, Vector3.one, PropSize.Dominant, required:true),
-                PP("BancoMadera", new(1.5f,0,0.5f), Vector3.zero, Vector3.one, PropSize.Medium, required:true),
-                PP("Basurero", new(-2,0,1.5f), new(0,180,0), Vector3.one, PropSize.Medium, required:true),
-                PP("Libros", new(1.5f,0.5f,0.5f), new(0,15,0), Vector3.one*0.8f, PropSize.Small),
-                PP("PapeleraKenney", new(2,0,3), Vector3.zero, Vector3.one, PropSize.Small, required:true),
-                PP("Paraguas", new(-2,0,0.5f), new(0,30,0), Vector3.one, PropSize.Small),
-                PP("Mochila", new(1,0,3.5f), new(0,45,0), Vector3.one, PropSize.Small),
-                PP("CajaCartonAbierta", new(2.5f,0,2), new(0,90,0), Vector3.one, PropSize.Small),
+                PP("BancoMadera", new(-3.2f, 0f, -0.8f), new(0, 90, 0), Vector3.one, PropSize.Medium, required: true),
+                PP("Cartelera", new(-3.6f, 1.2f, 0.5f), new(0, 90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Extintor", new(-3.6f, 0.8f, 1.8f), new(0, 90, 0), Vector3.one, PropSize.Small, required: true),
+                PP("Basurero", new(3.2f, 0f, -2.0f), Vector3.zero, Vector3.one, PropSize.Small, required: true),
             }, new[]
             {
-                DD("dec_humedad", new(-1.9f,0.8f,1.5f), Vector3.zero),
-                DD("dec_aviso_corcho", new(-0.9f,1.4f,2), Vector3.zero),
+                DD("dec_aviso_corcho", new(-3.6f, 1.5f, -1.8f), new(0, 90, 0)),
+                DD("dec_humedad", new(3.6f, 0.5f, 0.5f), new(0, -90, 0)),
             });
 
-            var r2 = CreateRoom("ZonaB_PasilloA", RoomType.Corridor, new[]
+            var r2 = CreateRoom(1, "PasilloA", RoomType.Corridor, new[]
             {
-                PP("Locker", new(-1.8f,0,5), Vector3.zero, Vector3.one, PropSize.Dominant, required:true),
-                PP("Locker", new(-1.8f,0,10), Vector3.zero, Vector3.one, PropSize.Dominant, required:true),
-                PP("LockerPuertaAbierta", new(-1.8f,0,15), Vector3.zero, Vector3.one, PropSize.Medium),
-                PP("BancoMadera", new(1.5f,0,8), new(0,180,0), Vector3.one, PropSize.Medium, required:true),
-                PP("Basurero", new(-1.5f,0,3), Vector3.zero, Vector3.one, PropSize.Small, required:true),
-                PP("Extintor", new(1.8f,0,6), new(0,90,0), Vector3.one, PropSize.Small, required:true),
-                PP("Libros", new(-1.8f,1.8f,15), new(0,0,5), Vector3.one*0.7f, PropSize.Small),
-                PP("Libros", new(0,0,9), new(0,20,0), Vector3.one*0.6f, PropSize.Small),
-                PP("AbrigoColgado", new(-1.8f,0.9f,15.2f), Vector3.zero, Vector3.one, PropSize.Small, matMemory),
-                PP("PapeleraKenney", new(1.8f,0,12), Vector3.zero, Vector3.one, PropSize.Small, required:true),
+                PP("Locker", new(-2.1f, 0f, -6f), new(0, 90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Radiador", new(2.1f, 0f, -3f), new(0, -90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Cartelera", new(-2.2f, 1.2f, -1f), new(0, 90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("BancoMadera", new(1.9f, 0f, 4f), new(0, -90, 0), Vector3.one, PropSize.Medium, required: true),
+                PP("Extintor", new(-2.2f, 0.8f, 5f), new(0, 90, 0), Vector3.one, PropSize.Small, required: true),
             }, new[]
             {
-                DD("dec_grieta", new(-1.9f,1,7), Vector3.zero),
-                DD("dec_papel_suelo", new(0,0.01f,9.5f), new(90,0,0)),
-                DD("dec_nota_adhesiva", new(-1.9f,1.5f,5), Vector3.zero),
+                DD("dec_grieta", new(-2.2f, 1f, 1.5f), new(0, 90, 0)),
+                DD("dec_papel_suelo", new(0.3f, 0.01f, -4f), new(90, 0, 0)),
             });
 
-            var r3 = CreateRoom("ZonaC_PasilloB", RoomType.Corridor, new[]
+            var r3 = CreateRoom(1, "PasilloB", RoomType.Corridor, new[]
             {
-                PP("Locker", new(-1.8f,0,25), Vector3.zero, Vector3.one, PropSize.Dominant, required:true),
-                PP("Locker", new(-1.8f,0,30), Vector3.zero, Vector3.one, PropSize.Dominant, required:true),
-                PP("BancoMadera", new(1.5f,0,28), new(0,180,0), Vector3.one, PropSize.Medium, required:true),
-                PP("LockerPuertaAbierta", new(-1.8f,0,35), Vector3.zero, Vector3.one, PropSize.Medium),
-                PP("Extintor", new(1.8f,0,26), new(0,90,0), Vector3.one, PropSize.Small, required:true),
-                PP("Basurero", new(-1.5f,0,23), Vector3.zero, Vector3.one, PropSize.Small, required:true),
-                PP("Libros", new(-1.8f,1.8f,35), new(0,0,5), Vector3.one*0.7f, PropSize.Small),
-                PP("PapeleraKenney", new(1.8f,0,32), Vector3.zero, Vector3.one, PropSize.Small, required:true),
-                PP("CajaCartonCerrada", new(1.5f,0,38), new(0,30,0), Vector3.one, PropSize.Small),
+                PP("Locker", new(-2.1f, 0f, -4f), new(0, 90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Radiador", new(2.1f, 0f, 2f), new(0, -90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("BancoMadera", new(-1.9f, 0f, 4f), new(0, 90, 0), Vector3.one, PropSize.Medium, required: true),
             }, new[]
             {
-                DD("dec_humedad", new(-1.9f,1.2f,27), Vector3.zero),
-                DD("dec_tiza_borrada", new(1.9f,1,31), new(0,180,0)),
+                DD("dec_humedad", new(-2.2f, 0.8f, -1f), new(0, 90, 0)),
+                DD("dec_tiza_borrada", new(2.2f, 1f, -2f), new(0, -90, 0)),
             });
 
-            var r4 = CreateRoom("ZonaD_SalidaFinal", RoomType.Corridor, new[]
+            // AulaAusente: intencionalmente vacía (narrativa de ausencia y soledad)
+            var r4 = CreateRoom(1, "AulaAusente", RoomType.Classroom, new[]
             {
-                PP("Locker", new(-1.8f,0,41), new(0,90,0), Vector3.one, PropSize.Dominant, required:true),
-                PP("BancoMadera", new(1.5f,0,42), new(0,270,0), Vector3.one, PropSize.Medium, required:true),
-                PP("LockerPuertaAbierta", new(1.8f,0,44), new(0,180,0), Vector3.one, PropSize.Medium),
-                PP("Libros", new(-1,0,42), new(0,0,90), Vector3.one*0.5f, PropSize.Small),
-                PP("Mochila", new(1,0,43), new(0,180,0), Vector3.one, PropSize.Small),
-                PP("PapeleraKenney", new(-1,0,44), Vector3.zero, Vector3.one, PropSize.Small, required:true),
-                PP("Basurero", new(2,0,41), new(0,90,0), Vector3.one, PropSize.Small, required:true),
-                PP("CajaCartonAbierta", new(-2,0,43), new(0,15,0), Vector3.one, PropSize.Small),
+                PP("Pizarra", new(0f, 1.3f, 3.7f), new(0, 180, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("PupitreDoble", new(1.5f, 0f, 0.5f), new(0, -15, 0), Vector3.one, PropSize.Dominant, matMemory, required: true),
+                PP("SillaEscolar", new(1.5f, 0f, 0f), new(0, -10, 0), Vector3.one, PropSize.Medium, required: true),
+                PP("MochilaLyra", new(1.8f, 0f, 1.0f), new(0, 45, 0), Vector3.one, PropSize.Small, matMemory),
+                PP("Radiador", new(-3.6f, 0f, 0f), new(0, 90, 0), Vector3.one, PropSize.Dominant, required: true),
             }, new[]
             {
-                DD("dec_arrastre", new(0,0.01f,42), new(90,0,0)),
+                DD("dec_tiza_borrada", new(-2.0f, 1f, 3.6f), new(0, 180, 0)),
+                DD("dec_papel_suelo", new(1.8f, 0.01f, 2.0f), new(90, 0, 0)),
+            });
+
+            var r5 = CreateRoom(1, "Hall_Salida", RoomType.Hall, new[]
+            {
+                PP("BancoMadera", new(-3.2f, 0f, 0f), new(0, 90, 0), Vector3.one, PropSize.Medium, required: true),
+                PP("Basurero", new(3.2f, 0f, -2f), Vector3.zero, Vector3.one, PropSize.Small, required: true),
+            }, new[]
+            {
+                DD("dec_arrastre", new(-1.5f, 0.01f, -1.0f), new(90, 0, 0)),
             });
 
             var level1 = CreateLevel(1, "Level_01 -- Desorientacion", "Assets/Scenes/Level_01.unity", Chapter.I_Persistencia,
-                new[] { r1, r2, r3, r4 },
-                CreateCluster(1, "Llegada", new[] { "AbrigoColgado", "Mochila", "Libros" }, matMemory, new[] { "Mat_Memory" }));
+                new[] { r1, r2, r3, r4, r5 },
+                CreateCluster(1, "Llegada", new[] { "MochilaLyra", "PupitreDoble" }, matMemory, new[] { "Mat_Memory" }));
             createdCount++;
         }
 
         // ============================================================
-        // LEVEL 2 - Repetición - Cap I Persistencia
+        // LEVEL 2 - Repetición - Cap I Persistencia (Aulas estructuradas pero amplias)
         // ============================================================
         {
-            var r1 = CreateRoom("ZonaA_PasilloAcceso", RoomType.Corridor, new[]
+            var r1 = CreateRoom(2, "Entrada", RoomType.Hall, new[]
             {
-                PP("Cartelera", new(2,1.2f,3), new(0,180,0), Vector3.one, PropSize.Dominant, required:true),
-                PP("BancoMadera", new(-1.5f,0,5), Vector3.zero, Vector3.one, PropSize.Medium, required:true),
-                PP("Basurero", new(1.8f,0,1), Vector3.zero, Vector3.one, PropSize.Medium, required:true),
-                PP("Extintor", new(-1.8f,0,2), new(0,90,0), Vector3.one, PropSize.Small, required:true),
-                PP("PapeleraKenney", new(1.8f,0,7), Vector3.zero, Vector3.one, PropSize.Small, required:true),
-                PP("Libros", new(-1.5f,0.5f,5), new(0,10,0), Vector3.one*0.7f, PropSize.Small),
-                PP("Mochila", new(1,0,8), new(0,45,0), Vector3.one, PropSize.Small),
-                PP("Paraguas", new(-1.8f,0,6.5f), new(0,30,0), Vector3.one, PropSize.Small),
+                PP("BancoMadera", new(-1.5f, 0f, 0f), new(0, 90, 0), Vector3.one, PropSize.Medium, required: true),
+                PP("Cartelera", new(1.7f, 1.2f, 0f), new(0, -90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Extintor", new(1.7f, 0.8f, -1.5f), new(0, -90, 0), Vector3.one, PropSize.Small, required: true),
             }, new[]
             {
-                DD("dec_foto_borrosa", new(1.9f,1.5f,4), new(0,180,0)),
-                DD("dec_aviso_corcho", new(1.9f,1.2f,3), new(0,180,0)),
+                DD("dec_aviso_corcho", new(1.7f, 1.2f, 1.2f), new(0, -90, 0)),
             });
 
-            var r2 = CreateRoom("ZonaB_Aula1", RoomType.Classroom, new[]
+            var r2 = CreateRoom(2, "CorredorCentral", RoomType.Corridor, new[]
             {
-                PP("Pizarra", new(0,1.2f,0.5f), Vector3.zero, Vector3.one, PropSize.Dominant, required:true),
-                PP("MesaProfesor", new(0,0,1.5f), Vector3.zero, Vector3.one, PropSize.Dominant, required:true),
-                PP("PupitreDoble", new(-1.5f,0,4), Vector3.zero, Vector3.one, PropSize.Medium, required:true),
-                PP("PupitreDoble", new(1.5f,0,4), Vector3.zero, Vector3.one, PropSize.Medium, required:true),
-                PP("PupitreDoble", new(-1.5f,0,6), Vector3.zero, Vector3.one, PropSize.Medium, required:true),
-                PP("PupitreDoble", new(1.5f,0,6), Vector3.zero, Vector3.one, PropSize.Medium, required:true),
-                PP("SillaEscolar", new(-1.5f,0,3.5f), Vector3.zero, Vector3.one, PropSize.Small, required:true),
-                PP("SillaEscolar", new(1.5f,0,3.5f), Vector3.zero, Vector3.one, PropSize.Small, required:true),
-                PP("Libros", new(0,0.8f,1.5f), Vector3.zero, Vector3.one*0.7f, PropSize.Small),
-                PP("Basurero", new(3,0,1), Vector3.zero, Vector3.one, PropSize.Small, required:true),
-                PP("PlantaMaceta", new(-3,0,7), Vector3.zero, Vector3.one, PropSize.Small),
-                PP("RelojPared", new(3,1.5f,0.5f), Vector3.zero, Vector3.one, PropSize.Small),
+                PP("Locker", new(-1.7f, 0f, -7f), new(0, 90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Radiador", new(1.7f, 0f, -5f), new(0, -90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("BancoMadera", new(-1.5f, 0f, 0f), new(0, 90, 0), Vector3.one, PropSize.Medium, required: true),
+                PP("Cartelera", new(1.8f, 1.2f, 2.5f), new(0, -90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Locker", new(-1.7f, 0f, 5f), new(0, 90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Radiador", new(1.7f, 0f, 7f), new(0, -90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Extintor", new(-1.8f, 0.8f, 8.5f), new(0, 90, 0), Vector3.one, PropSize.Small, required: true),
             }, new[]
             {
-                DD("dec_tiza_borrada", new(0,1,0.4f), Vector3.zero),
+                DD("dec_grieta", new(-1.8f, 1f, -2f), new(0, 90, 0)),
+                DD("dec_papel_suelo", new(0.4f, 0.01f, 2f), new(90, 0, 0)),
             });
 
-            var r3 = CreateRoom("ZonaD_Aula2", RoomType.Classroom, new[]
+            var r3 = CreateRoom(2, "AulaIzquierda", RoomType.Classroom, new[]
             {
-                PP("Pizarra", new(0,1.2f,16), Vector3.zero, Vector3.one, PropSize.Dominant, required:true),
-                PP("MesaProfesor", new(0,0,17), Vector3.zero, Vector3.one, PropSize.Dominant, required:true),
-                PP("PupitreDoble", new(-1.5f,0,19), Vector3.zero, Vector3.one, PropSize.Medium, required:true),
-                PP("PupitreDoble", new(1.5f,0,19), Vector3.zero, Vector3.one, PropSize.Medium, required:true),
-                PP("PupitreDoble", new(-1.5f,0,21), Vector3.zero, Vector3.one, PropSize.Medium, required:true),
-                PP("SillaEscolar", new(0,0,22), new(0,45,0), Vector3.one, PropSize.Small, required:true),
-                PP("Libros", new(1.5f,0,20), new(0,0,90), Vector3.one*0.7f, PropSize.Small),
-                PP("Basurero", new(3,0,17), Vector3.zero, Vector3.one, PropSize.Small, required:true),
-                PP("Mochila", new(-2,0,23), new(0,90,0), Vector3.one, PropSize.Small),
-                PP("PapeleraKenney", new(-3,0,17), Vector3.zero, Vector3.one, PropSize.Small, required:true),
-                PP("RelojPared", new(3,1.5f,16.5f), Vector3.zero, Vector3.one, PropSize.Small),
+                PP("Pizarra", new(0f, 1.3f, 4.6f), new(0, 180, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("MesaProfesor", new(-1.5f, 0f, 3.2f), new(0, 180, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("SillaOficina", new(-1.5f, 0f, 4.0f), Vector3.zero, Vector3.one, PropSize.Medium, required: true),
+                PP("Estanteria", new(-2.6f, 0f, 2f), new(0, 90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Radiador", new(-2.6f, 0f, -2.5f), new(0, 90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("PupitreDoble", new(-1.2f, 0f, -2.5f), Vector3.zero, Vector3.one, PropSize.Dominant, required: true),
+                PP("SillaEscolar", new(-1.2f, 0f, -3.1f), Vector3.zero, Vector3.one, PropSize.Medium, required: true),
+                PP("PupitreDoble", new(1.2f, 0f, -2.5f), Vector3.zero, Vector3.one, PropSize.Dominant, required: true),
+                PP("SillaEscolar", new(1.2f, 0f, -3.1f), Vector3.zero, Vector3.one, PropSize.Medium, required: true),
+                PP("PapeleraKenney", new(-2.5f, 0f, 4.2f), Vector3.zero, Vector3.one, PropSize.Small, required: true),
             }, new[]
             {
-                DD("dec_tiza_borrada", new(0,1,15.9f), Vector3.zero),
-                DD("dec_papel_suelo", new(0.5f,0.01f,21), new(90,0,0)),
+                DD("dec_tiza_borrada", new(-2.0f, 1f, 4.5f), new(0, 180, 0)),
             });
 
-            var r4 = CreateRoom("ZonaE_Aula3", RoomType.Classroom, new[]
+            var r4 = CreateRoom(2, "AulaDerecha", RoomType.Classroom, new[]
             {
-                PP("Pizarra", new(0,1.2f,30), Vector3.zero, Vector3.one, PropSize.Dominant, required:true),
-                PP("MesaProfesor", new(0,0,31), Vector3.zero, Vector3.one, PropSize.Dominant, required:true),
-                PP("Estanteria", new(-3,0,31), new(0,90,0), Vector3.one, PropSize.Dominant, required:true),
-                PP("PupitreDoble", new(-1.5f,0,33), Vector3.zero, Vector3.one, PropSize.Medium, required:true),
-                PP("SillaEscolar", new(0.5f,0,34), new(0,90,0), Vector3.one, PropSize.Medium, required:true),
-                PP("SillaEscolar", new(-0.5f,0,35), new(0,130,0), Vector3.one, PropSize.Medium, required:true),
-                PP("SillaEscolar", new(0,0,36), Vector3.zero, Vector3.one, PropSize.Medium, required:true),
-                PP("Libros", new(0,0.8f,31), Vector3.zero, Vector3.one*0.7f, PropSize.Small),
-                PP("Basurero", new(3,0,31), Vector3.zero, Vector3.one, PropSize.Small, required:true),
-                PP("Mochila", new(-3,0,36), new(0,60,0), Vector3.one, PropSize.Small),
-                PP("CajaCartonAbierta", new(2.5f,0,35), new(0,20,0), Vector3.one, PropSize.Small),
-                PP("PapeleraKenney", new(2.8f,0,33), Vector3.zero, Vector3.one, PropSize.Small, required:true),
+                PP("Pizarra", new(0f, 1.3f, 4.6f), new(0, 180, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("MesaProfesor", new(1.5f, 0f, 3.2f), new(0, 180, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("SillaOficina", new(1.5f, 0f, 4.0f), Vector3.zero, Vector3.one, PropSize.Medium, required: true),
+                PP("Estanteria", new(2.6f, 0f, 2f), new(0, -90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Radiador", new(2.6f, 0f, -2.5f), new(0, -90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("PupitreDoble", new(-1.2f, 0f, -2.5f), Vector3.zero, Vector3.one, PropSize.Dominant, required: true),
+                PP("SillaEscolar", new(-1.2f, 0f, -3.1f), Vector3.zero, Vector3.one, PropSize.Medium, required: true),
+                PP("PupitreDoble", new(1.2f, 0f, -2.5f), Vector3.zero, Vector3.one, PropSize.Dominant, required: true),
+                PP("SillaEscolar", new(1.2f, 0f, -3.1f), Vector3.zero, Vector3.one, PropSize.Medium, required: true),
+                PP("Basurero", new(2.5f, 0f, 4.2f), Vector3.zero, Vector3.one, PropSize.Small, required: true),
             }, new[]
             {
-                DD("dec_tiza_borrada", new(0,1,29.9f), Vector3.zero),
-                DD("dec_papel_suelo", new(-0.3f,0.01f,34), new(90,10,0)),
-                DD("dec_papel_suelo", new(0.5f,0.01f,35), new(90,0,0)),
-                DD("dec_nota_adhesiva", new(0,1.3f,31), Vector3.zero),
+                DD("dec_tiza_borrada", new(-2.0f, 1f, 4.5f), new(0, 180, 0)),
+            });
+
+            var r5 = CreateRoom(2, "Hall_Salida", RoomType.Hall, new[]
+            {
+                PP("BancoMadera", new(-3.2f, 0f, 0f), new(0, 90, 0), Vector3.one, PropSize.Medium, required: true),
+                PP("Cartelera", new(3.6f, 1.2f, 1.5f), new(0, -90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Basurero", new(3.2f, 0f, -2f), Vector3.zero, Vector3.one, PropSize.Small, required: true),
+            }, new[]
+            {
+                DD("dec_arrastre", new(-1.5f, 0.01f, -1.0f), new(90, 0, 0)),
             });
 
             var level2 = CreateLevel(2, "Level_02 -- Repeticion", "Assets/Scenes/Level_02.unity", Chapter.I_Persistencia,
-                new[] { r1, r2, r3, r4 },
-                CreateCluster(2, "Primera Clase", new[] { "SillaEscolar", "Libros", "Pizarra" }, null, null));
+                new[] { r1, r2, r3, r4, r5 },
+                CreateCluster(2, "Primera Clase", new[] { "SillaEscolar", "Pizarra", "PupitreDoble" }, null, null));
             createdCount++;
         }
 
         // ============================================================
-        // LEVEL 3 - Indecisión - Cap I Persistencia
+        // LEVEL 3 - Indecisión - Cap I Persistencia (Bifurcación arquitectónica limpia)
         // ============================================================
         {
-            var r1 = CreateRoom("ZonaA_HallBifurcacion", RoomType.Hall, new[]
+            var r1 = CreateRoom(3, "Entrada", RoomType.Hall, new[]
             {
-                PP("Cartelera", new(0,1.2f,0), Vector3.zero, Vector3.one, PropSize.Dominant, required:true),
-                PP("BancoMadera", new(-2,0,1), Vector3.zero, Vector3.one, PropSize.Medium, required:true),
-                PP("BancoMadera", new(2,0,1), new(0,180,0), Vector3.one, PropSize.Medium, required:true),
-                PP("PlantaMaceta", new(-2.5f,0,2.5f), Vector3.zero, Vector3.one, PropSize.Small),
-                PP("PlantaMaceta", new(2.5f,0,2.5f), Vector3.zero, Vector3.one, PropSize.Small),
-                PP("Basurero", new(0,0,2.5f), Vector3.zero, Vector3.one, PropSize.Small, required:true),
-                PP("Extintor", new(-2.8f,0,0.5f), new(0,90,0), Vector3.one, PropSize.Small, required:true),
-                PP("PapeleraKenney", new(2.8f,0,0.5f), Vector3.zero, Vector3.one, PropSize.Small, required:true),
+                PP("BancoMadera", new(-2.5f, 0f, 0f), new(0, 90, 0), Vector3.one, PropSize.Medium, required: true),
+                PP("Cartelera", new(-2.8f, 1.2f, 1.5f), new(0, 90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Extintor", new(-2.8f, 0.8f, -1.5f), new(0, 90, 0), Vector3.one, PropSize.Small, required: true),
             }, new[]
             {
-                DD("dec_aviso_corcho", new(0,1.5f,-0.1f), Vector3.zero),
+                DD("dec_aviso_corcho", new(-2.8f, 1.5f, 0f), new(0, 90, 0)),
             });
 
-            var r2 = CreateRoom("ZonaB_PasilloAiden", RoomType.Corridor, new[]
+            var r2 = CreateRoom(3, "CorredorBifurcacion", RoomType.Corridor, new[]
             {
-                PP("Locker", new(-1.8f,0,6), Vector3.zero, Vector3.one, PropSize.Dominant, required:true),
-                PP("EstanteriaCerrada", new(-1.8f,0,10), Vector3.zero, Vector3.one, PropSize.Dominant, required:true),
-                PP("BancoMadera", new(1.5f,0,8), new(0,180,0), Vector3.one, PropSize.Medium, required:true),
-                PP("LockerPuertaAbierta", new(-1.5f,0,4), Vector3.zero, Vector3.one, PropSize.Medium),
-                PP("Casco", new(-1.8f,1.8f,6), new(0,45,0), Vector3.one*0.7f, PropSize.Small),
-                PP("Extintor", new(1.8f,0,5), new(0,90,0), Vector3.one, PropSize.Small, required:true),
-                PP("PapeleraKenney", new(1.8f,0,11), Vector3.zero, Vector3.one, PropSize.Small, required:true),
-                PP("Mochila", new(1,0,12), new(0,20,0), Vector3.one, PropSize.Small),
-                PP("Cronometro", new(-1.8f,1.3f,10), Vector3.zero, Vector3.one*0.5f, PropSize.Small),
+                PP("Cartelera", new(-2.7f, 1.2f, -1f), new(0, 90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Cartelera", new(2.7f, 1.2f, -1f), new(0, -90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Locker", new(-2.6f, 0f, -3f), new(0, 90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Locker", new(2.6f, 0f, -3f), new(0, -90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("BancoMadera", new(-2.5f, 0f, 2f), new(0, 90, 0), Vector3.one, PropSize.Medium, required: true),
+                PP("BancoMadera", new(2.5f, 0f, 2f), new(0, -90, 0), Vector3.one, PropSize.Medium, required: true),
             }, new[]
             {
-                DD("dec_aviso_corcho", new(-1.9f,1.3f,7), Vector3.zero),
-                DD("dec_grieta", new(-1.9f,0.8f,9), Vector3.zero),
+                DD("dec_aviso_corcho", new(-2.7f, 1.5f, 0f), new(0, 90, 0)),
+                DD("dec_grieta", new(2.7f, 0.8f, 0f), new(0, -90, 0)),
             });
 
-            var r3 = CreateRoom("ZonaC_PasilloLyra", RoomType.Corridor, new[]
+            var r3 = CreateRoom(3, "AulaLyra", RoomType.Classroom, new[]
             {
-                PP("LockerPuertaAbierta", new(11.8f,0,6), Vector3.zero, Vector3.one, PropSize.Dominant),
-                PP("Cartelera", new(11.8f,1.2f,10), new(0,180,0), Vector3.one, PropSize.Dominant, required:true),
-                PP("SillaEscolar", new(10.5f,0,8), new(0,45,0), Vector3.one, PropSize.Medium, required:true),
-                PP("Libros", new(11.8f,1.8f,6), new(0,5,0), Vector3.one*0.7f, PropSize.Medium),
-                PP("PlantaMaceta", new(10.2f,0,12), Vector3.zero, Vector3.one, PropSize.Small),
-                PP("Paraguas", new(11.8f,0,4.5f), new(0,30,0), Vector3.one, PropSize.Small),
-                PP("PapeleraKenney", new(10.2f,0,5), Vector3.zero, Vector3.one, PropSize.Small, required:true),
-                PP("Basurero", new(11.5f,0,13), Vector3.zero, Vector3.one, PropSize.Small, required:true),
-                PP("RelojPared", new(11.9f,1.5f,9), new(0,180,0), Vector3.one, PropSize.Small),
+                PP("Pizarra", new(0f, 1.3f, 3.6f), new(0, 180, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("PupitreDoble", new(-1.5f, 0f, -2.5f), Vector3.zero, Vector3.one, PropSize.Dominant, required: true),
+                PP("SillaEscolar", new(-1.5f, 0f, -3.1f), Vector3.zero, Vector3.one, PropSize.Medium, required: true),
+                PP("Radiador", new(-2.2f, 0f, 2f), new(0, 90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("MochilaLyra", new(-1.5f, 0f, -2.0f), new(0, 30, 0), Vector3.one, PropSize.Small, matMemory),
+                PP("Basurero", new(-2.1f, 0f, 3.2f), Vector3.zero, Vector3.one, PropSize.Small, required: true),
             }, new[]
             {
-                DD("dec_foto_borrosa", new(11.9f,1.5f,10), new(0,180,0)),
-                DD("dec_nota_adhesiva", new(11.9f,1.2f,8), new(0,180,0)),
+                DD("dec_tiza_borrada", new(-2.0f, 1f, 3.5f), new(0, 180, 0)),
             });
 
-            var r4 = CreateRoom("ZonaD_Confluencia", RoomType.Hall, new[]
+            var r4 = CreateRoom(3, "AulaEco", RoomType.Classroom, new[]
             {
-                PP("Cartelera", new(6,1.2f,19.5f), Vector3.zero, Vector3.one, PropSize.Dominant, required:true),
-                PP("BancoMadera", new(-1.5f,0,18), Vector3.zero, Vector3.one, PropSize.Medium, required:true),
-                PP("BancoMadera", new(11.5f,0,18), new(0,180,0), Vector3.one, PropSize.Medium, required:true),
-                PP("Extintor", new(-2,0,17), new(0,90,0), Vector3.one, PropSize.Small, required:true),
-                PP("Extintor", new(12,0,17), new(0,270,0), Vector3.one, PropSize.Small, required:true),
-                PP("PlantaMaceta", new(5,0,18.5f), Vector3.zero, Vector3.one, PropSize.Small),
-                PP("PlantaMaceta", new(7,0,18.5f), Vector3.zero, Vector3.one, PropSize.Small),
-                PP("Basurero", new(6,0,16), Vector3.zero, Vector3.one, PropSize.Small, required:true),
-                PP("PapeleraKenney", new(5,0,16), Vector3.zero, Vector3.one, PropSize.Small, required:true),
+                PP("Pizarra", new(0f, 1.3f, 3.6f), new(0, 180, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("PupitreDoble", new(1.5f, 0f, -2.5f), Vector3.zero, Vector3.one, PropSize.Dominant, required: true),
+                PP("SillaEscolar", new(1.5f, 0f, -3.1f), Vector3.zero, Vector3.one, PropSize.Medium, required: true),
+                PP("Estanteria", new(2.1f, 0f, 2f), new(0, -90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Cronometro", new(1.5f, 0.75f, -2.5f), Vector3.zero, Vector3.one * 0.5f, PropSize.Small),
+                PP("PapeleraKenney", new(2.1f, 0f, 3.2f), Vector3.zero, Vector3.one, PropSize.Small, required: true),
             }, new[]
             {
-                DD("dec_arrastre", new(5,0.01f,17), new(90,0,0)),
+                DD("dec_tiza_borrada", new(-2.0f, 1f, 3.5f), new(0, 180, 0)),
+            });
+
+            var r5 = CreateRoom(3, "Hall_Estatua", RoomType.Hall, new[]
+            {
+                PP("Arch_Column", new(-3.5f, 0f, -3.5f), Vector3.zero, Vector3.one, PropSize.Dominant),
+                PP("Arch_Column", new(3.5f, 0f, -3.5f), Vector3.zero, Vector3.one, PropSize.Dominant),
+                PP("Arch_Column", new(-3.5f, 0f, 3.5f), Vector3.zero, Vector3.one, PropSize.Dominant),
+                PP("Arch_Column", new(3.5f, 0f, 3.5f), Vector3.zero, Vector3.one, PropSize.Dominant),
+                PP("BancoMadera", new(-4.2f, 0f, 0f), new(0, 90, 0), Vector3.one, PropSize.Medium, required: true),
+                PP("BancoMadera", new(4.2f, 0f, 0f), new(0, -90, 0), Vector3.one, PropSize.Medium, required: true),
+                PP("Cartelera", new(-4.6f, 1.5f, 2f), new(0, 90, 0), Vector3.one, PropSize.Dominant, required: true),
+                PP("Radiador", new(4.5f, 0f, -2f), new(0, -90, 0), Vector3.one, PropSize.Dominant, required: true),
+            }, new[]
+            {
+                DD("dec_arrastre", new(0f, 0.01f, 1f), new(90, 0, 0)),
+            });
+
+            var r6 = CreateRoom(3, "Hall_Salida", RoomType.Hall, new[]
+            {
+                PP("BancoMadera", new(-3.2f, 0f, 0f), new(0, 90, 0), Vector3.one, PropSize.Medium, required: true),
+                PP("Basurero", new(3.2f, 0f, -2f), Vector3.zero, Vector3.one, PropSize.Small, required: true),
+            }, new[]
+            {
+                DD("dec_arrastre", new(-1.5f, 0.01f, -1.0f), new(90, 0, 0)),
             });
 
             var level3 = CreateLevel(3, "Level_03 -- Indecision", "Assets/Scenes/Level_03.unity", Chapter.I_Persistencia,
-                new[] { r1, r2, r3, r4 },
-                CreateCluster(3, "Bifurcacion", new[] { "Casco", "Cronometro", "Mochila" }, null, new[] { "Mat_Memory", "Mat_WallRose" }));
+                new[] { r1, r2, r3, r4, r5, r6 },
+                CreateCluster(3, "Bifurcacion", new[] { "Cronometro", "PupitreDoble" }, null, new[] { "Mat_Memory", "Mat_WallRose" }));
             createdCount++;
         }
 
@@ -982,21 +976,58 @@ public static class EnvironmentPassDataGenerator
 
     static RoomDataSO CreateRoom(string roomId, RoomType type, PropPlacementSO[] props, PropPlacementSO[] decals)
     {
+        // Infer level from caller context if possible, default to Level01
+        return CreateRoom(1, roomId, type, props, decals);
+    }
+
+    static RoomDataSO CreateRoom(int levelNum, string roomId, RoomType type, PropPlacementSO[] props, PropPlacementSO[] decals)
+    {
+        string folder = $"Assets/ScriptableObjects/EnvironmentPass/Level{levelNum:D2}/";
+        EnsureFolder(folder);
+        string assetPath = $"{folder}RoomData_{roomId}.asset";
+
+        if (AssetDatabase.LoadAssetAtPath<RoomDataSO>(assetPath) != null)
+            AssetDatabase.DeleteAsset(assetPath);
+
         var room = ScriptableObject.CreateInstance<RoomDataSO>();
         room.roomId = roomId;
         room.roomType = type;
         room.placements = new List<PropPlacementSO>(props);
         room.decals = new List<PropPlacementSO>(decals);
         room.validateRequiredProps = true;
-        string folder = $"Assets/ScriptableObjects/EnvironmentPass/Level{roomId[5]}/"; // crude but works
-        EnsureFolder(folder);
-        AssetDatabase.CreateAsset(room, $"{folder}RoomData_{roomId}.asset");
+        AssetDatabase.CreateAsset(room, assetPath);
+
+        for (int i = 0; i < props.Length; i++)
+        {
+            if (props[i] != null)
+            {
+                props[i].name = $"Prop_{roomId}_{props[i].prefabName}_{i:D2}";
+                AssetDatabase.AddObjectToAsset(props[i], room);
+            }
+        }
+        for (int i = 0; i < decals.Length; i++)
+        {
+            if (decals[i] != null)
+            {
+                decals[i].name = $"Decal_{roomId}_{decals[i].prefabName}_{i:D2}";
+                AssetDatabase.AddObjectToAsset(decals[i], room);
+            }
+        }
+
+        EditorUtility.SetDirty(room);
         return room;
     }
 
     static LevelDataSO CreateLevel(int num, string name, string scenePath, Chapter chapter,
         RoomDataSO[] rooms, NarrativeClusterSO cluster)
     {
+        string folder = $"Assets/ScriptableObjects/EnvironmentPass/Level{num:D2}/";
+        EnsureFolder(folder);
+        string levelPath = $"{folder}LevelData_{num:D2}.asset";
+
+        if (AssetDatabase.LoadAssetAtPath<LevelDataSO>(levelPath) != null)
+            AssetDatabase.DeleteAsset(levelPath);
+
         var level = ScriptableObject.CreateInstance<LevelDataSO>();
         level.levelNumber = num;
         level.levelName = name;
@@ -1004,16 +1035,19 @@ public static class EnvironmentPassDataGenerator
         level.chapter = chapter;
         level.rooms = new List<RoomDataSO>(rooms);
         level.narrativeCluster = cluster;
-        string folder = $"Assets/ScriptableObjects/EnvironmentPass/Level{num:D2}/";
-        EnsureFolder(folder);
-        AssetDatabase.CreateAsset(level, $"{folder}LevelData_{num:D2}.asset");
+        AssetDatabase.CreateAsset(level, levelPath);
         
         if (cluster != null)
         {
+            string clusterPath = $"{folder}NarrativeCluster_{num:D2}.asset";
+            if (AssetDatabase.LoadAssetAtPath<NarrativeClusterSO>(clusterPath) != null)
+                AssetDatabase.DeleteAsset(clusterPath);
+
             cluster.levelNumber = num;
-            cluster.clusterName = name.Split(new[] { "--" }, StringSplitOptions.None)[1].Trim();
-            AssetDatabase.CreateAsset(cluster, $"{folder}NarrativeCluster_{num:D2}.asset");
+            cluster.clusterName = name.Contains("--") ? name.Split(new[] { "--" }, StringSplitOptions.None)[1].Trim() : name;
+            AssetDatabase.CreateAsset(cluster, clusterPath);
         }
+        EditorUtility.SetDirty(level);
         return level;
     }
 

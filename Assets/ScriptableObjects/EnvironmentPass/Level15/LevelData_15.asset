@@ -17,6 +17,6 @@ MonoBehaviour:
   scenePath: Assets/Scenes/Level_15.unity
   chapter: 5
   rooms:
-  - {fileID: 11400000, guid: a5713d224938e7d41a8753c96a13bc62, type: 2}
-  - {fileID: 11400000, guid: 5ec66e00a8988a64f80184c575b98f52, type: 2}
+  - {fileID: 11400000, guid: 1be8fdff289795241b39ecdb5fdefc4a, type: 2}
+  - {fileID: 11400000, guid: b6bba2067fa436c499577bda007729d2, type: 2}
   narrativeCluster: {fileID: 0}

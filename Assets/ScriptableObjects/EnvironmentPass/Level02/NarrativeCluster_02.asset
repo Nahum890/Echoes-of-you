@@ -16,8 +16,8 @@ MonoBehaviour:
   clusterName: Repeticion
   requiredPrefabNames:
   - SillaEscolar
-  - Libros
   - Pizarra
+  - PupitreDoble
   forbiddenMaterials: []
   requiredMaterial: {fileID: 0}
   tag: 2

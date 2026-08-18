@@ -10,10 +10,10 @@ public class EchoPathHint : MonoBehaviour
     [SerializeField] Vector3[] waypoints;
 
     [Header("Visual")]
-    [SerializeField] Color hintColor = new Color(0.35f, 0.65f, 1f, 0.6f);
-    [SerializeField] float particleSize = 0.18f;
-    [SerializeField] float glowIntensity = 1.2f;
-    [SerializeField] float pulseSpeed = 1.5f;
+    [SerializeField] Color hintColor = new Color(1.0f, 0.75f, 0.0f, 0.7f); // Memory Amber #FFBF00
+    [SerializeField] float particleSize = 0.14f;
+    [SerializeField] float glowIntensity = 0.9f;
+    [SerializeField] float pulseSpeed = 1.2f;
 
     Light[] _lights;
     float _phase;
@@ -34,17 +34,17 @@ public class EchoPathHint : MonoBehaviour
         {
             GameObject hint = new GameObject($"EchoHint_{i}");
             hint.transform.SetParent(transform, false);
-            hint.transform.position = waypoints[i] + Vector3.up * 0.5f;
+            hint.transform.position = waypoints[i] + Vector3.up * 0.45f;
 
             Light light = hint.AddComponent<Light>();
             light.type = LightType.Point;
             light.color = hintColor;
             light.intensity = glowIntensity;
-            light.range = 3f;
+            light.range = 2.5f;
             light.shadows = LightShadows.None;
             _lights[i] = light;
 
-            // Pequeña esfera visual
+            // Pequeña esfera visual diegética
             GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             sphere.name = "HintOrb";
             sphere.transform.SetParent(hint.transform, false);
@@ -59,7 +59,7 @@ public class EchoPathHint : MonoBehaviour
                 Material mat = new Material(Shader.Find(EchoesUrpMaterials.LitShaderName));
                 mat.color = hintColor;
                 mat.EnableKeyword("_EMISSION");
-                mat.SetColor("_EmissionColor", hintColor * 2f);
+                mat.SetColor("_EmissionColor", hintColor * 1.5f);
                 mat.SetFloat("_Surface", 1f);
                 mat.SetOverrideTag("RenderType", "Transparent");
                 mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
@@ -83,7 +83,7 @@ public class EchoPathHint : MonoBehaviour
             float offset = i * 0.8f;
             float pulse = (Mathf.Sin(_phase + offset) * 0.5f + 0.5f) * 0.4f + 0.6f;
             _lights[i].intensity = glowIntensity * pulse;
-            _lights[i].transform.localPosition = new Vector3(0f, Mathf.Sin(_phase * 0.7f + offset) * 0.15f, 0f);
+            _lights[i].transform.localPosition = new Vector3(0f, Mathf.Sin(_phase * 0.7f + offset) * 0.1f, 0f);
         }
     }
 
@@ -92,15 +92,15 @@ public class EchoPathHint : MonoBehaviour
     {
         if (waypoints == null || waypoints.Length < 2) return;
 
-        Gizmos.color = new Color(0.35f, 0.65f, 1f, 0.7f);
+        Gizmos.color = new Color(1.0f, 0.75f, 0.0f, 0.7f);
         for (int i = 0; i < waypoints.Length; i++)
         {
-            Gizmos.DrawWireSphere(waypoints[i] + Vector3.up * 0.5f, 0.3f);
+            Gizmos.DrawWireSphere(waypoints[i] + Vector3.up * 0.45f, 0.25f);
             if (i > 0)
             {
                 Gizmos.DrawLine(
-                    waypoints[i - 1] + Vector3.up * 0.5f,
-                    waypoints[i] + Vector3.up * 0.5f);
+                    waypoints[i - 1] + Vector3.up * 0.45f,
+                    waypoints[i] + Vector3.up * 0.45f);
             }
         }
     }

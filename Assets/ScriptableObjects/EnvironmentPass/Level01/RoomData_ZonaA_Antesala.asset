@@ -1,0 +1,239 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-4847503796136807383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Decal_ZonaA_Antesala_dec_nota_adhesiva_01
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: dec_nota_adhesiva
+  narrativeTag: 0
+  localPosition: {x: 1.9, y: 1, z: 0.5}
+  localRotationEuler: {x: 0, y: 180, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &-4169509922577627103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaA_Antesala_Cartelera_00
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Cartelera
+  narrativeTag: 0
+  localPosition: {x: 1.9, y: 1.2, z: 1}
+  localRotationEuler: {x: 0, y: 180, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 2
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &-1514632762233295937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaA_Antesala_Mochila_06
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Mochila
+  narrativeTag: 0
+  localPosition: {x: -1, y: 0, z: 3.5}
+  localRotationEuler: {x: 0, y: 60, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcf37f80f3f09549945948f90da8d33, type: 3}
+  m_Name: RoomData_ZonaA_Antesala
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.RoomDataSO
+  roomId: ZonaA_Antesala
+  roomType: 6
+  placements:
+  - {fileID: -4169509922577627103}
+  - {fileID: 6240119783407922704}
+  - {fileID: 1352483820786203604}
+  - {fileID: 8621540839825857442}
+  - {fileID: 24919920156847272}
+  - {fileID: 8537908032980938123}
+  - {fileID: -1514632762233295937}
+  - {fileID: 1754005390668338010}
+  decals:
+  - {fileID: 9004367558921654116}
+  - {fileID: -4847503796136807383}
+  validateRequiredProps: 1
+--- !u!114 &24919920156847272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaA_Antesala_Basurero_04
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Basurero
+  narrativeTag: 0
+  localPosition: {x: -1.8, y: 0, z: 3}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &1352483820786203604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaA_Antesala_Perchero_02
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Perchero
+  narrativeTag: 0
+  localPosition: {x: 1.5, y: 0, z: 0.5}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 1
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &1754005390668338010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaA_Antesala_PapeleraKenney_07
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: PapeleraKenney
+  narrativeTag: 0
+  localPosition: {x: -1.8, y: 0, z: 1}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &6240119783407922704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaA_Antesala_BancoMadera_01
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: BancoMadera
+  narrativeTag: 0
+  localPosition: {x: -1.5, y: 0, z: 2}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 1
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &8537908032980938123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaA_Antesala_Paraguas_05
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Paraguas
+  narrativeTag: 0
+  localPosition: {x: 1.8, y: 0, z: 3}
+  localRotationEuler: {x: 0, y: 30, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &8621540839825857442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaA_Antesala_AbrigoColgado_03
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: AbrigoColgado
+  narrativeTag: 0
+  localPosition: {x: 1.5, y: 1.3, z: 0.5}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 2100000, guid: fc4f79e9de63c7649b2ce7c8f352e02b, type: 2}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &9004367558921654116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Decal_ZonaA_Antesala_dec_aviso_corcho_00
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: dec_aviso_corcho
+  narrativeTag: 0
+  localPosition: {x: 1.9, y: 1.2, z: 1}
+  localRotationEuler: {x: 0, y: 180, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5

@@ -1,0 +1,283 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9146449604819639565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_PatioExterior_BancoMadera_03
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: BancoMadera
+  narrativeTag: 0
+  localPosition: {x: 0, y: 0, z: -10}
+  localRotationEuler: {x: 0, y: 90, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 1
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &-8787470542348199225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_PatioExterior_BancoMadera_02
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: BancoMadera
+  narrativeTag: 0
+  localPosition: {x: 10, y: 0, z: 0}
+  localRotationEuler: {x: 0, y: 180, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 1
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &-5798568023819588012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_PatioExterior_PlantaMaceta_00
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: PlantaMaceta
+  narrativeTag: 0
+  localPosition: {x: -12, y: 0, z: -12}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 2, y: 2, z: 2}
+  size: 2
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &-5435242625335289366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Decal_ZonaB_PatioExterior_dec_arrastre_01
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: dec_arrastre
+  narrativeTag: 0
+  localPosition: {x: 5, y: 0.01, z: -3}
+  localRotationEuler: {x: 90, y: 45, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &-3596062992500186892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Decal_ZonaB_PatioExterior_dec_arrastre_00
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: dec_arrastre
+  narrativeTag: 0
+  localPosition: {x: 0, y: 0.01, z: 0}
+  localRotationEuler: {x: 90, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 0
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &-887079593476210026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_PatioExterior_Basurero_07
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Basurero
+  narrativeTag: 0
+  localPosition: {x: -10, y: 0, z: 8}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &-876588026254730637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_PatioExterior_Basurero_06
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Basurero
+  narrativeTag: 0
+  localPosition: {x: 10, y: 0, z: 8}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcf37f80f3f09549945948f90da8d33, type: 3}
+  m_Name: RoomData_ZonaB_PatioExterior
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.RoomDataSO
+  roomId: ZonaB_PatioExterior
+  roomType: 4
+  placements:
+  - {fileID: -5798568023819588012}
+  - {fileID: 3732516142522843741}
+  - {fileID: -8787470542348199225}
+  - {fileID: -9146449604819639565}
+  - {fileID: 7591061418237988429}
+  - {fileID: 7973902033643997733}
+  - {fileID: -876588026254730637}
+  - {fileID: -887079593476210026}
+  - {fileID: 3497104113875268562}
+  - {fileID: 4649260676792504456}
+  decals:
+  - {fileID: -3596062992500186892}
+  - {fileID: -5435242625335289366}
+  validateRequiredProps: 1
+--- !u!114 &3497104113875268562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_PatioExterior_PapeleraKenney_08
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: PapeleraKenney
+  narrativeTag: 0
+  localPosition: {x: 0, y: 0, z: 12}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &3732516142522843741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_PatioExterior_BancoMadera_01
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: BancoMadera
+  narrativeTag: 0
+  localPosition: {x: -10, y: 0, z: 0}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 1
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &4649260676792504456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_PatioExterior_Extintor_09
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Extintor
+  narrativeTag: 0
+  localPosition: {x: 13, y: 0, z: 0}
+  localRotationEuler: {x: 0, y: 90, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &7591061418237988429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_PatioExterior_CarritoConserje_04
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: CarritoConserje
+  narrativeTag: 0
+  localPosition: {x: 8, y: 0, z: 8}
+  localRotationEuler: {x: 0, y: 45, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 1
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5
+--- !u!114 &7973902033643997733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc260a8077c9ca44b26c6c48764c64c, type: 3}
+  m_Name: Prop_ZonaB_PatioExterior_Balon_05
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.EnvironmentPass.PropPlacementSO
+  prefabName: Balon
+  narrativeTag: 0
+  localPosition: {x: -5, y: 0, z: 5}
+  localRotationEuler: {x: 0, y: 0, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  size: 0
+  materialOverride: {fileID: 0}
+  requiredForRoomType: 1
+  minClearanceFromPuzzle: 1.5

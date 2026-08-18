@@ -68,7 +68,9 @@ public partial class PlayerController
                 animator.runtimeAnimatorController = controller;
         }
 
-        if (animator.avatar == null || !animator.avatar.isValid || !animator.avatar.isHuman)
+        // Intentionally Generic: avatar stays null (transform curves, no muscle retarget).
+        // Only repair an assigned-but-broken avatar.
+        if (animator.avatar != null && (!animator.avatar.isValid || !animator.avatar.isHuman))
         {
             const string modelPath = "Assets/3D Models/AidenModelo/Aiden3dModelo.fbx";
             Object[] assets = AssetDatabase.LoadAllAssetsAtPath(modelPath);

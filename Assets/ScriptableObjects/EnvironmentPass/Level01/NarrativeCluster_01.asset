@@ -15,9 +15,8 @@ MonoBehaviour:
   levelNumber: 1
   clusterName: Desorientacion
   requiredPrefabNames:
-  - AbrigoColgado
-  - Mochila
-  - Libros
+  - MochilaLyra
+  - PupitreDoble
   forbiddenMaterials:
   - Mat_Memory
   requiredMaterial: {fileID: 2100000, guid: f75394fa110a9f84cb005f213e9f9271, type: 2}

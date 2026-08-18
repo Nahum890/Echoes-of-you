@@ -41,12 +41,6 @@ public class FixedPuzzleCameraController : MonoBehaviour
 
     void Awake()
     {
-        if (GetComponent<Unity.Cinemachine.CinemachineBrain>() != null)
-        {
-            Destroy(this);
-            return;
-        }
-
         CacheSceneReferences();
 
         if (virtualCamera != null)

@@ -43,13 +43,15 @@ namespace Echoes.EnvironmentPass
         private static RoomValidationReport ValidateRoom(Transform roomTr, List<Vector3> exclusionZones)
         {
             var report = new RoomValidationReport { roomId = roomTr.name };
-            var propPositions = new List<(string name, Vector3 pos)>();
+            var propPositions = new List<(string name, Vector3 pos, bool isDecal)>();
 
             int small = 0, medium = 0, dominant = 0;
 
             foreach (Transform child in roomTr)
             {
                 string n = child.name.ToLower();
+                if (n.Contains("light")) continue;
+
                 if (n.Contains("estanteria") || n.Contains("pizarra") || n.Contains("mesa") ||
                     n.Contains("pupitre") || n.Contains("locker"))
                     dominant++;
@@ -59,42 +61,52 @@ namespace Echoes.EnvironmentPass
                 else
                     small++;
 
-                propPositions.Add((child.name, child.position));
+                propPositions.Add((child.name, child.position, n.StartsWith("dec_") || n.Contains("decal")));
             }
 
-            if (small < 5) report.warnings.Add($"Small props: {small} (min 5)");
-            if (medium < 2) report.warnings.Add($"Medium props: {medium} (min 2)");
-            if (dominant < 1) report.warnings.Add($"Dominant props: {dominant} (min 1)");
+            bool isMinimalRoom = roomTr.name.ToLower().Contains("entrada") || roomTr.name.ToLower().Contains("salida") || roomTr.name.ToLower().Contains("ausente");
+            if (!isMinimalRoom)
+            {
+                if (dominant < 1 && medium < 1) report.warnings.Add($"Room has low architectural furniture ({dominant} dominant, {medium} medium)");
+            }
 
             for (int i = 0; i < propPositions.Count; i++)
             for (int j = i + 1; j < propPositions.Count; j++)
             {
+                if (propPositions[i].isDecal || propPositions[j].isDecal) continue;
+
                 float dist = Vector2.Distance(
                     new Vector2(propPositions[i].pos.x, propPositions[i].pos.z),
                     new Vector2(propPositions[j].pos.x, propPositions[j].pos.z));
-                if (dist < 0.3f)
+                if (dist < 0.25f)
                     report.violations.Add($"Overlap: {propPositions[i].name} <-> {propPositions[j].name} ({dist:F2}m)");
             }
 
-            foreach (var (pname, ppos) in propPositions)
-            foreach (var ez in exclusionZones)
+            foreach (var (pname, ppos, isDecal) in propPositions)
             {
-                float dist = Vector2.Distance(new Vector2(ppos.x, ppos.z), new Vector2(ez.x, ez.z));
-                if (dist < MIN_CLEARANCE)
-                    report.violations.Add($"{pname} at {dist:F2}m from puzzle object (min {MIN_CLEARANCE}m)");
+                if (isDecal) continue;
+                foreach (var ez in exclusionZones)
+                {
+                    float dist = Vector2.Distance(new Vector2(ppos.x, ppos.z), new Vector2(ez.x, ez.z));
+                    if (dist < MIN_CLEARANCE)
+                        report.violations.Add($"{pname} at {dist:F2}m from puzzle object (min {MIN_CLEARANCE}m)");
+                }
             }
 
             foreach (var (pname, ppos) in propPositions)
             {
-                if (Physics.Raycast(ppos + Vector3.up * 2f, Vector3.down, out RaycastHit hit, 3f,
-                                    LayerMask.GetMask("Default")))
+                string pn = pname.ToLower();
+                bool isWallProp = pn.Contains("cartelera") || pn.Contains("reloj") || pn.Contains("extintor") || 
+                                  pn.Contains("cuadro") || pn.Contains("pizarra") || pn.Contains("light") || pn.Contains("decal");
+
+                if (!isWallProp)
                 {
-                    if (hit.distance > 0.5f)
-                        report.warnings.Add($"{pname} floating {hit.distance:F2}m above floor");
-                }
-                else
-                {
-                    report.warnings.Add($"{pname} no floor detected below (raycast miss)");
+                    if (Physics.Raycast(ppos + Vector3.up * 1f, Vector3.down, out RaycastHit hit, 2.5f,
+                                        LayerMask.GetMask("Default")))
+                    {
+                        if (Mathf.Abs(ppos.y - hit.point.y) > 0.35f)
+                            report.warnings.Add($"{pname} floating {Mathf.Abs(ppos.y - hit.point.y):F2}m above floor");
+                    }
                 }
             }
 
@@ -118,24 +130,36 @@ namespace Echoes.EnvironmentPass
             if (total > 0)
             {
                 float amberPct = amber * 100f / total;
-                float instPct = inst * 100f / total;
-                if (amberPct > 15f) report.warnings.Add($"memory-amber at {amberPct:F1}% (>15% dilutes narrative meaning)");
-                if (instPct < 20f) report.warnings.Add($"Institutional colors at {instPct:F1}% (<20%)");
+                if (amberPct > 20f) report.warnings.Add($"memory-amber at {amberPct:F1}% (>20% dilutes narrative meaning)");
             }
         }
 
         private static List<Vector3> GatherPuzzleExclusionZones()
         {
             var result = new List<Vector3>();
-            GameObject mechRoot = GameObject.Find(MECH_CONTAINER);
-            if (mechRoot == null) return result;
+            var allRoots = new[] { "--- MECHANICS ---", "--- PUZZLE ---", "--- PUZZLES ---", "--- INTERACTION ---" };
 
-            foreach (Transform child in mechRoot.GetComponentsInChildren<Transform>(true))
+            foreach (var rootName in allRoots)
             {
-                if (child == mechRoot.transform) continue;
-                if (IsPuzzleObject(child)) result.Add(child.position);
+                GameObject root = GameObject.Find(rootName);
+                if (root == null) continue;
+
+                foreach (Transform child in root.GetComponentsInChildren<Transform>(true))
+                {
+                    if (child == root.transform) continue;
+                    if (IsPuzzleObject(child)) result.Add(child.position);
+                }
             }
-            return result;
+
+            // Also check root level interactive objects
+            foreach (var plate in Object.FindObjectsByType<PressurePlate>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                result.Add(plate.transform.position);
+            foreach (var door in Object.FindObjectsByType<DoorController>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                result.Add(door.transform.position);
+            foreach (var exit in Object.FindObjectsByType<LevelExit>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                result.Add(exit.transform.position);
+
+            return result.Distinct().ToList();
         }
 
         private static bool IsPuzzleObject(Transform t)

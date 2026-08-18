@@ -221,20 +221,35 @@ public static class EchoesPropDecorator
         if (envRoot == null)
             return null;
 
-        string baseName = moduleName;
-        int suffix = moduleName.LastIndexOf('_');
-        if (suffix > 0 && int.TryParse(moduleName.Substring(suffix + 1), out _))
-            baseName = moduleName.Substring(0, suffix);
+        // Alias mapping for vertical slice modules
+        var aliases = new List<string> { moduleName };
+        if (moduleName.Contains("SchoolCorridor"))
+            aliases.AddRange(new[] { "PasilloA", "PasilloB", "CorredorCentral", "CorredorBifurcacion", "RamaIzquierda", "RamaDerecha" });
+        else if (moduleName.Contains("SchoolClassroom"))
+            aliases.AddRange(new[] { "AulaIzquierda", "AulaDerecha", "AulaAusente", "AulaEco" });
+        else if (moduleName.Contains("SchoolLyraClassroom"))
+            aliases.AddRange(new[] { "AulaLyra", "AulaAusente" });
+        else if (moduleName.Contains("SchoolHall"))
+            aliases.AddRange(new[] { "Entrada", "Hall_Salida", "Hall_Estatua" });
 
-        Transform firstMatch = null;
-        foreach (Transform child in envRoot.transform)
+        foreach (var alias in aliases)
         {
-            if (child.name == moduleName)
-                return child;
-            if (firstMatch == null && child.name.StartsWith(baseName))
-                firstMatch = child;
+            Transform found = envRoot.transform.Find(alias);
+            if (found != null) return found;
+
+            string baseName = alias;
+            int suffix = alias.LastIndexOf('_');
+            if (suffix > 0 && int.TryParse(alias.Substring(suffix + 1), out _))
+                baseName = alias.Substring(0, suffix);
+
+            foreach (Transform child in envRoot.transform)
+            {
+                if (child.name == alias || child.name.StartsWith(baseName))
+                    return child;
+            }
         }
-        return firstMatch;
+
+        return null;
     }
 
     static GameObject LoadPrefab(string name)

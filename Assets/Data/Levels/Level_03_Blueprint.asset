@@ -106,7 +106,7 @@ MonoBehaviour:
     position: {x: 5, y: 0.05, z: 16}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
-    customData: 
+    customData: EchoOnly
     targetSignals: []
   - name: PlacaJugador_RamaIzquierda
     type: 4

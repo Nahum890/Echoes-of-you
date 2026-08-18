@@ -11,9 +11,12 @@ public class LevelRuntimeController : MonoBehaviour
     [SerializeField] string completionLine = "";
 
     [Header("Reset")]
-    [SerializeField] bool allowSoftReset = true;
     [SerializeField] bool allowHardReset = true;
     [SerializeField] float hardResetHoldSeconds = 0.5f;
+
+    [Header("Level Blueprint (fuente de autoridad)")]
+    [Tooltip("Blueprint del nivel: aplica echoMode, degradation, maxEchoes y maxRecordSeconds al EchoRecorder.")]
+    [SerializeField] LevelBlueprint levelBlueprint;
 
     [Header("Echo Mode Configuration")]
     [SerializeField] EchoPlaybackMode echoMode = EchoPlaybackMode.Standard;
@@ -67,11 +70,25 @@ public class LevelRuntimeController : MonoBehaviour
         if (_recorder != null)
         {
             _recorder.EchoCreated += OnEchoCreated;
-            _recorder.SetMode(echoMode, recordFuture, degradationPerReplay, lockEchoSlots, lockedSlotIndices);
+            if (levelBlueprint != null)
+            {
+                _recorder.SetMode(levelBlueprint.echoMode, levelBlueprint.recordFuture, levelBlueprint.degradationPerReplay,
+                    levelBlueprint.lockEchoSlots, levelBlueprint.lockedSlotIndices,
+                    levelBlueprint.maxRecordSeconds, levelBlueprint.maxEchoes);
+            }
+            else
+            {
+                _recorder.SetMode(echoMode, recordFuture, degradationPerReplay, lockEchoSlots, lockedSlotIndices);
+            }
         }
 
         // Configurar EchoModeController si hay datos avanzados
-        if (echoMode != EchoPlaybackMode.Standard || imposedEchoData != null || ambientEchoData != null)
+        if (levelBlueprint != null && (levelBlueprint.echoMode != EchoPlaybackMode.Standard || levelBlueprint.imposedEchoData != null || levelBlueprint.ambientEchoData != null))
+        {
+            var modeCtl = EchoModeController.Instance ?? gameObject.AddComponent<EchoModeController>();
+            modeCtl.Configure(levelBlueprint);
+        }
+        else if (echoMode != EchoPlaybackMode.Standard || imposedEchoData != null || ambientEchoData != null)
         {
             var modeCtl = EchoModeController.Instance ?? gameObject.AddComponent<EchoModeController>();
             // Crear un LevelBlueprint temporal o dummy para pasarle a EchoModeController
@@ -162,9 +179,6 @@ public class LevelRuntimeController : MonoBehaviour
             }
         }
 
-        if (allowSoftReset && Input.GetKeyDown(KeyCode.Q))
-            SoftReset();
-
         if (!allowHardReset)
             return;
 
@@ -179,46 +193,6 @@ public class LevelRuntimeController : MonoBehaviour
         {
             _hardResetHold = 0f;
         }
-    }
-
-    public void SoftReset()
-    {
-        if (_restartRequested || _completed)
-            return;
-
-        _recorder ??= FindAnyObjectByType<EchoRecorder>();
-        _hud ??= FindAnyObjectByType<GameHUD>();
-
-        _recorder?.ClearAllEchoes(false);
-
-        PlayerController player = FindAnyObjectByType<PlayerController>();
-        if (player != null)
-        {
-            // Try LevelSpawnMarker first, then PlayerStart tag
-            LevelSpawnMarker spawnMarker = FindAnyObjectByType<LevelSpawnMarker>();
-            if (spawnMarker != null)
-            {
-                player.Teleport(spawnMarker.transform.position, spawnMarker.transform.rotation);
-            }
-            else
-            {
-                GameObject spawnPoint = GameObject.FindWithTag("PlayerStart");
-                if (spawnPoint != null)
-                {
-                    player.Teleport(spawnPoint.transform.position, spawnPoint.transform.rotation);
-                }
-            }
-        }
-
-        MonoBehaviour[] behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude);
-        for (int i = 0; i < behaviours.Length; i++)
-        {
-            if (behaviours[i] is IResettableLevelObject resettable)
-                resettable.ResetLevelState();
-        }
-
-        _hud?.ShowToast("SoftReset: Posición y Ecos reiniciados", new Color(0.48f, 0.94f, 0.78f, 1f), 1.1f);
-        _hud?.SetObjective(ResolveObjective());
     }
 
     public void SetObjective(string nextObjective)
