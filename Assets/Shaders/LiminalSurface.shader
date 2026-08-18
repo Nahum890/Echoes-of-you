@@ -108,39 +108,31 @@ Shader "Echoes/LiminalSurface" {
                 half NdotL = max(0, dot(normal, mainLight.direction));
                 half NdotV = max(0.001, dot(normal, viewDir));
 
-                // Iluminación LIMINAL: flat ambient dominante (luz institucional difusa),
-                // dirección matada. Elimina el sombreado fuerte direccional.
-                half3 ambient = SampleSH(normal) * _FlatAmbient;
-                half3 directional = mainLight.color.rgb * NdotL * mainLight.distanceAttenuation * _DirectionalScale;
-                half3 lighting = albedo * (ambient + directional);
+                // Ambient from SH + unlit floor (mínimo de iluminación institutional difusa)
+                half3 shAmbient = SampleSH(normal);
+                half ambientFloor = 0.35; // para que nunca se vea negro total ni plano
+                half3 ambient = max(shAmbient, half3(ambientFloor, ambientFloor, ambientFloor * 1.02)) * _FlatAmbient;
 
-                // Fluorescent hum parpadeante — luz fría azulada que pulsa
+                // Luz direccional con sombras suaves (matado pero presente para dar forma)
+                half3 directional = mainLight.color.rgb * NdotL * mainLight.distanceAttenuation * mainLight.shadowAttenuation * _DirectionalScale;
+
+                // Componente superior (luz del techo simulada — fresnel de techo)
+                half upFacing = max(0, normal.y);
+                half3 ceilingLight = half3(0.85, 0.88, 0.95) * upFacing * 0.35;
+                half3 lighting = albedo * (ambient + directional + ceilingLight);
+
+                // Fluorescent hum parpadeante (sutil)
                 float flicker = 1.0 - _FlickerStrength * (0.5 + 0.5 * sin(_Time.y * 47.0 + input.worldPos.x * 11.0 + input.worldPos.z * 13.0));
                 half3 fluoHum = half3(0.7, 0.75, 0.85) * _FluorescentHum * flicker;
                 lighting += albedo * fluoHum * 0.3;
 
-                // Fresnel invertido (liminal: las superficies parecen "absorber" luz en los bordes)
+                // Fresnel suave (ligero oscurecimiento en ángulos rasantes)
                 half fresnelInv = pow(abs(1.0 - NdotV), 2.5) * _FresnelInvert;
-                lighting -= mainLight.color.rgb * fresnelInv * 0.15;
+                lighting -= mainLight.color.rgb * fresnelInv * 0.10;
 
-                // Edge glow fluorescente (brillo frío en ángulos rasantes)
+                // Edge glow fluorescente (resalta bordes institucionales)
                 half edgeGlow = smoothstep(0.88, 0.98, NdotV) * _FluorescentEdge;
                 lighting += half3(0.75, 0.82, 0.92) * edgeGlow * mainLight.color.rgb * 0.6 * flicker;
-
-                // Subsurface tint dark
-                lighting += _SubsurfaceTint.rgb * (1.0 - NdotV) * mainLight.color.rgb * 0.08;
-
-                // Especular anómalo
-                half3 anomalousSpec = mainLight.color.rgb * _SpecularAnomaly * pow(abs(fresnelInv), 2.5);
-                lighting += anomalousSpec;
-
-                // Niebla liminal (densa, gris-azulada)
-                float dist = length(input.worldPos - _WorldSpaceCameraPos);
-                float fog = 1.0 - exp(-_FogDensity * dist);
-                lighting = lerp(lighting, _FogColor.rgb, fog);
-
-                // Posterización de color (estética "institutional" — bandas duras)
-                lighting = floor(lighting * _ColorBands) / _ColorBands;
 
                 half3 emission = _EmissionColor.rgb;
                 return half4(lighting + emission, _BaseColor.a);

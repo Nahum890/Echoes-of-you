@@ -21,6 +21,10 @@ public static partial class UIBootstrap
 #else
                 _panelSettings = Resources.Load<PanelSettings>("EchoesPanelSettings");
 #endif
+                if (_panelSettings != null)
+                {
+                    _panelSettings.scale = GameSettings.UIScaleFactor;
+                }
                 EnsureInputSystemUI();
             }
             return _panelSettings;

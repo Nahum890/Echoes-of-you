@@ -1,61 +1,86 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
-    <Style src="project://database/Assets/UI/EchoesDesignTokens.uss" />
-    <Style src="project://database/Assets/UI/LoadingScreenUI.uss" />
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="project://database/Assets/UI/LoadingScreenUI.uss" />
 
-    <ui:VisualElement class="loading-root" name="loading-root" picking-mode="Ignore">
+    <ui:VisualElement name="loading-root" class="loading-root" picking-mode="Ignore">
 
+        <!-- Background Layers: Dark Surface, Vignette, Scanlines -->
         <ui:VisualElement name="loading-bg-base" class="loading-bg-base" picking-mode="Ignore" />
         <ui:VisualElement name="loading-bg-gradient" class="loading-bg-gradient" picking-mode="Ignore" />
         <ui:VisualElement name="loading-vignette" class="loading-vignette" picking-mode="Ignore" />
         <ui:VisualElement name="loading-scanlines" class="loading-scanlines" picking-mode="Ignore" />
 
-        <ui:VisualElement name="loading-particles" class="loading-particles" picking-mode="Ignore">
-            <ui:VisualElement class="loading-particle" style="left: 15%; width: 4px; height: 4px;" />
-            <ui:VisualElement class="loading-particle" style="left: 35%; width: 6px; height: 6px;" />
-            <ui:VisualElement class="loading-particle" style="left: 65%; width: 3px; height: 3px;" />
-            <ui:VisualElement class="loading-particle" style="left: 85%; width: 5px; height: 5px;" />
-            <ui:VisualElement class="loading-particle" style="left: 50%; width: 4px; height: 4px;" />
+        <!-- Archival Metadata Overlay: Top Left & Top Right -->
+        <ui:VisualElement name="loading-top-left" class="loading-top-left" picking-mode="Ignore">
+            <ui:Label name="loading-rec-id" class="loading-rec-id" text="REC_ID: S_ARCH_01" picking-mode="Ignore" />
+            <ui:Label name="loading-status-tag" class="loading-status-tag" text="STATUS: RECOVERING FRAGMENTS" picking-mode="Ignore" />
         </ui:VisualElement>
 
-        <ui:VisualElement name="loading-content" class="loading-content" picking-mode="Ignore">
+        <ui:VisualElement name="loading-top-right" class="loading-top-right" picking-mode="Ignore">
+            <ui:Label name="loading-sync-status" class="loading-sync-status" text="TEMPORAL SYNC: IN PROGRESS" picking-mode="Ignore" />
+            <ui:Label name="loading-hex-tag" class="loading-hex-tag" text="0x9A4F2B" picking-mode="Ignore" />
+        </ui:VisualElement>
 
-            <ui:VisualElement class="loading-header">
-                <ui:Label name="loading-sync-status" class="loading-sync-status" text="SYNC_STATUS: RECOVERING_DUAL_MEMORY" />
-                <ui:VisualElement class="loading-header-line" />
+        <!-- Main Content Center -->
+        <ui:VisualElement name="loading-center-container" class="loading-center-container" picking-mode="Ignore">
+            
+            <!-- Centerpiece: Broken O (256x256px) -->
+            <ui:VisualElement name="loading-centerpiece" class="loading-centerpiece" picking-mode="Ignore">
+                <!-- Outer Echo Ring -->
+                <ui:VisualElement name="loading-echo-ring" class="loading-echo-ring" picking-mode="Ignore" />
+                <!-- Inner Ghost Ring -->
+                <ui:VisualElement name="loading-inner-ghost-ring" class="loading-inner-ghost-ring" picking-mode="Ignore" />
+                <!-- Dynamic Broken O Vector Arc Canvas (Painter2D) -->
+                <ui:VisualElement name="loading-vector-canvas" class="loading-vector-canvas" picking-mode="Ignore" />
+                <!-- Center Core Dot -->
+                <ui:VisualElement name="loading-core-dot" class="loading-core-dot" picking-mode="Ignore" />
+                <!-- Glitch Accent Particles -->
+                <ui:VisualElement name="loading-glitch-particle-1" class="loading-glitch-particle loading-glitch-particle--top-left" picking-mode="Ignore" />
+                <ui:VisualElement name="loading-glitch-particle-2" class="loading-glitch-particle loading-glitch-particle--bottom-right" picking-mode="Ignore" />
             </ui:VisualElement>
 
-            <ui:VisualElement name="loading-emblem" class="loading-emblem" picking-mode="Ignore">
-                <ui:VisualElement class="loading-emblem-silhouette" picking-mode="Ignore" />
-                <ui:VisualElement class="loading-emblem-base" picking-mode="Ignore">
-                    <ui:VisualElement class="loading-emblem-tick loading-emblem-tick--top" />
-                    <ui:VisualElement class="loading-emblem-tick loading-emblem-tick--left" />
-                    <ui:VisualElement class="loading-emblem-tick loading-emblem-tick--bottom" />
+            <!-- Typography Stack -->
+            <ui:VisualElement name="loading-typography-stack" class="loading-typography-stack" picking-mode="Ignore">
+                <!-- Chapter / Level Title -->
+                <ui:Label name="loading-chapter-title" class="loading-chapter-title glitch-text" text="CAPÍTULO I: PRIMER ECO" picking-mode="Ignore" />
+                
+                <!-- Narrative Phrase with Typewriter reveal -->
+                <ui:VisualElement name="loading-quote-wrapper" class="loading-quote-wrapper" picking-mode="Ignore">
+                    <ui:Label name="loading-quote" class="loading-quote" text="&quot;El silencio es solo un eco que aún no ha aprendido a hablar.&quot;" picking-mode="Ignore" />
                 </ui:VisualElement>
-                <ui:VisualElement name="loading-progress-arc" class="loading-progress-arc" picking-mode="Ignore" />
-                <ui:VisualElement name="loading-arc-fill" class="loading-arc-fill" picking-mode="Ignore" />
-                <ui:VisualElement class="loading-emblem-glitch" picking-mode="Ignore" />
-                <ui:VisualElement name="loading-emblem-core" class="loading-emblem-core" picking-mode="Ignore" />
-            </ui:VisualElement>
 
-            <ui:VisualElement class="loading-quote-section">
-                <ui:Label name="loading-quote" class="loading-quote" text="Dos voces en un solo eco..." />
-                <ui:VisualElement class="loading-quote-line" />
-            </ui:VisualElement>
-
-            <ui:VisualElement class="loading-hint" picking-mode="Ignore">
-                <ui:VisualElement class="loading-hint-key">
-                    <ui:Label class="loading-hint-key-text" text="R" />
+                <!-- Hint Container -->
+                <ui:VisualElement name="loading-hint-box" class="loading-hint-box" picking-mode="Ignore">
+                    <ui:Label name="loading-hint-icon" class="loading-hint-icon" text="[ i ]" picking-mode="Ignore" />
+                    <ui:Label name="loading-hint-text" class="loading-hint-text" text="Pista: Mantén [ R ] para grabar un eco de tu posición actual." picking-mode="Ignore" />
                 </ui:VisualElement>
-                <ui:Label class="loading-hint-text" text="Mantener para sincronizar" />
-            </ui:VisualElement>
-
-            <ui:VisualElement name="loading-bar-container" class="loading-bar-container" picking-mode="Ignore">
-                <ui:VisualElement name="loading-bar-bg" class="loading-bar-bg">
-                    <ui:VisualElement name="loading-bar-fill" class="loading-bar-fill" />
-                </ui:VisualElement>
-                <ui:Label name="loading-pct" class="loading-pct" text="0%" />
             </ui:VisualElement>
 
         </ui:VisualElement>
+
+        <!-- Archival Metadata Overlay: Bottom Left & Bottom Right -->
+        <ui:VisualElement name="loading-bottom-left" class="loading-bottom-left" picking-mode="Ignore">
+            <ui:VisualElement name="loading-bottom-status-row" class="loading-bottom-status-row" picking-mode="Ignore">
+                <ui:VisualElement name="loading-bottom-live-dot" class="loading-bottom-live-dot" picking-mode="Ignore" />
+                <ui:Label name="loading-bottom-init-text" class="loading-bottom-init-text" text="SYSTEM.INIT()" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:Label name="loading-pct" class="loading-pct" text="CARGANDO... 0%" picking-mode="Ignore" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="loading-bottom-right" class="loading-bottom-right" picking-mode="Ignore">
+            <!-- Abstract Barcode Lines -->
+            <ui:VisualElement class="loading-barcode-bar h-full" picking-mode="Ignore" />
+            <ui:VisualElement class="loading-barcode-bar h-75" picking-mode="Ignore" />
+            <ui:VisualElement class="loading-barcode-bar h-50" picking-mode="Ignore" />
+            <ui:VisualElement class="loading-barcode-bar loading-barcode-bar--wide h-full" picking-mode="Ignore" />
+            <ui:VisualElement class="loading-barcode-bar h-25" picking-mode="Ignore" />
+            <ui:VisualElement class="loading-barcode-bar h-80" picking-mode="Ignore" />
+            <ui:VisualElement class="loading-barcode-bar h-full color-cyan" picking-mode="Ignore" />
+        </ui:VisualElement>
+
+        <!-- Progress Bar (Slim Bottom Center) -->
+        <ui:VisualElement name="loading-progress-bar-container" class="loading-progress-bar-container" picking-mode="Ignore">
+            <ui:VisualElement name="loading-bar-fill" class="loading-bar-fill" picking-mode="Ignore" />
+        </ui:VisualElement>
+
     </ui:VisualElement>
-</UXML>
+</ui:UXML>

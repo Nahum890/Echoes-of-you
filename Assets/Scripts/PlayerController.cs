@@ -547,6 +547,9 @@ public partial class PlayerController : MonoBehaviour
         float jumpSpeed = jumpForce;
         _verticalVelocity = movementUp * jumpSpeed;
         _grounded = false;
+        _animGrounded = false;
+        if (_anim != null)
+            _anim.SetBool(AnimatorParamIsGrounded, false);
         _jumpedThisFrame = true;
         OnJumped?.Invoke();
 

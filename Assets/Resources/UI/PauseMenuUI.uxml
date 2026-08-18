@@ -35,6 +35,19 @@
                 <ui:Label class="pause-stat" name="lbl-pause-total" text="Cuaderno: 0/15 ecos" />
             </ui:VisualElement>
 
+            <!-- Quick HUD Scale Row -->
+            <ui:VisualElement class="pause-scale-row" name="pause-scale-row">
+                <ui:VisualElement class="pause-scale-label-container">
+                    <ui:Label class="pause-scale-title" text="ESCALA HUD" />
+                    <ui:Label class="pause-scale-hint" text="Tamaño de interfaz" />
+                </ui:VisualElement>
+                <ui:VisualElement class="pause-scale-controls">
+                    <ui:Button class="pause-scale-btn" name="btn-scale-down" text="&lt;" />
+                    <ui:Label class="pause-scale-val" name="lbl-pause-scale-val" text="100%" />
+                    <ui:Button class="pause-scale-btn" name="btn-scale-up" text="&gt;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
             <!-- Actions -->
             <ui:VisualElement class="pause-actions">
                 <ui:Button class="pause-btn pause-btn--focus" name="btn-resume" text="Reanudar" />

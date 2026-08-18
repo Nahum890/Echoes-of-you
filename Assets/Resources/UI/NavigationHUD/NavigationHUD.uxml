@@ -1,0 +1,120 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="project://database/Assets/Resources/UI/NavigationHUD/NavigationHUD.uss" />
+
+    <ui:VisualElement name="root" class="hud-root" picking-mode="Ignore">
+
+        <!-- ============================================================
+             EXPLORATION HUD (Default gameplay mode)
+             ============================================================ -->
+        <ui:VisualElement name="exploration-group" class="exploration-group" picking-mode="Ignore">
+            <!-- TOP-LEFT: metadata -->
+            <ui:VisualElement name="metadata" class="metadata" picking-mode="Ignore">
+                <ui:Label name="system-tag" class="sys-tag" text="SYS.LOC.DATA" picking-mode="Ignore" />
+
+                <ui:VisualElement name="location-box" class="location-box" picking-mode="Ignore">
+                    <ui:Label name="location-icon" class="location-icon" text="&gt;" picking-mode="Ignore" />
+                    <ui:Label name="location-label" class="location-label" text="Archivo: Desconocido" picking-mode="Ignore" />
+                </ui:VisualElement>
+
+                <ui:VisualElement name="divider" class="divider" picking-mode="Ignore" />
+            </ui:VisualElement>
+
+            <!-- CENTER: interaction prompt & reticle -->
+            <ui:VisualElement name="center-prompt" class="center-prompt" picking-mode="Ignore">
+                <ui:VisualElement name="reticle" class="reticle" picking-mode="Ignore">
+                    <ui:VisualElement name="crosshair-h" class="crosshair-h" picking-mode="Ignore" />
+                    <ui:VisualElement name="crosshair-v" class="crosshair-v" picking-mode="Ignore" />
+                    <ui:VisualElement name="center-dot" class="center-dot" picking-mode="Ignore" />
+                </ui:VisualElement>
+
+                <ui:Button name="prompt-button" class="prompt-button hidden" text="">
+                    <ui:Label name="prompt-key" class="prompt-key" text="[ E ]" picking-mode="Ignore" />
+                    <ui:Label name="prompt-action" class="prompt-action" text="Abrir" picking-mode="Ignore" />
+                </ui:Button>
+            </ui:VisualElement>
+
+            <!-- BOTTOM-RIGHT: echo HUD -->
+            <ui:VisualElement name="echo-hud" class="echo-hud" picking-mode="Ignore">
+                <ui:VisualElement name="echo-labels" class="echo-labels" picking-mode="Ignore">
+                    <ui:Label name="echo-title" class="echo-title" text="Resonancia" picking-mode="Ignore" />
+                    <ui:Label name="echo-count-label" class="echo-count" text="Ecos 0/3" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement name="echo-emblem" class="echo-emblem" picking-mode="Ignore">
+                    <ui:VisualElement name="ghost-ring" class="ghost-ring" picking-mode="Ignore" />
+                    <ui:VisualElement name="outer-ring" class="outer-ring" picking-mode="Ignore" />
+                    <ui:VisualElement name="inner-ring" class="inner-ring" picking-mode="Ignore" />
+                    <ui:VisualElement name="core-pulse" class="core-pulse" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- ============================================================
+             RECORDING OVERLAY (Active during echo recording)
+             ============================================================ -->
+        <ui:VisualElement name="recording-overlay" class="recording-overlay hidden" picking-mode="Ignore">
+            
+            <!-- Scanlines & Vignette CRT Atmos -->
+            <ui:VisualElement name="rec-scanlines" class="rec-scanlines" picking-mode="Ignore" />
+            <ui:VisualElement name="rec-vignette" class="rec-vignette" picking-mode="Ignore" />
+
+            <!-- Top Header Bar -->
+            <ui:VisualElement name="rec-header" class="rec-header" picking-mode="Ignore">
+                <!-- Top Left: Sys Rec Mode + Fragment ID -->
+                <ui:VisualElement name="rec-header-left" class="rec-header-left" picking-mode="Ignore">
+                    <ui:VisualElement name="rec-mode-row" class="rec-mode-row" picking-mode="Ignore">
+                        <ui:VisualElement name="rec-live-dot" class="rec-live-dot" picking-mode="Ignore" />
+                        <ui:Label name="rec-mode-title" class="rec-mode-title" text="SYS.REC_MODE: ACTIVE" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:Label name="rec-fragment-label" class="rec-fragment-label" text="FRAGMENT_ID: 01" picking-mode="Ignore" />
+                </ui:VisualElement>
+
+                <!-- Top Right: Temporal Buffer + Archive Version -->
+                <ui:VisualElement name="rec-header-right" class="rec-header-right" picking-mode="Ignore">
+                    <ui:VisualElement name="rec-buffer-row" class="rec-buffer-row" picking-mode="Ignore">
+                        <ui:Label class="rec-buffer-title" text="TEMPORAL_BUFFER: " picking-mode="Ignore" />
+                        <ui:Label name="rec-buffer-value" class="rec-buffer-value" text="100%" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:Label name="rec-version-tag" class="rec-version-tag" text="ECHO_ARCHIVE_V1.4" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- Central Focus Container: The Broken O (300x300px) centered -->
+            <ui:VisualElement name="rec-center-container" class="rec-center-container" picking-mode="Ignore">
+                <ui:VisualElement name="rec-center-gauge" class="rec-center-gauge" picking-mode="Ignore">
+                    <!-- Echo Trail / Delayed Silhouette (Offset blurred cyan ring) -->
+                    <ui:VisualElement name="rec-ghost-trail" class="rec-ghost-trail" picking-mode="Ignore" />
+                    
+                    <!-- Main Circle Frame & Arc Canvas -->
+                    <ui:VisualElement name="rec-gauge-canvas" class="rec-gauge-canvas" picking-mode="Ignore">
+                        <!-- Background broken ring border -->
+                        <ui:VisualElement name="rec-broken-ring" class="rec-broken-ring" picking-mode="Ignore" />
+                        
+                        <!-- Dynamic Radial Vector Painter Element -->
+                        <ui:VisualElement name="rec-progress-arc" class="rec-progress-arc" picking-mode="Ignore" />
+                    </ui:VisualElement>
+
+                    <!-- Center Content: Icon + REC with Glitch Jitter -->
+                    <ui:VisualElement name="rec-center-content" class="rec-center-content hud-glitch" picking-mode="Ignore">
+                        <ui:VisualElement name="rec-center-emblem" class="rec-center-emblem" picking-mode="Ignore">
+                            <ui:VisualElement class="rec-emblem-outer" picking-mode="Ignore" />
+                            <ui:VisualElement class="rec-emblem-inner" picking-mode="Ignore" />
+                            <ui:VisualElement class="rec-emblem-core" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:Label name="rec-main-label" class="rec-main-label" text="REC" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- Bottom Action Prompt -->
+            <ui:VisualElement name="rec-bottom-container" class="rec-bottom-container" picking-mode="Ignore">
+                <ui:VisualElement name="rec-stop-prompt" class="rec-stop-prompt" picking-mode="Ignore">
+                    <ui:Label name="rec-stop-key" class="rec-stop-key" text="[ R ]" picking-mode="Ignore" />
+                    <ui:Label name="rec-stop-text" class="rec-stop-text" text="DETENER GRABACIÓN" picking-mode="Ignore" />
+                    <ui:VisualElement name="rec-stop-icon" class="rec-stop-icon" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

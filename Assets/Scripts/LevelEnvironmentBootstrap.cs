@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 using Echoes.VN;
+using Echoes.UI;
 
 public class LevelEnvironmentBootstrap : MonoBehaviour
 {
@@ -110,12 +111,23 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         ApplyArchitectureMaterialStyling();
         ApplyEchoPlateVisuals();
         EnsureExperienceSystems();
+        EnsureInteractionSystem();
         EnsureInteractionPromptUI();
+        EnsureNavigationHUD();
+        NavigationHUD.Instance?.UpdateLocationForScene(scene);
         EnsureVNSystem();
         EnsureInteractableProps();
         EnsureLoadingScreen();
         EnsureLevelIntro();
         EnsureAudioSetup(scene);
+    }
+
+    static void EnsureInteractionSystem()
+    {
+        if (Echoes.Interaction.InteractionSystem.Instance != null) return;
+        if (Object.FindAnyObjectByType<Echoes.Interaction.InteractionSystem>() != null) return;
+        var go = new GameObject("InteractionSystem");
+        go.AddComponent<Echoes.Interaction.InteractionSystem>();
     }
 
     static void EnsureAudioSetup(string sceneName)
@@ -177,6 +189,29 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         {
             var go = new GameObject("InteractionPromptBootstrap");
             go.AddComponent<InteractionPromptInitializer>();
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Ensure the central navigation HUD exists (creates a UIDocument based on NavigationHUD UI)
+    // -----------------------------------------------------------------
+    static void EnsureNavigationHUD()
+    {
+        if (NavigationHUD.Instance != null || Object.FindAnyObjectByType<NavigationHUD>() != null)
+        {
+            NavigationHUD.Instance?.RefreshVisualElements();
+            return;
+        }
+
+        if (Object.FindAnyObjectByType<NavigationHUDInitializer>() == null)
+        {
+            Debug.Log("[LevelEnvironmentBootstrap] Creating NavigationHUDInitializer");
+            var go = new GameObject("NavigationHUDBootstrap");
+            go.AddComponent<NavigationHUDInitializer>();
+        }
+        else
+        {
+            Debug.Log("[LevelEnvironmentBootstrap] NavigationHUDInitializer already exists");
         }
     }
 

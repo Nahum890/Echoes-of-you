@@ -1,0 +1,537 @@
+/* ============================================================
+   NavigationHUD — Stich Minimal HUD & ECHO ARCHIVE Recording Overlay
+   ============================================================ */
+
+/* ------------------------------------------------------------------
+   ROOT
+   ------------------------------------------------------------------ */
+.hud-root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: transparent;
+    pointer-events: none;
+}
+
+.exploration-group {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: transparent;
+    pointer-events: none;
+    transition-property: opacity;
+    transition-duration: 150ms;
+}
+
+/* ------------------------------------------------------------------
+   METADATA (top-left)
+   ------------------------------------------------------------------ */
+.metadata {
+    position: absolute;
+    top: 24px;
+    left: 32px;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sys-tag {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(99, 212, 250, 0.75);
+    margin-bottom: 2px;
+}
+
+.location-box {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background-color: rgba(19, 20, 16, 0.75);
+    border-left-width: 2px;
+    border-left-color: #959087;
+}
+
+.location-icon {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 14px;
+    color: #63d4fa;
+}
+
+.location-label {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 14px;
+    color: #e4e2dc;
+    letter-spacing: 1px;
+}
+
+.divider {
+    height: 1px;
+    width: 140px;
+    background-color: rgba(99, 212, 250, 0.35);
+    margin-top: 4px;
+}
+
+/* ------------------------------------------------------------------
+   CENTER PROMPT & RETICLE
+   ------------------------------------------------------------------ */
+.center-prompt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.reticle {
+    width: 48px;
+    height: 48px;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    border-width: 1px;
+    border-color: rgba(228, 226, 220, 0.25);
+    border-radius: 24px;
+}
+
+.crosshair-h {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 23px;
+    height: 1px;
+    background-color: rgba(228, 226, 220, 0.2);
+}
+
+.crosshair-v {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 23px;
+    width: 1px;
+    background-color: rgba(228, 226, 220, 0.2);
+}
+
+.center-dot {
+    position: absolute;
+    left: 22px;
+    top: 22px;
+    width: 4px;
+    height: 4px;
+    border-radius: 2px;
+    background-color: #63d4fa;
+}
+
+.prompt-button {
+    position: absolute;
+    top: 60px;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background-color: rgba(19, 20, 16, 0.88);
+    border-width: 1px;
+    border-color: #4a463f;
+    border-radius: 2px;
+    pointer-events: auto;
+}
+
+.prompt-button:hover {
+    background-color: rgba(30, 32, 26, 0.95);
+    border-color: #63d4fa;
+}
+
+.prompt-key {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 14px;
+    color: #E8B262;
+}
+
+.prompt-action {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: #e4e2dc;
+}
+
+.prompt-button--primary {
+    border-color: #E8B262;
+}
+
+/* ------------------------------------------------------------------
+   BOTTOM-RIGHT (Echo HUD)
+   ------------------------------------------------------------------ */
+.echo-hud {
+    position: absolute;
+    right: 32px;
+    bottom: 28px;
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+}
+
+.echo-labels {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.echo-title {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(228, 226, 220, 0.7);
+}
+
+.echo-count {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 14px;
+    color: #63d4fa;
+    letter-spacing: 1px;
+}
+
+.echo-emblem {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    align-items: center;
+    justify-content: center;
+}
+
+.ghost-ring {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    width: 48px;
+    height: 48px;
+    border-radius: 24px;
+    border-width: 1px;
+    border-color: rgba(99, 212, 250, 0.3);
+}
+
+.outer-ring {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 24px;
+    border-width: 2px;
+    border-color: #e4e2dc;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    rotate: 45deg;
+}
+
+.inner-ring {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    border-width: 1px;
+    border-color: #63d4fa;
+    border-left-color: transparent;
+    rotate: -15deg;
+}
+
+.core-pulse {
+    position: absolute;
+    left: 22px;
+    top: 22px;
+    width: 4px;
+    height: 4px;
+    border-radius: 2px;
+    background-color: #63d4fa;
+}
+
+/* ==================================================================
+   RECORDING OVERLAY (ECHO ARCHIVE RECORDING STATE)
+   ================================================================== */
+.recording-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(19, 20, 16, 0.35);
+    pointer-events: none;
+    transition-property: opacity;
+    transition-duration: 100ms;
+}
+
+/* Scanlines & Vignette */
+.rec-scanlines {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: transparent;
+    opacity: 0.25;
+}
+
+.rec-vignette {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-width: 48px;
+    border-color: rgba(10, 10, 13, 0.55);
+}
+
+/* Top Header */
+.rec-header {
+    position: absolute;
+    top: 36px;
+    left: 56px;
+    right: 56px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.rec-header-left {
+    flex-direction: column;
+    gap: 4px;
+}
+
+.rec-mode-row {
+    flex-direction: row;
+    align-items: center;
+}
+
+.rec-live-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #ff4d4d;
+    margin-right: 8px;
+    border-width: 1px;
+    border-color: #ffb4ab;
+}
+
+.rec-mode-title {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 15px;
+    letter-spacing: 2px;
+    color: #ffdad6;
+}
+
+.rec-fragment-label {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    color: #63d4fa;
+    margin-left: 18px;
+}
+
+.rec-header-right {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.rec-buffer-row {
+    flex-direction: row;
+    align-items: center;
+}
+
+.rec-buffer-title {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 14px;
+    letter-spacing: 1px;
+    color: #e4e2dc;
+}
+
+.rec-buffer-value {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: #63d4fa;
+}
+
+.rec-version-tag {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(149, 144, 135, 0.65);
+}
+
+/* Central Focus: The Broken O Centered Container */
+.rec-center-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.rec-center-gauge {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    align-items: center;
+    justify-content: center;
+}
+
+.rec-ghost-trail {
+    position: absolute;
+    left: 16px;
+    top: 8px;
+    width: 300px;
+    height: 300px;
+    border-radius: 150px;
+    border-width: 1.5px;
+    border-color: rgba(99, 212, 250, 0.22);
+}
+
+.rec-gauge-canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 300px;
+    height: 300px;
+    align-items: center;
+    justify-content: center;
+}
+
+.rec-broken-ring {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 300px;
+    height: 300px;
+    border-radius: 150px;
+    border-width: 2px;
+    border-color: rgba(149, 144, 135, 0.35);
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    rotate: 45deg;
+}
+
+.rec-progress-arc {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 300px;
+    height: 300px;
+}
+
+.rec-center-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 300px;
+    height: 300px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.rec-center-emblem {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+}
+
+.rec-emblem-outer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 26px;
+    border-width: 2px;
+    border-color: #63d4fa;
+    border-top-color: transparent;
+    rotate: 35deg;
+}
+
+.rec-emblem-inner {
+    position: absolute;
+    left: 9px;
+    top: 9px;
+    width: 34px;
+    height: 34px;
+    border-radius: 17px;
+    border-width: 1px;
+    border-color: rgba(99, 212, 250, 0.7);
+    border-right-color: transparent;
+    rotate: -40deg;
+}
+
+.rec-emblem-core {
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background-color: #63d4fa;
+}
+
+.rec-main-label {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 36px;
+    color: #fffeff;
+    letter-spacing: 4px;
+    -unity-text-align: middle-center;
+}
+
+/* Bottom Action Prompt */
+.rec-bottom-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 40px;
+    align-items: center;
+    justify-content: center;
+}
+
+.rec-stop-prompt {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 28px;
+    background-color: rgba(19, 20, 16, 0.85);
+    border-width: 1px;
+    border-color: rgba(149, 144, 135, 0.45);
+    border-radius: 2px;
+}
+
+.rec-stop-key {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 15px;
+    color: #E8B262;
+}
+
+.rec-stop-text {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: #e4e2dc;
+}
+
+.rec-stop-icon {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background-color: #ff4d4d;
+}
+
+.hidden {
+    display: none;
+}

@@ -32,14 +32,14 @@ Material:
     - _AffineStrength: 0.35
     - _DepthJitter: 0.002
     - _DitherStrength: 0.6
-    - _FlatAmbient: 0.8
-    - _FlickerStrength: 0.08
-    - _FluorescentHum: 0.15
-    - _FogDensity: 0.012
+    - _FlatAmbient: 1.2
+    - _FlickerStrength: 0.06
+    - _FluorescentHum: 0.12
+    - _FogDensity: 0
     - _QuantizeColors: 64
     - _ScanlineFreq: 120
     - _StainScale: 5
-    - _StainStrength: 0.35
+    - _StainStrength: 0.25
     - _VertexSnap: 24
     m_Colors:
     - _BaseColor: {r: 0.48, g: 0.46, b: 0.44, a: 1}

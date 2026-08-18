@@ -256,11 +256,11 @@ namespace Echoes.UI
         public void ApplySavedUIScale()
         {
             if (_root == null) return;
-            string scale = PlayerPrefs.GetString("UIScale", "Normal");
+            string scale = GameSettings.UIScaleName;
             _root.RemoveFromClassList("scale-large");
             _root.RemoveFromClassList("scale-xl");
-            if (scale == "Large") _root.AddToClassList("scale-large");
-            else if (scale == "Extra Large") _root.AddToClassList("scale-xl");
+            if (scale == "Large" || scale == "Grande") _root.AddToClassList("scale-large");
+            else if (scale == "Extra Large" || scale == "Extra Grande") _root.AddToClassList("scale-xl");
         }
     }
 }

@@ -65,16 +65,15 @@ Shader "Echoes/LiminalCeiling" {
                 Light mainLight = GetMainLight();
                 half3 normal = normalize(input.normal);
                 half NdotL = max(0, dot(normal, mainLight.direction));
-                half3 lighting = albedo * mainLight.color.rgb * NdotL * mainLight.distanceAttenuation + albedo * SampleSH(normal) * 0.6;
+                half3 shAmbient = SampleSH(normal);
+                half3 ambient = max(shAmbient, half3(0.4, 0.4, 0.42)) * 1.0;
+                half3 directional = mainLight.color.rgb * NdotL * mainLight.distanceAttenuation * mainLight.shadowAttenuation * 0.6;
+                half3 lighting = albedo * (ambient + directional);
 
                 half NdotV = max(0, dot(normal, normalize(input.viewDir)));
                 float flicker = 1.0 - _Flicker * (0.5 + 0.5 * sin(_Time.y * 41.0 + input.worldPos.x * 7.0));
-                half3 glow = half3(0.9, 0.93, 1.0) * _FluorescentGlow * NdotV * flicker * mainLight.color.rgb;
+                half3 glow = half3(0.9, 0.93, 1.0) * _FluorescentGlow * flicker * mainLight.color.rgb;
                 lighting += glow;
-
-                float dist = length(input.worldPos - _WorldSpaceCameraPos);
-                float fog = 1.0 - exp(-_FogDensity * dist);
-                lighting = lerp(lighting, _FogColor.rgb, fog);
 
                 return half4(lighting + _EmissionColor.rgb, 1.0);
             }

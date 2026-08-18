@@ -477,7 +477,10 @@ public class GameFeelController : MonoBehaviour
 
     public void PlayRecordStop(Vector3 position)
     {
-        PlayClip3D(recordStopClip, position, defaultVolume * 0.9f, 1.08f, "SFX_Player");
+        PlayClip3D(recordStopClip, position, defaultVolume * 0.95f, 1.08f, "SFX_Player");
+        cameraShake?.AddShake(0.04f);
+        PulseCA(0.32f, 0.15f);
+        PulseExposure(-0.25f, 0.12f);
     }
 
     public void PlayEchoSpawn(Vector3 position)

@@ -345,12 +345,21 @@ public class EchoRecorder : MonoBehaviour
 
     void RefreshHud()
     {
-        if (hud == null)
-            return;
+        float normalized = _recording ? RecordingElapsed / Mathf.Max(0.01f, maxRecordSeconds) : 0f;
+        float remaining = Mathf.Clamp01(1f - normalized);
 
-        hud.SetEchoCount(_echoes.Count, maxEchoes);
-        hud.SetRecording(_recording, _recording ? RecordingElapsed / Mathf.Max(0.01f, maxRecordSeconds) : 0f);
-        hud.SetEchoState(_recording ? "Grabando" : (_echoes.Count > 0 ? "Reproduciendo" : "Listo"));
+        if (hud != null)
+        {
+            hud.SetEchoCount(_echoes.Count, maxEchoes);
+            hud.SetRecording(_recording, normalized);
+            hud.SetEchoState(_recording ? "Grabando" : (_echoes.Count > 0 ? "Reproduciendo" : "Listo"));
+        }
+
+        if (NavigationHUD.Instance != null)
+        {
+            NavigationHUD.Instance.UpdateEchoCount(_echoes.Count, maxEchoes);
+            NavigationHUD.Instance.SetRecordingState(_recording, normalized, remaining);
+        }
     }
 
     void StartVoiceCapture()

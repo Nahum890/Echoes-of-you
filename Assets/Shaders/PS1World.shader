@@ -85,27 +85,24 @@ Shader "Echoes/PS1World" {
                 half3 normal = normalize(input.normal);
                 half NdotL = max(0, dot(normal, mainLight.direction));
 
-                // Iluminación LIMINAL: ambiental plana dominante, direccional matada
-                half3 ambient = SampleSH(normal) * _FlatAmbient;
-                half3 directional = mainLight.color.rgb * NdotL * mainLight.distanceAttenuation * 0.3;
-                half3 lighting = albedo * (ambient + directional);
+                // Ambient + floor mínimo + SH + luz de techo
+                half3 shAmbient = SampleSH(normal);
+                half ambientFloor = 0.35;
+                half3 ambient = max(shAmbient, half3(ambientFloor, ambientFloor, ambientFloor * 1.02)) * _FlatAmbient;
+                half3 directional = mainLight.color.rgb * NdotL * mainLight.distanceAttenuation * mainLight.shadowAttenuation * 0.5;
+                half upFacing = max(0, normal.y);
+                half3 ceilingLight = half3(0.85, 0.88, 0.95) * upFacing * 0.35;
+                half3 lighting = albedo * (ambient + directional + ceilingLight);
 
-                // Fluorescent hum parpadeante
+                // Fluorescent hum parpadeante (sutil)
                 float flicker = 1.0 - _FlickerStrength * (0.5 + 0.5 * sin(_Time.y * 43.0 + input.worldPos.x * 9.0 + input.worldPos.z * 7.0));
                 half3 fluoHum = half3(0.7, 0.75, 0.85) * _FluorescentHum * flicker;
                 lighting += albedo * fluoHum * 0.25;
 
-                // Niebla liminal densa
-                float dist = length(input.worldPos - _WorldSpaceCameraPos);
-                float fog = 1.0 - exp(-_FogDensity * dist);
-                lighting = lerp(lighting, _FogColor.rgb, fog);
+                // Color quantization (PS1 — bandas discretas pero suaves)
+                lighting = floor(lighting * _QuantizeColors + 0.5) / _QuantizeColors;
 
-                // Color quantization (PS1 posterización + banding institucional)
-                lighting = floor(lighting * _QuantizeColors) / _QuantizeColors;
-
-                // Bayer dither alpha
-                float dither = bayer4x4(input.position.xy);
-                half alpha = _BaseColor.a * (1.0 - _DitherStrength * (1.0 - dither));
+                half alpha = _BaseColor.a;
                 return half4(lighting + _EmissionColor.rgb, alpha);
             }
             ENDHLSL

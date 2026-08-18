@@ -161,8 +161,8 @@ namespace Echoes.UI
 
             if (_scaleDropdown != null)
             {
-                _scaleDropdown.choices = new List<string> { "Normal", "Grande", "Extra Grande" };
-                _scaleDropdown.value = PlayerPrefs.GetString("UIScale", "Normal");
+                _scaleDropdown.choices = new List<string>(GameSettings.UIScaleNames);
+                _scaleDropdown.value = GameSettings.UIScaleName;
                 _scaleDropdown.RegisterValueChangedCallback(evt => ApplyUIScale(evt.newValue));
             }
 
@@ -212,8 +212,8 @@ namespace Echoes.UI
             _textSizeDropdown = container.Q<DropdownField>("TextSizeDropdown");
             if (_textSizeDropdown != null)
             {
-                _textSizeDropdown.choices = new List<string> { "Normal", "Grande", "Extra Grande" };
-                _textSizeDropdown.value = PlayerPrefs.GetString("UIScale", "Normal");
+                _textSizeDropdown.choices = new List<string>(GameSettings.UIScaleNames);
+                _textSizeDropdown.value = GameSettings.UIScaleName;
                 _textSizeDropdown.RegisterValueChangedCallback(evt => ApplyUIScale(evt.newValue));
             }
 
@@ -333,7 +333,8 @@ namespace Echoes.UI
 
             if (_fullscreenToggle != null) _fullscreenToggle.value = Screen.fullScreen;
             if (_vsyncToggle != null) _vsyncToggle.value = QualitySettings.vSyncCount > 0;
-            if (_scaleDropdown != null) _scaleDropdown.value = PlayerPrefs.GetString("UIScale", "Normal");
+            if (_scaleDropdown != null) _scaleDropdown.value = GameSettings.UIScaleName;
+            if (_textSizeDropdown != null) _textSizeDropdown.value = GameSettings.UIScaleName;
 
             float sens = PlayerPrefs.GetFloat("CameraSensitivity", 1f);
             if (_sensitivitySlider != null) _sensitivitySlider.value = sens;
@@ -453,13 +454,9 @@ namespace Echoes.UI
 
         void ApplyUIScale(string scale)
         {
-            PlayerPrefs.SetString("UIScale", scale);
-            var allDocs = FindObjectsByType<UIDocument>(FindObjectsInactive.Exclude);
-            foreach (var doc in allDocs)
-            {
-                doc.gameObject.SendMessage("ApplySavedUIScale", SendMessageOptions.DontRequireReceiver);
-            }
-            if (_textSizeDropdown != null) _textSizeDropdown.value = scale;
+            GameSettings.SetUIScaleByName(scale);
+            if (_scaleDropdown != null && _scaleDropdown.value != scale) _scaleDropdown.value = scale;
+            if (_textSizeDropdown != null && _textSizeDropdown.value != scale) _textSizeDropdown.value = scale;
         }
 
         void ApplySensitivity()

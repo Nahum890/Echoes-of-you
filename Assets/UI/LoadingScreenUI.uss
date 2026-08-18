@@ -1,392 +1,365 @@
 /* ============================================================
-   LoadingScreenUI — Stitch loading screen styling.
-   Replicates the HTML/Tailwind design:
-   - Broken-O emblem with cyan progress arc
-   - Film grain / scanlines
-   - Floating amber particles
-   - Jitter sync status text
-   - Garamond italic lore quote
-   - Controller hint (R key)
+   LoadingScreenUI — ECHO ARCHIVE Loading Screen Styling
    ============================================================ */
 
-@import "EchoesDesignTokens.uss";
-
-/* ===== ROOT ===== */
+/* ------------------------------------------------------------------
+   ROOT
+   ------------------------------------------------------------------ */
 .loading-root {
     position: absolute;
-    left: 0; top: 0; right: 0; bottom: 0;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
     overflow: hidden;
-    background-color: var(--color-stich-surface);
+    background-color: #131410;
     opacity: 0;
     transition-property: opacity;
     transition-duration: 200ms;
-    transition-timing-function: linear;
+    transition-timing-function: ease-in-out;
 }
 
 .loading-root.loading-visible {
     opacity: 1;
 }
 
-/* ===== BACKGROUND ===== */
+/* ------------------------------------------------------------------
+   BACKGROUND LAYERS
+   ------------------------------------------------------------------ */
 .loading-bg-base {
     position: absolute;
-    left: 0; top: 0; right: 0; bottom: 0;
-    background-color: rgba(19, 20, 16, 0.92);
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #131410;
 }
 
 .loading-bg-gradient {
     position: absolute;
-    left: 0; top: 0; right: 0; bottom: 0;
-    background-image: linear-gradient(to bottom,
-        rgba(19, 20, 16, 0.90) 0%,
-        rgba(19, 20, 16, 0) 30%,
-        rgba(19, 20, 16, 0) 70%,
-        rgba(19, 20, 16, 0.95) 100%);
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(19, 20, 16, 0.85);
 }
 
 .loading-vignette {
     position: absolute;
-    left: 0; top: 0; right: 0; bottom: 0;
-    background-image: radial-gradient(ellipse at center,
-        rgba(19, 20, 16, 0) 50%,
-        rgba(19, 20, 16, 0.85) 100%);
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-width: 56px;
+    border-color: rgba(10, 10, 13, 0.65);
 }
 
-/* Scanlines — repeating horizontal lines */
 .loading-scanlines {
     position: absolute;
-    left: 0; top: 0; right: 0; bottom: 0;
-    background-image: repeating-linear-gradient(to bottom,
-        transparent 0px,
-        transparent 2px,
-        rgba(255, 255, 255, 0.015) 2px,
-        rgba(255, 255, 255, 0.015) 3px);
-    opacity: 0.6;
-    -unity-background-image-tile-mode: 2;
-}
-
-/* ===== PARTICLES ===== */
-.loading-particles {
-    position: absolute;
-    left: 0; top: 0; right: 0; bottom: 0;
-    overflow: hidden;
-}
-
-.loading-particle {
-    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
     bottom: 0;
-    border-radius: 50%;
-    background-color: var(--color-stich-surface-tint);
-    opacity: 0;
-    /* USS doesn't support keyframes natively; particles are static-ish.
-       We use a slow opacity pulse via transition. */
-    transition-property: opacity, translate;
-    transition-duration: 4s;
-    transition-timing-function: ease-in-out;
+    background-color: transparent;
+    opacity: 0.25;
 }
 
-/* ===== MAIN CONTENT ===== */
-.loading-content {
+/* ------------------------------------------------------------------
+   TOP METADATA (Archival Overlay)
+   ------------------------------------------------------------------ */
+.loading-top-left {
     position: absolute;
-    left: 0; top: 0; right: 0; bottom: 0;
+    top: 44px;
+    left: 56px;
     flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 64px;
+    gap: 4px;
+    opacity: 0.75;
 }
 
-/* ===== HEADER (SYNC STATUS) ===== */
-.loading-header {
+.loading-rec-id {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: #959087;
+}
+
+.loading-status-tag {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    color: #4a463f;
+}
+
+.loading-top-right {
+    position: absolute;
+    top: 44px;
+    right: 56px;
     flex-direction: column;
-    align-items: center;
-    width: 100%;
-    padding-top: 24px;
+    align-items: flex-end;
+    gap: 4px;
+    opacity: 0.75;
 }
 
 .loading-sync-status {
-    font-size: var(--size-label-caps);
-    color: var(--color-stich-secondary);
-    -unity-font-style: bold;
-    letter-spacing: 0.25em;
-    -unity-text-align: upper-center;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.95);
-    opacity: 0.8;
-    white-space: nowrap;
-    text-transform: uppercase;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: #63d4fa;
 }
 
-.loading-header-line {
-    width: 1px;
-    height: 64px;
-    background-color: var(--color-stich-outline-variant);
-    margin-top: 8px;
-    opacity: 0.5;
-    background-image: linear-gradient(to bottom, var(--color-stich-outline-variant), transparent);
+.loading-hex-tag {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    color: #959087;
 }
 
-/* ===== EMBLEM (CENTER) ===== */
-.loading-emblem {
-    position: relative;
-    width: 320px;
-    height: 320px;
+/* ------------------------------------------------------------------
+   MAIN CONTENT CENTER
+   ------------------------------------------------------------------ */
+.loading-center-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-grow: 1;
-    flex-shrink: 0;
 }
 
-/* Delayed Silhouette — offset ghost circle */
-.loading-emblem-silhouette {
+/* ------------------------------------------------------------------
+   CENTERPIECE: BROKEN O (256x256px)
+   ------------------------------------------------------------------ */
+.loading-centerpiece {
+    position: relative;
+    width: 256px;
+    height: 256px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 32px;
+}
+
+.loading-echo-ring {
     position: absolute;
-    left: 2px; top: 2px;
-    width: 320px;
-    height: 320px;
-    border-width: 1.5px;
-    border-color: rgba(228, 226, 220, 0.06);
-    border-radius: 160px;
-    /* Broken ring: hide top-right quadrant via border-color per side */
-    border-top-color: rgba(228, 226, 220, 0);
-    border-right-color: rgba(228, 226, 220, 0);
-    opacity: 0.1;
-}
-
-/* Base Corrupted Emblem — ivory broken ring */
-.loading-emblem-base {
-    position: absolute;
-    left: 0; top: 0;
-    width: 320px;
-    height: 320px;
-    border-width: 1.5px;
-    border-color: rgba(228, 226, 220, 0.40);
-    border-radius: 160px;
-    /* Broken ring: top-right gap (hide top and right borders) */
-    border-top-color: rgba(228, 226, 220, 0);
-    border-right-color: rgba(228, 226, 220, 0);
-}
-
-/* Inner structural tick marks */
-.loading-emblem-tick {
-    position: absolute;
-    background-color: rgba(228, 226, 220, 0.30);
-}
-
-.loading-emblem-tick--top {
-    left: 50%; top: 0;
-    translate: -50% 0;
-    width: 1px;
-    height: 20px;
-}
-
-.loading-emblem-tick--left {
-    left: 0; top: 50%;
-    translate: 0 -50%;
-    width: 20px;
-    height: 1px;
-}
-
-.loading-emblem-tick--bottom {
-    left: 50%; bottom: 0;
-    translate: -50% 0;
-    width: 1px;
-    height: 20px;
-}
-
-/* Cyan Echo Trail Fill (progress arc) */
-.loading-progress-arc {
-    position: absolute;
-    left: 0; top: 0;
-    width: 320px;
-    height: 320px;
-    border-width: 2px;
-    border-color: var(--color-stich-tertiary-fixed-dim);
-    border-radius: 160px;
-    /* Start: only bottom-left visible (gap at top-right).
-       Progress is shown by toggling border sides via USS classes. */
-    border-top-color: rgba(99, 212, 250, 0);
-    border-right-color: rgba(99, 212, 250, 0);
-    opacity: 0.9;
-}
-
-/* Arc fill — animated radial overlay (simpler approach: conic via rotation) */
-.loading-arc-fill {
-    position: absolute;
-    left: 0; top: 0;
-    width: 320px;
-    height: 320px;
-    opacity: 0;
-}
-
-/* Glitch / Chromatic Aberration — red shifted ring */
-.loading-emblem-glitch {
-    position: absolute;
-    left: 2px; top: -1px;
-    width: 320px;
-    height: 320px;
+    left: 0;
+    top: 0;
+    width: 256px;
+    height: 256px;
+    border-radius: 128px;
     border-width: 1px;
-    border-color: rgba(255, 180, 171, 0.20);
-    border-radius: 160px;
-    border-top-color: rgba(255, 180, 171, 0);
-    border-right-color: rgba(255, 180, 171, 0);
-    opacity: 0.5;
+    border-color: rgba(99, 212, 250, 0.35);
 }
 
-/* Core dot — center cyan glow */
-.loading-emblem-core {
+.loading-inner-ghost-ring {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    width: 224px;
+    height: 224px;
+    border-radius: 112px;
+    border-width: 1px;
+    border-color: rgba(74, 70, 63, 0.50);
+}
+
+.loading-vector-canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 256px;
+    height: 256px;
+}
+
+.loading-core-dot {
+    position: absolute;
     width: 6px;
     height: 6px;
     border-radius: 3px;
-    background-color: var(--color-stich-tertiary-fixed-dim);
-    box-shadow: 0 0 12px rgba(99, 212, 250, 0.7);
-    opacity: 0.9;
+    background-color: #63d4fa;
 }
 
-/* ===== QUOTE (BOTTOM) ===== */
-.loading-quote-section {
+.loading-glitch-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 2px;
+    background-color: #63d4fa;
+    opacity: 0.45;
+}
+
+.loading-glitch-particle--top-left {
+    left: 54px;
+    top: 54px;
+}
+
+.loading-glitch-particle--bottom-right {
+    right: 58px;
+    bottom: 64px;
+    background-color: #e4e2dc;
+    opacity: 0.30;
+}
+
+/* ------------------------------------------------------------------
+   TYPOGRAPHY STACK
+   ------------------------------------------------------------------ */
+.loading-typography-stack {
     flex-direction: column;
     align-items: center;
-    padding-bottom: 24px;
+    gap: 14px;
+    max-width: 800px;
 }
 
-.loading-quote {
-    font-size: var(--size-display-md);
-    color: var(--color-stich-pure-white);
-    -unity-font-style: italic;
+.loading-chapter-title {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    font-size: 40px;
+    letter-spacing: 4px;
+    color: #fffeff;
     -unity-text-align: middle-center;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
-    opacity: 0.90;
-    white-space: normal;
+    text-transform: uppercase;
 }
 
-.loading-quote-line {
-    width: 64px;
-    height: 1px;
-    background-color: rgba(74, 70, 63, 0.50);
-    margin-top: 24px;
-}
-
-/* ===== CONTROLLER HINT (BOTTOM-RIGHT) ===== */
-.loading-hint {
-    position: absolute;
-    right: 64px;
-    bottom: 64px;
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
-    opacity: 0.70;
-}
-
-.loading-hint-key {
-    width: 32px;
-    height: 32px;
-    border-width: 1px;
-    border-color: rgba(191, 199, 215, 0.40);
-    border-radius: 4px;
-    background-color: rgba(31, 32, 28, 0.50);
+.loading-quote-wrapper {
+    min-height: 28px;
     align-items: center;
     justify-content: center;
 }
 
-.loading-hint-key-text {
-    font-size: var(--size-interface-md);
-    color: var(--color-stich-secondary);
+.loading-quote {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    font-size: 16px;
+    -unity-font-style: italic;
+    color: #959087;
+    letter-spacing: 0.5px;
     -unity-text-align: middle-center;
-    -unity-font-style: bold;
-}
-
-.loading-hint-text {
-    font-size: var(--size-interface-sm);
-    color: var(--color-stich-on-surface-variant);
-    letter-spacing: 0.05em;
-}
-
-/* ===== PROGRESS BAR (fallback) ===== */
-.loading-bar-container {
-    position: absolute;
-    left: 50%;
-    bottom: 140px;
-    translate: -50% 0;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
     opacity: 0.85;
 }
 
-.loading-bar-bg {
-    width: 480px;
-    height: 4px;
-    background-color: rgba(74, 70, 63, 0.50);
+.loading-hint-box {
+    margin-top: 8px;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 24px;
+    background-color: rgba(31, 32, 28, 0.65);
     border-width: 1px;
-    border-color: rgba(74, 70, 63, 0.80);
+    border-color: rgba(74, 70, 63, 0.45);
+    border-radius: 4px;
+}
+
+.loading-hint-icon {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 14px;
+    color: #63d4fa;
+}
+
+.loading-hint-text {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: #ccc6bc;
+}
+
+/* ------------------------------------------------------------------
+   BOTTOM ARCHIVAL METADATA & BARCODE
+   ------------------------------------------------------------------ */
+.loading-bottom-left {
+    position: absolute;
+    left: 56px;
+    bottom: 40px;
+    flex-direction: column;
+    gap: 4px;
+    opacity: 0.70;
+}
+
+.loading-bottom-status-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.loading-bottom-live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background-color: #63d4fa;
+}
+
+.loading-bottom-init-text {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: #959087;
+}
+
+.loading-pct {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    color: #63d4fa;
+}
+
+.loading-bottom-right {
+    position: absolute;
+    right: 56px;
+    bottom: 40px;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 4px;
+    height: 32px;
+    opacity: 0.40;
+}
+
+.loading-barcode-bar {
+    background-color: #959087;
+    width: 2px;
+}
+
+.loading-barcode-bar--wide {
+    width: 4px;
+}
+
+.h-full {
+    height: 32px;
+}
+
+.h-80 {
+    height: 26px;
+}
+
+.h-75 {
+    height: 24px;
+}
+
+.h-50 {
+    height: 16px;
+}
+
+.h-25 {
+    height: 8px;
+}
+
+.color-cyan {
+    background-color: #63d4fa;
+    opacity: 0.75;
+}
+
+/* ------------------------------------------------------------------
+   PROGRESS BAR (SLIM BOTTOM CENTER)
+   ------------------------------------------------------------------ */
+.loading-progress-bar-container {
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    translate: -50% 0;
+    width: 380px;
+    height: 2px;
+    background-color: rgba(74, 70, 63, 0.40);
+    border-radius: 1px;
     overflow: hidden;
 }
 
 .loading-bar-fill {
     height: 100%;
     width: 0%;
-    background-color: var(--color-stich-tertiary-fixed-dim);
-    box-shadow: 0 0 8px rgba(99, 212, 250, 0.5);
-    transition-property: width;
-    transition-duration: 100ms;
-    transition-timing-function: linear;
+    background-color: #63d4fa;
 }
-
-.loading-pct {
-    font-size: var(--size-label-caps);
-    color: var(--color-stich-tertiary-fixed-dim);
-    -unity-text-align: middle-center;
-    -unity-font-style: bold;
-    letter-spacing: 0.15em;
-}
-
-/* ===== ANIMATION STATES (progress arc) ===== */
-/* The loading-arc-fill toggles opacity/border to simulate the cyan arc filling.
-   Controlled by LoadingScreenController via AddToClassList. */
-
-/* 0% — no arc visible */
-.loading-root .loading-arc-fill { opacity: 0; }
-
-/* 25% — bottom-left quarter */
-.loading-arc-25 .loading-arc-fill {
-    opacity: 1;
-    border-width: 2px;
-    border-color: var(--color-stich-tertiary-fixed-dim);
-    border-radius: 160px;
-    border-top-color: rgba(99, 212, 250, 0);
-    border-right-color: rgba(99, 212, 250, 0);
-}
-
-/* 50% — left half */
-.loading-arc-50 .loading-arc-fill {
-    opacity: 1;
-    border-width: 2px;
-    border-color: var(--color-stich-tertiary-fixed-dim);
-    border-radius: 160px;
-    border-top-color: rgba(99, 212, 250, 0);
-}
-
-/* 75% — top-left + left + bottom */
-.loading-arc-75 .loading-arc-fill {
-    opacity: 1;
-    border-width: 2px;
-    border-color: var(--color-stich-tertiary-fixed-dim);
-    border-radius: 160px;
-}
-
-/* 100% — full ring (gap closes) */
-.loading-arc-100 .loading-arc-fill {
-    opacity: 1;
-    border-width: 2px;
-    border-color: var(--color-stich-tertiary-fixed-dim);
-    border-radius: 160px;
-}
-
-/* 100% — also brighten the base ring */
-.loading-arc-100 .loading-emblem-base {
-    border-color: rgba(99, 212, 250, 0.60);
-    border-top-color: rgba(99, 212, 250, 0.60);
-    border-right-color: rgba(99, 212, 250, 0.60);
-    box-shadow: 0 0 20px rgba(99, 212, 250, 0.3);
-}
-
-/* ===== HIDDEN ===== */
-.loading-hidden { display: none; }

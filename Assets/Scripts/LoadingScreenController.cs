@@ -7,44 +7,56 @@ public class LoadingScreenController : MonoBehaviour
 {
     public static LoadingScreenController Instance { get; private set; }
 
-    // UI
-    UIDocument _doc;
-    VisualElement _root;
-    VisualElement _progressArc;
-    VisualElement _arcFill;
-    VisualElement _barFill;
-    Label _pctLabel;
-    Label _quoteLabel;
-    Label _syncStatusLabel;
+    // UI Document & Elements
+    private UIDocument _doc;
+    private VisualElement _root;
+    private Label _recIdLabel;
+    private Label _statusTagLabel;
+    private Label _syncStatusLabel;
+    private Label _hexTagLabel;
+    private VisualElement _vectorCanvas;
+    private VisualElement _coreDot;
+    private Label _chapterTitleLabel;
+    private Label _quoteLabel;
+    private Label _hintTextLabel;
+    private Label _pctLabel;
+    private VisualElement _barFill;
+    private VisualElement _bottomLiveDot;
 
-    bool _loading;
-    float _progress;
-    string _levelDisplayName;
-    string _loreQuote;
-    float _fadeInAlpha = 1f;
-    bool _fadingOut;
-    float _fadeOutAlpha;
+    private bool _loading;
+    private float _progress;
+    private float _currentRotation;
+    private Coroutine _typewriterCoroutine;
 
-    static readonly string[] LoreQuotes =
+    private static readonly string[] LoreQuotes =
     {
-        "Cada paso reordena lo que creias saber.",
-        "El pasillo recuerda mas que yo.",
+        "Cada paso reordena lo que creías saber.",
+        "El pasillo recuerda más que yo.",
         "Lo que dejo sin mirar sigue esperando en la luz.",
-        "No es olvidar. Es elegir que parte mantener.",
-        "El eco llega primero. Tal vez no esta intentando reemplazarme.",
+        "No es olvidar. Es elegir qué parte mantener.",
+        "El eco llega primero. Tal vez no está intentando reemplazarme.",
         "Dos verdades pueden doler sin que una borre a la otra.",
-        "Puedo mirar lo que duele sin convertirlo en mi unica historia.",
-        "El silencio tambien es una eleccion.",
+        "Puedo mirar lo que duele sin convertirlo en mi única historia.",
+        "El silencio también es una elección.",
         "Lo que pesa no siempre es lo que rompe.",
-        "Tal vez ella tambien se acercaba.",
-        "La puerta sigue aqui. Esta vez puedo decidir como cruzarla.",
+        "Tal vez ella también se acercaba.",
+        "La puerta sigue aquí. Esta vez puedo decidir cómo cruzarla.",
         "Subir no es olvidar lo que queda abajo.",
         "El lugar no me obedece. Tal vez no tiene que hacerlo.",
-        "Puedo acompanarlo sin controlarlo.",
-        "Esto tambien es mio, aunque sea de ella.",
+        "Puedo acompañarlo sin controlarlo.",
+        "Esto también es mío, aunque sea de ella."
     };
 
-    void Awake()
+    private static readonly string[] GameplayHints =
+    {
+        "Pista: Mantén [ R ] para grabar un eco de tu posición actual.",
+        "Pista: Los ecos pueden presionar placas de peso y mantener compuertas abiertas.",
+        "Pista: Pulsa [ F ] para limpiar todos los ecos activos de la sala.",
+        "Pista: Observa el rastro temporal cian para coordinar tus movimientos con el eco.",
+        "Pista: El tiempo en el eco reproduce exactamente cada salto y desplazamiento que hagas."
+    };
+
+    private void Awake()
     {
         if (Instance != null && Instance != this)
         {
@@ -57,53 +69,21 @@ public class LoadingScreenController : MonoBehaviour
         InitializeUI();
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
-        // Restore static ref after domain reload (DontDestroyOnLoad objects survive but statics are cleared)
         if (Instance == null)
         {
             Instance = this;
-            // Re-query root since UIDocument may have been re-created during domain reload
-            if (_doc == null) _doc = GetComponent<UIDocument>();
-            if (_doc != null && _root == null)
-            {
-                var vta = Resources.Load<VisualTreeAsset>("UI/LoadingScreenUI");
-                if (vta != null && _doc.visualTreeAsset == null)
-                    _doc.visualTreeAsset = vta;
-                _root = _doc.rootVisualElement;
-                if (_root != null)
-                {
-                    _progressArc = _root.Q("loading-progress-arc");
-                    _arcFill = _root.Q("loading-arc-fill");
-                    _barFill = _root.Q("loading-bar-fill");
-                    _pctLabel = _root.Q<Label>("loading-pct");
-                    _quoteLabel = _root.Q<Label>("loading-quote");
-                    _syncStatusLabel = _root.Q<Label>("loading-sync-status");
-                    _root.style.display = DisplayStyle.None;
-                }
-            }
         }
+        InitializeUI();
     }
 
-    void OnSceneLoadedCallback(Scene scene, LoadSceneMode mode)
+    private void OnSceneLoadedCallback(Scene scene, LoadSceneMode mode)
     {
-        // After scene load, UIDocument re-attaches to panel — re-query root
-        if (_doc != null)
-        {
-            _root = _doc.rootVisualElement;
-            if (_root != null)
-            {
-                _progressArc = _root.Q("loading-progress-arc");
-                _arcFill = _root.Q("loading-arc-fill");
-                _barFill = _root.Q("loading-bar-fill");
-                _pctLabel = _root.Q<Label>("loading-pct");
-                _quoteLabel = _root.Q<Label>("loading-quote");
-                _syncStatusLabel = _root.Q<Label>("loading-sync-status");
-            }
-        }
+        RefreshElementReferences();
     }
 
-    void InitializeUI()
+    private void InitializeUI()
     {
         var panel = UIBootstrap.PanelSettings;
         if (panel == null)
@@ -112,7 +92,6 @@ public class LoadingScreenController : MonoBehaviour
             return;
         }
 
-        // Create UIDocument if missing
         _doc = GetComponent<UIDocument>();
         if (_doc == null)
         {
@@ -120,67 +99,214 @@ public class LoadingScreenController : MonoBehaviour
             _doc.panelSettings = panel;
             _doc.sortingOrder = 5000; // Above everything during load
             var vta = Resources.Load<VisualTreeAsset>("UI/LoadingScreenUI");
-            if (vta == null)
-            {
-                Debug.LogError("[LoadingScreenController] LoadingScreenUI.uxml not found in Resources/UI/");
-                return;
-            }
-            _doc.visualTreeAsset = vta;
+            if (vta != null)
+                _doc.visualTreeAsset = vta;
         }
+
+        RefreshElementReferences();
+
+        if (_root != null && !_loading)
+        {
+            _root.style.display = DisplayStyle.None;
+            _root.style.opacity = 0f;
+        }
+    }
+
+    private void RefreshElementReferences()
+    {
+        if (_doc == null) _doc = GetComponent<UIDocument>();
+        if (_doc == null) return;
 
         _root = _doc.rootVisualElement;
         if (_root == null) return;
 
-        _progressArc = _root.Q("loading-progress-arc");
-        _arcFill = _root.Q("loading-arc-fill");
-        _barFill = _root.Q("loading-bar-fill");
-        _pctLabel = _root.Q<Label>("loading-pct");
-        _quoteLabel = _root.Q<Label>("loading-quote");
-        _syncStatusLabel = _root.Q<Label>("loading-sync-status");
+        _recIdLabel         = _root.Q<Label>("loading-rec-id");
+        _statusTagLabel     = _root.Q<Label>("loading-status-tag");
+        _syncStatusLabel    = _root.Q<Label>("loading-sync-status");
+        _hexTagLabel        = _root.Q<Label>("loading-hex-tag");
+        _vectorCanvas       = _root.Q("loading-vector-canvas");
+        _coreDot            = _root.Q("loading-core-dot");
+        _chapterTitleLabel  = _root.Q<Label>("loading-chapter-title");
+        _quoteLabel         = _root.Q<Label>("loading-quote");
+        _hintTextLabel      = _root.Q<Label>("loading-hint-text");
+        _pctLabel           = _root.Q<Label>("loading-pct");
+        _barFill            = _root.Q("loading-bar-fill");
+        _bottomLiveDot      = _root.Q("loading-bottom-live-dot");
 
-        // Start hidden
-        _root.style.display = DisplayStyle.None;
+        if (_vectorCanvas != null)
+        {
+            _vectorCanvas.generateVisualContent -= OnGenerateVectorCanvas;
+            _vectorCanvas.generateVisualContent += OnGenerateVectorCanvas;
+        }
+    }
+
+    private void Update()
+    {
+        if (!_loading) return;
+
+        // Smooth rotation of Broken O
+        _currentRotation = (_currentRotation + Time.unscaledDeltaTime * 45f) % 360f;
+
+        // Live dot pulsating
+        if (_coreDot != null)
+        {
+            float pulse = Mathf.Sin(Time.unscaledTime * 5f) * 0.35f + 0.65f;
+            _coreDot.style.opacity = pulse;
+        }
+
+        if (_bottomLiveDot != null)
+        {
+            float pulse = Mathf.Sin(Time.unscaledTime * 7f) * 0.4f + 0.6f;
+            _bottomLiveDot.style.opacity = pulse;
+        }
+
+        // Random micro glitch jitter on chapter title
+        if (_chapterTitleLabel != null && Random.value < 0.05f)
+        {
+            float ox = Random.Range(-2f, 2f);
+            float oy = Random.Range(-1.5f, 1.5f);
+            _chapterTitleLabel.style.translate = new StyleTranslate(new Translate(ox, oy));
+        }
+        else if (_chapterTitleLabel != null && Random.value < 0.2f)
+        {
+            _chapterTitleLabel.style.translate = new StyleTranslate(new Translate(0, 0));
+        }
+
+        _vectorCanvas?.MarkDirtyRepaint();
+    }
+
+    private void OnGenerateVectorCanvas(MeshGenerationContext ctx)
+    {
+        var p = ctx.painter2D;
+        Vector2 center = new Vector2(128f, 128f);
+        float radius = 100f;
+
+        // 1. Broken outer arcs (Ivory with gaps)
+        p.strokeColor = new Color(0.89f, 0.88f, 0.86f, 0.55f);
+        p.lineWidth = 2.2f;
+        p.lineCap = LineCap.Round;
+
+        float rot = _currentRotation;
+        p.BeginPath();
+        p.Arc(center, radius, rot, rot + 80f);
+        p.Stroke();
+
+        p.BeginPath();
+        p.Arc(center, radius, rot + 110f, rot + 220f);
+        p.Stroke();
+
+        p.BeginPath();
+        p.Arc(center, radius, rot + 250f, rot + 330f);
+        p.Stroke();
+
+        // 2. Inner dashed circle
+        p.strokeColor = new Color(0.58f, 0.56f, 0.52f, 0.35f);
+        p.lineWidth = 1.2f;
+        p.lineCap = LineCap.Round;
+        float innerRadius = 78f;
+        for (int i = 0; i < 8; i++)
+        {
+            float segStart = -rot * 0.7f + i * 45f;
+            p.BeginPath();
+            p.Arc(center, innerRadius, segStart, segStart + 22f);
+            p.Stroke();
+        }
+
+        // 3. Dynamic Cyan Progress Arc (fills from -90 deg as _progress advances)
+        float sweep = Mathf.Clamp(_progress * 360f, 0f, 360f);
+        if (sweep > 0.5f)
+        {
+            p.strokeColor = new Color(0.39f, 0.83f, 0.98f, 0.35f);
+            p.lineWidth = 6f;
+            p.lineCap = LineCap.Round;
+            p.BeginPath();
+            p.Arc(center, radius, -90f, -90f + sweep);
+            p.Stroke();
+
+            p.strokeColor = new Color(0.72f, 0.94f, 1f, 0.95f);
+            p.lineWidth = 3f;
+            p.lineCap = LineCap.Round;
+            p.BeginPath();
+            p.Arc(center, radius, -90f, -90f + sweep);
+            p.Stroke();
+        }
     }
 
     public void LoadScene(string sceneName)
     {
         if (_loading) return;
-        if (_root == null) InitializeUI();
+        RefreshElementReferences();
         StartCoroutine(LoadRoutine(sceneName));
     }
 
-    IEnumerator LoadRoutine(string sceneName)
+    private IEnumerator LoadRoutine(string sceneName)
     {
         _loading = true;
         _progress = 0f;
-        _fadeInAlpha = 1f;
-        _fadingOut = false;
 
         int levelIdx = GameProgress.GetSceneIndex(sceneName);
-        _levelDisplayName = levelIdx >= 0 && levelIdx < GameProgress.TotalLevels
-            ? GameProgress.GetLevelDisplayName(sceneName)
-            : sceneName;
+        int displayLevelNum = levelIdx >= 0 ? levelIdx + 1 : 1;
 
-        _loreQuote = levelIdx >= 0 && levelIdx < LoreQuotes.Length
+        // Configure Title
+        string chapterTitle;
+        if (sceneName.StartsWith("Level_"))
+        {
+            string roman = GetRomanNumeral(displayLevelNum);
+            string levelName = GameProgress.GetLevelDisplayName(sceneName);
+            chapterTitle = $"CAPÍTULO {roman}: {levelName}";
+        }
+        else
+        {
+            chapterTitle = $"ARCHIVO: {sceneName.ToUpperInvariant()}";
+        }
+
+        if (_chapterTitleLabel != null)
+            _chapterTitleLabel.text = chapterTitle;
+
+        // Configure Rec ID & Hex
+        if (_recIdLabel != null)
+            _recIdLabel.text = $"REC_ID: S_ARCH_{displayLevelNum:D2}";
+
+        if (_hexTagLabel != null)
+            _hexTagLabel.text = $"0x{Random.Range(0x100000, 0xFFFFFF):X6}";
+
+        // Configure Hint
+        if (_hintTextLabel != null)
+        {
+            int hintIdx = (displayLevelNum - 1) % GameplayHints.Length;
+            if (hintIdx < 0) hintIdx = 0;
+            _hintTextLabel.text = GameplayHints[hintIdx];
+        }
+
+        // Configure Lore Quote with Typewriter Effect
+        string targetQuote = (levelIdx >= 0 && levelIdx < LoreQuotes.Length)
             ? LoreQuotes[levelIdx]
-            : "Algo espera al otro lado.";
+            : "El silencio es solo un eco que aún no ha aprendido a hablar.";
 
-        // Set lore quote
-        if (_quoteLabel != null) _quoteLabel.text = $"\"{_loreQuote}\"";
-        if (_syncStatusLabel != null) _syncStatusLabel.text = "SYNC_STATUS: RECOVERING_DUAL_MEMORY";
+        if (_typewriterCoroutine != null)
+            StopCoroutine(_typewriterCoroutine);
+        _typewriterCoroutine = StartCoroutine(TypewriterRoutine(targetQuote));
 
-        // Show loading screen
+        // Show loading screen & fade in
         if (_root != null)
         {
             _root.style.display = DisplayStyle.Flex;
             _root.AddToClassList("loading-visible");
-            _root.style.opacity = 1f;
         }
+
+        float fadeTimer = 0f;
+        while (fadeTimer < 0.25f)
+        {
+            fadeTimer += Time.unscaledDeltaTime;
+            if (_root != null)
+                _root.style.opacity = Mathf.Clamp01(fadeTimer / 0.25f);
+            yield return null;
+        }
+        if (_root != null) _root.style.opacity = 1f;
 
         UpdateProgressUI();
 
         const float loadTimeoutSeconds = 20f;
-
         AsyncOperation op = null;
         try
         {
@@ -203,10 +329,8 @@ public class LoadingScreenController : MonoBehaviour
             while (op.progress < 0.9f)
             {
                 _progress = Mathf.Clamp01(op.progress / 0.9f);
-                if (_fadeInAlpha > 0f) _fadeInAlpha -= Time.unscaledDeltaTime * 3f;
                 UpdateProgressUI();
 
-                // Watchdog: if progress stalls for too long, force activation
                 if (op.progress > lastProgress + 0.001f)
                 {
                     lastProgress = op.progress;
@@ -233,12 +357,12 @@ public class LoadingScreenController : MonoBehaviour
         }
         else
         {
-            // Fallback: simulate brief load
+            // Fallback simulated load
             float t = 0f;
-            while (t < 0.5f)
+            while (t < 0.6f)
             {
                 t += Time.unscaledDeltaTime;
-                _progress = Mathf.Clamp01(t / 0.5f);
+                _progress = Mathf.Clamp01(t / 0.6f);
                 UpdateProgressUI();
                 yield return null;
             }
@@ -246,81 +370,95 @@ public class LoadingScreenController : MonoBehaviour
             UpdateProgressUI();
         }
 
-        // Brief hold at 100% for visual completion
-        yield return new WaitForSecondsRealtime(0.4f);
+        // Brief hold at 100% for visual closure
+        yield return new WaitForSecondsRealtime(0.45f);
 
-        // Re-query root in case scene load invalidated it
-        if (_doc != null) _root = _doc.rootVisualElement;
+        RefreshElementReferences();
 
-        // Fade out
-        _fadingOut = true;
-        _fadeOutAlpha = 0f;
-        while (_fadeOutAlpha < 1f)
+        // Smooth fade out
+        float fadeOut = 0f;
+        while (fadeOut < 0.35f)
         {
-            _fadeOutAlpha += Time.unscaledDeltaTime * 2.5f;
+            fadeOut += Time.unscaledDeltaTime;
             if (_root != null)
-                _root.style.opacity = 1f - Mathf.Clamp01(_fadeOutAlpha);
+                _root.style.opacity = 1f - Mathf.Clamp01(fadeOut / 0.35f);
             yield return null;
         }
 
-        // Re-query root before hiding (scene may have just activated)
-        if (_doc != null) _root = _doc.rootVisualElement;
+        RefreshElementReferences();
 
-        // Hide
         if (_root != null)
         {
             _root.style.display = DisplayStyle.None;
             _root.RemoveFromClassList("loading-visible");
-            _root.style.opacity = 1f;
+            _root.style.opacity = 0f;
         }
 
         _loading = false;
     }
 
-    void UpdateProgressUI()
+    private IEnumerator TypewriterRoutine(string fullText)
+    {
+        if (_quoteLabel == null) yield break;
+
+        _quoteLabel.text = "\"\"";
+        yield return new WaitForSecondsRealtime(0.15f);
+
+        for (int i = 1; i <= fullText.Length; i++)
+        {
+            if (_quoteLabel == null) yield break;
+            _quoteLabel.text = $"\"{fullText.Substring(0, i)}\"";
+            yield return new WaitForSecondsRealtime(0.025f);
+        }
+    }
+
+    private void UpdateProgressUI()
     {
         if (_root == null) return;
 
-        // Progress bar
+        int pct = Mathf.Clamp(Mathf.RoundToInt(_progress * 100f), 0, 100);
+
         if (_barFill != null)
-            _barFill.style.width = Length.Percent(_progress * 100f);
+            _barFill.style.width = Length.Percent(pct);
 
-        // Percentage label
         if (_pctLabel != null)
-            _pctLabel.text = Mathf.RoundToInt(_progress * 100f) + "%";
+            _pctLabel.text = $"CARGANDO... {pct}%";
 
-        // Update sync status text at milestones
         if (_syncStatusLabel != null)
         {
-            if (_progress < 0.33f)
-                _syncStatusLabel.text = "SYNC_STATUS: RECOVERING_DUAL_MEMORY";
-            else if (_progress < 0.66f)
-                _syncStatusLabel.text = "SYNC_STATUS: ALIGNING_ECHO_SIGNATURE";
-            else if (_progress < 0.95f)
-                _syncStatusLabel.text = "SYNC_STATUS: STABILIZING_CORRIDOR";
+            if (_progress < 0.35f)
+                _syncStatusLabel.text = "TEMPORAL SYNC: IN PROGRESS";
+            else if (_progress < 0.75f)
+                _syncStatusLabel.text = "TEMPORAL SYNC: ALIGNING FRAGMENTS";
             else
-                _syncStatusLabel.text = "SYNC_STATUS: MEMORY_SYNCHRONIZED";
+                _syncStatusLabel.text = "TEMPORAL SYNC: SYNCHRONIZED";
         }
 
-        // Progress arc — toggle classes based on progress
-        _root.RemoveFromClassList("loading-arc-25");
-        _root.RemoveFromClassList("loading-arc-50");
-        _root.RemoveFromClassList("loading-arc-75");
-        _root.RemoveFromClassList("loading-arc-100");
-
-        if (_progress >= 0.95f)
-            _root.AddToClassList("loading-arc-100");
-        else if (_progress >= 0.70f)
-            _root.AddToClassList("loading-arc-75");
-        else if (_progress >= 0.40f)
-            _root.AddToClassList("loading-arc-50");
-        else if (_progress >= 0.15f)
-            _root.AddToClassList("loading-arc-25");
+        _vectorCanvas?.MarkDirtyRepaint();
     }
 
-    void OnDestroy()
+    private static string GetRomanNumeral(int number)
+    {
+        switch (number)
+        {
+            case 1: return "I";
+            case 2: return "II";
+            case 3: return "III";
+            case 4: return "IV";
+            case 5: return "V";
+            case 6: return "VI";
+            case 7: return "VII";
+            case 8: return "VIII";
+            case 9: return "IX";
+            case 10: return "X";
+            default: return number.ToString();
+        }
+    }
+
+    private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoadedCallback;
         if (Instance == this) Instance = null;
     }
 }
+

@@ -28,6 +28,9 @@ namespace Echoes.UI
         Button _btnSettings;
         Button _btnHub;
         Button _btnFooterMenu;
+        Button _btnScaleDown;
+        Button _btnScaleUp;
+        Label _lblScaleVal;
 
         void OnEnable() { InitializeUI(); SettingsController.SettingsClosed += OnSettingsClosed; }
 
@@ -38,13 +41,12 @@ namespace Echoes.UI
             // Settings closed from inside (CERRAR TERMINAL / Aplicar cambios): restore pause nav
             _settingsPanel?.AddToClassList("hidden");
             _pauseNav?.RemoveFromClassList("hidden");
+            RefreshScaleUI();
             _btnResume?.Focus();
         }
 
         void InitializeUI()
         {
-            if (_paused) return;
-
             _doc = GetComponent<UIDocument>();
             if (_doc == null || _doc.rootVisualElement == null) return;
             _root = _doc.rootVisualElement;
@@ -55,25 +57,37 @@ namespace Echoes.UI
             _pauseNav = _root.Q("pause-nav");
             _settingsPanel = _root.Q("pause-settings-panel");
 
-            _btnResume    = _pauseRoot.Q<Button>("btn-resume");
-            _btnReiniciar = _pauseRoot.Q<Button>("btn-reiniciar");
-            _btnSettings  = _pauseRoot.Q<Button>("btn-settings");
-            _btnHub       = _pauseRoot.Q<Button>("btn-hub");
+            _btnResume     = _pauseRoot.Q<Button>("btn-resume");
+            _btnReiniciar  = _pauseRoot.Q<Button>("btn-reiniciar");
+            _btnSettings   = _pauseRoot.Q<Button>("btn-settings");
+            _btnHub        = _pauseRoot.Q<Button>("btn-hub");
             _btnFooterMenu = _pauseRoot.Q<Button>("btn-footer-menu");
+
+            _btnScaleDown  = _pauseRoot.Q<Button>("btn-scale-down");
+            _btnScaleUp    = _pauseRoot.Q<Button>("btn-scale-up");
+            _lblScaleVal   = _pauseRoot.Q<Label>("lbl-pause-scale-val");
 
             // Wire button events just once
             if (_btnResume != null && !_btnResume.name.EndsWith("_wired"))
             {
                 _btnResume.name += "_wired";
                 _btnResume.clicked += Resume;
-                _btnReiniciar.clicked += ConfirmReiniciar;
-                _btnSettings.clicked += ShowSettings;
-                _btnHub.clicked += ConfirmHub;
+                if (_btnReiniciar != null) _btnReiniciar.clicked += ConfirmReiniciar;
+                if (_btnSettings != null) _btnSettings.clicked += ShowSettings;
+                if (_btnHub != null) _btnHub.clicked += ConfirmHub;
                 if (_btnFooterMenu != null) _btnFooterMenu.clicked += ConfirmHub;
+
+                if (_btnScaleDown != null) _btnScaleDown.clicked += () => ChangeUIScale(-1);
+                if (_btnScaleUp != null) _btnScaleUp.clicked += () => ChangeUIScale(1);
             }
 
-            _settingsPanel?.AddToClassList("hidden");
-            _pauseRoot.AddToClassList("hidden");
+            RefreshScaleUI();
+
+            if (!_paused)
+            {
+                _settingsPanel?.AddToClassList("hidden");
+                _pauseRoot.AddToClassList("hidden");
+            }
         }
 
         void Update()
@@ -116,6 +130,7 @@ namespace Echoes.UI
             _settingsPanel?.AddToClassList("hidden");
             _pauseNav?.RemoveFromClassList("hidden");
             RefreshStats();
+            RefreshScaleUI();
 
             // Focus en Reanudar
             _btnResume?.Focus();
@@ -247,8 +262,46 @@ void ShowSettings()
 
         void SetLabel(string elementName, string text)
         {
-            var lbl = _doc.rootVisualElement.Q<Label>(elementName);
+            var lbl = _doc?.rootVisualElement?.Q<Label>(elementName);
             if (lbl != null) lbl.text = text;
+        }
+
+        void ChangeUIScale(int direction)
+        {
+            float current = GameSettings.UIScaleFactor;
+            float[] presets = GameSettings.UIScalePresets;
+            int bestIdx = 2; // Default 1.0f (index 2)
+            float minDiff = float.MaxValue;
+            for (int i = 0; i < presets.Length; i++)
+            {
+                float diff = Mathf.Abs(presets[i] - current);
+                if (diff < minDiff)
+                {
+                    minDiff = diff;
+                    bestIdx = i;
+                }
+            }
+
+            int nextIdx = Mathf.Clamp(bestIdx + direction, 0, presets.Length - 1);
+            float newScale = presets[nextIdx];
+            GameSettings.SetUIScale(newScale);
+            RefreshScaleUI();
+        }
+
+        public void RefreshScaleUI()
+        {
+            float current = GameSettings.UIScaleFactor;
+            int pct = Mathf.RoundToInt(current * 100f);
+            if (_lblScaleVal != null)
+            {
+                _lblScaleVal.text = $"{pct}%";
+            }
+            SetLabel("lbl-pause-scale-val", $"{pct}%");
+        }
+
+        public void ApplySavedUIScale()
+        {
+            RefreshScaleUI();
         }
     }
 }
