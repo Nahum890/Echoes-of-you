@@ -48,6 +48,11 @@ public class LevelEscapeSequence : MonoBehaviour
 
     void Update()
     {
+        // Rebind en caso de que el Awake del LevelGoal haya corrido después
+        // del nuestro (order de Awake indeterminado) y el campo serializado esté vacío.
+        if (goal == null)
+            goal = LevelGoal.Instance;
+
         if (!_escapeActive)
         {
             if (goal != null && goal.IsReady && !_escapeActive)

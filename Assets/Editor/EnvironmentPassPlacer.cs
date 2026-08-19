@@ -358,7 +358,7 @@ public class EnvironmentPassPlacer : EditorWindow
                 newPP.prefabName = prefab;
                 newPP.requiredForRoomType = true;
                 newPP.size = GetPropSize(prefab);
-                float angle = i * Mathf.PI * 2f / Mathf.Max(required.Count, 1);
+                float angle = i * Mathf.PI * 2f / System.Math.Max(required.Count, 1);
                 float radius = 1.0f + (float)(rand.NextDouble() * 1.5f);
                 newPP.localPosition = new Vector3(Mathf.Cos(angle) * radius, 0, Mathf.Sin(angle) * radius);
                 newPP.localRotationEuler = new Vector3(0, rand.Next(4) * 90f, 0);
@@ -449,7 +449,7 @@ public class EnvironmentPassPlacer : EditorWindow
                 newPP.prefabName = prefab;
                 newPP.requiredForRoomType = true;
                 newPP.size = GetPropSize(prefab);
-                float angle = i * Mathf.PI * 2f / Mathf.Max(required.Count, 1);
+                float angle = i * Mathf.PI * 2f / System.Math.Max(required.Count, 1);
                 float radius = 1.0f + (float)(rand.NextDouble() * 1.5f);
                 newPP.localPosition = new Vector3(Mathf.Cos(angle) * radius, 0, Mathf.Sin(angle) * radius);
                 newPP.localRotationEuler = new Vector3(0, rand.Next(4) * 90f, 0);

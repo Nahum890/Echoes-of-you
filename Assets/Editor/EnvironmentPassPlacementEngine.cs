@@ -151,7 +151,7 @@ namespace Echoes.EnvironmentPass
             Vector3 groundSampleOrigin = new Vector3(worldPos.x, sampleY, worldPos.z);
 
             if (Physics.Raycast(groundSampleOrigin, Vector3.down, out RaycastHit hit,
-                                RAYCAST_DOWN_DIST, LayerMask.GetMask("Default")))
+                                RAYCAST_DOWN_DIST, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
             {
                 if (Mathf.Abs(targetLocalY) < 0.05f || (isDecal && targetLocalY < 0.1f))
                 {
@@ -280,7 +280,7 @@ namespace Echoes.EnvironmentPass
                 float ang = i * Mathf.PI / 4f;
                 Vector3 dir = new(Mathf.Cos(ang), 0, Mathf.Sin(ang));
                 if (Physics.Raycast(center + Vector3.up, dir, out RaycastHit hit, maxDist,
-                                    LayerMask.GetMask("Default")))
+                                    Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
                     bounds.Encapsulate(hit.point);
                 else
                     bounds.Encapsulate(center + dir * maxDist);

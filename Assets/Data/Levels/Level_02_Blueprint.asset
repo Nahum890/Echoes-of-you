@@ -101,6 +101,13 @@ MonoBehaviour:
     scale: {x: 0, y: 0, z: 0}
     customData: 
     targetSignals: []
+  - name: PlacaExploracion
+    type: 4
+    position: {x: 0, y: 0.05, z: 7}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: 
+    targetSignals: []
   - name: PuertaAula
     type: 5
     position: {x: 0, y: 0, z: 27}
@@ -108,8 +115,7 @@ MonoBehaviour:
     scale: {x: 4, y: 3, z: 0.5}
     customData: 
     targetSignals:
-    - PlacaEco_Aula
-    - PlacaJugador_Corredor
+    - PlacaExploracion
   - name: PlataformaRapida
     type: 8
     position: {x: 0, y: 0, z: 34}

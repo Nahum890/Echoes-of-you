@@ -1,0 +1,24 @@
+﻿<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/EchoesTheme.uss" />
+    <Style src="project://database/Assets/UI/Tutorial/TutorialOverlayUI.uss" />
+
+    <ui:VisualElement name="tutorial-overlay-root" class="tutorial-overlay-root tutorial-hidden" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 100%; height: 100%;">
+        <!-- Backdrop Dim -->
+        <ui:VisualElement name="tutorial-backdrop" class="tutorial-backdrop" picking-mode="Ignore" />
+
+        <!-- Main Card Container -->
+        <ui:VisualElement name="tutorial-modal" class="tutorial-modal">
+            <!-- Close Button Top Right -->
+            <ui:Button name="btn-close-tutorial" class="tutorial-close-btn" text="✕ CERRAR" />
+
+            <!-- Tutorial Image -->
+            <ui:VisualElement name="tutorial-image" class="tutorial-image" />
+
+            <!-- Footer Bar with Key Prompt -->
+            <ui:VisualElement name="tutorial-footer" class="tutorial-footer">
+                <ui:Label name="tutorial-prompt-text" class="tutorial-prompt-text" text="Presiona [ ESPACIO ], [ ENTER ] o [ E ] para empezar a jugar" />
+                <ui:Button name="btn-continue-tutorial" class="tutorial-continue-btn" text="CONTINUAR ▶" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

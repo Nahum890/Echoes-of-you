@@ -56,6 +56,43 @@ public class LoadingScreenController : MonoBehaviour
         "Pista: El tiempo en el eco reproduce exactamente cada salto y desplazamiento que hagas."
     };
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    public static void AutoInit()
+    {
+        if (Instance == null && Object.FindAnyObjectByType<LoadingScreenController>() == null)
+        {
+            var panel = UIBootstrap.PanelSettings;
+            var go = new GameObject("LoadingScreenController");
+            var doc = go.AddComponent<UIDocument>();
+            doc.panelSettings = panel;
+            doc.sortingOrder = 9999;
+            var vta = Resources.Load<VisualTreeAsset>("UI/LoadingScreenUI");
+#if UNITY_EDITOR
+            if (vta == null) vta = UnityEditor.AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/UI/LoadingScreenUI.uxml");
+#endif
+            if (vta != null) doc.visualTreeAsset = vta;
+            go.AddComponent<LoadingScreenController>();
+            if (Application.isPlaying) Object.DontDestroyOnLoad(go);
+        }
+    }
+
+    public static void TransitionToScene(string sceneName)
+    {
+        if (string.IsNullOrWhiteSpace(sceneName)) return;
+
+        if (Instance == null)
+            AutoInit();
+
+        if (Instance != null)
+        {
+            Instance.LoadScene(sceneName);
+        }
+        else
+        {
+            SceneManager.LoadScene(sceneName);
+        }
+    }
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -97,10 +134,16 @@ public class LoadingScreenController : MonoBehaviour
         {
             _doc = gameObject.AddComponent<UIDocument>();
             _doc.panelSettings = panel;
-            _doc.sortingOrder = 5000; // Above everything during load
+            _doc.sortingOrder = 9999; // Above everything during load
             var vta = Resources.Load<VisualTreeAsset>("UI/LoadingScreenUI");
             if (vta != null)
                 _doc.visualTreeAsset = vta;
+        }
+        else
+        {
+            _doc.sortingOrder = 9999;
+            if (_doc.panelSettings == null)
+                _doc.panelSettings = panel;
         }
 
         RefreshElementReferences();
@@ -117,8 +160,29 @@ public class LoadingScreenController : MonoBehaviour
         if (_doc == null) _doc = GetComponent<UIDocument>();
         if (_doc == null) return;
 
-        _root = _doc.rootVisualElement;
+        if (_doc.rootVisualElement != null)
+        {
+            var container = _doc.rootVisualElement;
+            container.style.position = Position.Absolute;
+            container.style.left = 0;
+            container.style.top = 0;
+            container.style.right = 0;
+            container.style.bottom = 0;
+            container.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
+            container.style.height = new StyleLength(new Length(100, LengthUnit.Percent));
+            container.style.flexGrow = 1;
+        }
+
+        _root = _doc.rootVisualElement.Q<VisualElement>("loading-root") ?? _doc.rootVisualElement;
         if (_root == null) return;
+
+        _root.style.position = Position.Absolute;
+        _root.style.left = 0;
+        _root.style.top = 0;
+        _root.style.right = 0;
+        _root.style.bottom = 0;
+        _root.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
+        _root.style.height = new StyleLength(new Length(100, LengthUnit.Percent));
 
         _recIdLabel         = _root.Q<Label>("loading-rec-id");
         _statusTagLabel     = _root.Q<Label>("loading-status-tag");
@@ -283,26 +347,18 @@ public class LoadingScreenController : MonoBehaviour
             ? LoreQuotes[levelIdx]
             : "El silencio es solo un eco que aún no ha aprendido a hablar.";
 
-        if (_typewriterCoroutine != null)
-            StopCoroutine(_typewriterCoroutine);
-        _typewriterCoroutine = StartCoroutine(TypewriterRoutine(targetQuote));
+        // Show loading screen immediately
+        if (_doc != null && _doc.rootVisualElement != null)
+        {
+            _doc.rootVisualElement.style.display = DisplayStyle.Flex;
+        }
 
-        // Show loading screen & fade in
         if (_root != null)
         {
             _root.style.display = DisplayStyle.Flex;
             _root.AddToClassList("loading-visible");
+            _root.style.opacity = 1f;
         }
-
-        float fadeTimer = 0f;
-        while (fadeTimer < 0.25f)
-        {
-            fadeTimer += Time.unscaledDeltaTime;
-            if (_root != null)
-                _root.style.opacity = Mathf.Clamp01(fadeTimer / 0.25f);
-            yield return null;
-        }
-        if (_root != null) _root.style.opacity = 1f;
 
         UpdateProgressUI();
 

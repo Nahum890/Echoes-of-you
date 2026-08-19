@@ -101,9 +101,16 @@ MonoBehaviour:
     scale: {x: 5, y: 3, z: 8}
     customData: 
     targetSignals: []
+  - name: PlacaShadowEco
+    type: 4
+    position: {x: 0, y: 0.05, z: 6}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
+    customData: EchoOnly
+    targetSignals: []
   - name: PlacaEco_RamaDerecha
     type: 4
-    position: {x: 5, y: 0.05, z: 16}
+    position: {x: 4, y: 0.05, z: 30}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
     customData: EchoOnly
@@ -130,7 +137,7 @@ MonoBehaviour:
     scale: {x: 4, y: 3, z: 0.5}
     customData: 
     targetSignals:
-    - PlacaEco_RamaDerecha
+    - PlacaShadowEco
   - name: Hall_Estatua
     type: 31
     position: {x: 0, y: 0, z: 30}

@@ -1,6 +1,6 @@
 /* ============================================================
    LevelSelectUI — STITCH ÍNDICE DE RECUERDOS
-   Basado en: stitch_echoes_of_you_ui_system/chapter_select/code.html
+   Basado en el mockup HTML de "Índice de Recuerdos"
    ============================================================ */
 
 @import "EchoesDesignTokens.uss";
@@ -23,7 +23,7 @@
     right: 0;
     bottom: 0;
     background-color: #131410;
-    opacity: 0.85;
+    opacity: 0.90;
 }
 
 .lvl-scanline-overlay {
@@ -32,7 +32,8 @@
     top: 0;
     right: 0;
     bottom: 0;
-    opacity: 0.12;
+    opacity: 0.08;
+    background-color: transparent;
 }
 
 /* ===== MAIN LAYOUT ===== */
@@ -46,37 +47,39 @@
 }
 
 /* ============================================================
-   LEFT SIDEBAR
+   LEFT SIDEBAR (320px)
    ============================================================ */
 
 .lvl-sidebar {
     width: 320px;
     flex-shrink: 0;
-    background-color: rgba(19, 20, 16, 0.85);
+    background-color: rgba(19, 20, 16, 0.92);
     border-right-width: 1px;
-    border-right-color: rgba(74, 70, 63, 0.5);
+    border-right-color: rgba(74, 70, 63, 0.4);
     padding-top: 64px;
-    padding-bottom: 64px;
+    padding-bottom: 48px;
     padding-left: 48px;
-    padding-right: 48px;
+    padding-right: 32px;
     flex-direction: column;
+    justify-content: space-between;
 }
 
 .lvl-sidebar-header {
-    margin-bottom: 48px;
+    margin-bottom: 32px;
 }
 
 .lvl-logo-title {
-    font-size: 32px;
+    font-size: 28px;
     color: #fffeff;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
     letter-spacing: -0.5px;
 }
 
 .lvl-logo-subtitle {
-    font-size: 14px;
+    font-size: 13px;
     color: #959087;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    letter-spacing: 1.5px;
     margin-top: 4px;
 }
 
@@ -85,47 +88,56 @@
 .lvl-nav-list {
     flex-grow: 1;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.lvl-nav-item-wrapper {
+    position: relative;
+    border-left-width: 2px;
+    border-left-color: transparent;
+    transition-property: background-color, border-left-color;
+    transition-duration: 200ms;
+}
+
+.lvl-nav-item-wrapper--active {
+    border-left-color: #fffeff;
+    background-color: rgba(255, 254, 255, 0.08);
 }
 
 .lvl-nav-item {
-    font-size: 16px;
+    font-size: 15px;
     color: #959087;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
-    letter-spacing: 2.4px;
-    padding: 12px 0px 12px 16px;
-    border-left-width: 2px;
-    border-left-color: transparent;
-    transition: color 200ms, translate 200ms;
+    letter-spacing: 3px;
+    padding: 12px 16px;
+    transition-property: color, translate;
+    transition-duration: 200ms;
 }
 
-.lvl-nav-item:hover {
+.lvl-nav-item-wrapper:hover .lvl-nav-item {
     color: #63d4fa;
-    translate: 2px 0px;
+    translate: 4px 0px;
 }
 
 .lvl-nav-item--active {
     color: #fffeff;
-    border-left-width: 2px;
-    border-left-color: #fffeff;
-    background-color: rgba(255, 254, 255, 0.1);
 }
 
 /* ===== EXIT BTN ===== */
 .lvl-exit-btn {
     background-color: transparent;
     border-width: 0px;
-    padding: 14px 0;
-    font-size: 16px;
+    padding: 16px 0;
+    font-size: 15px;
     color: #959087;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
-    letter-spacing: 2.4px;
+    letter-spacing: 2.5px;
     -unity-text-align: middle-left;
-    margin-top: auto;
-    padding-top: 24px;
     border-top-width: 1px;
     border-top-color: rgba(149, 144, 135, 0.2);
-    transition: color 200ms;
+    transition-property: color;
+    transition-duration: 200ms;
 }
 
 .lvl-exit-btn:hover {
@@ -133,12 +145,12 @@
 }
 
 /* ============================================================
-   RIGHT CONTENT
+   RIGHT CONTENT CANVAS
    ============================================================ */
 
 .lvl-content {
     flex-grow: 1;
-    padding-top: 64px;
+    padding-top: 56px;
     padding-bottom: 48px;
     padding-left: 64px;
     padding-right: 64px;
@@ -147,57 +159,57 @@
 }
 
 .lvl-content-header {
-    margin-bottom: 48px;
+    margin-bottom: 32px;
     border-bottom-width: 1px;
-    border-bottom-color: rgba(149, 144, 135, 0.3);
-    padding-bottom: 20px;
+    border-bottom-color: rgba(149, 144, 135, 0.25);
+    padding-bottom: 16px;
 }
 
 .lvl-header-tag {
-    font-size: 16px;
+    font-size: 14px;
     color: #959087;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
-    letter-spacing: 1.6px;
-    margin-bottom: 8px;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
 }
 
 .lvl-header-title {
-    font-size: 48px;
+    font-size: 56px;
     color: #fffeff;
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/Garamond.ttf');
-    letter-spacing: -1px;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    letter-spacing: -1.5px;
 }
 
-/* ===== CHAPTER LIST ===== */
+/* ===== CHAPTER LIST SCROLLVIEW ===== */
 
 .lvl-chapter-list {
     flex-grow: 1;
+    padding-right: 16px;
 }
 
-/* ===== CHAPTER ENTRY ===== */
+/* ===== CHAPTER ENTRY (Card) ===== */
 .lvl-chapter {
     flex-direction: column;
     border-bottom-width: 1px;
-    border-bottom-color: rgba(149, 144, 135, 0.5);
+    border-bottom-color: rgba(149, 144, 135, 0.35);
     padding-top: 24px;
     padding-bottom: 24px;
     padding-left: 24px;
     margin-left: -24px;
-    border-left-width: 1px;
+    border-left-width: 2px;
     border-left-color: transparent;
-    transition: background-color 300ms, border-left-color 300ms;
+    transition-property: background-color, border-left-color;
+    transition-duration: 250ms;
 }
 
 .lvl-chapter:hover {
-    background-color: rgba(57, 57, 53, 0.2);
-    border-left-width: 1px;
+    background-color: rgba(57, 57, 53, 0.25);
     border-left-color: #959087;
 }
 
 /* Active (expanded) chapter */
 .lvl-chapter--active {
-    background-color: rgba(68, 76, 89, 0.05);
-    border-left-width: 1px;
+    background-color: rgba(68, 76, 89, 0.08);
     border-left-color: #fffeff;
 }
 
@@ -207,7 +219,7 @@
 
 /* Locked chapter */
 .lvl-chapter--locked {
-    opacity: 0.5;
+    opacity: 0.45;
 }
 
 /* ===== CHAPTER MAIN ROW ===== */
@@ -220,20 +232,24 @@
 /* ===== THUMBNAIL ===== */
 .lvl-chapter-thumb {
     width: 96px;
-    height: 72px;
+    height: 68px;
     flex-shrink: 0;
     border-width: 1px;
     border-color: rgba(149, 144, 135, 0.3);
     overflow: hidden;
+    position: relative;
+    background-color: #1b1c18;
 }
 
 .lvl-chapter-thumb--active {
     width: 128px;
     height: 96px;
+    border-color: #63d4fa;
 }
 
 .lvl-chapter-thumb--locked {
-    border-color: rgba(147, 0, 10, 0.3);
+    border-color: rgba(147, 0, 10, 0.4);
+    background-color: #1a1515;
 }
 
 .lvl-chapter-thumb-placeholder {
@@ -242,14 +258,28 @@
     top: 0;
     right: 0;
     bottom: 0;
-    background-color: #353530;
+    background-color: #242521;
+}
+
+.lvl-chapter-thumb-scanline {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(99, 212, 250, 0.06);
 }
 
 .lvl-chapter-thumb-err {
     position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    -unity-text-align: middle-center;
     font-size: 16px;
     color: #ffb4ab;
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
 }
 
 /* ===== CHAPTER METADATA ===== */
@@ -261,41 +291,49 @@
 .lvl-chapter-meta-row {
     flex-direction: row;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     margin-bottom: 4px;
 }
 
 .lvl-chapter-rec {
-    font-size: 16px;
+    font-size: 14px;
     color: #959087;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
-    letter-spacing: 1.6px;
+    letter-spacing: 1.5px;
 }
 
 .lvl-chapter-rec--locked {
-    color: rgba(255, 180, 171, 0.7);
+    color: rgba(255, 180, 171, 0.85);
+}
+
+.lvl-meta-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 2px;
+    background-color: #4a463f;
+}
+
+.lvl-meta-dot--locked {
+    background-color: rgba(147, 0, 10, 0.6);
 }
 
 .lvl-chapter-location {
-    font-size: 16px;
+    font-size: 14px;
     color: #959087;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
-    letter-spacing: 1.6px;
+    letter-spacing: 1.2px;
 }
 
 .lvl-chapter-location--locked {
-    color: rgba(255, 180, 171, 0.7);
+    color: rgba(255, 180, 171, 0.85);
 }
 
 .lvl-chapter-progress {
-    font-size: 16px;
+    font-size: 14px;
     color: #63d4fa;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
     margin-left: auto;
-}
-
-.lvl-chapter-progress {
-    color: #63d4fa;
+    letter-spacing: 1px;
 }
 
 .lvl-chapter-progress--dim {
@@ -303,40 +341,71 @@
 }
 
 .lvl-chapter-progress--locked {
-    color: rgba(255, 180, 171, 0.7);
+    color: rgba(255, 180, 171, 0.85);
+}
+
+/* Title container with echo effect */
+.lvl-title-container {
+    position: relative;
+    margin-bottom: 4px;
+}
+
+.lvl-chapter-title-echo {
+    position: absolute;
+    left: 6px;
+    top: 4px;
+    font-size: 40px;
+    color: #63d4fa;
+    opacity: 0.30;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    pointer-events: none;
 }
 
 .lvl-chapter-title {
-    font-size: 36px;
+    font-size: 40px;
     color: #fffeff;
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/Garamond.ttf');
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    letter-spacing: -0.5px;
 }
 
-.lvl-chapter-title {
-    color: #fffeff;
-}
-
-.lvl-chapter-title--dim {
+/* Collapsed Title Button */
+.lvl-chapter-btn-title {
+    background-color: transparent;
+    border-width: 0px;
+    padding: 0;
+    margin: 0;
+    font-size: 32px;
     color: #e4e2dc;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/Garamond.ttf');
+    -unity-text-align: middle-left;
+    transition-property: color, translate;
+    transition-duration: 200ms;
 }
 
-.lvl-chapter-title--locked {
-    color: rgba(228, 226, 220, 0.5);
+.lvl-chapter-btn-title:hover {
+    color: #fffeff;
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    translate: 4px 0;
+}
+
+.lvl-chapter-btn-title--locked {
+    color: rgba(228, 226, 220, 0.45);
     text-decoration: line-through;
 }
 
 /* ===== EXPANDED CONTENT ===== */
 .lvl-chapter-expanded {
-    margin-top: 16px;
-    padding-left: 152px;
+    margin-top: 14px;
+    padding-left: 16px;
     border-left-width: 1px;
     border-left-color: rgba(149, 144, 135, 0.3);
 }
 
 .lvl-chapter-desc {
-    font-size: 18px;
+    font-size: 15px;
     color: #ccc6bc;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    line-height: 22px;
     margin-bottom: 20px;
     white-space: normal;
 }
@@ -345,34 +414,25 @@
     background-color: transparent;
     border-width: 1px;
     border-color: #959087;
-    padding: 16px 32px;
-}
-
-.lvl-chapter-enter-label {
-    font-size: 16px;
+    padding: 14px 28px;
+    font-size: 14px;
     color: #fffeff;
     -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
-    letter-spacing: 2px;
+    letter-spacing: 3px;
+    -unity-text-align: middle-center;
+    align-self: flex-start;
+    transition-property: border-color, background-color, color, translate;
+    transition-duration: 200ms;
 }
 
-/* ===== ARROW BTN ===== */
-.lvl-chapter-arrow-btn {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    translate: 0 -50%;
-    background-color: transparent;
-    border-width: 0px;
-    font-size: 20px;
-    color: #959087;
-    transition: color 200ms;
-}
-
-.lvl-chapter-arrow-btn:hover {
+.lvl-chapter-enter-btn:hover {
+    border-color: #63d4fa;
+    background-color: rgba(68, 76, 89, 0.35);
     color: #fffeff;
+    translate: 2px 0px;
 }
 
 /* ===== BOTTOM PADDING ===== */
 .lvl-bottom-padding {
-    height: 128px;
+    height: 64px;
 }

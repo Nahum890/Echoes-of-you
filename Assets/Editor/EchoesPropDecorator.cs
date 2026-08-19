@@ -41,7 +41,7 @@ public static class EchoesPropDecorator
     // PROP_GRAMMAR Tabla 8.3 (Y ∈ [0.5, 1.8]) — se eleva a 0.5.
     static readonly Dictionary<int, NarrativeEntry> Table = new()
     {
-        [1]  = E("Prop_Coat",             null,                "SchoolCorridor_01",         0f, 1f, 6f,      "MIC-001"),
+        [1]  = E("Prop_Coat",             null,                "SchoolHall_01",             -2.8f, 1f, -2.6f, "MIC-001"),
         [2]  = E("Prop_Notebook",         null,                "SchoolClassroom_02",        3.5f, 0.75f, 3.5f, "MIC-002"),
         [3]  = E("MochilaLyra",           null,                "SchoolLyraClassroom_01",    4f, 0.5f, 4f,    "MIC-002"),
         [4]  = E("Prop_Stopwatch",        null,                "SchoolGym_01",              0f, 1f, 12f,     "MIC-003"),
@@ -90,7 +90,7 @@ public static class EchoesPropDecorator
         // Snap al suelo: conserva la altura de la Tabla 8.2 como offset sobre
         // el piso real encontrado por raycast.
         if (Physics.Raycast(new Vector3(worldPos.x, worldPos.y + 10f, worldPos.z),
-                Vector3.down, out RaycastHit hit, 40f))
+                Vector3.down, out RaycastHit hit, 40f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
         {
             worldPos.y = hit.point.y + entry.propPos.y;
         }

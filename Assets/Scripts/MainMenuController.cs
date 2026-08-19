@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -47,8 +47,10 @@ public class MainMenuController : MonoBehaviour
     Coroutine _terminalLogCoroutine;
 
     // Main Menu Buttons
+    Button _btnContinue;
     Button _btnNewGame;
     Button _btnLevels;
+    Button _btnChapters;
     Button _btnSettings;
     Button _btnExit;
     Button _btnCredits;
@@ -137,8 +139,10 @@ public class MainMenuController : MonoBehaviour
         _panelDisconnectOffline = _root.Q("panel-disconnect-offline");
 
         // Side nav buttons
+        _btnContinue = _root.Q<Button>("nav-continue");
         _btnNewGame = _root.Q<Button>("nav-newgame");
         _btnLevels = _root.Q<Button>("nav-levels");
+        _btnChapters = _root.Q<Button>("nav-chapters");
         _btnSettings = _root.Q<Button>("nav-settings");
         _btnExit = _root.Q<Button>("nav-exit");
         _btnCredits = _root.Q<Button>("nav-credits");
@@ -148,10 +152,12 @@ public class MainMenuController : MonoBehaviour
         {
             SetupHoverCallbacks();
 
+            RegisterButtonClick("nav-continue", ContinueGame);
             RegisterButtonClick("nav-newgame", StartNewGame);
             RegisterButtonClick("nav-levels", ShowStabilityMap);
+            RegisterButtonClick("nav-chapters", ShowStabilityMap);
             RegisterButtonClick("nav-settings", ShowSettings);
-            RegisterButtonClick("nav-exit", QuitGame);
+            RegisterButtonClick("nav-exit", ShowExitConfirm);
             RegisterButtonClick("nav-credits", ShowCredits);
         }
 
@@ -211,9 +217,12 @@ public class MainMenuController : MonoBehaviour
             RegisterButtonClick("btn-restore-defaults", RestoreFactoryDefaults);
             RegisterButtonClick("btn-settings-back", DiscardSettings);
             RegisterButtonClick("btn-settings-apply", ApplySettings);
-            RegisterButtonClick("btn-levels-back", ShowStabilityMap);
+            RegisterButtonClick("btn-levels-back", HideAllPreviewPanels);
             RegisterButtonClick("btn-reset-progress", OnResetProgressClicked);
+            RegisterButtonClick("btn-reset-progress-cancel", OnResetProgressCancel);
             RegisterButtonClick("btn-reset-progress-confirm", ConfirmResetProgress);
+            RegisterButtonClick("btn-exit-cancel", HideAllPreviewPanels);
+            RegisterButtonClick("btn-exit-confirm", QuitGame);
 
             _wired = true;
         }
@@ -261,7 +270,7 @@ public class MainMenuController : MonoBehaviour
         _mainContent?.RemoveFromClassList("hidden");
         _rightContentContainer?.RemoveFromClassList("hidden");
 
-        SetActiveNav(_btnNewGame);
+        SetActiveNav(null);
         HideAllPreviewPanels();
     }
 
@@ -285,14 +294,24 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    // --- Hover Background & Title Swap ---
+    bool _isMouseInRightPanel;
 
     void SetupHoverCallbacks()
     {
+        if (_btnContinue != null)
+        {
+            _btnContinue.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnContinue, MainMenuCinematicWorld.MenuAmbience.Void, "Aula 104"));
+            _btnContinue.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnContinue));
+        }
         if (_btnNewGame != null)
         {
-            _btnNewGame.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnNewGame, MainMenuCinematicWorld.MenuAmbience.Void, "Aula 104"));
+            _btnNewGame.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnNewGame, MainMenuCinematicWorld.MenuAmbience.Void, "Nuevo Expediente"));
             _btnNewGame.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnNewGame));
+        }
+        if (_btnChapters != null)
+        {
+            _btnChapters.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnChapters, MainMenuCinematicWorld.MenuAmbience.Stability, "Archivos Escolares"));
+            _btnChapters.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnChapters));
         }
         if (_btnLevels != null)
         {
@@ -304,11 +323,17 @@ public class MainMenuController : MonoBehaviour
             _btnSettings.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnSettings, MainMenuCinematicWorld.MenuAmbience.System, "Ajustar Receptor"));
             _btnSettings.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnSettings));
         }
+        if (_btnCredits != null)
+        {
+            _btnCredits.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnCredits, MainMenuCinematicWorld.MenuAmbience.Void, "Créditos"));
+            _btnCredits.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnCredits));
+        }
         if (_btnExit != null)
         {
             _btnExit.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnExit, MainMenuCinematicWorld.MenuAmbience.Disconnect, "Salir del Recuerdo"));
             _btnExit.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnExit));
         }
+
     }
 
     void OnNavHover(Button btn, MainMenuCinematicWorld.MenuAmbience ambience, string title)
@@ -338,22 +363,21 @@ public class MainMenuController : MonoBehaviour
             _heroTitle.text = GetActiveHeroTitle();
         }
 
-        // Keep active selection styling only on the active nav button
         if (btn != _activeNavButton)
         {
             btn.RemoveFromClassList("nav-item--active");
         }
-
-        // Return to the active nav's preview panel
-        ShowPreviewPanel(GetPanelNameForButton(_activeNavButton));
     }
 
     void SetActiveNav(Button activeBtn)
     {
         _activeNavButton = activeBtn;
+        _btnContinue?.RemoveFromClassList("nav-item--active");
         _btnNewGame?.RemoveFromClassList("nav-item--active");
         _btnLevels?.RemoveFromClassList("nav-item--active");
+        _btnChapters?.RemoveFromClassList("nav-item--active");
         _btnSettings?.RemoveFromClassList("nav-item--active");
+        _btnCredits?.RemoveFromClassList("nav-item--active");
         _btnExit?.RemoveFromClassList("nav-item--active");
         activeBtn?.AddToClassList("nav-item--active");
 
@@ -365,8 +389,8 @@ public class MainMenuController : MonoBehaviour
 
     MainMenuCinematicWorld.MenuAmbience GetActiveNavAmbience()
     {
-        if (_activeNavButton == _btnNewGame) return MainMenuCinematicWorld.MenuAmbience.Void;
-        if (_activeNavButton == _btnLevels) return MainMenuCinematicWorld.MenuAmbience.Stability;
+        if (_activeNavButton == _btnContinue || _activeNavButton == _btnNewGame) return MainMenuCinematicWorld.MenuAmbience.Void;
+        if (_activeNavButton == _btnLevels || _activeNavButton == _btnChapters) return MainMenuCinematicWorld.MenuAmbience.Stability;
         if (_activeNavButton == _btnSettings) return MainMenuCinematicWorld.MenuAmbience.System;
         if (_activeNavButton == _btnExit) return MainMenuCinematicWorld.MenuAmbience.Disconnect;
         return MainMenuCinematicWorld.MenuAmbience.Void;
@@ -374,17 +398,20 @@ public class MainMenuController : MonoBehaviour
 
     string GetActiveHeroTitle()
     {
-        if (_activeNavButton == _btnNewGame) return "Aula 104";
-        if (_activeNavButton == _btnLevels) return "Archivos Escolares";
+        if (_activeNavButton == _btnContinue) return "Aula 104";
+        if (_activeNavButton == _btnNewGame) return "Nuevo Expediente";
+        if (_activeNavButton == _btnLevels || _activeNavButton == _btnChapters) return "Archivos Escolares";
         if (_activeNavButton == _btnSettings) return "Ajustar Receptor";
+        if (_activeNavButton == _btnCredits) return "Créditos";
         if (_activeNavButton == _btnExit) return "Salir del Recuerdo";
         return "Recuerdo Aislado";
     }
 
     string GetPanelNameForButton(Button btn)
     {
+        if (btn == _btnContinue) return "panel-neural-archives";
         if (btn == _btnNewGame) return "panel-neural-archives";
-        if (btn == _btnLevels) return "panel-stability-map";
+        if (btn == _btnLevels || btn == _btnChapters) return "panel-stability-map";
         if (btn == _btnSettings) return "panel-calibration-preview";
         if (btn == _btnExit) return "panel-disconnect-offline";
         return "panel-neural-archives";
@@ -443,7 +470,7 @@ public class MainMenuController : MonoBehaviour
         if (_heroTitle != null)
             _heroTitle.text = "Aula 104";
 
-        SetActiveNav(_btnNewGame);
+        SetActiveNav(null);
         HideAllPreviewPanels();
         RefreshNeuralArchives();
     }
@@ -451,6 +478,7 @@ public class MainMenuController : MonoBehaviour
     void HideAllPreviewPanels()
     {
         _activePreviewPanelName = "";
+        SetActiveNav(null);
         _panelNeuralArchives?.RemoveFromClassList("preview-panel--visible");
         _panelStabilityMap?.RemoveFromClassList("preview-panel--visible");
         _panelCalibrationPreview?.RemoveFromClassList("preview-panel--visible");
@@ -471,7 +499,7 @@ public class MainMenuController : MonoBehaviour
         if (_heroTitle != null)
             _heroTitle.text = "Archivos Escolares";
 
-        SetActiveNav(_btnLevels);
+        SetActiveNav(_btnChapters ?? _btnLevels);
         _activePreviewPanelName = ""; // reset para forzar refresco
         ShowPreviewPanel("panel-stability-map");
         RefreshDashboard();
@@ -496,9 +524,28 @@ public class MainMenuController : MonoBehaviour
 
     // --- Actions ---
 
+    void ContinueGame()
+    {
+        string continueScene = GameProgress.GetContinueSceneName();
+        LoadLevel(continueScene);
+    }
+
     void StartNewGame()
     {
         LoadLevel(firstLevelScene);
+    }
+
+    void ShowExitConfirm()
+    {
+        SetActiveNav(_btnExit);
+        _activePreviewPanelName = "";
+        ShowPreviewPanel("panel-disconnect-offline");
+    }
+
+    void OnResetProgressCancel()
+    {
+        var resetPanel = _root?.Q("reset-progress-panel");
+        resetPanel?.AddToClassList("hidden");
     }
 
     void LoadLevel(string levelName)
@@ -1176,19 +1223,63 @@ public class MainMenuController : MonoBehaviour
             bool isUnlocked = GameProgress.IsSceneUnlocked(sceneName);
             bool isCompleted = GameProgress.IsSceneCompleted(sceneName);
 
-            btn.RemoveFromClassList("level-button--locked");
-            btn.RemoveFromClassList("level-button--completed");
-
-            if (!isUnlocked)
+            // Toggle classes on parent card if present
+            var card = btn.GetFirstAncestorOfType<VisualElement>();
+            while (card != null && !card.ClassListContains("lvl-chapter") && card != _root)
             {
-                btn.AddToClassList("level-button--locked");
-                btn.SetEnabled(false);
-                continue;
+                card = card.parent;
             }
 
-            btn.SetEnabled(true);
-            if (isCompleted)
-                btn.AddToClassList("level-button--completed");
+            if (card != null && card.ClassListContains("lvl-chapter"))
+            {
+                card.RemoveFromClassList("lvl-chapter--locked");
+                card.RemoveFromClassList("lvl-chapter--completed");
+                card.RemoveFromClassList("lvl-chapter--active");
+
+                var thumb = card.Q(className: "lvl-chapter-thumb");
+                thumb?.RemoveFromClassList("lvl-chapter-thumb--locked");
+                thumb?.RemoveFromClassList("lvl-chapter-thumb--active");
+
+                var thumbLabel = thumb?.Q<Label>();
+
+                if (!isUnlocked)
+                {
+                    card.AddToClassList("lvl-chapter--locked");
+                    thumb?.AddToClassList("lvl-chapter-thumb--locked");
+                    if (thumbLabel != null) thumbLabel.text = "ERR";
+                    btn.SetEnabled(false);
+                    continue;
+                }
+
+                btn.SetEnabled(true);
+                if (thumbLabel != null) thumbLabel.text = $"{i:D2}";
+
+                if (isCompleted)
+                {
+                    card.AddToClassList("lvl-chapter--completed");
+                }
+                else if (sceneName == GameProgress.GetContinueSceneName())
+                {
+                    card.AddToClassList("lvl-chapter--active");
+                    thumb?.AddToClassList("lvl-chapter-thumb--active");
+                }
+            }
+            else
+            {
+                btn.RemoveFromClassList("level-button--locked");
+                btn.RemoveFromClassList("level-button--completed");
+
+                if (!isUnlocked)
+                {
+                    btn.AddToClassList("level-button--locked");
+                    btn.SetEnabled(false);
+                    continue;
+                }
+
+                btn.SetEnabled(true);
+                if (isCompleted)
+                    btn.AddToClassList("level-button--completed");
+            }
 
             System.Action handler = () => LoadLevel(sceneName);
             _levelClickHandlers[btnName] = handler;

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class SceneTransitionManager : MonoBehaviour
 {
@@ -75,6 +76,29 @@ public class SceneTransitionManager : MonoBehaviour
         {
             Debug.LogError($"[SceneTransitionManager] Scene '{sceneName}' NOT in Build Settings!");
             ResetFade();
+            return;
+        }
+
+        var loadingController = LoadingScreenController.Instance;
+        if (loadingController == null)
+        {
+            var panel = UIBootstrap.PanelSettings;
+            var go = new GameObject("LoadingScreenController");
+            var doc = go.AddComponent<UIDocument>();
+            doc.panelSettings = panel;
+            doc.sortingOrder = 5000;
+            var vta = Resources.Load<VisualTreeAsset>("UI/LoadingScreenUI");
+#if UNITY_EDITOR
+            if (vta == null) vta = UnityEditor.AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/UI/LoadingScreenUI.uxml");
+#endif
+            if (vta != null) doc.visualTreeAsset = vta;
+            loadingController = go.AddComponent<LoadingScreenController>();
+            if (Application.isPlaying) DontDestroyOnLoad(go);
+        }
+
+        if (loadingController != null)
+        {
+            loadingController.LoadScene(sceneName);
             return;
         }
 

@@ -259,10 +259,7 @@ public class LevelRuntimeController : MonoBehaviour
                     ? System.IO.Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(nextBuildIndex))
                     : System.IO.Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(0));
 
-                if (LoadingScreenController.Instance != null)
-                    LoadingScreenController.Instance.LoadScene(targetScene);
-                else
-                    SceneManager.LoadScene(targetScene);
+                LoadingScreenController.TransitionToScene(targetScene);
             });
             return; // NO avanzar automáticamente - el gate lo hará
         }

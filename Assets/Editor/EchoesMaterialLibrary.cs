@@ -119,7 +119,7 @@ public static Material FloorMat            => GetOrCreateArchitectureMaterial("M
         }
 
         Color color = TokenToColor(token);
-        mat.color = color;
+        SetBaseColor(mat, color);
 
         // CONFIGURACIÓN LIMINAL POR TOKEN
         ConfigureLiminalProperties(token, mat, color);
@@ -237,6 +237,44 @@ public static Material FloorMat            => GetOrCreateArchitectureMaterial("M
             mat.SetColor("_ResonanceGlow", new Color(0, 0.8f, 1f, 0.3f));
             mat.SetColor("_BaseColor", new Color(0.31f, 0.765f, 0.91f, 0.45f));
         }
+        else if (mat.shader != null && mat.shader.name.Contains("PS1World"))
+        {
+            // TUNING PS1 POR TOKEN — variación sutil de desgaste/manchas/flicker
+            // para que cada token tenga identidad material sin romper la estética.
+            switch (token)
+            {
+                case "corridor-navy":
+                    mat.SetFloat("_StainStrength", 0.6f);
+                    mat.SetFloat("_FlickerStrength", 0.2f);
+                    break;
+                case "institutional-teal":
+                    mat.SetFloat("_StainStrength", 0.55f);
+                    mat.SetFloat("_FlickerStrength", 0.15f);
+                    break;
+                case "faded-mustard":
+                    mat.SetFloat("_StainStrength", 0.5f);
+                    mat.SetFloat("_QuantizeColors", 24f);
+                    break;
+                case "sage-green":
+                    mat.SetFloat("_StainStrength", 0.45f);
+                    break;
+                case "dusty-rose":
+                    mat.SetFloat("_StainStrength", 0.35f);
+                    mat.SetFloat("_FlickerStrength", 0.1f);
+                    break;
+                case "void-black":
+                    mat.SetFloat("_StainStrength", 0.7f);
+                    mat.SetFloat("_FlickerStrength", 0.05f);
+                    break;
+                case "memory-amber":
+                    mat.SetFloat("_FlickerStrength", 0.05f);
+                    mat.SetFloat("_QuantizeColors", 16f);
+                    break;
+                default:
+                    mat.SetFloat("_StainStrength", 0.5f);
+                    break;
+            }
+        }
 
         // EMISSION PARA TOKENES BRILLANTES
         if (token == "echo-cyan" || token == "memory-amber" || token == "fluorescent-sick" || token == "wrongness-red")
@@ -289,7 +327,7 @@ public static Material FloorMat            => GetOrCreateArchitectureMaterial("M
             mat.shader = shader;
         }
 
-        mat.color = color;
+        SetBaseColor(mat, color);
         
         // ASIGNAR TEXTURAS según el material
         AssignMaterialTextures(name, mat);
@@ -320,7 +358,7 @@ public static Material FloorMat            => GetOrCreateArchitectureMaterial("M
             mat.shader = shader;
         }
 
-        mat.color = color;
+        SetBaseColor(mat, color);
         AssignMaterialTextures(name, mat);
         EditorUtility.SetDirty(mat);
         return mat;
@@ -448,7 +486,7 @@ public static Material FloorMat            => GetOrCreateArchitectureMaterial("M
             mat.shader = shader;
         }
 
-        mat.color = color;
+        SetBaseColor(mat, color);
         mat.SetFloat("_Surface", 1f);
         mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
         mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
@@ -472,6 +510,15 @@ public static Material FloorMat            => GetOrCreateArchitectureMaterial("M
             return c;
         }
         return new Color(1, 0, 1, alpha);
+    }
+
+    // Los shaders custom de Echoes usan _BaseColor (no _Color). mat.color setea
+    // _Color y fallaba silenciosamente, dejando el gris por defecto del shader.
+    private static void SetBaseColor(Material mat, Color color)
+    {
+        if (mat == null) return;
+        if (mat.HasProperty("_BaseColor")) mat.SetColor("_BaseColor", color);
+        if (mat.HasProperty("_Color")) mat.SetColor("_Color", color);
     }
 
     public static void EnsureFolderExists(string assetPath)

@@ -10,14 +10,26 @@ using Echoes.UI;
 /// </summary>
 public static class GameplayUIBootstrap
 {
+    static bool _sceneHooked;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    static void EnsureGameplayUI()
+    static void Init()
+    {
+        if (!_sceneHooked)
+        {
+            SceneManager.sceneLoaded += (scene, mode) => EnsureGameplayUI();
+            _sceneHooked = true;
+        }
+        EnsureGameplayUI();
+    }
+
+    public static void EnsureGameplayUI()
     {
         string sceneName = SceneManager.GetActiveScene().name;
         if (string.IsNullOrEmpty(sceneName)) return;
 
         // Skip non-gameplay scenes
-        if (sceneName == "MainMenu" || sceneName == "CreditsScene" || sceneName == "VN_Dialogue_Test")
+        if (sceneName == "MainMenu" || sceneName == "CreditsScene")
             return;
 
         var panel = UIBootstrap.PanelSettings;
@@ -55,6 +67,44 @@ public static class GameplayUIBootstrap
             var tmpl = Resources.Load<VisualTreeAsset>("UI/SettingsUI");
             sc.Setup(null, tmpl);
         }
+
+        // --- VN Dialogue & Choice System ---
+        if (Echoes.VN.VN_DialogueController.Instance == null && Object.FindAnyObjectByType<Echoes.VN.VN_DialogueController>() == null)
+        {
+            var go = new GameObject("VNDialogueController");
+            var doc = go.AddComponent<UIDocument>();
+            doc.panelSettings = panel;
+            var vta = Resources.Load<VisualTreeAsset>("UI/VN/VN_DialogueUI");
+#if UNITY_EDITOR
+            if (vta == null) vta = UnityEditor.AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/UI/VN/VN_DialogueUI.uxml");
+#endif
+            if (vta != null) doc.visualTreeAsset = vta;
+            go.AddComponent<Echoes.VN.VN_DialogueController>();
+            if (Application.isPlaying) Object.DontDestroyOnLoad(go);
+        }
+
+        if (Echoes.VN.VN_ChoiceGateController.Instance == null && Object.FindAnyObjectByType<Echoes.VN.VN_ChoiceGateController>() == null)
+        {
+            var go = new GameObject("VNChoiceGateController");
+            go.AddComponent<Echoes.VN.VN_ChoiceGateController>();
+            if (Application.isPlaying) Object.DontDestroyOnLoad(go);
+        }
+
+        // --- Tutorial Overlay ---
+        if (Echoes.UI.TutorialOverlayController.Instance == null && Object.FindAnyObjectByType<Echoes.UI.TutorialOverlayController>() == null)
+        {
+            var go = new GameObject("TutorialOverlayController");
+            var doc = go.AddComponent<UIDocument>();
+            doc.panelSettings = panel;
+            doc.sortingOrder = 550;
+            var vta = Resources.Load<VisualTreeAsset>("UI/Tutorial/TutorialOverlayUI");
+#if UNITY_EDITOR
+            if (vta == null) vta = UnityEditor.AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/UI/Tutorial/TutorialOverlayUI.uxml");
+#endif
+            if (vta != null) doc.visualTreeAsset = vta;
+            go.AddComponent<Echoes.UI.TutorialOverlayController>();
+            if (Application.isPlaying) Object.DontDestroyOnLoad(go);
+        }
     }
 
     static T CreateUIDocument<T>(string name, string vtaPath, PanelSettings panel, int sort) where T : MonoBehaviour
@@ -74,6 +124,17 @@ public static class GameplayUIBootstrap
         }
 
         var comp = go.AddComponent<T>();
+        if (doc.rootVisualElement != null)
+        {
+            var r = doc.rootVisualElement;
+            r.style.position = Position.Absolute;
+            r.style.left = 0;
+            r.style.top = 0;
+            r.style.right = 0;
+            r.style.bottom = 0;
+            r.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
+            r.style.height = new StyleLength(new Length(100, LengthUnit.Percent));
+        }
         // Re-trigger OnEnable so it picks up the now-populated rootVisualElement
         comp.enabled = false;
         comp.enabled = true;

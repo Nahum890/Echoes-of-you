@@ -1,37 +1,10 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 /// <summary>
 /// MenuHoverSystem — Fase 6: Sistema de hover simplificado a 4 capas canónicas.
-/// 
-/// CAPAS MANTENIDAS:
-/// 1. BASE — .nav-item-v2
-/// 2. HOVER/FOCUS — .nav-item-v2:hover, .nav-item-v2:focus (CSS puro)
-/// 3. ACTIVE — .nav-item-v2:active (CSS puro)
-/// 4. GHOST (1 SOLO) — .nav-item-ghost + .nav-item-ghost--visible
-/// 
-/// FOCUS PIP (controller) — .nav-item-focus-pip + .nav-item-focus-pip--visible
-/// 
-/// ELIMINADOS:
-/// - Aberración cromática (chroma R/B)
-/// - Capa de ruido (noise)
-/// - Scanline
-/// - Eco visual (echo)
-/// - Flash de confirmación (confirm-flash)
-/// - 2do ghost (ghost-a/ghost-b → 1 solo)
-/// - Panel tints (panel-tint-*)
-/// - Gradientes side-nav (side-nav-gradient-*)
-/// - Partículas (ui-particle)
-/// - CRT blink (right-panel-crt-blink)
-/// 
-/// Timing leído desde CSS variables:
-/// --duration-hover-mouse: 150ms
-/// --duration-hover-controller: 200ms
-/// --duration-active: 80ms
-/// 
-/// Audio clips: asignar en Inspector (hoverInClip, hoverOutClip, clickConfirmClip, navMoveClip, crtAmbientClip)
 /// </summary>
 public class MenuHoverSystem : MonoBehaviour
 {
@@ -98,7 +71,7 @@ public class MenuHoverSystem : MonoBehaviour
 
     readonly Dictionary<Button, MenuButtonHoverState> _buttonStates = new();
 
-    Button _btnNewGame, _btnLevels, _btnChapters, _btnSettings, _btnCredits, _btnExit;
+    Button _btnContinue, _btnNewGame, _btnLevels, _btnChapters, _btnSettings, _btnCredits, _btnExit;
 
     float _lastHoverExitTime = -1f;
 
@@ -166,6 +139,7 @@ public class MenuHoverSystem : MonoBehaviour
 
     void InitializeButtons()
     {
+        _btnContinue  = _root.Q<Button>("nav-continue");
         _btnNewGame   = _root.Q<Button>("nav-newgame");
         _btnLevels    = _root.Q<Button>("nav-levels");
         _btnChapters  = _root.Q<Button>("nav-chapters");
@@ -173,12 +147,13 @@ public class MenuHoverSystem : MonoBehaviour
         _btnCredits   = _root.Q<Button>("nav-credits");
         _btnExit      = _root.Q<Button>("nav-exit");
 
-        RegisterButton(_btnNewGame,  "INICIAR RECUERDO");
+        RegisterButton(_btnContinue, "CONTINUAR");
+        RegisterButton(_btnNewGame,  "NUEVO EXPEDIENTE");
         RegisterButton(_btnLevels,   "ARCHIVOS");
-        RegisterButton(_btnChapters, "SELECCION CAPITULOS");
-        RegisterButton(_btnSettings, "CONFIGURAR");
-        RegisterButton(_btnCredits,  "CREDITOS");
-        RegisterButton(_btnExit,     "DESCONECTAR");
+        RegisterButton(_btnChapters, "SELECCIÓN DE CAPÍTULOS");
+        RegisterButton(_btnSettings, "AJUSTES");
+        RegisterButton(_btnCredits,  "CRÉDITOS");
+        RegisterButton(_btnExit,     "SALIR");
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -280,7 +255,7 @@ public class MenuHoverSystem : MonoBehaviour
         _uiAudioSource.PlayOneShot(clickConfirmClip, clickVolume);
     }
 
-void PlayNavMove()
+    void PlayNavMove()
     {
         if (navMoveClip == null) return;
         _uiAudioSource.pitch = Random.Range(0.95f, 1.05f);
@@ -325,8 +300,6 @@ void PlayNavMove()
     // ═══════════════════════════════════════════════════════════════
     // UTILIDADES
     // ═══════════════════════════════════════════════════════════════
-    // UTILIDADES
-    // ═══════════════════════════════════════════════════════════════
 
     public Coroutine RunCoroutine(IEnumerator coroutine) => StartCoroutine(coroutine);
     public void StopRunningCoroutine(Coroutine coroutine) { if (coroutine != null) StopCoroutine(coroutine); }
@@ -360,10 +333,10 @@ public class MenuButtonHoverState
     {
         _btn = btn;
         _system = system;
-        _label = label;
+        _label = !string.IsNullOrEmpty(btn.text) ? btn.text : label;
 
         // Crear ghost layer (1 solo) — usar Label para texto
-        _ghostLayer = new Label(label);
+        _ghostLayer = new Label(_label);
         _ghostLayer.AddToClassList("nav-item-ghost");
         _btn.Add(_ghostLayer);
 

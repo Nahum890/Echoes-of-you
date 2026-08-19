@@ -93,7 +93,7 @@ namespace Echoes.EnvironmentPass
                 }
             }
 
-            foreach (var (pname, ppos) in propPositions)
+            foreach (var (pname, ppos, _) in propPositions)
             {
                 string pn = pname.ToLower();
                 bool isWallProp = pn.Contains("cartelera") || pn.Contains("reloj") || pn.Contains("extintor") || 
@@ -102,7 +102,7 @@ namespace Echoes.EnvironmentPass
                 if (!isWallProp)
                 {
                     if (Physics.Raycast(ppos + Vector3.up * 1f, Vector3.down, out RaycastHit hit, 2.5f,
-                                        LayerMask.GetMask("Default")))
+                                    Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
                     {
                         if (Mathf.Abs(ppos.y - hit.point.y) > 0.35f)
                             report.warnings.Add($"{pname} floating {Mathf.Abs(ppos.y - hit.point.y):F2}m above floor");

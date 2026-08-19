@@ -53,6 +53,18 @@ public static partial class UIBootstrap
             var ps = PanelSettings;
             if (ps != null && doc.panelSettings == null)
                 doc.panelSettings = ps;
+
+            if (doc.rootVisualElement != null)
+            {
+                var r = doc.rootVisualElement;
+                r.style.position = Position.Absolute;
+                r.style.left = 0;
+                r.style.top = 0;
+                r.style.right = 0;
+                r.style.bottom = 0;
+                r.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
+                r.style.height = new StyleLength(new Length(100, LengthUnit.Percent));
+            }
         }
 
         return doc;

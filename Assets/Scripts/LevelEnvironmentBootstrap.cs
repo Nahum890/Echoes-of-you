@@ -5,6 +5,7 @@ using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 using Echoes.VN;
 using Echoes.UI;
+using Echoes.Interaction;
 
 public class LevelEnvironmentBootstrap : MonoBehaviour
 {
@@ -232,7 +233,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
 
     static void EnsureInteractableProps()
     {
-        var existing = Object.FindObjectsByType<Echoes.Interaction.InteractableObject>(FindObjectsInactive.Exclude);
+        var existing = Object.FindObjectsByType<InteractableObject>(FindObjectsInactive.Exclude);
         if (existing != null && existing.Length >= 3)
             return;
 
@@ -241,93 +242,119 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
         if (int.TryParse(scene.Replace("Level_", "").Replace("N", ""), out var parsed))
             levelNum = parsed;
 
-        var player = GameObject.FindGameObjectWithTag("Player");
-        Vector3 basePos = player != null ? player.transform.position : new Vector3(0, 1, 0);
+        SpawnThemedProps(scene, levelNum, existing != null ? existing.Length : 0);
+    }
 
-        string[][] propDefs =
+    // -----------------------------------------------------------------
+    // Props temáticos por nivel (sustituyen a los cubos ámbar genéricos).
+    // Las definiciones viven en ContextualPropCatalog (fuente única) para que
+    // el instalador de editor y el spawner de runtime generen lo mismo.
+    // -----------------------------------------------------------------
+    static void SpawnThemedProps(string scene, int levelNum, int existingCount)
+    {
+        ContextualPropCatalog.Def[] defs = ContextualPropCatalog.GetDefs(levelNum);
+        if (defs == null || defs.Length == 0)
         {
-            new[] { "Prop_AmberCube_1", "Cubo de memoria 1", "interaction.amber_cube_1" },
-            new[] { "Prop_AmberCube_2", "Cubo de memoria 2", "interaction.amber_cube_2" },
-            new[] { "Prop_AmberCube_3", "Cubo de memoria 3", "interaction.amber_cube_3" },
-            new[] { "Prop_AmberCube_4", "Cubo de memoria 4", "interaction.amber_cube_4" },
-        };
-
-        var offsets = new Vector3[]
-        {
-            new(3f, 0.5f, 2f),
-            new(-3f, 0.5f, 2f),
-            new(3f, 0.5f, -2f),
-            new(-3f, 0.5f, -2f),
-        };
-
-        int needed = Mathf.Max(0, 3 - (existing != null ? existing.Length : 0));
-        for (int i = 0; i < needed && i < propDefs.Length; i++)
-        {
-            var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            go.name = propDefs[i][0];
-            go.transform.position = basePos + offsets[i];
-            go.transform.localScale = new Vector3(0.6f, 0.6f, 0.6f);
-
-            var rend = go.GetComponent<Renderer>();
-            if (rend != null)
-            {
-                var mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
-                mat.color = new Color(1f, 0.72f, 0.22f);
-                if (mat.HasProperty("_EmissionColor"))
-                {
-                    mat.EnableKeyword("_EMISSION");
-                    mat.SetColor("_EmissionColor", new Color(1f, 0.72f, 0.22f) * 0.8f);
-                }
-                rend.sharedMaterial = mat;
-            }
-
-            var io = go.AddComponent<Echoes.Interaction.InteractableObject>();
-            var ioType = io.GetType();
-            ioType.GetField("commentKey", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.SetValue(io, propDefs[i][2]);
-            ioType.GetField("displayName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.SetValue(io, propDefs[i][1]);
-            ioType.GetField("isLyraArtifact", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.SetValue(io, true);
-
-            var col = go.GetComponent<Collider>();
-            if (col != null) col.isTrigger = true;
+            Debug.Log("[LevelEnvironmentBootstrap] EnsureInteractableProps: sin defs temáticos para " + scene);
+            return;
         }
 
-        Debug.Log($"[LevelEnvironmentBootstrap] EnsureInteractableProps: scene had {(existing != null ? existing.Length : 0)}, spawned {needed} props.");
+        var player = GameObject.FindGameObjectWithTag("Player");
+        Vector3 fallback = player != null ? player.transform.position : new Vector3(0, 1, 0);
+
+        int spawned = 0;
+        for (int i = 0; i < defs.Length; i++)
+        {
+            ContextualPropCatalog.Def def = defs[i];
+            GameObject go = CreatePropMesh(def, fallback);
+            if (go == null)
+                continue;
+
+            go.name = def.name;
+            go.transform.position = ContextualPropCatalog.ResolveAnchorPosition(def, fallback);
+            go.transform.rotation = ContextualPropCatalog.ResolveRotation(def);
+
+            var io = go.AddComponent<InteractableObject>();
+            io.SetContext(def.displayName, def.commentKey, def.isLyraArtifact, def.triggerRadius, def.category);
+
+            if (def.category == InteractableCategory.Ambient)
+                go.AddComponent<AmbientReaction>();
+            else if (def.category == InteractableCategory.Gameplay)
+                go.AddComponent<GameplayInteraction>();
+
+            spawned++;
+        }
+
+        Debug.Log($"[LevelEnvironmentBootstrap] EnsureInteractableProps: {scene} tenía {existingCount}, generados {spawned} props temáticos.");
+    }
+
+    static Vector3 ResolveAnchorPosition(ContextualPropCatalog.Def def, Vector3 fallback)
+    {
+        return ContextualPropCatalog.ResolveAnchorPosition(def, fallback);
+    }
+
+    static GameObject CreatePropMesh(ContextualPropCatalog.Def def, Vector3 fallback)
+    {
+        // 1) Intentar cargar el prefab temático desde Resources/ (Assets/Resources/Props).
+        if (!string.IsNullOrEmpty(def.prefabPath))
+        {
+            GameObject prefab = Resources.Load<GameObject>(def.prefabPath);
+            if (prefab != null)
+            {
+                GameObject inst = Object.Instantiate(prefab);
+                inst.transform.localScale = def.scale;
+                return inst;
+            }
+        }
+
+        // 2) Fallback: cubo temático con el color de su categoría.
+        // El collider del cubo queda SÓLIDO; la proximidad la detecta el
+        // SphereCollider trigger que añade InteractableObject.EnsureTrigger.
+        var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        go.transform.localScale = def.scale;
+        var rend = go.GetComponent<Renderer>();
+        if (rend != null)
+        {
+            var mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            mat.color = def.category switch
+            {
+                InteractableCategory.Gameplay => new Color(0.55f, 0.75f, 0.9f),
+                InteractableCategory.Ambient => new Color(0.6f, 0.62f, 0.5f),
+                _ => new Color(1f, 0.72f, 0.22f)
+            };
+            rend.sharedMaterial = mat;
+        }
+        return go;
     }
 
     static void EnsureVNSystem()
     {
-        if (Object.FindAnyObjectByType<VN_DialogueController>() == null)
+        if (VN_DialogueController.Instance == null && Object.FindAnyObjectByType<VN_DialogueController>() == null)
         {
-            var prefab = Resources.Load<GameObject>("EchoesVNBootstrap");
-            if (prefab != null)
-            {
-                var go = Object.Instantiate(prefab);
-                go.name = "EchoesVNBootstrap";
-                DontDestroyOnLoad(go);
+            var panel = global::UIBootstrap.PanelSettings;
+            var go = new GameObject("VNDialogueController");
+            var doc = go.AddComponent<UIDocument>();
+            var vta = Resources.Load<VisualTreeAsset>("UI/VN/VN_DialogueUI");
+#if UNITY_EDITOR
+            if (vta == null) vta = UnityEditor.AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/UI/VN/VN_DialogueUI.uxml");
+#endif
+            if (vta != null) doc.visualTreeAsset = vta;
+            go.AddComponent<VN_DialogueController>();
+            if (Application.isPlaying) DontDestroyOnLoad(go);
+        }
 
-                var docs = go.GetComponentsInChildren<UIDocument>();
-                foreach (var doc in docs)
-                {
-                    if (doc.GetComponent<VN_DialogueController>() != null)
-                    {
-                        doc.sortingOrder = -100;
-                        doc.enabled = false;
-                        var dc = doc.GetComponent<VN_DialogueController>();
-                        if (dc != null) dc.enabled = false;
-                    }
-                    else
-                    {
-                        doc.sortingOrder = -100;
-                        doc.enabled = false;
-                    }
-                }
+        if (VN_ChoiceGateController.Instance == null && Object.FindAnyObjectByType<VN_ChoiceGateController>() == null)
+        {
+            var go = new GameObject("VNChoiceGateController");
+            go.AddComponent<VN_ChoiceGateController>();
+            if (Application.isPlaying) DontDestroyOnLoad(go);
+        }
 
-                Debug.Log("[LevelEnvironmentBootstrap] EchoesVNBootstrap instantiated.");
-            }
-            else
-            {
-                Debug.LogWarning("[LevelEnvironmentBootstrap] EchoesVNBootstrap prefab not found in Resources.");
-            }
+        if (VN_OverlayController.Instance == null && Object.FindAnyObjectByType<VN_OverlayController>() == null)
+        {
+            var go = new GameObject("VNOverlayController");
+            go.AddComponent<VN_OverlayController>();
+            if (Application.isPlaying) DontDestroyOnLoad(go);
         }
     }
 

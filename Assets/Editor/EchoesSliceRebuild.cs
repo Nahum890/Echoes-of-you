@@ -197,8 +197,9 @@ public static class EchoesSliceRebuild
         // Both must be pressed simultaneously → door opens.
         bp.modules.Add(Mod("PlacaEco_Aula", ModuleType.PressurePlate, New3(-6, 0.05f, 14), Vector3.zero, "EchoOnly"));
         bp.modules.Add(Mod("PlacaJugador_Corredor", ModuleType.PressurePlate, New3(0, 0.05f, 14), Vector3.zero));
+        bp.modules.Add(Mod("PlacaExploracion", ModuleType.PressurePlate, New3(0, 0.05f, 7), Vector3.zero));
         bp.modules.Add(Mod("PuertaAula", ModuleType.Door, New3(0, 0, 27), New3(4, 3, 0.5f),
-            sig: Sig("PlacaEco_Aula", "PlacaJugador_Corredor")));
+            sig: Sig("PlacaExploracion")));
         // Optional timed platform as a fast-return shortcut for re-attempts (block wired to Plate later).
         bp.modules.Add(Mod("PlataformaRapida", ModuleType.MovingPlatform, New3(0, 0, 34), New3(3, 0.3f, 3),
             "inactiveVec=0,0,0|activeVec=0,0,6|speed=2.5", sig: Sig("PlacaJugador_Corredor")));
@@ -265,13 +266,14 @@ public static class EchoesSliceRebuild
         // so the player can route, but the echo must hold the other. Twist: the echo plate has a
         // long auto-release, and if the player lingers on their plate after the echo releases, the
         // consequence door (left, non-latched) closes — demonstrated by StatueShadowDirector.
-        bp.modules.Add(Mod("PlacaEco_RamaDerecha", ModuleType.PressurePlate, New3(5, 0.05f, 16), Vector3.zero));
+        bp.modules.Add(Mod("PlacaShadowEco", ModuleType.PressurePlate, New3(0, 0.05f, 6), Vector3.zero, "EchoOnly"));
+        bp.modules.Add(Mod("PlacaEco_RamaDerecha", ModuleType.PressurePlate, New3(4, 0.05f, 30), Vector3.zero, "EchoOnly"));
         bp.modules.Add(Mod("PlacaJugador_RamaIzquierda", ModuleType.PressurePlate, New3(-5, 0.05f, 16), Vector3.zero));
         // Branch doors — left is NOT latched (twist), right is latched (safe).
         bp.modules.Add(Mod("PuertaRamaIzquierda", ModuleType.Door, New3(-5, 0, 22), New3(4, 3, 0.5f),
             sig: Sig("PlacaJugador_RamaIzquierda")));
         bp.modules.Add(Mod("PuertaRamaDerecha", ModuleType.Door, New3(5, 0, 22), New3(4, 3, 0.5f),
-            sig: Sig("PlacaEco_RamaDerecha")));
+            sig: Sig("PlacaShadowEco")));
         // Convergence hall with the founder statue (greybox placed post-build).
         bp.modules.Add(Mod("Hall_Estatua", ModuleType.SchoolHall, New3(0, 0, 30), New3(10, 5f, 10)));
         // Exit + goal. anyTriggerSatisfiesGoal lets either branch reach the exit.
@@ -399,109 +401,8 @@ public static class EchoesSliceRebuild
 
     static void ApplyGameFeel(int level)
     {
-        // Fog — exponential, chapter color, slice density.
-        RenderSettings.fog = true;
-        RenderSettings.fogMode = FogMode.Exponential;
-        RenderSettings.fogColor = FogColorI;
-        RenderSettings.fogDensity = FogDensitySlice;
-        RenderSettings.ambientMode = AmbientMode.Flat;
-        RenderSettings.ambientLight = AmbientI;
-        RenderSettings.ambientIntensity = 0.15f;
-
-        // Sun: 0.85 lux, #F2F2FF, hard shadows, 40m distance.
-        foreach (Light l in Object.FindObjectsByType<Light>(FindObjectsInactive.Include))
-        {
-            if (l.type == LightType.Directional)
-            {
-                l.color = SunColor;
-                l.intensity = SunIntensity;
-                l.transform.rotation = Quaternion.Euler(SunRot);
-                l.shadows = LightShadows.Hard;
-                // l.shadowDistance = 40f; // NOTE: Light.shadowDistance is editor-only;.URP uses the asset. Kept for completeness.
-            }
-            else
-            {
-                // Additional lights: hard shadows only (RULE-LGT-002), cap respected by builder.
-                l.shadows = LightShadows.Hard;
-            }
-        }
-
-        // Volume + VolumeProfile tuned to POST_PROCESSING_SPEC (liminal).
-        EnsureLiminalVolume(level);
-    }
-
-    static void EnsureLiminalVolume(int level)
-    {
-        // Find or create a global volume per scene.
-        Volume vol = Object.FindAnyObjectByType<Volume>();
-        if (vol == null)
-        {
-            var go = new GameObject("Slice_GlobalVolume");
-            vol = go.AddComponent<Volume>();
-            vol.isGlobal = true;
-            vol.priority = 1f;
-        }
-
-        string profilePath = $"{BlueprintRoot}/../../Settings/Volumes/Slice_N{level:00}_PostProc.asset";
-        profilePath = "Assets/Settings/Volumes/Slice_N" + level.ToString("00") + "_PostProc.asset";
-        EnsureDir("Assets/Settings/Volumes");
-
-        VolumeProfile profile = AssetDatabase.LoadAssetAtPath<VolumeProfile>(profilePath);
-        if (profile == null)
-        {
-            profile = ScriptableObject.CreateInstance<VolumeProfile>();
-            AssetDatabase.CreateAsset(profile, profilePath);
-        }
-        else
-        {
-            // Wipe existing overrides to re-author cleanly (destroy + clear list).
-            for (int i = profile.components.Count - 1; i >= 0; i--)
-            {
-                if (profile.components[i] != null)
-                    Object.DestroyImmediate(profile.components[i], true);
-            }
-            profile.components.Clear();
-        }
-
-        // Bloom
-        var bloom = profile.Add<Bloom>();
-        bloom.intensity.Override(0.25f);
-        bloom.threshold.Override(0.90f);
-        bloom.scatter.Override(0.70f);
-        bloom.tint.Override(Color.white);
-        bloom.highQualityFiltering.Override(false);
-
-        // Vignette
-        var vignette = profile.Add<Vignette>();
-        vignette.intensity.Override(0.35f);
-        vignette.smoothness.Override(0.40f);
-        vignette.color.Override(Hex("#0D0D1A"));
-        vignette.rounded.Override(false);
-
-        // Color adjustments
-        var ca = profile.Add<ColorAdjustments>();
-        ca.postExposure.Override(-0.5f);
-        ca.contrast.Override(15f);
-        ca.colorFilter.Override(Color.white);
-        ca.hueShift.Override(0f);
-        ca.saturation.Override(-8f);
-
-        // Tonemapping off
-        var tone = profile.Add<Tonemapping>();
-        tone.mode.Override(TonemappingMode.None);
-
-        // VolumeProfile.Add<T>() creates the components in memory; Unity's editor
-        // additionally registers them as sub-assets, otherwise they serialize as
-        // {fileID: 0} and the overrides never apply.
-        foreach (var comp in profile.components)
-            AssetDatabase.AddObjectToAsset(comp, profile);
-
-        EditorUtility.SetDirty(profile);
-        AssetDatabase.SaveAssets();
-
-        vol.sharedProfile = profile;
-        vol.weight = 1f;
-        EditorUtility.SetDirty(vol);
+        Scene scene = SceneManager.GetActiveScene();
+        EchoesMasterLightingDesigner.ApplyToSceneDirect(scene, level);
     }
 
     // ═══════════════════════════════════════════════════════════════════

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using Echoes.Narrative;
 using Echoes.Narrative.Data;
 
@@ -6,6 +7,15 @@ namespace Echoes.Interaction
 {
     public class InteractableObject : MonoBehaviour
     {
+        [Header("Categoría Contextual (SPEC interacción contextual)")]
+        [Tooltip("A=Gameplay · B=Narrative · C=Ambient · D=Decoration (nunca lleva componente)")]
+        [SerializeField] InteractableCategory _category = InteractableCategory.Narrative;
+        [Tooltip("Oculta el prompt si no hay línea de visión directa al objeto.")]
+        [SerializeField] bool _requireLineOfSight = true;
+
+        [Header("Acción al Interactuar (Gameplay / Ambient)")]
+        [SerializeField] UnityEvent _onInteracted = new UnityEvent();
+
         [Header("Narrative Data (optional — overrides legacy fields)")]
         [SerializeField] InteractableData _narrativeData;
 
@@ -21,6 +31,23 @@ namespace Echoes.Interaction
         bool _triggerCacheDone;
 
         public InteractableData NarrativeData => _narrativeData;
+        public InteractableCategory Category => _category;
+        public bool RequireLineOfSight => _requireLineOfSight;
+        public UnityEvent OnInteracted => _onInteracted;
+
+        /// <summary>
+        /// Configuración programática (usada por spawners en runtime como
+        /// LevelEnvironmentBootstrap). Evita depender de reflexión en campos privados.
+        /// </summary>
+        public void SetContext(string displayName, string commentKey, bool isLyraArtifact, float triggerRadius, InteractableCategory category)
+        {
+            this.displayName = displayName;
+            this.commentKey = commentKey;
+            this.isLyraArtifact = isLyraArtifact;
+            this.triggerRadius = triggerRadius;
+            _category = category;
+            EnsureTrigger();
+        }
 
         public DialogueTrigger Trigger
         {
@@ -43,7 +70,20 @@ namespace Echoes.Interaction
         public string DisplayName => _narrativeData != null ? _narrativeData.DisplayName : displayName;
         public string InteractableId => _narrativeData != null ? _narrativeData.InteractableId : "";
         public InteractionType InteractionType => _narrativeData != null ? _narrativeData.InteractionType : InteractionType.Inspect;
-        public string PromptText => _narrativeData != null ? _narrativeData.PromptText : "Examinar";
+        public string PromptText
+        {
+            get
+            {
+                if (_narrativeData != null && !string.IsNullOrEmpty(_narrativeData.PromptText))
+                    return _narrativeData.PromptText;
+                return _category switch
+                {
+                    InteractableCategory.Gameplay => "Usar",
+                    InteractableCategory.Ambient => "Observar",
+                    _ => "Examinar"
+                };
+            }
+        }
         public bool OneTimeOnly => _narrativeData != null && _narrativeData.OneTimeOnly;
 
         public bool IsConsumed
@@ -64,6 +104,8 @@ namespace Echoes.Interaction
 
         void Awake()
         {
+            if (_onInteracted == null)
+                _onInteracted = new UnityEvent();
             EnsureTrigger();
         }
 
@@ -83,10 +125,14 @@ namespace Echoes.Interaction
 
         void EnsureTrigger()
         {
-            var col = GetComponent<Collider>();
-            if (col == null) col = gameObject.AddComponent<SphereCollider>();
-            if (col is SphereCollider s) s.radius = triggerRadius * 0.5f;
-            col.isTrigger = true;
+            // Trigger de proximidad SEPARADO: no convertimos los colliders físicos del
+            // prop (normalmente en hijos o en el mismo GO) en triggers, para que los
+            // objetos sigan sólidos y el prompt solo aparezca al acercarse de verdad.
+            var sphere = GetComponent<SphereCollider>();
+            if (sphere == null)
+                sphere = gameObject.AddComponent<SphereCollider>();
+            sphere.isTrigger = true;
+            sphere.radius = Mathf.Max(0.5f, triggerRadius * 0.5f);
         }
     }
 }

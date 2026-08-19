@@ -18,6 +18,7 @@ namespace Echoes.Interaction
         readonly List<InteractableObject> _nearby = new();
         readonly Dictionary<string, float> _lastSeenAt = new();
         InteractableObject _currentTarget;
+        InteractableObject _lastShownTarget;
 
         public InteractableObject CurrentTarget => _currentTarget;
 
@@ -43,15 +44,24 @@ namespace Echoes.Interaction
 
             _currentTarget = PickNearest();
 
-            if (_currentTarget != null && !_currentTarget.IsConsumed)
+            bool hasTarget = _currentTarget != null && !_currentTarget.IsConsumed && IsRelevant(_currentTarget);
+            if (hasTarget)
             {
                 string promptText = _currentTarget.PromptText;
-                bool primary = _currentTarget.IsLyraArtifact;
+                bool primary = _currentTarget.IsLyraArtifact && _currentTarget.Category == InteractableCategory.Narrative;
                 InteractionPromptController.Instance?.ShowPrompt("[E]", promptText, primary);
+
+                // Anti-spam: el sonido de prompt suena solo al cambiar de objetivo.
+                if (_lastShownTarget != _currentTarget)
+                {
+                    PlayPromptSound();
+                    _lastShownTarget = _currentTarget;
+                }
             }
             else
             {
                 InteractionPromptController.Instance?.HidePrompt();
+                _lastShownTarget = null;
                 return;
             }
 
@@ -174,14 +184,33 @@ namespace Echoes.Interaction
 
         void HandleInteraction(InteractableObject obj)
         {
-            var trigger = obj.Trigger;
-            if (trigger != null && trigger.CanInteract())
+            switch (obj.Category)
             {
-                trigger.OnInteract();
-                return;
-            }
+                case InteractableCategory.Ambient:
+                    // Categoría C: feedback sin abrir interfaz (sonido + reacción).
+                    obj.OnInteracted?.Invoke();
+                    if (obj.GetComponent<AmbientReaction>() == null && GameFeelController.Instance != null)
+                        GameFeelController.Instance.PlayMechanicTick(obj.transform.position, 0.5f);
+                    break;
 
-            RequestInspection(obj);
+                case InteractableCategory.Gameplay:
+                    // Categoría A: acción de juego (puerta, toggle, pista, custom).
+                    obj.OnInteracted?.Invoke();
+                    if (obj.GetComponent<GameplayInteraction>() == null && GameFeelController.Instance != null)
+                        GameFeelController.Instance.PlayMechanicTick(obj.transform.position, 0.6f);
+                    break;
+
+                default:
+                    // Categoría B: flujo narrativo existente (VN / inspección).
+                    var trigger = obj.Trigger;
+                    if (trigger != null && trigger.CanInteract())
+                    {
+                        trigger.OnInteract();
+                        return;
+                    }
+                    RequestInspection(obj);
+                    break;
+            }
         }
 
         public void RequestInspection(InteractableObject obj)
@@ -213,6 +242,58 @@ namespace Echoes.Interaction
             }
 
             VN_OverlayController.Instance?.Play(title, text, spritePath);
+        }
+
+        /// <summary>
+        /// Un objeto es "relevante" si no exige línea de visión, o si esta existe.
+        /// Evita mostrar el prompt a través de paredes (SPEC: visible).
+        /// </summary>
+        bool IsRelevant(InteractableObject obj)
+        {
+            if (!obj.RequireLineOfSight)
+                return true;
+            return HasLineOfSight(obj);
+        }
+
+        bool HasLineOfSight(InteractableObject obj)
+        {
+            Camera cam = Camera.main;
+            if (cam == null)
+                return true;
+
+            Vector3 origin = cam.transform.position;
+            Vector3 target = obj.transform.position + Vector3.up * 0.5f;
+            Vector3 dir = target - origin;
+            float dist = dir.magnitude;
+            if (dist < 0.01f)
+                return true;
+            dir /= dist;
+
+            int mask = interactableMask.value;
+            mask &= ~(1 << LayerMask.NameToLayer("Player"));
+            if (Physics.SphereCast(origin, 0.15f, dir, out RaycastHit hit, dist, mask, QueryTriggerInteraction.Ignore))
+            {
+                // El propio objeto no se tapa a sí mismo.
+                if (hit.collider != null && hit.collider.transform.IsChildOf(obj.transform))
+                    return true;
+                return hit.distance >= dist - 0.1f;
+            }
+            return true;
+        }
+
+        void PlayPromptSound()
+        {
+            AudioClip clip = EchoesAudioAssets.Get(EchoesAudioAssets.UiInteractionAvailable);
+            if (clip == null)
+                return;
+
+            GameObject host = new GameObject("InteractionPromptSFX");
+            AudioSource src = host.AddComponent<AudioSource>();
+            src.clip = clip;
+            src.spatialBlend = 0f;
+            src.volume = 0.35f;
+            src.Play();
+            Destroy(host, clip.length + 0.1f);
         }
     }
 }

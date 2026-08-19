@@ -123,18 +123,7 @@ public class LevelExit : MonoBehaviour
             target = "MainMenu";
         }
 
-        if (LoadingScreenController.Instance != null)
-        {
-            LoadingScreenController.Instance.LoadScene(target);
-        }
-        else if (SceneTransitionManager.Instance != null)
-        {
-            SceneTransitionManager.Instance.LoadScene(target);
-        }
-        else
-        {
-            SceneManager.LoadScene(target);
-        }
+        LoadingScreenController.TransitionToScene(target);
     }
 
     static string ResolveCompletionToast(string sceneName)
