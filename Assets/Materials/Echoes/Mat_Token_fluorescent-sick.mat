@@ -39,12 +39,15 @@ Material:
     - _FogDensity: 0.016
     - _QuantizeColors: 32
     - _ScanlineFreq: 120
+    - _Smoothness: 0.15
+    - _SpecularAnomaly: 0.25
     - _StainScale: 6
-    - _StainStrength: 0.4
+    - _StainStrength: 0.5
     - _VertexSnap: 16
     m_Colors:
-    - _BaseColor: {r: 0.32, g: 0.34, b: 0.36, a: 1}
+    - _BaseColor: {r: 0.7882353, g: 0.83137256, b: 0.6901961, a: 1}
     - _EmissionColor: {r: 0.9480001, g: 0.996, b: 0.828, a: 1.2}
     - _FogColor: {r: 0.38, g: 0.39, b: 0.41, a: 1}
+    - _SpecColor: {r: 0.9, g: 0.92, b: 0.95, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

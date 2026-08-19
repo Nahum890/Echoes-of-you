@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mat_LiminalPlaster
+  m_Name: Mat_LiminalPlaster_Void
   m_Shader: {fileID: 4800000, guid: 3dfb7997268a7ec489415ecb79c85b16, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -24,39 +24,39 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseTex:
-        m_Texture: {fileID: 2800000, guid: 9537efb997b5d6746a910eeadd6e3b6d, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailTex:
-        m_Texture: {fileID: 2800000, guid: 9537efb997b5d6746a910eeadd6e3b6d, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _ColorBands: 256
+    - _ColorBands: 200
     - _CrackThreshold: 0.992
-    - _DepthDistort: 0.005
-    - _DirectionalScale: 0.9
+    - _DepthDistort: 0.003
+    - _DirectionalScale: 0.35
     - _FlatAmbient: 1.2
-    - _FlickerStrength: 0.06
-    - _FluorescentEdge: 0.18
-    - _FluorescentHum: 0.12
-    - _FogDensity: 0
-    - _FresnelInvert: 0.2
-    - _Smoothness: 0.15
-    - _SpecularAnomaly: 0.15
-    - _StainNoiseScale: 4
-    - _StainStrength: 0.4
-    - _StainThreshold: 0.68
-    - _WearHeight: 1.5
-    - _WearNoiseScale: 8
+    - _FlickerStrength: 0.18
+    - _FluorescentEdge: 0.03
+    - _FluorescentHum: 0.4
+    - _FogDensity: 0.018
+    - _FresnelInvert: 0.12
+    - _Smoothness: 0.08
+    - _SpecularAnomaly: 0.1
+    - _StainNoiseScale: 4.5
+    - _StainStrength: 0.5
+    - _StainThreshold: 0.5
+    - _WearHeight: 0.8
+    - _WearNoiseScale: 9
     m_Colors:
-    - _BaseColor: {r: 0.78, g: 0.74, b: 0.66, a: 1}
+    - _BaseColor: {r: 0.1, g: 0.1, b: 0.12, a: 1}
     - _CrackColor: {r: 0.02, g: 0.02, b: 0.03, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _FogColor: {r: 0.38, g: 0.39, b: 0.41, a: 1}
-    - _StainColor: {r: 0.18, g: 0.16, b: 0.12, a: 1}
-    - _SubsurfaceTint: {r: 0.02, g: 0.03, b: 0.04, a: 1}
-    - _WearColor: {r: 0.08, g: 0.1, b: 0.14, a: 1}
+    - _StainColor: {r: 0.08, g: 0.1, b: 0.09, a: 1}
+    - _SubsurfaceTint: {r: 0.015000001, g: 0.015000001, b: 0.018000001, a: 0.15}
+    - _WearColor: {r: 0.06, g: 0.07, b: 0.09, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

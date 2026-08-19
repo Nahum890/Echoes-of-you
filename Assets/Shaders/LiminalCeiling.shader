@@ -10,6 +10,8 @@ Shader "Echoes/LiminalCeiling" {
         _PanelCount ("Panel Count per Meter", Float) = 1.0
         _FogDensity ("Fog Density", Float) = 0.01
         _FogColor ("Fog Color", Color) = (0.13, 0.135, 0.14, 1)
+        _Smoothness ("Smoothness", Range(0,1)) = 0.05
+        _SpecularAnomaly ("Anomalous Specular", Range(0,1)) = 0.08
         _EmissionColor ("Emission", Color) = (0,0,0,0)
     }
     SubShader {
@@ -31,7 +33,7 @@ Shader "Echoes/LiminalCeiling" {
             CBUFFER_START(UnityPerMaterial)
             float4 _BaseColor; float4 _GridColor; float4 _FogColor; float4 _EmissionColor;
             float _StainStrength; float _StainScale; float _FluorescentGlow; float _Flicker;
-            float _PanelCount; float _FogDensity;
+            float _PanelCount; float _FogDensity; float _Smoothness; float _SpecularAnomaly;
             CBUFFER_END
 
             TEXTURE2D(_CeilingTex); SAMPLER(sampler_CeilingTex);
@@ -74,6 +76,14 @@ Shader "Echoes/LiminalCeiling" {
                 float flicker = 1.0 - _Flicker * (0.5 + 0.5 * sin(_Time.y * 41.0 + input.worldPos.x * 7.0));
                 half3 glow = half3(0.9, 0.93, 1.0) * _FluorescentGlow * flicker * mainLight.color.rgb;
                 lighting += glow;
+
+                // Specular sutil en paneles
+                half3 viewDir = normalize(input.viewDir);
+                half3 halfDir = normalize(mainLight.direction + viewDir);
+                half NdotH = max(0, dot(normal, halfDir));
+                half specExp = lerp(80.0, 12.0, _Smoothness);
+                half spec = pow(NdotH, specExp) * _Smoothness * _SpecularAnomaly;
+                lighting += half3(0.85, 0.88, 0.95) * mainLight.color.rgb * spec * 0.3;
 
                 return half4(lighting + _EmissionColor.rgb, 1.0);
             }

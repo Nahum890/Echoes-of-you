@@ -33,6 +33,8 @@ Material:
     - _FluorescentGlow: 0.3
     - _FogDensity: 0.012
     - _PanelCount: 1
+    - _Smoothness: 0.05
+    - _SpecularAnomaly: 0.08
     - _StainScale: 5
     - _StainStrength: 0.35
     m_Colors:

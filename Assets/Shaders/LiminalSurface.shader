@@ -29,6 +29,7 @@ Shader "Echoes/LiminalSurface" {
         _FogColor ("Fog Color", Color) = (0.38, 0.39, 0.41, 1)
         [Header(Anomaly)]
         _SpecularAnomaly ("Anomalous Specular", Range(0,1)) = 0.10
+        _Smoothness ("Smoothness", Range(0,1)) = 0.15
         _DepthDistort ("Vertex Depth Distort", Range(0,0.02)) = 0.003
         _EmissionColor ("Emission", Color) = (0,0,0,0)
     }
@@ -54,7 +55,7 @@ Shader "Echoes/LiminalSurface" {
             float _FresnelInvert; float _FluorescentEdge;
             float _StainNoiseScale; float _StainThreshold; float _StainStrength;
             float _WearNoiseScale; float _WearHeight; float _CrackThreshold;
-            float _ColorBands; float _FogDensity; float _SpecularAnomaly; float _DepthDistort;
+            float _ColorBands; float _FogDensity; float _SpecularAnomaly; float _Smoothness; float _DepthDistort;
             CBUFFER_END
 
             TEXTURE2D(_BaseTex); SAMPLER(sampler_BaseTex);
@@ -133,6 +134,13 @@ Shader "Echoes/LiminalSurface" {
                 // Edge glow fluorescente (resalta bordes institucionales)
                 half edgeGlow = smoothstep(0.88, 0.98, NdotV) * _FluorescentEdge;
                 lighting += half3(0.75, 0.82, 0.92) * edgeGlow * mainLight.color.rgb * 0.6 * flicker;
+
+                // Specular anómalo — variación de roughness por material
+                half3 halfDir = normalize(mainLight.direction + viewDir);
+                half NdotH = max(0, dot(normal, halfDir));
+                half specExp = lerp(64.0, 8.0, _Smoothness);
+                half spec = pow(NdotH, specExp) * _Smoothness * _SpecularAnomaly;
+                lighting += half3(0.85, 0.88, 0.95) * mainLight.color.rgb * spec * 0.4;
 
                 half3 emission = _EmissionColor.rgb;
                 return half4(lighting + emission, _BaseColor.a);

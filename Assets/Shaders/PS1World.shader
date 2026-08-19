@@ -15,6 +15,10 @@ Shader "Echoes/PS1World" {
         _FluorescentHum ("Fluorescent Hum", Range(0,1)) = 0.35
         _FlickerStrength ("Tube Flicker", Range(0,1)) = 0.15
         _FlatAmbient ("Flat Ambient", Range(0,2)) = 1.0
+        [Header(Surface)]
+        _Smoothness ("Smoothness", Range(0,1)) = 0.15
+        _SpecColor ("Specular Tint", Color) = (0.9, 0.92, 0.95, 1)
+        _SpecularAnomaly ("Specular Strength", Range(0,1)) = 0.25
         _EmissionColor ("Emission", Color) = (0,0,0,0)
     }
     SubShader {
@@ -34,11 +38,12 @@ Shader "Echoes/PS1World" {
             struct Varyings { float4 position : SV_POSITION; float2 uv : TEXCOORD0; float3 normal : TEXCOORD1; float3 worldPos : TEXCOORD2; float3 viewDir : TEXCOORD3; float4 clipPos : TEXCOORD4; };
 
             CBUFFER_START(UnityPerMaterial)
-            float4 _BaseColor; float4 _EmissionColor; float4 _FogColor;
+            float4 _BaseColor; float4 _EmissionColor; float4 _FogColor; float4 _SpecColor;
             float _VertexSnap; float _DepthJitter;
             float _AffineStrength; float _ScanlineFreq; float _DitherStrength; float _QuantizeColors;
             float _FogDensity; float _StainStrength; float _StainScale;
             float _FluorescentHum; float _FlickerStrength; float _FlatAmbient;
+            float _Smoothness; float _SpecularAnomaly;
             CBUFFER_END
 
             TEXTURE2D(_BaseTex); SAMPLER(sampler_BaseTex);
@@ -98,6 +103,14 @@ Shader "Echoes/PS1World" {
                 float flicker = 1.0 - _FlickerStrength * (0.5 + 0.5 * sin(_Time.y * 43.0 + input.worldPos.x * 9.0 + input.worldPos.z * 7.0));
                 half3 fluoHum = half3(0.7, 0.75, 0.85) * _FluorescentHum * flicker;
                 lighting += albedo * fluoHum * 0.25;
+
+                // Specular suave (PS1-lite) — roughness per material
+                half3 viewDir = normalize(input.viewDir);
+                half3 halfDir = normalize(mainLight.direction + viewDir);
+                half NdotH = max(0, dot(normal, halfDir));
+                half specExp = lerp(48.0, 6.0, _Smoothness);
+                half spec = pow(NdotH, specExp) * _Smoothness * _SpecularAnomaly;
+                lighting += _SpecColor.rgb * mainLight.color.rgb * spec * 0.35;
 
                 // Color quantization (PS1 — bandas discretas pero suaves)
                 lighting = floor(lighting * _QuantizeColors + 0.5) / _QuantizeColors;
