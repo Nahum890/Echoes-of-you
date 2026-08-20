@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Echo Archive - Narrative Interface</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&amp;family=EB+Garamond:ital,wght@0,400..800;1,400..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-error": "#690005",
+                        "surface-container-lowest": "#0e0f0b",
+                        "outline": "#959087",
+                        "on-secondary-container": "#b4bccc",
+                        "on-tertiary-container": "#006d87",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed": "#001f28",
+                        "secondary-fixed": "#dbe3f3",
+                        "surface-variant": "#353530",
+                        "inverse-primary": "#625e54",
+                        "primary-fixed": "#e9e2d5",
+                        "primary": "#fffeff",
+                        "on-tertiary": "#003543",
+                        "tertiary-fixed": "#b7eaff",
+                        "surface": "#131410",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed-variant": "#4a463d",
+                        "surface-container-highest": "#353530",
+                        "on-secondary": "#29313d",
+                        "on-primary-container": "#686459",
+                        "on-secondary-fixed-variant": "#3f4754",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#ccc6b9",
+                        "on-surface": "#e4e2dc",
+                        "surface-dim": "#131410",
+                        "secondary": "#bfc7d7",
+                        "surface-container": "#1f201c",
+                        "tertiary-fixed-dim": "#63d4fa",
+                        "outline-variant": "#4a463f",
+                        "primary-container": "#e8e1d4",
+                        "surface-bright": "#393935",
+                        "on-background": "#e4e2dc",
+                        "tertiary-container": "#b6eaff",
+                        "on-primary-fixed": "#1e1b14",
+                        "on-surface-variant": "#ccc6bc",
+                        "surface-tint": "#ccc6b9",
+                        "secondary-container": "#444c59",
+                        "on-tertiary-fixed-variant": "#004d61",
+                        "surface-container-low": "#1b1c18",
+                        "secondary-fixed-dim": "#bfc7d7",
+                        "on-primary": "#333027",
+                        "inverse-surface": "#e4e2dc",
+                        "tertiary": "#fffeff",
+                        "on-secondary-fixed": "#141c28",
+                        "surface-container-high": "#2a2a26",
+                        "inverse-on-surface": "#30312c",
+                        "background": "#131410"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "gutter": "24px",
+                        "unit": "8px",
+                        "margin-edge": "64px",
+                        "container-padding": "32px"
+                    },
+                    fontFamily: {
+                        "label-caps": ["Courier Prime", "monospace"],
+                        "display-lg-mobile": ["EB Garamond", "serif"],
+                        "display-lg": ["EB Garamond", "serif"],
+                        "interface-sm": ["Courier Prime", "monospace"],
+                        "display-md": ["EB Garamond", "serif"],
+                        "interface-md": ["Courier Prime", "monospace"],
+                        "interface-lg": ["Courier Prime", "monospace"]
+                    },
+                    fontSize: {
+                        "label-caps": ["16px", { lineHeight: "20px", letterSpacing: "0.1em", fontWeight: "700" }],
+                        "display-lg-mobile": ["40px", { lineHeight: "44px", fontWeight: "400" }],
+                        "display-lg": ["64px", { lineHeight: "72px", letterSpacing: "-0.02em", fontWeight: "400" }],
+                        "interface-sm": ["20px", { lineHeight: "28px", fontWeight: "400" }],
+                        "display-md": ["48px", { lineHeight: "56px", fontWeight: "400" }],
+                        "interface-md": ["24px", { lineHeight: "32px", fontWeight: "400" }],
+                        "interface-lg": ["38px", { lineHeight: "44px", fontWeight: "400" }]
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glitch-text-hover:hover {
+            text-shadow: 1px 0 0 rgba(99,212,250,0.5), -1px 0 0 rgba(255,180,171,0.5);
+            transform: translateX(1px);
+        }
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(228, 226, 220, 0.02) 51%);
+            background-size: 100% 4px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-screen w-screen overflow-hidden relative selection:bg-tertiary-fixed-dim selection:text-on-tertiary-fixed flex items-center justify-center">
+<!-- Ambient Background / Memory Canvas -->
+<div class="absolute inset-0 z-0 overflow-hidden">
+<div class="w-full h-full bg-cover bg-center opacity-70 transform scale-105 animate-pulse-slow" data-alt="A slightly blurred, melancholic background of an institutional archive room. The scene is cast in a warm, corrupted amber hue, simulating a fading memory. Tall, shadowy bookshelves fade into darkness, and dust motes hang in the quiet air. The art style is painterly and atmospheric, fitting a high-quality visual novel setting." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCygctpK2oE-_1CRbSeANkwIylBaKa_TouDwmHzuKscwqKSdU3OpfQgLG921S4A949JhtEekqTXyokcqAgwKr_UI3Sw1gCGrRFHf7QdQnAIJ-nqN46WZQrmMgM0NQNGIWB6NZKwqTRHZcMFEA6UAZuae4_5VAvXPGBL5X7X-1HDB6bd7mgACjgjX5SKedNp5yNsXVHWMUS-6452Chh7ssTmQyYrQs-72S-QoKFv4-X7RCpSrM4MAu3x3A')"></div>
+<!-- Amber / Corruption Overlay -->
+<div class="absolute inset-0 bg-[#ffb4ab]/10 mix-blend-color z-10 pointer-events-none"></div>
+<div class="absolute inset-0 scanline z-10 pointer-events-none"></div>
+<!-- Vignette -->
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/50 z-10 pointer-events-none"></div>
+</div>
+<!-- Narrative Interface Container -->
+<main class="relative z-50 w-full max-w-6xl px-margin-edge h-full flex flex-col justify-end pb-margin-edge">
+<!-- Character Portrait Area -->
+<div class="relative w-full h-0 z-10 pointer-events-none">
+<!-- Chibi Aiden Portrait -->
+<img class="absolute bottom-[-16px] left-12 w-64 h-auto object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] transition-transform duration-1000 ease-out translate-y-0" data-alt="A shoulder-up character portrait of Aiden in a stylized anime chibi style. She wears a crisp white button-up shirt and a distinct red ribbon tied at her collar. Her expression is pensive and slightly melancholic, reflecting a moment of introspection. The art is rendered with soft shading and clean lines, suitable for a premium visual novel interface. The background is transparent." id="character-portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIKhb8M-NcsCGWxh9wgZBadacYBUuo7xUG1NmLv2rVF0LmIMEu5NpVwcG3YH4SU3QZIEWqFBl50RL6Pgybvntk6SK_p2yoIgY5nK37bRAiFRC-0oQzqMeHGAnyfLlWvDnvsatdEbe3BRizXPWfGQ34YP8jXY_w9dxI0Zl24wA92k1x0k4VOm9rxVUftZfWCNdT_IHK-iXxAevqzaUC0fZLZDTftXnwi5q4_J7s0Yasa_RChPYbjJYdnw"/>
+</div>
+<!-- Dialogue Panel -->
+<div class="relative w-full bg-surface-container-low/75 backdrop-blur-md border border-outline-variant rounded-DEFAULT shadow-2xl p-8 flex flex-col pointer-events-auto">
+<!-- Structural separation for portrait overlap -->
+<div class="pl-[260px] flex flex-col relative h-full min-h-[140px]">
+<!-- Character Nameplate -->
+<div class="flex items-center gap-4 mb-2">
+<h2 class="font-display-md text-display-md text-on-surface tracking-wide drop-shadow-md">Aiden</h2>
+</div>
+<!-- Subtle divider -->
+<div class="w-full h-[1px] bg-gradient-to-r from-outline-variant/60 to-transparent mb-4"></div>
+<!-- Dialogue Text Canvas -->
+<div class="flex-grow pr-16 relative">
+<p class="font-interface-md text-interface-md text-on-surface-variant leading-relaxed tracking-tight" id="dialogue-text">
+<!-- Text injected via JS for effect -->
+</p>
+<span class="inline-block w-2.5 h-6 bg-outline-variant animate-pulse align-text-bottom ml-1 absolute bottom-1 mt-1 opacity-0" id="dialogue-cursor"></span>
+</div>
+<!-- Dialogue Controls (Bottom Edge) -->
+<div class="absolute bottom-[-24px] right-0 flex gap-6 items-center px-4">
+<button class="flex items-center gap-2 font-label-caps text-label-caps text-outline hover:text-on-surface transition-colors glitch-text-hover group">
+<span class="material-symbols-outlined text-[18px] opacity-70 group-hover:opacity-100 group-hover:-translate-x-1 transition-all">history</span>
+<span>BACKLOG</span>
+</button>
+<button class="flex items-center gap-2 font-label-caps text-label-caps text-outline hover:text-on-surface transition-colors glitch-text-hover group">
+<span class="material-symbols-outlined text-[18px] opacity-70 group-hover:opacity-100 group-hover:rotate-180 transition-all duration-500">sync</span>
+<span>AUTO</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple typing effect to simulate "struggling processor" narrative delivery
+        document.addEventListener('DOMContentLoaded', () => {
+            const textToType = "A veces siento que este lugar me conoce mejor que yo misma.";
+            const textElement = document.getElementById('dialogue-text');
+            const cursorElement = document.getElementById('dialogue-cursor');
+            let index = 0;
+
+            function typeChar() {
+                if (index < textToType.length) {
+                    textElement.textContent += textToType.charAt(index);
+                    index++;
+                    // Introduce slight random delay for analog feel
+                    const delay = Math.random() * 50 + 20; 
+                    setTimeout(typeChar, delay);
+                } else {
+                    cursorElement.classList.remove('opacity-0');
+                }
+            }
+
+            // Start typing shortly after load
+            setTimeout(typeChar, 400);
+        });
+    </script>
+</body></html>

@@ -18,6 +18,12 @@ public class LevelRuntimeController : MonoBehaviour
     [Tooltip("Blueprint del nivel: aplica echoMode, degradation, maxEchoes y maxRecordSeconds al EchoRecorder.")]
     [SerializeField] LevelBlueprint levelBlueprint;
 
+    [Header("Block Finale (N06)")]
+    [Tooltip("Si no está vacío, este nivel es el final del bloque: tras el gate VN se resuelve el final del bloque y se carga esta escena (p.ej. CreditsScene).")]
+    [SerializeField] string finaleSceneName = "";
+    [Tooltip("Si es true y el flag narrativo unlock_future_echo está activo (recompensa de N03), el eco se graba en modo Future.")]
+    [SerializeField] bool enableFutureEchoIfUnlocked = false;
+
     [Header("Echo Mode Configuration")]
     [SerializeField] EchoPlaybackMode echoMode = EchoPlaybackMode.Standard;
     [SerializeField] bool recordFuture = false;
@@ -101,6 +107,32 @@ public class LevelRuntimeController : MonoBehaviour
             tmpBp.imposedEchoData = imposedEchoData;
             tmpBp.ambientEchoData = ambientEchoData;
             modeCtl.Configure(tmpBp);
+        }
+
+        // Recompensa narrativa de N03: si el flag unlock_future_echo está activo,
+        // el eco de este nivel se graba y reproduce en modo Future.
+        if (enableFutureEchoIfUnlocked &&
+            VN_EndingFlags.Instance != null &&
+            VN_EndingFlags.Instance.GetFlag(Echoes.VN.BlockEndingResolver.UnlockFutureEcho))
+        {
+            if (_recorder != null)
+            {
+                _recorder.SetMode(EchoPlaybackMode.Future, true, degradationPerReplay, lockEchoSlots, lockedSlotIndices,
+                    levelBlueprint != null ? levelBlueprint.maxRecordSeconds : _recorder.MaxRecordSeconds,
+                    levelBlueprint != null ? levelBlueprint.maxEchoes : _recorder.MaxEchoes);
+            }
+
+            var modeCtl = EchoModeController.Instance ?? gameObject.AddComponent<EchoModeController>();
+            var tmpBp = ScriptableObject.CreateInstance<LevelBlueprint>();
+            tmpBp.echoMode = EchoPlaybackMode.Future;
+            tmpBp.recordFuture = true;
+            tmpBp.degradationPerReplay = degradationPerReplay;
+            tmpBp.lockEchoSlots = lockEchoSlots;
+            tmpBp.lockedSlotIndices = lockedSlotIndices;
+            tmpBp.imposedEchoData = imposedEchoData;
+            tmpBp.ambientEchoData = ambientEchoData;
+            modeCtl.Configure(tmpBp);
+            Debug.Log("[LevelRuntime] Eco futuro desbloqueado por flag narrativo (unlock_future_echo).");
         }
 
         string sceneName = SceneManager.GetActiveScene().name;
@@ -254,6 +286,16 @@ public class LevelRuntimeController : MonoBehaviour
             gate.Show(levelIdx, isMicro, (chosen) => {
                 VN_EndingFlags.Instance?.SetFlag($"ch{levelIdx}_choice_1", chosen);
 
+                // Nivel final del bloque: resolver el final y cargar la escena de cierre.
+                if (!string.IsNullOrEmpty(finaleSceneName))
+                {
+                    var ending = Echoes.VN.BlockEndingResolver.ResolveFromRuntime();
+                    Echoes.VN.BlockEndingResolver.PersistEnding(ending);
+                    Debug.Log($"[LevelRuntime] Final del bloque resuelto: {ending}");
+                    LoadingScreenController.TransitionToScene(finaleSceneName);
+                    return;
+                }
+
                 int nextBuildIndex = SceneManager.GetActiveScene().buildIndex + 1;
                 string targetScene = nextBuildIndex < SceneManager.sceneCountInBuildSettings
                     ? System.IO.Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(nextBuildIndex))
@@ -276,8 +318,10 @@ public class LevelRuntimeController : MonoBehaviour
 
     static bool IsMicroLevel(int levelIdx)
     {
-        // N03, N07, N13 tienen micro-choices durante el puzzle (ver VN_ENDINGS_REDEFINED)
-        return levelIdx == 3 || levelIdx == 7 || levelIdx == 13;
+        // Los micro-choices se disparan en escena (MicroChoiceTrigger) durante el
+        // puzzle; el gate de fin de nivel muestra el nodo base. N03 usa el nodo
+        // base al final (left_corridor/right_corridor) y el micro en el fork.
+        return levelIdx == 7 || levelIdx == 13;
     }
 
     public void RequestRestart(float delaySeconds)

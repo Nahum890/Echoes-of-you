@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fragmento 01: Archivo de Errores - Echo Archive</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&amp;family=EB+Garamond:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error": "#690005",
+                      "surface-container-lowest": "#0e0f0b",
+                      "outline": "#959087",
+                      "on-secondary-container": "#b4bccc",
+                      "on-tertiary-container": "#006d87",
+                      "error-container": "#93000a",
+                      "on-tertiary-fixed": "#001f28",
+                      "secondary-fixed": "#dbe3f3",
+                      "surface-variant": "#353530",
+                      "inverse-primary": "#625e54",
+                      "primary-fixed": "#e9e2d5",
+                      "primary": "#fffeff",
+                      "on-tertiary": "#003543",
+                      "tertiary-fixed": "#b7eaff",
+                      "surface": "#131410",
+                      "error": "#ffb4ab",
+                      "on-primary-fixed-variant": "#4a463d",
+                      "surface-container-highest": "#353530",
+                      "on-secondary": "#29313d",
+                      "on-primary-container": "#686459",
+                      "on-secondary-fixed-variant": "#3f4754",
+                      "on-error-container": "#ffdad6",
+                      "primary-fixed-dim": "#ccc6b9",
+                      "on-surface": "#e4e2dc",
+                      "surface-dim": "#131410",
+                      "secondary": "#bfc7d7",
+                      "surface-container": "#1f201c",
+                      "tertiary-fixed-dim": "#63d4fa",
+                      "outline-variant": "#4a463f",
+                      "primary-container": "#e8e1d4",
+                      "surface-bright": "#393935",
+                      "on-background": "#e4e2dc",
+                      "tertiary-container": "#b6eaff",
+                      "on-primary-fixed": "#1e1b14",
+                      "on-surface-variant": "#ccc6bc",
+                      "surface-tint": "#ccc6b9",
+                      "secondary-container": "#444c59",
+                      "on-tertiary-fixed-variant": "#004d61",
+                      "surface-container-low": "#1b1c18",
+                      "secondary-fixed-dim": "#bfc7d7",
+                      "on-primary": "#333027",
+                      "inverse-surface": "#e4e2dc",
+                      "tertiary": "#fffeff",
+                      "on-secondary-fixed": "#141c28",
+                      "surface-container-high": "#2a2a26",
+                      "inverse-on-surface": "#30312c",
+                      "background": "#131410"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "unit": "8px",
+                      "margin-edge": "64px",
+                      "container-padding": "32px"
+              },
+              "fontFamily": {
+                      "label-caps": [
+                              "Courier Prime", "monospace"
+                      ],
+                      "display-lg-mobile": [
+                              "EB Garamond", "serif"
+                      ],
+                      "display-lg": [
+                              "EB Garamond", "serif"
+                      ],
+                      "interface-sm": [
+                              "Courier Prime", "monospace"
+                      ],
+                      "display-md": [
+                              "EB Garamond", "serif"
+                      ],
+                      "interface-md": [
+                              "Courier Prime", "monospace"
+                      ],
+                      "interface-lg": [
+                              "Courier Prime", "monospace"
+                      ]
+              },
+              "fontSize": {
+                      "label-caps": [
+                              "16px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "40px",
+                              {
+                                      "lineHeight": "44px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "64px",
+                              {
+                                      "lineHeight": "72px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "interface-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-md": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "interface-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "interface-lg": [
+                              "38px",
+                              {
+                                      "lineHeight": "44px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        /* Custom Scanline & Glitch Effects */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.1) 50%,
+                rgba(0,0,0,0.1)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.3;
+        }
+
+        .crt-flicker {
+            animation: flicker 0.15s infinite;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.95; }
+            50% { opacity: 1; }
+            100% { opacity: 0.95; }
+        }
+        
+        .echo-trail {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            transform: translate(4px, 4px);
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: -1;
+            filter: blur(1px);
+        }
+
+        .glitch-text {
+            position: relative;
+        }
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+        .glitch-text::before {
+            color: #63d4fa; /* tertiary-fixed-dim */
+            z-index: -1;
+            animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
+        }
+        .glitch-text::after {
+            color: #ffb4ab; /* error */
+            z-index: -2;
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 1px); }
+            20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+            40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, 2px); }
+            60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); }
+            80% { clip-path: inset(10% 0 70% 0); transform: translate(-1px, 1px); }
+            100% { clip-path: inset(30% 0 50% 0); transform: translate(1px, -1px); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(10% 0 60% 0); transform: translate(2px, -1px); }
+            20% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 1px); }
+            40% { clip-path: inset(30% 0 40% 0); transform: translate(2px, -2px); }
+            60% { clip-path: inset(50% 0 30% 0); transform: translate(-2px, 2px); }
+            80% { clip-path: inset(5% 0 80% 0); transform: translate(1px, -1px); }
+            100% { clip-path: inset(70% 0 10% 0); transform: translate(-1px, 1px); }
+        }
+        
+        .typewriter-delay {
+            opacity: 0;
+            animation: fadeIn 0.1s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .pulse-error {
+            animation: pulseError 2s infinite;
+        }
+        
+        @keyframes pulseError {
+            0%, 100% { opacity: 1; text-shadow: 0 0 8px rgba(255, 180, 171, 0.5); }
+            50% { opacity: 0.5; text-shadow: 0 0 2px rgba(255, 180, 171, 0.2); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-interface-md h-screen w-screen overflow-hidden crt-flicker selection:bg-tertiary-fixed-dim/30 selection:text-tertiary-fixed">
+<!-- Background Environment -->
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center opacity-40" data-alt="A dimly lit, vast institutional puzzle room from an abandoned archival facility. A massive stone pressure plate sits in the center of the concrete floor. Dust motes float in the hazy atmosphere. Lighting is moody and cinematic, with deep shadows and subtle cyan volumetric shafts of light piercing the gloom. The aesthetic is melancholic, retro-analog brutalism, suggesting forgotten temporal mechanics." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCyQziArFFIo3ozoupJvIT1s1wQTLxPZHo0dc95UgCQZyFIXMwhgz-7o2SpowasBNCQYZRxGcnOqNkPy5T6G0Ow6eif_ePyXdk6N9bvXWL8nPE7d4cenn7dlgbpVKukibWIO60v7G0QycKSK6wHY6TKL6GfNcQRzhGhT4zokX22-D-QMDIJRg62G8uod-53lTLBvrovap2xpmcIGw59NKinuLsofWkefLovKVkPH78aX2avWmYeGoelPg')"></div>
+<div class="absolute inset-0 bg-background/60 backdrop-blur-[2px]"></div>
+</div>
+<div class="scanlines"></div>
+<!-- Top Navigation (Web Only) -->
+<header class="hidden md:flex justify-between items-center px-margin-edge py-8 w-full fixed top-0 left-0 w-full bg-transparent flat no shadows z-40 transition-opacity duration-300 opacity-100">
+<div class="font-display-md text-display-md text-primary tracking-tighter opacity-80 glitch-text" data-text="ECHO ARCHIVE">ECHO ARCHIVE</div>
+<div class="flex items-center gap-gutter">
+<button class="text-on-surface-variant opacity-60 hover:text-primary hover:scale-105 transition-all">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="text-on-surface-variant opacity-60 hover:text-primary hover:scale-105 transition-all">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<!-- Side Navigation (Web Only) -->
+<nav class="hidden md:flex flex-col h-full py-margin-edge fixed left-0 top-0 h-full w-80 bg-surface-container/70 backdrop-blur-md border-r border-outline-variant/30 flat z-30">
+<div class="px-margin-edge mb-8">
+<h2 class="font-label-caps text-label-caps text-on-surface">FRAGMENT_01</h2>
+<p class="font-interface-sm text-interface-sm text-on-surface-variant/70 mt-2">Institutional Archive<br/>Status: <span class="text-error pulse-error">Corrupted</span></p>
+</div>
+<ul class="flex flex-col gap-2 mt-4">
+<li>
+<a class="flex items-center gap-4 py-3 font-interface-sm text-interface-sm text-primary border-l-2 border-primary pl-4 scale-[0.99] transition-transform" href="#">
+<span class="material-symbols-outlined text-primary">target</span>
+                    Objetivo Actual
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-4 py-3 font-interface-sm text-interface-sm text-on-surface-variant pl-4 opacity-50 hover:bg-primary/10 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+                    Fragmentos de Memoria
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-4 py-3 font-interface-sm text-interface-sm text-on-surface-variant pl-4 opacity-50 hover:bg-primary/10 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+                    Registros Temporales
+                </a>
+</li>
+</ul>
+</nav>
+<!-- Main Canvas -->
+<main class="relative w-full h-full md:pl-80 pt-[120px] pb-[120px] px-margin-edge z-10 flex flex-col items-center justify-center pointer-events-none">
+<!-- Center HUD Interaction Area -->
+<div class="flex flex-col items-center justify-center w-full max-w-3xl aspect-video border border-outline/20 relative">
+<!-- Corner Accents -->
+<div class="absolute top-0 left-0 w-4 h-4 border-t border-l border-outline/50"></div>
+<div class="absolute top-0 right-0 w-4 h-4 border-t border-r border-outline/50"></div>
+<div class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-outline/50"></div>
+<div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-outline/50"></div>
+<!-- Contextual Tutorial (Center) -->
+<div class="bg-surface-container/80 backdrop-blur-md border border-outline/30 px-6 py-3 flex items-center gap-4 pointer-events-auto shadow-[0_0_15px_rgba(99,212,250,0.1)]">
+<div class="w-8 h-8 flex items-center justify-center border border-tertiary-fixed-dim text-tertiary-fixed-dim font-label-caps text-label-caps rounded-sm shadow-[0_0_8px_rgba(99,212,250,0.3)]">R</div>
+<span class="font-interface-md text-interface-md text-on-surface tracking-wide">Pulsa [R] para proyectar el Eco</span>
+</div>
+<!-- Error State (Near Center/Right) -->
+<div class="absolute top-1/4 right-[10%] flex flex-col items-end pointer-events-auto">
+<div class="text-error font-label-caps text-label-caps flex items-center gap-2 bg-error-container/20 backdrop-blur-sm px-3 py-1 border border-error/50 pulse-error">
+<span class="material-symbols-outlined text-sm">warning</span>
+                    Límite de ecos alcanzado
+                </div>
+</div>
+<!-- Checkpoint State (Center-Bottom) -->
+<div class="absolute bottom-12 flex flex-col items-center pointer-events-auto">
+<span class="material-symbols-outlined text-surface-tint mb-2 text-3xl drop-shadow-[0_0_10px_rgba(204,198,185,0.8)] animate-bounce" style="font-variation-settings: 'FILL' 1;">save</span>
+<div class="font-interface-sm text-interface-sm text-surface-tint tracking-widest uppercase opacity-80" id="checkpoint-text">
+                    Recuerdo guardado<span class="animate-pulse">_</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="md:hidden flex items-end gap-12 px-12 py-4 border border-outline-variant/20 rounded-full fixed bottom-0 left-1/2 -translate-x-1/2 mb-margin-edge bg-transparent flat none z-40 bg-surface/80 backdrop-blur-lg">
+<button class="flex flex-col items-center justify-center text-outline opacity-40 hover:opacity-100 hover:text-tertiary transition-all">
+<span class="material-symbols-outlined mb-1">replay</span>
+<span class="font-label-caps text-[10px]">REPLAY</span>
+</button>
+<button class="flex flex-col items-center justify-center text-tertiary-fixed-dim scale-110 drop-shadow-[0_0_8px_rgba(99,212,250,0.5)] animate-pulse">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">radio_button_checked</span>
+<span class="font-label-caps text-[10px]">RECORD</span>
+</button>
+<button class="flex flex-col items-center justify-center text-outline opacity-40 hover:opacity-100 hover:text-tertiary transition-all">
+<span class="material-symbols-outlined mb-1">sync</span>
+<span class="font-label-caps text-[10px]">SYNC</span>
+</button>
+</nav>
+<script>
+        // Simple typewriter delay effect for the checkpoint text to simulate processing
+        document.addEventListener('DOMContentLoaded', () => {
+            const textElement = document.getElementById('checkpoint-text');
+            const originalHTML = textElement.innerHTML;
+            const textNodes = Array.from(textElement.childNodes).filter(node => node.nodeType === Node.TEXT_NODE);
+            
+            if(textNodes.length > 0) {
+                const textContent = textNodes[0].textContent.trim();
+                textNodes[0].textContent = '';
+                
+                let i = 0;
+                const typeWriter = setInterval(() => {
+                    if (i < textContent.length) {
+                        textNodes[0].textContent += textContent.charAt(i);
+                        i++;
+                    } else {
+                        clearInterval(typeWriter);
+                    }
+                }, 50); // Frame-skipping delay feel
+            }
+        });
+    </script>
+</body></html>

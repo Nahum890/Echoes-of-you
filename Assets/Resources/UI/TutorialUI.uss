@@ -1,0 +1,47 @@
+/* ============================================================
+   TutorialUI — Mensajes 1 acción, máx 2 líneas.
+   Chalkboard style, desaparece al ejecutar acción.
+   ============================================================ */
+
+@import "EchoesDesignTokens.uss";
+
+.tutorial-root {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 200px;
+}
+
+.tutorial-box {
+    background-color: rgba(58, 74, 56, 0.98);
+    border-width: 3px;
+    border-color: var(--color-faded-mustard);
+    padding: var(--space-lg) var(--space-xl);
+    max-width: 500px;
+    width: 90%;
+    pointer-events: none;
+    animation: tutorial-enter 0.3s ease-out;
+}
+
+.tutorial-title {
+    font-size: var(--size-body);
+    color: var(--color-fluorescent-sick);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(220, 230, 217, 0.3);
+    padding-bottom: var(--space-sm);
+    margin-bottom: var(--space-sm);
+}
+
+.tutorial-text {
+    font-size: var(--size-small);
+    color: var(--color-paper);
+    white-space: normal;
+    line-height: 22px;
+}
+
+@keyframes tutorial-enter {
+    from { opacity: 0; translate: 0 -20px; }
+    to { opacity: 1; translate: 0 0; }
+}

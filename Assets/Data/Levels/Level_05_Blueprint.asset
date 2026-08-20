@@ -17,8 +17,8 @@ MonoBehaviour:
   actNumber: 1
   archetype: 0
   echoEnabled: 1
-  maxEchoes: 2
-  maxRecordSeconds: 8
+  maxEchoes: 3
+  maxRecordSeconds: 12
   echoMode: 0
   recordFuture: 0
   degradationPerReplay: 0

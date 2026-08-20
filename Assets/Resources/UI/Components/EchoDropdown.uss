@@ -1,0 +1,90 @@
+/* ============================================================
+   EchoDropdown — wrapper sobre Unity DropdownField
+   Estados: default / hover / focus / open / disabled
+   Navegación por teclado en lista abierta heredada de Unity base.
+   ============================================================ */
+
+@import "../EchoesDesignTokens.uss";
+
+.echo-dropdown {
+    margin: var(--space-sm) 0;
+    transition-property: opacity;
+    transition-duration: var(--duration-fast);
+}
+
+.echo-dropdown > .unity-label {
+    font-size: var(--size-small);
+    color: var(--color-fluorescent-sick);
+    width: 220px;
+}
+
+.echo-dropdown .unity-base-popup-field__input {
+    background-color: var(--color-void-black);
+    border-width: 1px;
+    border-color: var(--color-institutional-teal);
+    color: var(--color-paper);
+    font-size: var(--size-small);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: 0;
+    transition-property: border-color, background-color;
+    transition-duration: var(--duration-hover-mouse);
+}
+
+/* HOVER */
+.echo-dropdown:hover .unity-base-popup-field__input {
+    border-color: var(--color-memory-amber);
+}
+
+/* FOCUS */
+.echo-dropdown:focus .unity-base-popup-field__input {
+    border-color: var(--color-memory-amber);
+    border-width: 2px;
+    transition-duration: var(--duration-hover-controller);
+}
+
+/* OPEN — clase aplicada por C# al desplegar la lista */
+.echo-dropdown--open .unity-base-popup-field__input {
+    border-color: var(--color-memory-amber);
+    border-width: 2px;
+    background-color: var(--color-corridor-navy);
+}
+
+/* Popup container Unity (override de base) */
+.echo-dropdown .unity-base-dropdown__container {
+    background-color: var(--color-void-black);
+    border-width: 1px;
+    border-color: var(--color-memory-amber);
+}
+
+.echo-dropdown .unity-base-dropdown__item {
+    background-color: transparent;
+}
+
+.echo-dropdown .unity-base-dropdown__item .unity-label {
+    color: var(--color-paper);
+    font-size: var(--size-small);
+}
+
+.echo-dropdown .unity-base-dropdown__item:hover {
+    background-color: var(--color-amber-tint-08);
+}
+
+.echo-dropdown .unity-base-dropdown__item:hover .unity-label {
+    color: var(--color-memory-amber);
+}
+
+/* DISABLED */
+.echo-dropdown:disabled {
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+.echo-dropdown:disabled > .unity-label {
+    color: var(--color-border);
+}
+
+.echo-dropdown:disabled .unity-base-popup-field__input {
+    color: var(--color-border);
+    border-color: var(--color-border);
+}
+

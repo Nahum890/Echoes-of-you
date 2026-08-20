@@ -1,70 +1,174 @@
 <UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
-    <Style src="project://database/Assets/UI/GlassPanel.uss" />
     <Style src="project://database/Assets/UI/EchoesDesignTokens.uss" />
     <Style src="project://database/Assets/UI/EchoesTheme.uss" />
     <Style src="project://database/Assets/UI/PauseMenuUI.uss" />
 
-    <ui:VisualElement class="root-fullscreen hidden" name="pause-root" style="width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
+    <ui:VisualElement class="root-fullscreen hidden" name="pause-root">
 
-        <!-- Scanline overlay -->
-        <ui:VisualElement class="pause-scanline" />
+        <!-- Background Dim & Scanline Overlay -->
+        <ui:VisualElement class="pause-backdrop" picking-mode="Ignore" />
+        <ui:VisualElement class="pause-scanline" picking-mode="Ignore" />
 
-        <!-- Echo silhouette (sombra desplazada detras del panel) -->
-        <ui:VisualElement class="echo-silhouette" />
+        <!-- Left Panel Container (33% Width) -->
+        <ui:VisualElement class="pause-left-panel" name="pause-nav">
+            
+            <!-- Echo Silhouette Ghost Shadow -->
+            <ui:VisualElement class="echo-silhouette" picking-mode="Ignore" />
 
-        <!-- Panel izquierdo 33% -->
-        <ui:VisualElement class="pause-notebook" name="pause-nav">
-
-            <!-- Emblem (O de Echoes) -->
-            <ui:VisualElement class="pause-emblem">
-                <ui:Label class="pause-emblem-text" text="O" />
-            </ui:VisualElement>
-
-            <!-- Header -->
-            <ui:VisualElement class="pause-notebook__header">
-                <ui:Label class="pause-title" text="CAPITULO PAUSADO" />
-                <ui:Label class="pause-subtitle" text="checkpoint actual" />
-                <ui:Label class="pause-location" name="lbl-pause-fragment" text="Aula XXX" />
-            </ui:VisualElement>
-
-            <!-- Stats -->
-            <ui:VisualElement class="pause-stats" name="pauseStats">
-                <ui:Label class="pause-stat" name="lbl-pause-time" text="Tiempo: 00:00:00" />
-                <ui:Label class="pause-stat" name="lbl-pause-echoes" text="Ecos grabados: 0" />
-                <ui:Label class="pause-stat" name="lbl-pause-deaths" text="Quiebres (aula): 0" />
-                <ui:Label class="pause-stat" name="lbl-pause-total" text="Cuaderno: 0/15 ecos" />
-            </ui:VisualElement>
-
-            <!-- Quick HUD Scale Row -->
-            <ui:VisualElement class="pause-scale-row" name="pause-scale-row">
-                <ui:VisualElement class="pause-scale-label-container">
-                    <ui:Label class="pause-scale-title" text="ESCALA HUD" />
-                    <ui:Label class="pause-scale-hint" text="Tamaño de interfaz" />
+            <!-- Top Section: Emblem & Chapter Info -->
+            <ui:VisualElement class="pause-header-block">
+                
+                <!-- Emblem: Broken O -->
+                <ui:VisualElement class="pause-emblem-container" picking-mode="Ignore">
+                    <ui:Label class="pause-emblem-text" text="O" />
+                    <ui:VisualElement class="pause-emblem-slash" />
                 </ui:VisualElement>
-                <ui:VisualElement class="pause-scale-controls">
-                    <ui:Button class="pause-scale-btn" name="btn-scale-down" text="&lt;" />
-                    <ui:Label class="pause-scale-val" name="lbl-pause-scale-val" text="100%" />
-                    <ui:Button class="pause-scale-btn" name="btn-scale-up" text="&gt;" />
+
+                <!-- Chapter Info -->
+                <ui:VisualElement class="pause-chapter-info">
+                    <ui:Label class="pause-main-title" text="CAPÍTULO PAUSADO" />
+                    <ui:Label class="pause-chapter-subtitle" name="lbl-pause-chapter" text="Chapter I: Primer Eco" />
+                    <ui:VisualElement class="pause-location-container">
+                        <ui:Label class="pause-location-text" name="lbl-pause-location" text="Checkpoint: Pasillo Principal" />
+                    </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
 
-            <!-- Actions -->
-            <ui:VisualElement class="pause-actions">
-                <ui:Button class="pause-btn pause-btn--focus" name="btn-resume" text="Reanudar" />
-                <ui:Button class="pause-btn pause-btn--danger" name="btn-reiniciar" text="Reiniciar desde el ultimo punto" />
-                <ui:Button class="pause-btn" name="btn-settings" text="Ajustes" />
-                <ui:Button class="pause-btn" name="btn-hub" text="Expediente" />
+            <!-- Middle Section: Main Menu Buttons -->
+            <ui:VisualElement class="pause-options-list">
+                
+                <!-- 1. Reanudar -->
+                <ui:Button class="pause-option-btn pause-option-btn--focused" name="btn-resume" text="REANUDAR" />
+
+                <!-- 2. Reiniciar -->
+                <ui:Button class="pause-option-btn" name="btn-reiniciar" text="REINICIAR CAPÍTULO" />
+
+                <!-- 3. Ajustes -->
+                <ui:Button class="pause-option-btn" name="btn-settings" text="AJUSTES" />
+
+                <!-- 4. Controles -->
+                <ui:Button class="pause-option-btn" name="btn-controles" text="CONTROLES" />
+
+                <!-- 5. Expediente -->
+                <ui:Button class="pause-option-btn" name="btn-expediente" text="EXPEDIENTE" />
+
             </ui:VisualElement>
 
-            <!-- Footer — volver al menu -->
-            <ui:Button class="pause-footer-btn" name="btn-footer-menu" text="Volver al menu principal" />
+            <!-- Bottom Section: Volver al menú principal -->
+            <ui:VisualElement class="pause-footer-block">
+                <ui:Button class="pause-option-btn pause-option-btn--logout" name="btn-hub" text="VOLVER AL MENÚ PRINCIPAL" />
+            </ui:VisualElement>
 
         </ui:VisualElement>
 
-        <!-- Right side — texto REC residual -->
-        <ui:Label class="pause-rec-text" text="REC_0392 // A. PIERCE // ERROR_MEMORY_CORRUPTED" />
+        <!-- Right Side: Residual Archival Stamp -->
+        <ui:VisualElement class="pause-right-view" picking-mode="Ignore">
+            <ui:Label class="pause-rec-text" text="REC_0392 // A. PIERCE // ERROR_MEMORY_CORRUPTED" picking-mode="Ignore" />
+        </ui:VisualElement>
 
-        <!-- Settings panel (overlay, hidden by default) -->
+        <!-- Sub-Panel: Controles (Overlay) -->
+        <ui:VisualElement class="pause-subpanel hidden" name="pause-controls-panel">
+            <ui:VisualElement class="pause-subpanel-card">
+                <ui:VisualElement class="pause-subpanel-header">
+                    <ui:Label class="pause-subpanel-tag" text="GUÍA DE REGISTRO // ENTRADA DE COMANDOS" />
+                    <ui:Label class="pause-subpanel-title" text="CONTROLES DEL SISTEMA" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="controls-grid">
+                    <ui:VisualElement class="control-entry">
+                        <ui:VisualElement class="control-keys-box">
+                            <ui:Label class="control-key" text="W" />
+                            <ui:Label class="control-key" text="A" />
+                            <ui:Label class="control-key" text="S" />
+                            <ui:Label class="control-key" text="D" />
+                        </ui:VisualElement>
+                        <ui:Label class="control-desc" text="Moverse por el entorno tridimensional" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="control-entry">
+                        <ui:VisualElement class="control-keys-box">
+                            <ui:Label class="control-key control-key--wide" text="ESPACIO" />
+                        </ui:VisualElement>
+                        <ui:Label class="control-desc" text="Saltar / Impulsarse sobre plataformas" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="control-entry">
+                        <ui:VisualElement class="control-keys-box">
+                            <ui:Label class="control-key control-key--accent" text="R" />
+                        </ui:VisualElement>
+                        <ui:Label class="control-desc" text="Mantener: Grabar Eco Temporal (hasta 12s de acciones)" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="control-entry">
+                        <ui:VisualElement class="control-keys-box">
+                            <ui:Label class="control-key" text="F" />
+                        </ui:VisualElement>
+                        <ui:Label class="control-desc" text="Limpiar / Descartar todos los ecos activos de la sala" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="control-entry">
+                        <ui:VisualElement class="control-keys-box">
+                            <ui:Label class="control-key" text="E" />
+                            <ui:Label class="control-key control-key--mouse" text="CLIC" />
+                        </ui:VisualElement>
+                        <ui:Label class="control-desc" text="Interactuar / Inspeccionar objetos y avanzar diálogos" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="control-entry">
+                        <ui:VisualElement class="control-keys-box">
+                            <ui:Label class="control-key control-key--wide" text="ESCAPE" />
+                        </ui:VisualElement>
+                        <ui:Label class="control-desc" text="Abrir / Cerrar Menú de Pausa" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:Button class="pause-subpanel-back-btn" name="btn-close-controls" text="← VOLVER AL MENÚ DE PAUSA" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- Sub-Panel: Expediente (Overlay) -->
+        <ui:VisualElement class="pause-subpanel hidden" name="pause-expediente-panel">
+            <ui:VisualElement class="pause-subpanel-card">
+                <ui:VisualElement class="pause-subpanel-header">
+                    <ui:Label class="pause-subpanel-tag" text="ARCHIVO DE MEMORIAS // EXPEDIENTE AIDEN" />
+                    <ui:Label class="pause-subpanel-title" text="EXPEDIENTE Y FRAGMENTOS" />
+                </ui:VisualElement>
+
+                <!-- Psychological Stage Card -->
+                <ui:VisualElement class="expediente-stage-box">
+                    <ui:Label class="expediente-stage-tag" text="ESTADO PSICOLÓGICO ACTUAL" />
+                    <ui:Label class="expediente-stage-name" name="lbl-expediente-stage" text="ETAPA: CONVICCIÓN" />
+                    <ui:Label class="expediente-stage-desc" name="lbl-expediente-stage-desc" text="Aiden se resiste a aceptar la alteración de los recuerdos. La memoria aún es una barrera." />
+                </ui:VisualElement>
+
+                <!-- Session Stats Grid -->
+                <ui:VisualElement class="expediente-stats-grid">
+                    <ui:VisualElement class="expediente-stat-item">
+                        <ui:Label class="expediente-stat-label" text="TIEMPO TRANSCURRIDO" />
+                        <ui:Label class="expediente-stat-value" name="lbl-expediente-time" text="00:00:00" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="expediente-stat-item">
+                        <ui:Label class="expediente-stat-label" text="ECOS GENERADOS" />
+                        <ui:Label class="expediente-stat-value" name="lbl-expediente-echoes" text="0" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="expediente-stat-item">
+                        <ui:Label class="expediente-stat-label" text="QUIEBRES EN SALA" />
+                        <ui:Label class="expediente-stat-value" name="lbl-expediente-deaths" text="0" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="expediente-stat-item">
+                        <ui:Label class="expediente-stat-label" text="FRAGMENTOS RECUPERADOS" />
+                        <ui:Label class="expediente-stat-value" name="lbl-expediente-total" text="0 / 15 ECOS" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:Button class="pause-subpanel-back-btn" name="btn-close-expediente" text="← VOLVER AL MENÚ DE PAUSA" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- Sub-Panel: Ajustes (Host container for SettingsController) -->
         <ui:VisualElement class="pause-settings-panel hidden" name="pause-settings-panel" />
 
     </ui:VisualElement>

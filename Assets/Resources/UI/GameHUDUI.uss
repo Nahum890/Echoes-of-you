@@ -1,0 +1,236 @@
+/* ============================================================
+   GameHUDUI — Gameplay HUD (Stich aesthetic)
+   Opacity base 0.0 (RULE-UI-004). Fade 0.0→0.85 in 0.10s ONLY recording.
+   Stich palette: amber #E8B262, cyan #b6eaff, ivory #e4e2dc.
+   All text opacity 1 when visible (USS overrides from EchoesTheme.uss).
+   ============================================================ */
+
+@import "EchoesDesignTokens.uss";
+
+/* ===== ROOT ===== */
+.root-fullscreen {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 100ms;
+    transition-timing-function: linear;
+}
+
+/* HUD visible when recording/playing */
+.root-fullscreen.hud-visible {
+    opacity: 0.85;
+}
+
+/* ===== RECORD PANEL (top-left) — Stich glass ===== */
+.hud-record-panel {
+    position: absolute;
+    left: 32px; top: 32px;
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--color-void-overlay-92);
+    border-width: 1px;
+    border-color: var(--color-stich-outline-variant);
+    border-radius: 0;
+    padding: 8px 16px;
+    gap: 12px;
+}
+
+.hud-record-dot {
+    width: 10px; height: 10px;
+    border-radius: 5px;
+    background-color: var(--color-stich-error);
+}
+
+.hud-record-bar-bg {
+    width: 140px; height: 6px;
+    background-color: var(--color-stich-surface-container-high);
+    border-width: 1px;
+    border-color: var(--color-stich-outline-variant);
+}
+
+.hud-record-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: var(--color-stich-on-surface);
+    transition-property: width;
+    transition-duration: 100ms;
+    transition-timing-function: linear;
+}
+
+.hud-echo-slots {
+    flex-direction: row;
+    gap: 4px;
+}
+
+.hud-echo-slot {
+    width: 6px; height: 6px;
+    border-width: 1px;
+    border-color: var(--color-stich-outline-variant);
+}
+
+.hud-echo-slot--filled {
+    background-color: var(--color-stich-amber);
+}
+
+/* ===== HUD BARS (top-right) ===== */
+.hud-container {
+    position: absolute;
+    right: 32px; top: 32px;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.hud-bar-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.hud-bar-label {
+    font-size: var(--size-label-caps);
+    color: var(--color-stich-on-surface-variant);
+    width: 60px;
+    -unity-text-align: middle-left;
+    opacity: 1;
+}
+
+.hud-bar-bg {
+    width: 120px; height: 6px;
+    background-color: var(--color-stich-surface-container-high);
+    border-width: 1px;
+    border-color: var(--color-stich-outline-variant);
+}
+
+.hud-bar-fill {
+    height: 100%;
+}
+
+.hud-bar-fill--stability {
+    background-color: var(--color-stich-on-surface);
+}
+
+.hud-bar-fill--recall {
+    background-color: var(--color-stich-amber);
+}
+
+/* ===== OBJECTIVE (top-center) ===== */
+.hud-objective-text {
+    position: absolute;
+    left: 10%; right: 10%; top: 96px;
+    font-size: var(--size-interface-md);
+    color: var(--color-stich-pure-white);
+    -unity-text-align: middle-center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.95);
+    opacity: 1;
+}
+
+/* ===== TOAST (bottom-center) — Stich glass ===== */
+.hud-toast-text {
+    position: absolute;
+    left: 20%; right: 20%; bottom: 120px;
+    font-size: var(--size-interface-sm);
+    color: var(--color-stich-on-surface);
+    -unity-text-align: middle-center;
+    white-space: normal;
+    background-color: var(--color-void-overlay-92);
+    border-width: 1px;
+    border-color: var(--color-stich-outline-variant);
+    border-radius: 0;
+    padding: 8px 16px;
+    opacity: 1;
+}
+
+/* ===== ECHO STATE (above toast) ===== */
+.hud-echo-state-label {
+    position: absolute;
+    left: 20%; right: 20%; bottom: 80px;
+    font-size: var(--size-interface-sm);
+    color: var(--color-stich-tertiary-container);
+    -unity-text-align: middle-center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+    opacity: 1;
+}
+
+/* ===== KEY PROMPT (center) — Stich glass ===== */
+.key-prompt-label {
+    position: absolute;
+    left: 50%; top: 50%;
+    translate: -50% -50%;
+    font-size: var(--size-interface-lg);
+    color: var(--color-stich-amber);
+    -unity-text-align: middle-center;
+    background-color: var(--color-void-overlay-92);
+    border-width: 2px;
+    border-color: var(--color-stich-amber);
+    border-radius: 0;
+    padding: var(--space-md) var(--space-xl);
+    opacity: 1;
+}
+
+/* ===== CHALKBOARD TUTORIAL (bottom-left) ===== */
+.chalkboard-box {
+    position: absolute;
+    left: 40px; bottom: 40px;
+    width: 380px; height: 280px;
+    background-color: rgba(58, 74, 56, 0.95);
+    border-width: 3px;
+    border-color: var(--color-stich-on-surface-variant);
+    padding: var(--space-lg);
+    flex-direction: column;
+    border-radius: 0;
+}
+
+.chalkboard-title {
+    font-size: var(--size-interface-sm);
+    color: var(--color-stich-amber);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--color-stich-outline-variant);
+    padding-bottom: 6px;
+    margin-bottom: var(--space-sm);
+    opacity: 1;
+}
+
+.chalkboard-text {
+    font-size: var(--size-interface-sm);
+    color: var(--color-stich-on-surface);
+    white-space: normal;
+    line-height: var(--size-interface-md);
+    opacity: 1;
+}
+
+/* ===== FOOTER STATUS (bottom-right) ===== */
+.footer-status {
+    position: absolute;
+    right: 32px; bottom: 32px;
+    flex-direction: row;
+    gap: 16px;
+}
+
+.footer-item {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.35;
+}
+
+.footer-item--active {
+    opacity: 1;
+}
+
+.footer-icon {
+    font-size: var(--size-interface-sm);
+    color: var(--color-stich-on-surface);
+    opacity: 1;
+}
+
+.footer-label {
+    font-size: var(--size-label-caps);
+    color: var(--color-stich-on-surface-variant);
+    opacity: 1;
+}
+
+/* ===== HIDDEN UTILITY ===== */
+.hidden { display: none; }

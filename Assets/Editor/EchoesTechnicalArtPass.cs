@@ -213,6 +213,7 @@ public static class EchoesTechnicalArtPass
         {
             lightingSettings.fogColor = profile.fogColor;
             lightingSettings.fogDensity = profile.fogDensity;
+            lightingSettings.ambientColor = profile.ambientColor;
             EditorUtility.SetDirty(lightingSettings);
         }
 

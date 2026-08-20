@@ -179,15 +179,15 @@ public class PostProcessingSetup : MonoBehaviour
         Tonemapping tonemapping = _runtimeProfile.Add<Tonemapping>(true);
         tonemapping.mode.Override(TonemappingMode.None);
 
-        // ColorAdjustments: 0 exp / 10 contrast / -5 sat
+        // ColorAdjustments: -0.5 exp / 15 contrast / -8 sat (SPEC-120)
         ColorAdjustments grading = _runtimeProfile.Add<ColorAdjustments>(true);
-        grading.postExposure.Override(0f);
-        grading.contrast.Override(10f);
-        grading.saturation.Override(-5f);
+        grading.postExposure.Override(-0.5f);
+        grading.contrast.Override(15f);
+        grading.saturation.Override(-8f);
 
-        // Vignette: intensity 0.2, smoothness 0.40, color #0D0D1A
+        // Vignette: intensity 0.35, smoothness 0.40, color #0D0D1A (SPEC-120)
         Vignette vignette = _runtimeProfile.Add<Vignette>(true);
-        vignette.intensity.Override(0.2f);
+        vignette.intensity.Override(0.35f);
         vignette.smoothness.Override(0.40f);
         vignette.color.Override(new Color(0.051f, 0.051f, 0.102f)); // #0D0D1A
 

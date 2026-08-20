@@ -42,7 +42,7 @@ public class LevelLightingSettings : MonoBehaviour
         }
 
         RenderSettings.fog = enableFog;
-        RenderSettings.fogMode = FogMode.Exponential;
+        RenderSettings.fogMode = FogMode.ExponentialSquared;
         RenderSettings.fogColor = fogColor;
         RenderSettings.fogDensity = fogDensity;
 

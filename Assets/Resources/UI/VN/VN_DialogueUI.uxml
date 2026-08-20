@@ -51,7 +51,7 @@
                 <ui:VisualElement class="vn-controls-anchor">
                     <ui:Button name="btn-backlog" text="LOG" class="vn-control-btn" />
                     <ui:Button name="btn-auto" text="AUTO" class="vn-control-btn" />
-                    <ui:Button name="btn-skip" text="SKIP ⏭" class="vn-control-btn vn-control-btn--skip" />
+                    <ui:Button name="btn-skip" text="SKIP" class="vn-control-btn vn-control-btn--skip" />
                     <ui:Label name="advance-prompt" text="[E] CONTINUAR" class="vn-advance-prompt" />
                 </ui:VisualElement>
             </ui:VisualElement>

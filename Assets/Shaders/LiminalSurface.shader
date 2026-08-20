@@ -43,6 +43,8 @@ Shader "Echoes/LiminalSurface" {
             #pragma vertex Vert
             #pragma fragment Frag
             #pragma shader_feature _EMISSION
+            #pragma multi_compile _ _ADDITIONAL_LIGHTS
+            #pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS_VERTEX
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
@@ -111,7 +113,7 @@ Shader "Echoes/LiminalSurface" {
 
                 // Ambient from SH + unlit floor (mínimo de iluminación institutional difusa)
                 half3 shAmbient = SampleSH(normal);
-                half ambientFloor = 0.35; // para que nunca se vea negro total ni plano
+                half ambientFloor = 0.6; // para que nunca se vea negro total ni plano
                 half3 ambient = max(shAmbient, half3(ambientFloor, ambientFloor, ambientFloor * 1.02)) * _FlatAmbient;
 
                 // Luz direccional con sombras suaves (matado pero presente para dar forma)
@@ -119,7 +121,7 @@ Shader "Echoes/LiminalSurface" {
 
                 // Componente superior (luz del techo simulada — fresnel de techo)
                 half upFacing = max(0, normal.y);
-                half3 ceilingLight = half3(0.85, 0.88, 0.95) * upFacing * 0.35;
+                half3 ceilingLight = half3(0.9, 0.92, 1.0) * upFacing * 0.42;
                 half3 lighting = albedo * (ambient + directional + ceilingLight);
 
                 // Fluorescent hum parpadeante (sutil)
@@ -136,11 +138,24 @@ Shader "Echoes/LiminalSurface" {
                 lighting += half3(0.75, 0.82, 0.92) * edgeGlow * mainLight.color.rgb * 0.6 * flicker;
 
                 // Specular anómalo — variación de roughness por material
+                half specExp = lerp(64.0, 8.0, _Smoothness);
                 half3 halfDir = normalize(mainLight.direction + viewDir);
                 half NdotH = max(0, dot(normal, halfDir));
-                half specExp = lerp(64.0, 8.0, _Smoothness);
                 half spec = pow(NdotH, specExp) * _Smoothness * _SpecularAnomaly;
                 lighting += half3(0.85, 0.88, 0.95) * mainLight.color.rgb * spec * 0.4;
+
+                // Luces adicionales (fluorescentes point) — resuelven interiores
+                uint addCount = GetAdditionalLightsCount();
+                for (uint i = 0; i < addCount; i++)
+                {
+                    Light addLight = GetAdditionalLight(i, input.worldPos);
+                    half aNdotL = max(0, dot(normal, addLight.direction));
+                    lighting += albedo * addLight.color.rgb * aNdotL * addLight.distanceAttenuation * addLight.shadowAttenuation * 0.6;
+                    half3 aHalf = normalize(addLight.direction + viewDir);
+                    half aNdotH = max(0, dot(normal, aHalf));
+                    half aSpec = pow(aNdotH, specExp) * _Smoothness * _SpecularAnomaly;
+                    lighting += half3(0.85, 0.88, 0.95) * addLight.color.rgb * aSpec * 0.45;
+                }
 
                 half3 emission = _EmissionColor.rgb;
                 return half4(lighting + emission, _BaseColor.a);

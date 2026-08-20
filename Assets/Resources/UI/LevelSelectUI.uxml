@@ -1,0 +1,349 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/EchoesTheme.uss" />
+    <Style src="project://database/Assets/UI/LevelSelectUI.uss" />
+
+    <ui:VisualElement name="levelSelectRoot" class="level-select-stitch-root">
+
+        <!-- Background layer -->
+        <ui:VisualElement class="lvl-bg-overlay" />
+        <ui:VisualElement class="lvl-scanline-overlay" picking-mode="Ignore" />
+
+        <!-- Main layout -->
+        <ui:VisualElement class="lvl-main">
+
+            <!-- LEFT SIDEBAR -->
+            <ui:VisualElement class="lvl-sidebar">
+                <ui:VisualElement class="lvl-sidebar-header">
+                    <ui:Label text="SCHOOL_ARCHIVE_01" class="lvl-logo-title" />
+                    <ui:Label text="STATUS: CORRUPTED" class="lvl-logo-subtitle" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="lvl-nav-list">
+                    <ui:VisualElement class="lvl-nav-item-wrapper lvl-nav-item-wrapper--active">
+                        <ui:Label text="ARCHIVE" class="lvl-nav-item lvl-nav-item--active" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="lvl-nav-item-wrapper">
+                        <ui:Label text="ECHOS" class="lvl-nav-item" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="lvl-nav-item-wrapper">
+                        <ui:Label text="CHRONOS" class="lvl-nav-item" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="lvl-nav-item-wrapper">
+                        <ui:Label text="MEMORY" class="lvl-nav-item" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:Button name="btnBack" text="← EXIT" class="lvl-exit-btn" />
+            </ui:VisualElement>
+
+            <!-- RIGHT CONTENT CANVAS -->
+            <ui:VisualElement class="lvl-content">
+
+                <ui:VisualElement class="lvl-content-header">
+                    <ui:Label text="DIRECTORIO_PRINCIPAL // 001" class="lvl-header-tag" />
+                    <ui:Label text="Índice de Recuerdos" class="lvl-header-title" />
+                </ui:VisualElement>
+
+                <!-- Chapter list scrollview -->
+                <ui:ScrollView class="lvl-chapter-list" name="levelCardGrid">
+
+                    <!-- Chapter 01 (Expanded Active) -->
+                    <ui:VisualElement name="card-01" class="lvl-chapter lvl-chapter--active echo-trail-active">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb lvl-chapter-thumb--active">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                                <ui:VisualElement class="lvl-chapter-thumb-scanline" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: I" class="lvl-chapter-rec" />
+                                    <ui:VisualElement class="lvl-meta-dot" />
+                                    <ui:Label text="Pasillo Norte" class="lvl-chapter-location" />
+                                    <ui:Label text="75% ECHOES" class="lvl-chapter-progress" />
+                                </ui:VisualElement>
+                                <ui:VisualElement class="lvl-title-container">
+                                    <ui:Label text="El Susurro del Aula" class="lvl-chapter-title-echo echo-layer" picking-mode="Ignore" />
+                                    <ui:Label text="El Susurro del Aula" class="lvl-chapter-title" />
+                                </ui:VisualElement>
+                                <ui:VisualElement class="lvl-chapter-expanded">
+                                    <ui:Label text="El eco de pasos que no te pertenecen aún resuena cerca de las taquillas. Un fragmento temporal inestable donde la memoria del primer día se mezcla con el último. Debes tener cuidado con las sombras que se alargan más de lo debido." class="lvl-chapter-desc" />
+                                    <ui:Button name="btn-level-01" text="ENTRAR EN EL RECUERDO" class="lvl-chapter-enter-btn chromatic-btn" />
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- Chapter 02 (Collapsed Available) -->
+                    <ui:VisualElement name="card-02" class="lvl-chapter">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: II" class="lvl-chapter-rec" />
+                                    <ui:VisualElement class="lvl-meta-dot" />
+                                    <ui:Label text="Patio Interior" class="lvl-chapter-location" />
+                                    <ui:Label text="42% ECHOES" class="lvl-chapter-progress lvl-chapter-progress--dim" />
+                                </ui:VisualElement>
+                                <ui:Button name="btn-level-02" text="Lluvia Estática" class="lvl-chapter-btn-title" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- Chapter 03 (Locked) -->
+                    <ui:VisualElement name="card-03" class="lvl-chapter lvl-chapter--locked">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb lvl-chapter-thumb--locked">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                                <ui:Label text="ERR" class="lvl-chapter-thumb-err" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: III" class="lvl-chapter-rec lvl-chapter-rec--locked" />
+                                    <ui:VisualElement class="lvl-meta-dot lvl-meta-dot--locked" />
+                                    <ui:Label text="[DATOS_DAÑADOS]" class="lvl-chapter-location lvl-chapter-location--locked" />
+                                    <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                </ui:VisualElement>
+                                <ui:Button name="btn-level-03" text="El Reloj del Director" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- Chapter 04 -->
+                    <ui:VisualElement name="card-04" class="lvl-chapter lvl-chapter--locked">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb lvl-chapter-thumb--locked">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                                <ui:Label text="ERR" class="lvl-chapter-thumb-err" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: IV" class="lvl-chapter-rec lvl-chapter-rec--locked" />
+                                    <ui:VisualElement class="lvl-meta-dot lvl-meta-dot--locked" />
+                                    <ui:Label text="Biblioteca Central" class="lvl-chapter-location" />
+                                    <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                </ui:VisualElement>
+                                <ui:Button name="btn-level-04" text="Páginas del Silencio" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- Chapter 05 -->
+                    <ui:VisualElement name="card-05" class="lvl-chapter lvl-chapter--locked">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb lvl-chapter-thumb--locked">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                                <ui:Label text="ERR" class="lvl-chapter-thumb-err" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: V" class="lvl-chapter-rec lvl-chapter-rec--locked" />
+                                    <ui:VisualElement class="lvl-meta-dot lvl-meta-dot--locked" />
+                                    <ui:Label text="Aula de Lyra" class="lvl-chapter-location" />
+                                    <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                </ui:VisualElement>
+                                <ui:Button name="btn-level-05" text="Caos de Cristal" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- Chapter 06 -->
+                    <ui:VisualElement name="card-06" class="lvl-chapter lvl-chapter--locked">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb lvl-chapter-thumb--locked">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                                <ui:Label text="ERR" class="lvl-chapter-thumb-err" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: VI" class="lvl-chapter-rec lvl-chapter-rec--locked" />
+                                    <ui:VisualElement class="lvl-meta-dot lvl-meta-dot--locked" />
+                                    <ui:Label text="Escalera Central" class="lvl-chapter-location" />
+                                    <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                </ui:VisualElement>
+                                <ui:Button name="btn-level-06" text="Vértigo y Eco" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- Chapter 07 -->
+                    <ui:VisualElement name="card-07" class="lvl-chapter lvl-chapter--locked">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb lvl-chapter-thumb--locked">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                                <ui:Label text="ERR" class="lvl-chapter-thumb-err" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: VII" class="lvl-chapter-rec lvl-chapter-rec--locked" />
+                                    <ui:VisualElement class="lvl-meta-dot lvl-meta-dot--locked" />
+                                    <ui:Label text="Sala de Profesores" class="lvl-chapter-location" />
+                                    <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                </ui:VisualElement>
+                                <ui:Button name="btn-level-07" text="El Vínculo Frío" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- Chapter 08 -->
+                    <ui:VisualElement name="card-08" class="lvl-chapter lvl-chapter--locked">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb lvl-chapter-thumb--locked">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                                <ui:Label text="ERR" class="lvl-chapter-thumb-err" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: VIII" class="lvl-chapter-rec lvl-chapter-rec--locked" />
+                                    <ui:VisualElement class="lvl-meta-dot lvl-meta-dot--locked" />
+                                    <ui:Label text="Laboratorio de Física" class="lvl-chapter-location" />
+                                    <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                </ui:VisualElement>
+                                <ui:Button name="btn-level-08" text="Fórmula del Vacío" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- Chapter 09 -->
+                    <ui:VisualElement name="card-09" class="lvl-chapter lvl-chapter--locked">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb lvl-chapter-thumb--locked">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                                <ui:Label text="ERR" class="lvl-chapter-thumb-err" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: IX" class="lvl-chapter-rec lvl-chapter-rec--locked" />
+                                    <ui:VisualElement class="lvl-meta-dot lvl-meta-dot--locked" />
+                                    <ui:Label text="Gimnasio Techado" class="lvl-chapter-location" />
+                                    <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                </ui:VisualElement>
+                                <ui:Button name="btn-level-09" text="Resonancia Hueca" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- Chapter 10 -->
+                    <ui:VisualElement name="card-10" class="lvl-chapter lvl-chapter--locked">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb lvl-chapter-thumb--locked">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                                <ui:Label text="ERR" class="lvl-chapter-thumb-err" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: X" class="lvl-chapter-rec lvl-chapter-rec--locked" />
+                                    <ui:VisualElement class="lvl-meta-dot lvl-meta-dot--locked" />
+                                    <ui:Label text="Auditorio" class="lvl-chapter-location" />
+                                    <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                </ui:VisualElement>
+                                <ui:Button name="btn-level-10" text="El Umbral Dual" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- Chapter 11 -->
+                    <ui:VisualElement name="card-11" class="lvl-chapter lvl-chapter--locked">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb lvl-chapter-thumb--locked">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                                <ui:Label text="ERR" class="lvl-chapter-thumb-err" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: XI" class="lvl-chapter-rec lvl-chapter-rec--locked" />
+                                    <ui:VisualElement class="lvl-meta-dot lvl-meta-dot--locked" />
+                                    <ui:Label text="Subsuelo" class="lvl-chapter-location" />
+                                    <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                </ui:VisualElement>
+                                <ui:Button name="btn-level-11" text="Puente de Sombras" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- Chapter 12 -->
+                    <ui:VisualElement name="card-12" class="lvl-chapter lvl-chapter--locked">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb lvl-chapter-thumb--locked">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                                <ui:Label text="ERR" class="lvl-chapter-thumb-err" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: XII" class="lvl-chapter-rec lvl-chapter-rec--locked" />
+                                    <ui:VisualElement class="lvl-meta-dot lvl-meta-dot--locked" />
+                                    <ui:Label text="Azotea" class="lvl-chapter-location" />
+                                    <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                </ui:VisualElement>
+                                <ui:Button name="btn-level-12" text="Escalera Quebrada" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- Chapter 13 -->
+                    <ui:VisualElement name="card-13" class="lvl-chapter lvl-chapter--locked">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb lvl-chapter-thumb--locked">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                                <ui:Label text="ERR" class="lvl-chapter-thumb-err" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: XIII" class="lvl-chapter-rec lvl-chapter-rec--locked" />
+                                    <ui:VisualElement class="lvl-meta-dot lvl-meta-dot--locked" />
+                                    <ui:Label text="Jardín Interior" class="lvl-chapter-location" />
+                                    <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                </ui:VisualElement>
+                                <ui:Button name="btn-level-13" text="Memoria Viva" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- Chapter 14 -->
+                    <ui:VisualElement name="card-14" class="lvl-chapter lvl-chapter--locked">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb lvl-chapter-thumb--locked">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                                <ui:Label text="ERR" class="lvl-chapter-thumb-err" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: XIV" class="lvl-chapter-rec lvl-chapter-rec--locked" />
+                                    <ui:VisualElement class="lvl-meta-dot lvl-meta-dot--locked" />
+                                    <ui:Label text="Pasillo Principal" class="lvl-chapter-location" />
+                                    <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                </ui:VisualElement>
+                                <ui:Button name="btn-level-14" text="El Último Umbral" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- Chapter 15 -->
+                    <ui:VisualElement name="card-15" class="lvl-chapter lvl-chapter--locked">
+                        <ui:VisualElement class="lvl-chapter-main">
+                            <ui:VisualElement class="lvl-chapter-thumb lvl-chapter-thumb--locked">
+                                <ui:VisualElement class="lvl-chapter-thumb-placeholder" />
+                                <ui:Label text="ERR" class="lvl-chapter-thumb-err" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="lvl-chapter-meta">
+                                <ui:VisualElement class="lvl-chapter-meta-row">
+                                    <ui:Label text="REC: XV" class="lvl-chapter-rec lvl-chapter-rec--locked" />
+                                    <ui:VisualElement class="lvl-meta-dot lvl-meta-dot--locked" />
+                                    <ui:Label text="Aula 104" class="lvl-chapter-location" />
+                                    <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                </ui:VisualElement>
+                                <ui:Button name="btn-level-15" text="Eco Final" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                </ui:ScrollView>
+
+                <!-- Bottom padding -->
+                <ui:VisualElement class="lvl-bottom-padding" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

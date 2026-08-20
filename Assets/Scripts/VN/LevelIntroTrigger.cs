@@ -22,21 +22,7 @@ public class LevelIntroTrigger : MonoBehaviour
 
         GameplayUIBootstrap.EnsureGameplayUI();
 
-        var dc = VN_DialogueController.Instance;
-        if (dc == null)
-        {
-            var panel = global::UIBootstrap.PanelSettings;
-            var go = new GameObject("VNDialogueController");
-            var doc = go.AddComponent<UIDocument>();
-            doc.panelSettings = panel;
-            var vta = Resources.Load<VisualTreeAsset>("UI/VN/VN_DialogueUI");
-#if UNITY_EDITOR
-            if (vta == null) vta = UnityEditor.AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/UI/VN/VN_DialogueUI.uxml");
-#endif
-            if (vta != null) doc.visualTreeAsset = vta;
-            dc = go.AddComponent<VN_DialogueController>();
-            if (Application.isPlaying) DontDestroyOnLoad(go);
-        }
+        var dc = VN_DialogueController.EnsureExists();
 
         if (dc != null)
         {

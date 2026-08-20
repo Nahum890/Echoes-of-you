@@ -108,7 +108,6 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
             _lightingApplied = true;
         }
         ApplyLighting();
-        BoostEarlyLevelLighting(scene);
         ApplyArchitectureMaterialStyling();
         ApplyEchoPlateVisuals();
         EnsureExperienceSystems();
@@ -548,7 +547,7 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
             glow.color = new Color(0.06f, 0.82f, 1f, 1f);
             glow.intensity = 3.2f;
             glow.range = 6.5f;
-            glow.shadows = LightShadows.Soft;
+            glow.shadows = LightShadows.None;
         }
     }
 

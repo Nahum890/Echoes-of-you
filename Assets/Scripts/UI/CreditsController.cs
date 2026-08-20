@@ -1,3 +1,4 @@
+using Echoes.VN;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -7,6 +8,8 @@ namespace Echoes.UI
     /// CreditsController — Escena de créditos con scroll automático.
     /// Botón "Volver" cierra los créditos y vuelve a MainMenu.
     /// Velocidad de scroll: 30px/s.
+    /// Si hay un final de bloque persistido (BlockEndingResolver), muestra el
+    /// epílogo del final antes de iniciar el scroll de créditos.
     /// </summary>
     [RequireComponent(typeof(UIDocument))]
     public class CreditsController : MonoBehaviour
@@ -17,6 +20,8 @@ namespace Echoes.UI
         ScrollView _scrollView;
         Button _btnBack;
         VisualElement _root;
+        VisualElement _epiloguePanel;
+        Button _epilogueContinue;
 
         const float SCROLL_SPEED = 30f;
         bool _autoScroll = true;
@@ -35,10 +40,45 @@ namespace Echoes.UI
             _root = _doc.rootVisualElement;
             _scrollView = _root.Q<ScrollView>("creditsScroll");
             _btnBack = _root.Q<Button>("btnBack");
+            _epiloguePanel = _root.Q("epiloguePanel");
+            _epilogueContinue = _root.Q<Button>("epilogue-continue");
 
             if (_btnBack != null)
                 _btnBack.clicked += OnBack;
 
+            var ending = BlockEndingResolver.GetPersistedEnding();
+            if (ending.HasValue && _epiloguePanel != null)
+            {
+                ShowEpilogue(ending.Value);
+            }
+            else if (_scrollView != null)
+            {
+                ScheduleLayoutRefresh();
+            }
+        }
+
+        void ShowEpilogue(EndingID ending)
+        {
+            _autoScroll = false;
+            if (_btnBack != null) _btnBack.style.display = DisplayStyle.None;
+
+            var entry = VN_TextTable.GetEpilogue(ending.ToString());
+            var voice = _root?.Q<Label>("epilogue-voice");
+            var narration = _root?.Q<Label>("epilogue-narration");
+            if (voice != null) voice.text = entry != null && !string.IsNullOrEmpty(entry.voice_final) ? entry.voice_final : "...";
+            if (narration != null) narration.text = entry != null ? entry.narration : "";
+
+            VN_EndingFlags.Instance?.SetSalirDelColegio(ending == EndingID.Aceptacion);
+
+            _epiloguePanel.style.display = DisplayStyle.Flex;
+            if (_epilogueContinue != null) _epilogueContinue.clicked += OnEpilogueContinue;
+        }
+
+        void OnEpilogueContinue()
+        {
+            if (_epiloguePanel != null) _epiloguePanel.style.display = DisplayStyle.None;
+            if (_btnBack != null) _btnBack.style.display = DisplayStyle.Flex;
+            _autoScroll = true;
             if (_scrollView != null)
                 ScheduleLayoutRefresh();
         }

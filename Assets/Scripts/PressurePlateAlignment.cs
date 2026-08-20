@@ -39,20 +39,30 @@ public class PressurePlateAlignment : MonoBehaviour
         Vector3 origin = transform.position + Vector3.up * 12f;
         int mask = groundMask.value != 0 ? groundMask.value : Physics.DefaultRaycastLayers;
 
-        if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, 24f, mask, QueryTriggerInteraction.Ignore))
+        RaycastHit hit;
+        if (TryFindSurface(origin, mask, out hit) || TryFindSurface(origin, Physics.DefaultRaycastLayers, out hit))
         {
             Vector3 pos = transform.position;
             pos.y = hit.point.y + surfaceOffset;
             transform.position = pos;
-            return;
+        }
+    }
+
+    bool TryFindSurface(Vector3 origin, int mask, out RaycastHit result)
+    {
+        RaycastHit[] hits = Physics.RaycastAll(origin, Vector3.down, 24f, mask, QueryTriggerInteraction.Ignore);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            if (hits[i].collider == null)
+                continue;
+            if (hits[i].collider.transform.IsChildOf(transform))
+                continue;
+            result = hits[i];
+            return true;
         }
 
-        if (Physics.Raycast(origin, Vector3.down, out hit, 24f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
-        {
-            Vector3 pos = transform.position;
-            pos.y = hit.point.y + surfaceOffset;
-            transform.position = pos;
-        }
+        result = default;
+        return false;
     }
 
     public void ExpandTriggerForProjection()

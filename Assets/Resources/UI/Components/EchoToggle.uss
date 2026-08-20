@@ -1,0 +1,72 @@
+/* ============================================================
+   EchoToggle — wrapper sobre Unity Toggle
+   Estados: default / hover / focus / checked / disabled
+   Solo tokens. RULE-UI-001/002.
+   ============================================================ */
+
+@import "../EchoesDesignTokens.uss";
+
+.echo-toggle {
+    margin: var(--space-sm) 0;
+    flex-direction: row;
+    align-items: center;
+    transition-property: opacity;
+    transition-duration: var(--duration-fast);
+}
+
+/* Label */
+.echo-toggle > .unity-label {
+    font-size: var(--size-small);
+    color: var(--color-fluorescent-sick);
+    width: 220px;
+    flex-grow: 1;
+}
+
+/* Checkmark box */
+.echo-toggle .unity-toggle__checkmark {
+    background-color: var(--color-void-black);
+    border-width: 1px;
+    border-color: var(--color-institutional-teal);
+    width: 18px;
+    height: 18px;
+    border-radius: 0;
+    transition-property: background-color, border-color;
+    transition-duration: var(--duration-hover-mouse);
+}
+
+/* HOVER */
+.echo-toggle:hover .unity-toggle__checkmark {
+    border-color: var(--color-memory-amber);
+}
+
+/* FOCUS */
+.echo-toggle:focus .unity-toggle__checkmark {
+    border-color: var(--color-memory-amber);
+    border-width: 2px;
+    transition-duration: var(--duration-hover-controller);
+}
+
+/* CHECKED — fondo ámbar canon, sin checkmark imagen (default) */
+.echo-toggle:checked .unity-toggle__checkmark {
+    background-color: var(--color-memory-amber);
+    border-color: var(--color-memory-amber);
+}
+
+.echo-toggle:checked > .unity-label {
+    color: var(--color-memory-amber);
+}
+
+/* DISABLED */
+.echo-toggle:disabled {
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+.echo-toggle:disabled > .unity-label {
+    color: var(--color-border);
+}
+
+.echo-toggle:disabled .unity-toggle__checkmark {
+    border-color: var(--color-border);
+}
+

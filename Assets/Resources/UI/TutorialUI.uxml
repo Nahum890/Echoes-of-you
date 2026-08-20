@@ -1,0 +1,12 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+    <!-- TutorialUI — Mensajes 1 acción, máx 2 líneas.
+         Desaparecen al ejecutar acción. No reaparecen (PlayerPrefs flag).
+         Accesible desde Pausa → "Controles". -->
+
+    <ui:VisualElement class="tutorial-root hidden" name="tutorialRoot">
+        <ui:VisualElement class="tutorial-box" name="tutorialBox">
+            <ui:Label class="tutorial-title" name="tutorialTitle" text="" />
+            <ui:Label class="tutorial-text" name="tutorialText" text="" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</UXML>

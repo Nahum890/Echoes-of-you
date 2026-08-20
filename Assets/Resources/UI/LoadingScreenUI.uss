@@ -79,14 +79,14 @@
 }
 
 .loading-rec-id {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 13px;
     letter-spacing: 2px;
     color: #959087;
 }
 
 .loading-status-tag {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 12px;
     letter-spacing: 1.5px;
     color: #4a463f;
@@ -103,14 +103,14 @@
 }
 
 .loading-sync-status {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 13px;
     letter-spacing: 2px;
     color: #63d4fa;
 }
 
 .loading-hex-tag {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    /* default font */
     font-size: 12px;
     letter-spacing: 1.5px;
     color: #959087;
@@ -212,7 +212,7 @@
 }
 
 .loading-chapter-title {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    /* default font */
     font-size: 40px;
     letter-spacing: 4px;
     color: #fffeff;
@@ -227,7 +227,7 @@
 }
 
 .loading-quote {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    /* default font */
     font-size: 16px;
     -unity-font-style: italic;
     color: #959087;
@@ -249,13 +249,13 @@
 }
 
 .loading-hint-icon {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 14px;
     color: #63d4fa;
 }
 
 .loading-hint-text {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 13px;
     letter-spacing: 1px;
     color: #ccc6bc;
@@ -287,14 +287,14 @@
 }
 
 .loading-bottom-init-text {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 13px;
     letter-spacing: 2px;
     color: #959087;
 }
 
 .loading-pct {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 13px;
     letter-spacing: 1.5px;
     color: #63d4fa;

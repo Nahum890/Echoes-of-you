@@ -24,6 +24,8 @@ Shader "Echoes/LiminalCeiling" {
             #pragma vertex Vert
             #pragma fragment Frag
             #pragma shader_feature_local _EMISSION
+            #pragma multi_compile _ _ADDITIONAL_LIGHTS
+            #pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS_VERTEX
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
@@ -68,7 +70,7 @@ Shader "Echoes/LiminalCeiling" {
                 half3 normal = normalize(input.normal);
                 half NdotL = max(0, dot(normal, mainLight.direction));
                 half3 shAmbient = SampleSH(normal);
-                half3 ambient = max(shAmbient, half3(0.4, 0.4, 0.42)) * 1.0;
+                half3 ambient = max(shAmbient, half3(0.6, 0.6, 0.61)) * 1.0;
                 half3 directional = mainLight.color.rgb * NdotL * mainLight.distanceAttenuation * mainLight.shadowAttenuation * 0.6;
                 half3 lighting = albedo * (ambient + directional);
 
@@ -84,6 +86,19 @@ Shader "Echoes/LiminalCeiling" {
                 half specExp = lerp(80.0, 12.0, _Smoothness);
                 half spec = pow(NdotH, specExp) * _Smoothness * _SpecularAnomaly;
                 lighting += half3(0.85, 0.88, 0.95) * mainLight.color.rgb * spec * 0.3;
+
+                // Luces adicionales — los techos están bajo los tubos fluorescentes
+                uint addCount = GetAdditionalLightsCount();
+                for (uint i = 0; i < addCount; i++)
+                {
+                    Light addLight = GetAdditionalLight(i, input.worldPos);
+                    half aNdotL = max(0, dot(normal, addLight.direction));
+                    lighting += albedo * addLight.color.rgb * aNdotL * addLight.distanceAttenuation * addLight.shadowAttenuation * 0.55;
+                    half3 aHalf = normalize(addLight.direction + viewDir);
+                    half aNdotH = max(0, dot(normal, aHalf));
+                    half aSpec = pow(aNdotH, specExp) * _Smoothness * _SpecularAnomaly;
+                    lighting += half3(0.85, 0.88, 0.95) * addLight.color.rgb * aSpec * 0.35;
+                }
 
                 return half4(lighting + _EmissionColor.rgb, 1.0);
             }

@@ -5,10 +5,8 @@ using UnityEngine.UIElements;
 namespace Echoes.UI
 {
     /// <summary>
-    /// PauseMenu — Rewrite Fase 3.
-    /// Notebook 460px, stats, nav 4 botones.
-    /// Escape → Reanudar (focus por defecto) en 1 tecla.
-    /// Delegación: Settings → SettingsController (stub hasta Fase 5).
+    /// PauseMenu — Menú de Pausa Narrativo 33% con diseño moderno.
+    /// Botones 100% funcionales: Reanudar, Reiniciar, Ajustes, Controles, Expediente, Salir.
     /// </summary>
     [RequireComponent(typeof(UIDocument))]
     public class PauseMenu : MonoBehaviour
@@ -22,27 +20,34 @@ namespace Echoes.UI
         VisualElement _pauseRoot;
         VisualElement _pauseNav;
         VisualElement _settingsPanel;
+        VisualElement _controlsPanel;
+        VisualElement _expedientePanel;
 
         Button _btnResume;
         Button _btnReiniciar;
         Button _btnSettings;
+        Button _btnControles;
+        Button _btnExpediente;
         Button _btnHub;
-        Button _btnFooterMenu;
-        Button _btnScaleDown;
-        Button _btnScaleUp;
-        Label _lblScaleVal;
 
-        void OnEnable() { InitializeUI(); SettingsController.SettingsClosed += OnSettingsClosed; }
+        Button _btnCloseControls;
+        Button _btnCloseExpediente;
+        bool _wired;
 
-        void OnDisable() { SettingsController.SettingsClosed -= OnSettingsClosed; }
+        void OnEnable()
+        {
+            InitializeUI();
+            SettingsController.SettingsClosed += OnSettingsClosed;
+        }
+
+        void OnDisable()
+        {
+            SettingsController.SettingsClosed -= OnSettingsClosed;
+        }
 
         void OnSettingsClosed()
         {
-            // Settings closed from inside (CERRAR TERMINAL / Aplicar cambios): restore pause nav
-            _settingsPanel?.AddToClassList("hidden");
-            _pauseNav?.RemoveFromClassList("hidden");
-            RefreshScaleUI();
-            _btnResume?.Focus();
+            HideSettings();
         }
 
         void InitializeUI()
@@ -51,41 +56,55 @@ namespace Echoes.UI
             if (_doc == null || _doc.rootVisualElement == null) return;
             _root = _doc.rootVisualElement;
 
+            if (_root != null)
+            {
+                _root.style.position = Position.Absolute;
+                _root.style.left = 0;
+                _root.style.top = 0;
+                _root.style.right = 0;
+                _root.style.bottom = 0;
+                _root.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
+                _root.style.height = new StyleLength(new Length(100, LengthUnit.Percent));
+            }
+
             _pauseRoot = _root.Q("pause-root");
             if (_pauseRoot == null) return;
 
             _pauseNav = _root.Q("pause-nav");
             _settingsPanel = _root.Q("pause-settings-panel");
+            _controlsPanel = _root.Q("pause-controls-panel");
+            _expedientePanel = _root.Q("pause-expediente-panel");
 
-            _btnResume     = _pauseRoot.Q<Button>("btn-resume");
-            _btnReiniciar  = _pauseRoot.Q<Button>("btn-reiniciar");
-            _btnSettings   = _pauseRoot.Q<Button>("btn-settings");
-            _btnHub        = _pauseRoot.Q<Button>("btn-hub");
-            _btnFooterMenu = _pauseRoot.Q<Button>("btn-footer-menu");
+            _btnResume      = _pauseRoot.Q<Button>("btn-resume");
+            _btnReiniciar   = _pauseRoot.Q<Button>("btn-reiniciar");
+            _btnSettings    = _pauseRoot.Q<Button>("btn-settings");
+            _btnControles   = _pauseRoot.Q<Button>("btn-controles");
+            _btnExpediente  = _pauseRoot.Q<Button>("btn-expediente");
+            _btnHub         = _pauseRoot.Q<Button>("btn-hub");
 
-            _btnScaleDown  = _pauseRoot.Q<Button>("btn-scale-down");
-            _btnScaleUp    = _pauseRoot.Q<Button>("btn-scale-up");
-            _lblScaleVal   = _pauseRoot.Q<Label>("lbl-pause-scale-val");
+            _btnCloseControls   = _pauseRoot.Q<Button>("btn-close-controls");
+            _btnCloseExpediente = _pauseRoot.Q<Button>("btn-close-expediente");
 
             // Wire button events just once
-            if (_btnResume != null && !_btnResume.name.EndsWith("_wired"))
+            if (!_wired)
             {
-                _btnResume.name += "_wired";
-                _btnResume.clicked += Resume;
-                if (_btnReiniciar != null) _btnReiniciar.clicked += ConfirmReiniciar;
-                if (_btnSettings != null) _btnSettings.clicked += ShowSettings;
-                if (_btnHub != null) _btnHub.clicked += ConfirmHub;
-                if (_btnFooterMenu != null) _btnFooterMenu.clicked += ConfirmHub;
+                _wired = true;
+            if (_btnResume != null) _btnResume.clicked += Resume;
+            if (_btnReiniciar != null) _btnReiniciar.clicked += ConfirmReiniciar;
+            if (_btnSettings != null) _btnSettings.clicked += ShowSettings;
+            if (_btnControles != null) _btnControles.clicked += ShowControls;
+            if (_btnExpediente != null) _btnExpediente.clicked += ShowExpediente;
+            if (_btnHub != null) _btnHub.clicked += ConfirmHub;
 
-                if (_btnScaleDown != null) _btnScaleDown.clicked += () => ChangeUIScale(-1);
-                if (_btnScaleUp != null) _btnScaleUp.clicked += () => ChangeUIScale(1);
-            }
-
-            RefreshScaleUI();
+            if (_btnCloseControls != null) _btnCloseControls.clicked += HideControls;
+            if (_btnCloseExpediente != null) _btnCloseExpediente.clicked += HideExpediente;
+        }
 
             if (!_paused)
             {
                 _settingsPanel?.AddToClassList("hidden");
+                _controlsPanel?.AddToClassList("hidden");
+                _expedientePanel?.AddToClassList("hidden");
                 _pauseRoot.AddToClassList("hidden");
             }
         }
@@ -98,10 +117,18 @@ namespace Echoes.UI
             }
             else if (_paused && Input.GetKeyDown(KeyCode.Escape))
             {
-                // Si settings abierto, cerrar y volver a nav
+                // Si algún subpanel está abierto, cerrarlo y volver a la navegación principal
                 if (_settingsPanel != null && !_settingsPanel.ClassListContains("hidden"))
                 {
                     HideSettings();
+                }
+                else if (_controlsPanel != null && !_controlsPanel.ClassListContains("hidden"))
+                {
+                    HideControls();
+                }
+                else if (_expedientePanel != null && !_expedientePanel.ClassListContains("hidden"))
+                {
+                    HideExpediente();
                 }
                 else
                 {
@@ -110,7 +137,7 @@ namespace Echoes.UI
             }
         }
 
-        void Pause()
+        public void Pause()
         {
             _paused = true;
             Time.timeScale = 0f;
@@ -127,16 +154,19 @@ namespace Echoes.UI
 
             InitializeUI();
             _pauseRoot?.RemoveFromClassList("hidden");
-            _settingsPanel?.AddToClassList("hidden");
             _pauseNav?.RemoveFromClassList("hidden");
-            RefreshStats();
-            RefreshScaleUI();
+            _settingsPanel?.AddToClassList("hidden");
+            _controlsPanel?.AddToClassList("hidden");
+            _expedientePanel?.AddToClassList("hidden");
+
+            RefreshChapterHeader();
+            RefreshExpedienteStats();
 
             // Focus en Reanudar
             _btnResume?.Focus();
         }
 
-        void Resume()
+        public void Resume()
         {
             _paused = false;
             Time.timeScale = 1f;
@@ -156,21 +186,23 @@ namespace Echoes.UI
 
         void ConfirmReiniciar()
         {
+            string currentScene = SceneManager.GetActiveScene().name;
             if (ModalManager.Instance == null)
             {
                 Resume();
                 PostProcessingSetup.PrepareForSceneReload();
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                LoadingScreenController.TransitionToScene(currentScene);
                 return;
             }
+
             ModalManager.Instance.ShowModal(
                 "Reiniciar Capítulo",
-                "Se perderá el progreso del capítulo actual.",
+                "Se reiniciará el nivel actual y se reestablecerán los ecos.",
                 onConfirm: () =>
                 {
                     Resume();
                     PostProcessingSetup.PrepareForSceneReload();
-                    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                    LoadingScreenController.TransitionToScene(currentScene);
                 },
                 onCancel: () => { }
             );
@@ -182,32 +214,68 @@ namespace Echoes.UI
             {
                 UnpauseForMenu();
                 PostProcessingSetup.PrepareForSceneReload();
-                SceneManager.LoadScene(hubSceneName);
+                LoadingScreenController.TransitionToScene(hubSceneName);
                 return;
             }
+
             ModalManager.Instance.ShowModal(
-                "Volver al Cuaderno",
-                "¿Deseas salir al Cuaderno de Aiden? El progreso se guardará.",
+                "Volver al Menú Principal",
+                "¿Deseas volver al menú principal? El progreso de los ecos se guardará.",
                 onConfirm: () =>
                 {
                     UnpauseForMenu();
                     PostProcessingSetup.PrepareForSceneReload();
-                    SceneManager.LoadScene(hubSceneName);
+                    LoadingScreenController.TransitionToScene(hubSceneName);
                 },
                 onCancel: () => { }
             );
         }
 
-void ShowSettings()
+        void ShowSettings()
         {
             _pauseNav?.AddToClassList("hidden");
+            _controlsPanel?.AddToClassList("hidden");
+            _expedientePanel?.AddToClassList("hidden");
             _settingsPanel?.RemoveFromClassList("hidden");
-            SettingsController.Instance?.ShowInContainer(_settingsPanel);
+            SettingsController.EnsureExists()?.ShowInContainer(_settingsPanel);
         }
 
         void HideSettings()
         {
             _settingsPanel?.AddToClassList("hidden");
+            _pauseNav?.RemoveFromClassList("hidden");
+            _btnResume?.Focus();
+        }
+
+        void ShowControls()
+        {
+            _pauseNav?.AddToClassList("hidden");
+            _settingsPanel?.AddToClassList("hidden");
+            _expedientePanel?.AddToClassList("hidden");
+            _controlsPanel?.RemoveFromClassList("hidden");
+            _btnCloseControls?.Focus();
+        }
+
+        void HideControls()
+        {
+            _controlsPanel?.AddToClassList("hidden");
+            _pauseNav?.RemoveFromClassList("hidden");
+            _btnResume?.Focus();
+        }
+
+        void ShowExpediente()
+        {
+            _pauseNav?.AddToClassList("hidden");
+            _settingsPanel?.AddToClassList("hidden");
+            _controlsPanel?.AddToClassList("hidden");
+            _expedientePanel?.RemoveFromClassList("hidden");
+            RefreshExpedienteStats();
+            _btnCloseExpediente?.Focus();
+        }
+
+        void HideExpediente()
+        {
+            _expedientePanel?.AddToClassList("hidden");
             _pauseNav?.RemoveFromClassList("hidden");
             _btnResume?.Focus();
         }
@@ -230,34 +298,101 @@ void ShowSettings()
             Time.timeScale = 1f;
         }
 
-        void RefreshStats()
+        void RefreshChapterHeader()
+        {
+            string sceneName = SceneManager.GetActiveScene().name;
+            int levelIndex = GameProgress.GetSceneIndex(sceneName);
+            int displayLevelNum = levelIndex >= 0 ? levelIndex + 1 : 1;
+
+            string chapterText;
+            if (sceneName.StartsWith("Level_"))
+            {
+                string roman = GetRomanNumeral(displayLevelNum);
+                string levelName = GameProgress.GetLevelDisplayName(sceneName);
+                chapterText = $"Capítulo {roman}: {levelName}";
+            }
+            else
+            {
+                chapterText = $"Archivo: {sceneName.ToUpperInvariant()}";
+            }
+
+            SetLabel("lbl-pause-chapter", chapterText);
+
+            string locationName = ResolveLocationName(displayLevelNum);
+            SetLabel("lbl-pause-location", $"Checkpoint: {locationName}");
+        }
+
+        void RefreshExpedienteStats()
         {
             if (_doc == null || _doc.rootVisualElement == null) return;
 
             string sceneName = SceneManager.GetActiveScene().name;
             int levelIndex = GameProgress.GetSceneIndex(sceneName);
-            bool isLevel = levelIndex >= 0;
+            int displayLevelNum = levelIndex >= 0 ? levelIndex + 1 : 1;
 
-            string fragmentLine = isLevel
-                ? $"Capítulo: {GameProgress.GetLevelDisplayName(sceneName)}"
-                : $"Zona: {sceneName}";
+            // Etapa psicológica basada en nivel (1-4: Convicción, 5-8: Negación/Culpa, 9-12: Desilusión, 13-15: Aceptación)
+            string stageTitle = "ETAPA: CONVICCIÓN";
+            string stageDesc = "Aiden se resiste a aceptar la alteración de los recuerdos. La memoria aún es una barrera.";
+            if (displayLevelNum >= 13)
+            {
+                stageTitle = "ETAPA: ACEPTACIÓN";
+                stageDesc = "Aiden comprende que el pasado no puede reescribirse, solo integrarse en la consciencia presente.";
+            }
+            else if (displayLevelNum >= 9)
+            {
+                stageTitle = "ETAPA: DESILUSIÓN / REALIZACIÓN";
+                stageDesc = "Las fracturas temporales revelan que los ecos no son salvaciones, sino repeticiones del dolor.";
+            }
+            else if (displayLevelNum >= 5)
+            {
+                stageTitle = "ETAPA: NEGACIÓN / CULPA";
+                stageDesc = "La presencia de Lyra se vuelve persistente en los recuerdos. Aiden intenta reparar lo irreparable.";
+            }
 
-            SetLabel("lbl-pause-fragment", fragmentLine);
+            SetLabel("lbl-expediente-stage", stageTitle);
+            SetLabel("lbl-expediente-stage-desc", stageDesc);
 
             LevelRuntimeController runtime = LevelRuntimeController.Instance;
             float sessionTime = runtime != null ? runtime.SessionPlaySeconds : 0f;
             int sessionEchoes = runtime != null ? runtime.SessionEchoes : 0;
             int sessionDeaths = runtime != null ? runtime.SessionDeaths : 0;
 
-            SetLabel("lbl-pause-time", $"Tiempo: {GameProgress.FormatPlayTime(sessionTime)}");
-            SetLabel("lbl-pause-echoes", $"Ecos grabados: {sessionEchoes}");
-            SetLabel("lbl-pause-deaths", isLevel
-                ? $"Quiebres (aula): {GameProgress.GetSceneDeathCount(sceneName)} · sesión {sessionDeaths}"
-                : $"Quiebres (sesión): {sessionDeaths}");
+            SetLabel("lbl-expediente-time", GameProgress.FormatPlayTime(sessionTime));
+            SetLabel("lbl-expediente-echoes", $"{sessionEchoes}");
+            SetLabel("lbl-expediente-deaths", $"{sessionDeaths}");
 
             int completed = GameProgress.GetCompletedCount();
-            SetLabel("lbl-pause-total",
-                $"Cuaderno de Aiden: {completed}/{GameProgress.TotalLevels} · {GameProgress.GetTotalEchoesCreated()} ecos · {GameProgress.FormatPlayTime(GameProgress.GetTotalPlayTimeSeconds())}");
+            SetLabel("lbl-expediente-total", $"{completed} / {GameProgress.TotalLevels} ECOS");
+        }
+
+        string ResolveLocationName(int levelNum)
+        {
+            switch (levelNum)
+            {
+                case 1: return "Pasillo de los Archivos";
+                case 2: return "Aula de Clases 101";
+                case 3: return "Biblioteca Histórica";
+                case 4: return "Laboratorio de Ciencias";
+                case 5: return "Patio Central";
+                case 6: return "Auditorio Mayor";
+                case 7: return "Sala de Música";
+                case 8: return "Taller de Arte";
+                case 9: return "Observatorio";
+                case 10: return "Gimnasio Abandonado";
+                case 11: return "Depósito Subterráneo";
+                case 12: return "Azotea";
+                case 13: return "Galería de Ecos";
+                case 14: return "Umbral de la Memoria";
+                case 15: return "El Núcleo del Pasado";
+                default: return "Sector Institucional";
+            }
+        }
+
+        string GetRomanNumeral(int number)
+        {
+            string[] roman = { "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV" };
+            if (number >= 1 && number <= roman.Length) return roman[number - 1];
+            return number.ToString();
         }
 
         void SetLabel(string elementName, string text)
@@ -265,43 +400,6 @@ void ShowSettings()
             var lbl = _doc?.rootVisualElement?.Q<Label>(elementName);
             if (lbl != null) lbl.text = text;
         }
-
-        void ChangeUIScale(int direction)
-        {
-            float current = GameSettings.UIScaleFactor;
-            float[] presets = GameSettings.UIScalePresets;
-            int bestIdx = 2; // Default 1.0f (index 2)
-            float minDiff = float.MaxValue;
-            for (int i = 0; i < presets.Length; i++)
-            {
-                float diff = Mathf.Abs(presets[i] - current);
-                if (diff < minDiff)
-                {
-                    minDiff = diff;
-                    bestIdx = i;
-                }
-            }
-
-            int nextIdx = Mathf.Clamp(bestIdx + direction, 0, presets.Length - 1);
-            float newScale = presets[nextIdx];
-            GameSettings.SetUIScale(newScale);
-            RefreshScaleUI();
-        }
-
-        public void RefreshScaleUI()
-        {
-            float current = GameSettings.UIScaleFactor;
-            int pct = Mathf.RoundToInt(current * 100f);
-            if (_lblScaleVal != null)
-            {
-                _lblScaleVal.text = $"{pct}%";
-            }
-            SetLabel("lbl-pause-scale-val", $"{pct}%");
-        }
-
-        public void ApplySavedUIScale()
-        {
-            RefreshScaleUI();
-        }
     }
 }
+

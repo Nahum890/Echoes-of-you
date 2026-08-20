@@ -1,35 +1,43 @@
 # URP VOLUME PROFILES EXECUTABLE SPECIFICATION — Echoes of You 2.0
+# CC-2026-012 (CONT-012): SPEC-120 (POST_PROCESSING_SPEC.md v4.0) is the binding
+# numeric source. This file is the executable mirror of SPEC-120 + SPEC-144.
+# Legacy v1.0 values (bloom 0.8/0.5, vignette #000000 0.2, sat -20, exp 0, Linear fog)
+# are SUPERSEDED — do not restore.
 spec_id: SPEC-EXEC-PP-001
-version: "1.0"
+version: "2.0"
 authority: "Docs/Authority/SOURCE_OF_TRUTH.md"
+resolution: "CC-2026-012"
+numeric_source: "Docs/Specs/POST_PROCESSING_SPEC.md [SPEC-120]"
+implementation: "Docs/Art/POST_PROCESS_SPEC.md [SPEC-144]"
 
 urp_volume_settings:
   bloom:
     active: true
-    threshold: 0.8
-    intensity: 0.5
-    scatter: 0.7
+    threshold: 0.90
+    intensity: 0.25
+    scatter: 0.70
     tint: "#FFFFFF"
+    high_quality_filtering: false
 
   vignette:
     active: true
-    color: "#000000"
+    color: "#0D0D1A"
     intensity: 0.35
-    smoothness: 0.2
+    smoothness: 0.40
     rounded: false
 
   color_adjustments:
     active: true
-    post_exposure: 0.0
+    post_exposure: -0.5
     contrast: 15.0
     color_filter: "#FFFFFF"
     hue_shift: 0.0
-    saturation: -20.0
+    saturation: -8.0
 
-  fog_settings:
+  tonemapping:
     active: true
-    mode: "Linear"
-    color: "#0F141A"
-    density: 0.015
-    start_distance: 5.0
-    end_distance: 35.0
+    mode: "None"
+
+  # Fog is NOT owned by post-processing: see lighting_profiles.yaml (chapter
+  # profiles) per LIGHTING_GRAMMAR RULE-LGT-004/005 and CC-2026-012.
+  fog_settings: null

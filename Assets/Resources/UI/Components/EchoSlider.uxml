@@ -1,0 +1,7 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
+    <!-- EchoSlider — envoltura sobre ui:Slider.
+         Uso:
+           <ui:Slider class="echo-slider" name="echoSlider" label="" value="0.5" low-value="0" high-value="1" />
+         Label siempre vacío (texto gestionado por layout exterior). -->
+    <ui:Slider class="echo-slider" name="echoSlider" label="" value="0.5" low-value="0" high-value="1" />
+</UXML>

@@ -158,7 +158,7 @@
 .vn-character-name {
     font-size: 28px;
     color: #fffeff;
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    /* default font */
     letter-spacing: 2px;
     -unity-text-align: middle-left;
     margin: 0;
@@ -209,7 +209,7 @@
 .vn-dialogue-text {
     font-size: 28px;
     color: #fffeff;
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/Garamond.ttf');
+    /* default font */
     line-height: 42px;
     white-space: normal;
     -unity-text-align: middle-left;
@@ -221,7 +221,7 @@
 .vn-typewriter-cursor {
     font-size: 28px;
     color: #63d4fa;
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    /* default font */
     margin-left: 2px;
 }
 
@@ -240,7 +240,7 @@
     padding: 4px 10px;
     font-size: 13px;
     color: #959087;
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     letter-spacing: 2px;
     transition-property: color, translate;
     transition-duration: 150ms;
@@ -258,7 +258,7 @@
 .vn-advance-prompt {
     font-size: 13px;
     color: #63d4fa;
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     letter-spacing: 2px;
     margin-left: 12px;
 }

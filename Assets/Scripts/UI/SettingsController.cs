@@ -14,6 +14,21 @@ namespace Echoes.UI
     {
         public static SettingsController Instance { get; private set; }
 
+        public static SettingsController EnsureExists()
+        {
+            if (Instance != null) return Instance;
+            var existing = FindAnyObjectByType<SettingsController>();
+            if (existing != null)
+            {
+                Instance = existing;
+                return Instance;
+            }
+            var go = new GameObject("SettingsController");
+            Instance = go.AddComponent<SettingsController>();
+            DontDestroyOnLoad(go);
+            return Instance;
+        }
+
         /// <summary>Fired when the user closes settings (CERRAR TERMINAL / Aplicar cambios).
         /// Hosts like PauseMenu restore their previous UI state on this event.</summary>
         public static event System.Action SettingsClosed;
@@ -66,6 +81,13 @@ namespace Echoes.UI
             }
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            if (_settingsTemplate == null)
+            {
+                _settingsTemplate = Resources.Load<VisualTreeAsset>("UI/SettingsUI");
+                if (_settingsTemplate == null)
+                    _settingsTemplate = Resources.Load<VisualTreeAsset>("SettingsUI");
+            }
         }
 
         void OnEnable()
@@ -73,6 +95,13 @@ namespace Echoes.UI
             // Restore static ref after domain reload (DontDestroyOnLoad objects survive but statics are cleared)
             if (Instance == null)
                 Instance = this;
+
+            if (_settingsTemplate == null)
+            {
+                _settingsTemplate = Resources.Load<VisualTreeAsset>("UI/SettingsUI");
+                if (_settingsTemplate == null)
+                    _settingsTemplate = Resources.Load<VisualTreeAsset>("SettingsUI");
+            }
         }
 
         void OnDestroy()
@@ -89,6 +118,12 @@ namespace Echoes.UI
 
         public void ShowInContainer(VisualElement container)
         {
+            if (_settingsTemplate == null)
+            {
+                _settingsTemplate = Resources.Load<VisualTreeAsset>("UI/SettingsUI");
+                if (_settingsTemplate == null)
+                    _settingsTemplate = Resources.Load<VisualTreeAsset>("SettingsUI");
+            }
             if (container == null || _settingsTemplate == null) return;
 
             container.Clear();
@@ -101,6 +136,15 @@ namespace Echoes.UI
             panel.style.top = 0;
             panel.style.right = 0;
             panel.style.bottom = 0;
+
+            var ssTheme = Resources.Load<StyleSheet>("UI/EchoesTheme");
+            if (ssTheme != null && !panel.styleSheets.Contains(ssTheme))
+                panel.styleSheets.Add(ssTheme);
+
+            var ssSettings = Resources.Load<StyleSheet>("UI/SettingsUI");
+            if (ssSettings != null && !panel.styleSheets.Contains(ssSettings))
+                panel.styleSheets.Add(ssSettings);
+
             container.Add(panel);
             _settingsContainer = panel;
             InitializeUIFromContainer(panel);
@@ -111,6 +155,12 @@ namespace Echoes.UI
         {
             if (_root == null || _settingsTemplate == null) return;
             _settingsContainer = _settingsTemplate.CloneTree();
+            var ssTheme = Resources.Load<StyleSheet>("UI/EchoesTheme");
+            if (ssTheme != null && !_settingsContainer.styleSheets.Contains(ssTheme))
+                _settingsContainer.styleSheets.Add(ssTheme);
+            var ssSettings = Resources.Load<StyleSheet>("UI/SettingsUI");
+            if (ssSettings != null && !_settingsContainer.styleSheets.Contains(ssSettings))
+                _settingsContainer.styleSheets.Add(ssSettings);
             _root.Add(_settingsContainer);
             InitializeUIFromContainer(_settingsContainer);
         }

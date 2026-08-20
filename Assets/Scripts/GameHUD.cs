@@ -250,7 +250,8 @@ namespace Echoes.UI
         public void SetVisible(bool visible)
         {
             // Called by PauseMenu
-            _root.style.opacity = visible ? _currentOpacity : 0f;
+            if (_root != null)
+                _root.style.opacity = visible ? _currentOpacity : 0f;
         }
 
         public void ApplySavedUIScale()

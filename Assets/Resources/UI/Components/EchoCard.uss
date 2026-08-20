@@ -1,0 +1,92 @@
+/* ============================================================
+   EchoCard — tarjeta tipo "VHS tape" para Level Select
+   Estados: default / locked / available / completed / current / hover / focus
+   Solo tokens. RULE-UI-001/002.
+   ============================================================ */
+
+@import "../EchoesDesignTokens.uss";
+
+.echo-card {
+    padding: var(--space-md) var(--space-lg);
+    margin: var(--space-sm) 0;
+    border-width: 1px;
+    border-color: var(--color-glass-border);
+    background-color: var(--color-glass-bg);
+    font-size: var(--size-interface-sm);
+    color: var(--color-stich-on-surface);
+    -unity-text-align: middle-left;
+    letter-spacing: 1px;
+    flex-direction: row;
+    justify-content: space-between;
+    transition-property: border-color, background-color, color, scale, translate;
+    transition-duration: var(--duration-fast);
+    transition-timing-function: linear;
+    height: auto;
+    min-height: 64px;
+    border-radius: 0;
+    opacity: 1;
+}
+
+/* ── HOVER ───────────────────────────────────────────────────────── */
+.echo-card:hover {
+    border-color: var(--color-stich-tertiary-container);
+    scale: 1.0 1.0;
+    translate: 4px 0px;
+    transition-duration: var(--duration-hover);
+    background-color: var(--color-cyan-tint-04);
+}
+
+/* ── FOCUS ──────────────────────────────────────────────────────── */
+.echo-card:focus {
+    border-color: var(--color-stich-amber);
+    border-width: 2px;
+    scale: 1.0 1.0;
+    translate: 4px 0px;
+    transition-duration: var(--duration-hover-controller);
+    background-color: var(--color-amber-tint-04);
+}
+
+/* ── LOCKED — dashed border, gray, no pointer ──────────────────── */
+.echo-card--locked {
+    opacity: 0.3;
+    border-style: dashed;
+    border-color: var(--color-stich-outline-variant);
+    color: var(--color-stich-secondary-gray);
+    pointer-events: none;
+}
+
+.echo-card--locked:not(.echo-card--locked):hover,
+.echo-card--locked:focus {
+    scale: 1.0 1.0;
+    translate: 0px 0px;
+    border-width: 1px;
+    background-color: transparent;
+}
+
+/* ── AVAILABLE / COMPLETED / CURRENT ─────────────────────────────── */
+.echo-card--available {
+    border-color: var(--color-glass-border);
+    color: var(--color-stich-on-surface);
+}
+
+.echo-card--completed {
+    border-color: var(--color-sage-green);
+    background-color: var(--color-sage-tint-12);
+    color: var(--color-sage-green);
+}
+
+.echo-card--current {
+    border-color: var(--color-stich-amber);
+    background-color: var(--color-amber-tint-06);
+    color: var(--color-stich-amber);
+    scale: 1.0 1.0;
+    translate: 2px 0px;
+}
+
+/* ── METADATOS */
+.echo-card__metadata {
+    font-size: var(--size-interface-sm);
+    color: var(--color-stich-on-surface-variant);
+    -unity-text-align: middle-right;
+    white-space: nowrap;
+}

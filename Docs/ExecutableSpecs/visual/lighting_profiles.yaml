@@ -50,3 +50,13 @@ rules:
     scope: [lighting, level]
     rule: "Point or spot light count should remain <= 48 per scene"
     validator: validators/level_validator.yaml#light_count
+
+# RULE-LGT-004 (LIGHTING_GRAMMAR SPEC-105): post-processing params live here.
+# Pointer only — numeric values are owned by SPEC-120 (resolved CC-2026-012,
+# implemented by SPEC-144 POST_PROCESS_SPEC.md). Duplicating numbers caused CONT-012.
+post_processing:
+  spec: "SPEC-120"
+  implementation: "Docs/Art/POST_PROCESS_SPEC.md"
+  executable_mirror: "visual/urp_volume_profiles.yaml"
+  resolution: "CC-2026-012"
+  per_chapter_variation: none

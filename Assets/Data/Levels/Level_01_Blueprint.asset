@@ -30,7 +30,7 @@ MonoBehaviour:
   lightingProfile: {fileID: 0}
   activeParadoxes: 
   fogColor: {r: 0.10980392, g: 0.14117648, b: 0.1882353, a: 1}
-  fogDensity: 0.012
+  fogDensity: 0.008
   skyColor: {r: 0.023529412, g: 0.03137255, b: 0.047058824, a: 1}
   ambientColor: {r: 0.05882353, g: 0.078431375, b: 0.101960786, a: 1}
   directionalLightRotation: {x: 50, y: -30, z: 0}

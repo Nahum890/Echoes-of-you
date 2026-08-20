@@ -201,20 +201,26 @@ Ver spec técnico completo: `Docs/UI/INSPECT_POPUP_SPEC.md`. Resumen aquí:
 
 ### 9. INTEGRACIÓN CON VN_SYSTEM
 
-La Visual Novel NO es un modo separado del juego. Es el sistema de decisiones que **cierra cada nivel** (post-LevelExit) y alimentan `VN_EndingResolver`:
+La Visual Novel NO es un modo separado del juego. Es el sistema de decisiones que **cierra cada nivel** (post-LevelExit) y alimentan al resolver:
 
 1. Player completa puzzle de nivel N.
 2. `LevelExit` dispara `VN_ChoiceGateController.Show(levelIndex, onComplete)`.
 3. Aparece overlay full-screen: figura Aiden de espaldas + polaroid + 2 EchoButton (cyan/amber) con labels psicológicos.
 4. Player elige con A (cyan) o D (amber). NO hay botón "omitir" — la opción por defecto es la última elegida en la sesión (timeout.getSeconds = 0 → default_first).
 5. `VN_EndingFlags.SetFlag(node_id, choice)` registra la decisión.
-6. `comprehension_score` se actualiza (la choice inyectó +1 si fue "abrir" / +0 si fue "mantener").
-7. `onComplete(choice)` → carga el siguiente nivel.
+6. `onComplete(choice)` → carga el siguiente nivel.
 
-Al final de N15, post-decision 15, el `VN_EndingResolver.Resolve()` lee todos los flags, computa patrón, y devuelve endingID:
--Ending == "Aislamiento" → cargar `Epilogue_Aislamiento.unity`
--... y así.
-- Aceptación es el único que cierra con `salir_del_colegio = true`.
+#### 9.1 BLOQUE DE COMPETENCIA N01–N06 (BLOCK ENDING RESOLVER)
+
+El build jugable es un **bloque de 6 niveles** (N01→N06; Level_07..15 fuera del build). El final se resuelve al cierre de N06, no tras 15 niveles:
+
+- **Gates de fin de nivel**: muestran el nodo base de cada nivel (N01..N06). Los nodos micro (isMicro=true) quedan solo para N07/N13 (fuera del build).
+- **Micro en N03 (fork)**: `MicroChoiceTrigger_N03` en `Zona_Fork` dispara el nodo micro de N03 (`trust_first_take`/`redo_silently`) cuando el jugador entra al pasillo de bifurcación; el gate de fin muestra el nodo base (`left_corridor`/`right_corridor`).
+- **Flags del bloque** (cyan/amber): `allow_to_see` (N01), `pause_at_doubt` (N02), `left_corridor` (N03 base), `trust_first_take` (N03 micro), `let_hand_rest` (N04), `pattern_recognized` (N05), `speak_below_doubt` (N06). Extra: `unlock_future_echo` (+1, N04, `EchoCapabilityUnlocker`) — también activa el modo Future real en N04+ (`LevelRuntimeController.enableFutureEchoIfUnlocked`).
+- **Resolver local**: `Echoes.VN.BlockEndingResolver` (`Assets/Scripts/VN/BlockEndingResolver.cs`) computa `comprehension_score` (artefactos de Lyra vistos + flags de apertura + unlock_future_echo) y resuelve con umbrales: **Aceptación** = `allow_to_see ∧ trust_first_take ∧ left_corridor ∧ let_hand_rest ∧ speak_below_doubt ∧ unlock_future_echo ∧ score ≥ 8`; Desesperación ≥ 7; Negociación 4–6; Rumiación 2–3; Aislamiento ≤ 1.
+- **Cierre del bloque**: en N06 el gate de fin (en vez de avanzar al siguiente nivel) llama `BlockEndingResolver.ResolveFromRuntime()` + `PersistEnding()` (PlayerPrefs `Echoes.BlockFinaleEnding`) y carga `CreditsScene`.
+- **Epílogo en créditos**: `CreditsController` lee el final persistido, muestra el panel `epiloguePanel` (voz + narración desde `VN_TextTable.GetEpilogue(ending.ToString())`), pausa el scroll y recién al "Continuar" arrancan los créditos. `salir_del_colegio = true` solo para Aceptación (`SetSalirDelColegio`).
+- **Balance de eco del bloque**: N03 maxEchoes=1/20s, N04 maxEchoes=2/20s, N05 maxEchoes=3/12s, N06 maxEchoes=1/12s (coherente con los hints de 3 consecuencias de N05).
 
 ---
 
@@ -248,4 +254,5 @@ Al final de N15, post-decision 15, el `VN_EndingResolver.Resolve()` lee todos lo
 
 ### 12. CHANGE HISTORY
 
+- **v1.1 (2026-08-20)**: Bloque de competencia N01–N06. El final se resuelve tras el gate de N06 con `BlockEndingResolver` local (nunca se alcanzan 15 niveles); epílogo integrado en CreditsScene (panel `epiloguePanel`); micro-choice de N03 disparado por `MicroChoiceTrigger_N03` en el fork; `unlock_future_echo` ahora activa el modo Future real (auto-spawn en `EchoRecorder`); balance de eco N05 3/12s.
 - **v1.0 (2026-08-02)**: Creación. Documento inédito requerido por la reescritura narrativa dual de ECHOES_BIBLE v3.2. Aporta: identidad Aiden (chica), ambigüedad relacional con Lyra por ANTI-BIB-004, mensaje dual irresoluble por ANTI-BIB-005, modelo de 4 etapas con Catch-22, 20 VN decision nodes psicológicos, 5 endings renombrados, integración técnica con HUD::Chalkboard y VN_ChoiceGateController.

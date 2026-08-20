@@ -31,6 +31,8 @@ Shader "Echoes/PS1World" {
             #pragma vertex Vert
             #pragma fragment Frag
             #pragma shader_feature _EMISSION
+            #pragma multi_compile _ _ADDITIONAL_LIGHTS
+            #pragma multi_compile_fragment _ _ADDITIONAL_LIGHTS_VERTEX
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
@@ -88,15 +90,16 @@ Shader "Echoes/PS1World" {
 
                 Light mainLight = GetMainLight();
                 half3 normal = normalize(input.normal);
+                half3 viewDir = normalize(input.viewDir);
                 half NdotL = max(0, dot(normal, mainLight.direction));
 
-                // Ambient + floor mínimo + SH + luz de techo
+                // Ambient + SH con piso alto para que los materiales se distingan
                 half3 shAmbient = SampleSH(normal);
-                half ambientFloor = 0.35;
+                half ambientFloor = 0.6;
                 half3 ambient = max(shAmbient, half3(ambientFloor, ambientFloor, ambientFloor * 1.02)) * _FlatAmbient;
-                half3 directional = mainLight.color.rgb * NdotL * mainLight.distanceAttenuation * mainLight.shadowAttenuation * 0.5;
+                half3 directional = mainLight.color.rgb * NdotL * mainLight.distanceAttenuation * mainLight.shadowAttenuation * 0.6;
                 half upFacing = max(0, normal.y);
-                half3 ceilingLight = half3(0.85, 0.88, 0.95) * upFacing * 0.35;
+                half3 ceilingLight = half3(0.9, 0.92, 1.0) * upFacing * 0.42;
                 half3 lighting = albedo * (ambient + directional + ceilingLight);
 
                 // Fluorescent hum parpadeante (sutil)
@@ -105,12 +108,24 @@ Shader "Echoes/PS1World" {
                 lighting += albedo * fluoHum * 0.25;
 
                 // Specular suave (PS1-lite) — roughness per material
-                half3 viewDir = normalize(input.viewDir);
+                half specExp = lerp(48.0, 6.0, _Smoothness);
                 half3 halfDir = normalize(mainLight.direction + viewDir);
                 half NdotH = max(0, dot(normal, halfDir));
-                half specExp = lerp(48.0, 6.0, _Smoothness);
                 half spec = pow(NdotH, specExp) * _Smoothness * _SpecularAnomaly;
-                lighting += _SpecColor.rgb * mainLight.color.rgb * spec * 0.35;
+                lighting += _SpecColor.rgb * mainLight.color.rgb * spec * 0.5;
+
+                // Luces adicionales (fluorescentes point) — el motor ya las renderiza per-pixel
+                uint addCount = GetAdditionalLightsCount();
+                for (uint i = 0; i < addCount; i++)
+                {
+                    Light addLight = GetAdditionalLight(i, input.worldPos);
+                    half aNdotL = max(0, dot(normal, addLight.direction));
+                    lighting += albedo * addLight.color.rgb * aNdotL * addLight.distanceAttenuation * addLight.shadowAttenuation * 0.6;
+                    half3 aHalf = normalize(addLight.direction + viewDir);
+                    half aNdotH = max(0, dot(normal, aHalf));
+                    half aSpec = pow(aNdotH, specExp) * _Smoothness * _SpecularAnomaly;
+                    lighting += _SpecColor.rgb * addLight.color.rgb * aSpec * 0.5;
+                }
 
                 // Color quantization (PS1 — bandas discretas pero suaves)
                 lighting = floor(lighting * _QuantizeColors + 0.5) / _QuantizeColors;

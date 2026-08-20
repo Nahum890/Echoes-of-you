@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Echoes of You - Loading Screen</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Courier Prime & EB Garamond -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&amp;family=EB+Garamond:ital,wght@0,400..800;1,400..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#131410",
+                    "outline": "#959087",
+                    "on-tertiary-fixed": "#001f28",
+                    "on-secondary": "#29313d",
+                    "tertiary-fixed-dim": "#63d4fa",
+                    "on-primary": "#333027",
+                    "tertiary": "#fffeff",
+                    "surface-bright": "#393935",
+                    "surface-container-lowest": "#0e0f0b",
+                    "on-secondary-fixed-variant": "#3f4754",
+                    "inverse-surface": "#e4e2dc",
+                    "on-background": "#e4e2dc",
+                    "tertiary-fixed": "#b7eaff",
+                    "primary-container": "#e8e1d4",
+                    "primary-fixed": "#e9e2d5",
+                    "surface-container-highest": "#353530",
+                    "on-error": "#690005",
+                    "secondary-fixed-dim": "#bfc7d7",
+                    "on-tertiary": "#003543",
+                    "on-secondary-container": "#b4bccc",
+                    "primary": "#fffeff",
+                    "on-surface-variant": "#ccc6bc",
+                    "on-tertiary-container": "#006d87",
+                    "on-surface": "#e4e2dc",
+                    "inverse-on-surface": "#30312c",
+                    "on-primary-fixed": "#1e1b14",
+                    "surface-tint": "#ccc6b9",
+                    "surface": "#131410",
+                    "outline-variant": "#4a463f",
+                    "on-secondary-fixed": "#141c28",
+                    "tertiary-container": "#b6eaff",
+                    "secondary-fixed": "#dbe3f3",
+                    "primary-fixed-dim": "#ccc6b9",
+                    "error-container": "#93000a",
+                    "on-primary-fixed-variant": "#4a463d",
+                    "secondary-container": "#444c59",
+                    "error": "#ffb4ab",
+                    "on-primary-container": "#686459",
+                    "background": "#131410",
+                    "surface-variant": "#353530",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-high": "#2a2a26",
+                    "surface-container": "#1f201c",
+                    "on-tertiary-fixed-variant": "#004d61",
+                    "secondary": "#bfc7d7",
+                    "inverse-primary": "#625e54",
+                    "surface-container-low": "#1b1c18"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-edge": "64px",
+                    "container-padding": "32px",
+                    "unit": "8px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "interface-md": [
+                            "courierPrime"
+                    ],
+                    "display-md": [
+                            "ebGaramond"
+                    ],
+                    "display-lg-mobile": [
+                            "ebGaramond"
+                    ],
+                    "display-lg": [
+                            "ebGaramond"
+                    ],
+                    "label-caps": [
+                            "courierPrime"
+                    ],
+                    "interface-sm": [
+                            "courierPrime"
+                    ],
+                    "interface-lg": [
+                            "courierPrime"
+                    ]
+            },
+            "fontSize": {
+                    "interface-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-md": [
+                            "48px",
+                            {
+                                    "lineHeight": "56px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg-mobile": [
+                            "40px",
+                            {
+                                    "lineHeight": "44px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg": [
+                            "64px",
+                            {
+                                    "lineHeight": "72px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-caps": [
+                            "16px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0.1em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "interface-sm": [
+                            "20px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "interface-lg": [
+                            "38px",
+                            {
+                                    "lineHeight": "44px",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        /* Custom animations for loading screen */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.1; }
+            50% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(0.95); opacity: 0.1; }
+        }
+        
+        @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .echo-ring {
+            animation: pulse-ring 3s infinite ease-in-out;
+            box-shadow: 0 0 15px rgba(99, 212, 250, 0.4);
+        }
+        
+        .progress-spinner {
+            animation: spin-slow 8s linear infinite;
+        }
+        
+        .scanline {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.1) 50%,
+                rgba(0,0,0,0.1)
+            );
+            background-size: 100% 4px;
+        }
+
+        /* Glitch effect for text */
+        .glitch-text {
+            position: relative;
+        }
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.5;
+        }
+        .glitch-text::before {
+            color: #63d4fa; /* tertiary-fixed-dim */
+            z-index: -1;
+            transform: translate(-1px, 1px);
+        }
+        .glitch-text::after {
+            color: #ffb4ab; /* error */
+            z-index: -2;
+            transform: translate(1px, -1px);
+        }
+        
+        .typing-effect {
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 1px solid #e4e2dc; /* on-surface */
+            animation: typing 4s steps(40, end), blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #e4e2dc; }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface h-screen w-screen overflow-hidden font-interface-md text-interface-md selection:bg-tertiary-fixed-dim selection:text-on-tertiary-fixed">
+<!-- Background Layer: Silhouette of School Gate -->
+<div class="absolute inset-0 z-0 opacity-40">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A dark, atmospheric silhouette of an old, wrought-iron school gate against a very dim, near-black sky. The scene is melancholic and foreboding, with only faint, ghostly cyan light bleeding through the bars. The style is analog photography with visible film grain, creating a sense of corrupted memory and isolation." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBN2tbULRzDM8V_iStOI0vEkC3aATt1nZSxEUz8uoPtdUMLGanN_MU7eaO57e5YRDPD70j0k1O_cGj9_HZlho31pDEGswA1mE2nNnrAECvWoHJmFDYAza11ujXKLKK5dOMEdo2bO-9DE19hIcjJ9ceKgpgJ7_6s9LeyHMrwh51oa27YpAxR0HIWxhtDwRg_JQ79XH7_hPYXCVm44LGgZ7BCujj_-CbPXY1K0eRAhpGp_HbdGCeNtV5lkg')"></div>
+<div class="absolute inset-0 bg-surface-dim/80 backdrop-blur-sm"></div>
+<div class="absolute inset-0 scanline z-10 pointer-events-none"></div>
+</div>
+<!-- Archival Metadata Overlay (Top Left & Top Right) -->
+<div class="absolute top-margin-edge left-margin-edge z-20 flex flex-col gap-2 opacity-60 font-interface-sm text-interface-sm">
+<span class="text-outline">REC_ID: S_ARCH_3X</span>
+<span class="text-outline-variant">STATUS: RECOVERING FRAGMENTS</span>
+</div>
+<div class="absolute top-margin-edge right-margin-edge z-20 flex flex-col gap-2 items-end opacity-60 font-interface-sm text-interface-sm">
+<span class="text-tertiary-fixed-dim">TEMPORAL SYNC: IN PROGRESS</span>
+<span class="text-outline-variant text-right">0x9A4F2B</span>
+</div>
+<!-- Main Content Container -->
+<div class="relative z-30 h-full w-full flex flex-col items-center justify-center">
+<!-- Centerpiece: Broken O Indicator -->
+<div class="relative w-64 h-64 flex items-center justify-center mb-16">
+<!-- The Echo Ring (Cyan trail) -->
+<div class="absolute inset-0 rounded-full border border-tertiary-fixed-dim/30 echo-ring progress-spinner"></div>
+<!-- Inner Ghost Ring -->
+<div class="absolute inset-4 rounded-full border border-outline-variant/50"></div>
+<!-- Broken O Graphic -->
+<svg class="w-40 h-40 text-on-surface opacity-90 progress-spinner" fill="none" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Outer Broken Ring -->
+<path d="M 50 5 A 45 45 0 0 1 95 50" stroke="currentColor" stroke-linecap="square" stroke-width="2"></path>
+<path d="M 95 50 A 45 45 0 0 1 50 95" opacity="0.3" stroke="currentColor" stroke-linecap="square" stroke-width="2"></path>
+<path d="M 50 95 A 45 45 0 0 1 5 50" stroke="currentColor" stroke-linecap="square" stroke-width="2"></path>
+<path d="M 5 50 A 45 45 0 0 1 20 15" opacity="0.1" stroke="currentColor" stroke-linecap="square" stroke-width="2"></path>
+<!-- Inner Broken Elements -->
+<circle cx="50" cy="50" opacity="0.5" r="35" stroke="currentColor" stroke-dasharray="4 8" stroke-width="1"></circle>
+<!-- Center point -->
+<circle class="animate-pulse" cx="50" cy="50" fill="#63d4fa" r="2"></circle>
+</svg>
+<!-- Glitch Particles around O -->
+<div class="absolute top-1/4 left-1/4 w-1 h-1 bg-tertiary-fixed-dim opacity-50 animate-ping"></div>
+<div class="absolute bottom-1/3 right-1/4 w-1 h-1 bg-on-surface opacity-30 animate-pulse" style="animation-delay: 1s;"></div>
+</div>
+<!-- Typography Stack -->
+<div class="text-center space-y-gutter flex flex-col items-center">
+<!-- Chapter Title -->
+<h1 class="font-display-md text-display-md text-primary tracking-widest uppercase glitch-text" data-text="Chapter III: Sombras del Pasado">
+                Chapter III: Sombras del Pasado
+            </h1>
+<!-- Narrative Phrase -->
+<div class="h-12 flex items-center justify-center">
+<p class="font-interface-md text-interface-md text-outline italic opacity-80 typing-effect inline-block">
+                    "El silencio es solo un eco que aún no ha aprendido a hablar."
+                </p>
+</div>
+<!-- Hint Container -->
+<div class="mt-margin-edge bg-surface-container/50 border border-outline-variant/30 px-container-padding py-unit backdrop-blur-md flex items-center gap-4">
+<span class="material-symbols-outlined text-tertiary-fixed-dim opacity-70" style="font-variation-settings: 'FILL' 0;">
+                    info
+                </span>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">
+                    Hint: "Mantén <span class="text-primary border border-outline px-1 mx-1 rounded-sm bg-surface-bright/20">R</span> para grabar un eco de tu posición actual."
+                </p>
+</div>
+</div>
+</div>
+<!-- Archival Metadata Overlay (Bottom Corners) -->
+<div class="absolute bottom-margin-edge left-margin-edge z-20 flex flex-col gap-2 opacity-50 font-interface-sm text-interface-sm">
+<span class="text-outline flex items-center gap-2">
+<span class="w-2 h-2 bg-tertiary-fixed-dim rounded-full animate-pulse"></span>
+            SYSTEM.INIT()
+        </span>
+</div>
+<div class="absolute bottom-margin-edge right-margin-edge z-20 opacity-30">
+<!-- Abstract Barcode/Visual Noise -->
+<div class="flex gap-1 h-8 items-end">
+<div class="w-1 bg-outline h-full"></div>
+<div class="w-2 bg-outline h-3/4"></div>
+<div class="w-1 bg-outline h-1/2"></div>
+<div class="w-3 bg-outline h-full"></div>
+<div class="w-1 bg-outline h-1/4"></div>
+<div class="w-2 bg-outline h-5/6"></div>
+<div class="w-1 bg-tertiary-fixed-dim h-full opacity-50"></div>
+</div>
+</div>
+<script>
+        // Simple script to randomly glitch the main text occasionally
+        document.addEventListener('DOMContentLoaded', () => {
+            const title = document.querySelector('h1');
+            
+            setInterval(() => {
+                if(Math.random() > 0.8) {
+                    title.style.transform = `translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)`;
+                    setTimeout(() => {
+                        title.style.transform = 'translate(0, 0)';
+                    }, 100);
+                }
+            }, 2000);
+        });
+    </script>
+</body></html>

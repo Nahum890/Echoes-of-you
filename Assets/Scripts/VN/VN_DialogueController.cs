@@ -20,6 +20,31 @@ namespace Echoes.VN
     {
         public static VN_DialogueController Instance { get; private set; }
 
+        public static VN_DialogueController EnsureExists()
+        {
+            if (Instance != null) return Instance;
+            var existing = FindAnyObjectByType<VN_DialogueController>();
+            if (existing != null)
+            {
+                Instance = existing;
+                return Instance;
+            }
+
+            var panel = global::UIBootstrap.PanelSettings;
+            var go = new GameObject("VNDialogueController");
+            var doc = go.AddComponent<UIDocument>();
+            doc.panelSettings = panel;
+            doc.sortingOrder = 500;
+            var vta = Resources.Load<VisualTreeAsset>("UI/VN/VN_DialogueUI");
+#if UNITY_EDITOR
+            if (vta == null) vta = UnityEditor.AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/UI/VN/VN_DialogueUI.uxml");
+#endif
+            if (vta != null) doc.visualTreeAsset = vta;
+            Instance = go.AddComponent<VN_DialogueController>();
+            if (Application.isPlaying) DontDestroyOnLoad(go);
+            return Instance;
+        }
+
         [Tooltip("Characters per second for typewriter effect.")]
         [SerializeField] float typewriterSpeed = 45f;
 

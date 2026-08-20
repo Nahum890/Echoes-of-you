@@ -31,7 +31,7 @@ Level 2 (Technical Context & Change Registry). Subordinate only to `SOURCE_OF_TR
 
 ### 8. ALGORITHMS
 
-#### Table 8.1: Frozen Decisions & Contradiction Resolution Log (`CONT-001` to `CONT-008`)
+#### Table 8.1: Frozen Decisions & Contradiction Resolution Log (`CONT-001` to `CONT-012`)
 
 | Decision ID | Conflict Ref | Superseded / Prohibited Option B | Official / Binding Option A | Resolution Justification |
 |---|---|---|---|---|
@@ -46,6 +46,7 @@ Level 2 (Technical Context & Change Registry). Subordinate only to `SOURCE_OF_TR
 | `CC-2026-009` | `CONT-009` | Absolute URP/Lit shader mandate across all materials | **URP/Lit for static geometry + Custom shaders for Echo/FX** | Resolves conflict between SOURCE_OF_TRUTH.md L63 and SHADER_SPEC.md [SPEC-109]. |
 | `CC-2026-010` | `HALT-2` | Unrestricted YAML override over Frozen Decisions | **YAML overrides Markdown EXCEPT Frozen Decisions Matrix** | Resolves deadlock RULE-SOT-001B vs RULE-SOT-002 in SOURCE_OF_TRUTH.md. |
 | `CC-2026-011` | `HALT-7` | AI_RULEBOOK listed as Level 4 in INDEX | **AI_RULEBOOK & AI_PIPELINE assigned Level 5** | Aligns INDEX.md authority tier with SOURCE_OF_TRUTH.md §7. |
+| `CC-2026-012` | `CONT-012` | `urp_volume_profiles.yaml` v1.0 post values (bloom 0.8/0.5, vignette `#000000` 0.2, exp 0, sat −20) + `fog_settings` block (Linear `#0F141A` 0.015, 5–35 m) | **SPEC-120 `POST_PROCESSING_SPEC.md` v4.0 values win; fog owned by chapter profiles (`lighting_profiles.yaml`)** | Real scene volumes match SPEC-120 bloom (0.25/0.9/0.7); `GameFeelController` pulses reference SPEC-120 baselines; `LIGHTING_GRAMMAR` RULE-LGT-004/005 delegate fog to chapter profiles. Executable mirror: `Docs/Art/POST_PROCESS_SPEC.md` `[SPEC-144]`, `urp_volume_profiles.yaml` v2.0. |
 
 ### 9. CONSTRAINTS
 - `[CONS-CC-001]`: Prohibido deleting historic change entries from Table 8.1.

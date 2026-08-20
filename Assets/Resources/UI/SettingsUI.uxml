@@ -14,8 +14,11 @@
             <ui:VisualElement class="settings-sidebar">
 
                 <ui:VisualElement class="settings-sidebar-header">
-                    <ui:Label text="CALIBRACIÓN" class="settings-logo-title" />
-                    <ui:Label text="SISTEMA_V.1.04 // ESTADO: INESTABLE" class="settings-logo-subtitle" />
+                    <ui:VisualElement class="settings-title-container">
+                        <ui:Label name="lblSettingsTitle" text="CALIBRACIÓN" class="settings-logo-title" />
+                        <ui:Label text="CALIBRACIÓN" class="settings-logo-shadow" />
+                    </ui:VisualElement>
+                    <ui:Label name="lblSettingsSubtitle" text="SISTEMA_V.1.04 // ESTADO: INESTABLE" class="settings-logo-subtitle" />
                     <ui:VisualElement class="settings-sidebar-divider" />
                 </ui:VisualElement>
 
@@ -39,7 +42,7 @@
                 <ui:VisualElement name="panelVideo" class="settings-panel">
                     <ui:VisualElement class="settings-panel-header">
                         <ui:Label text="PARÁMETROS VISUALES" class="settings-panel-header-title" />
-                        <ui:Label text="REC ●" class="settings-panel-header-rec" />
+                        <ui:Label text="REC" class="settings-panel-header-rec" />
                     </ui:VisualElement>
 
                     <ui:VisualElement class="settings-item">

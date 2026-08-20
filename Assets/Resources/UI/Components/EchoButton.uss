@@ -1,0 +1,158 @@
+/* ============================================================
+   EchoButton — componente reutilizable
+   Variantes: primary / secondary / destructive / ghost
+   Estados:  default / hover / focus / active / disabled / loading
+   Solo tokens (0 hardcodeado). RULE-UI-001/002 + RULE-SOT-001B.
+   ============================================================ */
+
+@import "../EchoesDesignTokens.uss";
+
+.echo-button {
+    /* Layout */
+    padding: var(--space-md) var(--space-xl);
+    margin: var(--space-sm) 0;
+    border-width: 1px;
+    border-radius: 0;
+
+    /* Tipografía */
+    font-size: var(--size-option);
+    -unity-text-align: middle-center;
+    letter-spacing: 1px;
+
+    /* Cursor + transiciones */
+    transition-property: background-color, color, border-color, opacity, scale;
+    transition-duration: var(--duration-fast);
+    transition-timing-function: var(--easing-standard);
+}
+
+/* ── VARIANTES Stich — transparent bg, ivory border ─────────── */
+
+.echo-button--primary {
+    background-color: transparent;
+    color: var(--color-stich-pure-white);
+    border-color: var(--color-stich-on-surface);
+}
+
+.echo-button--secondary {
+    background-color: var(--color-glass-bg);
+    color: var(--color-stich-on-surface);
+    border-color: var(--color-glass-border);
+}
+
+.echo-button--destructive {
+    background-color: transparent;
+    color: var(--color-stich-error);
+    border-color: var(--color-stich-error);
+}
+
+.echo-button--ghost {
+    background-color: transparent;
+    color: var(--color-stich-on-surface-variant);
+    border-color: transparent;
+}
+
+/* ── ESTADO HOVER Stich — corridor navy fill, chromatic feel ── */
+
+.echo-button:hover {
+    scale: 1.0 1.0;
+    transition-duration: var(--duration-hover);
+}
+
+.echo-button--primary:hover {
+    background-color: var(--color-stich-surface-container-low);
+    border-color: var(--color-stich-pure-white);
+    color: var(--color-stich-pure-white);
+}
+
+.echo-button--secondary:hover {
+    border-color: var(--color-stich-tertiary-container);
+    background-color: var(--color-stich-surface-container-low);
+    color: var(--color-stich-pure-white);
+}
+
+.echo-button--destructive:hover {
+    background-color: rgba(255, 180, 171, 0.12);
+    color: var(--color-stich-error);
+    border-color: var(--color-stich-error);
+}
+
+.echo-button--ghost:hover {
+    background-color: var(--color-cyan-tint-08);
+    color: var(--color-stich-tertiary-container);
+}
+
+/* ── ESTADO FOCUS — amber border ──────────────────────────── */
+
+.echo-button:focus {
+    scale: 1.0 1.0;
+    border-color: var(--color-stich-amber);
+    border-width: 2px;
+    transition-duration: var(--duration-hover-controller);
+}
+
+.echo-button--destructive:focus {
+    border-color: var(--color-stich-error);
+}
+
+/* ── ESTADO ACTIVE — amber border, amber text ─────────────── */
+
+.echo-button:active {
+    scale: 1.0 1.0;
+    transition-duration: var(--duration-active);
+    background-color: var(--color-stich-surface-container-low);
+    border-color: var(--color-stich-amber);
+    color: var(--color-stich-amber);
+}
+
+.echo-button--destructive:active {
+    background-color: rgba(255, 180, 171, 0.20);
+    border-color: var(--color-stich-error);
+}
+
+/* ── ESTADO DISABLED — dashed border, gray text ───────────── */
+
+.echo-button:disabled {
+    opacity: 0.4;
+    scale: 1.0 1.0;
+    pointer-events: none;
+    border-style: dashed;
+    border-color: var(--color-stich-outline-variant);
+    color: var(--color-stich-secondary-gray);
+}
+
+/* ── ESTADO LOADING (clase aplicada por C#) ───────────────── */
+
+.echo-button--loading {
+    opacity: 0.6;
+    pointer-events: none;
+    color: transparent;
+    background-color: var(--color-stich-surface-container-high);
+    border-color: var(--color-stich-outline-variant);
+}
+
+/* Spinner incluido como pseudo-elemento via background-image no existe en UITK.
+   El C# instanciará un VisualElement .echo-button__spinner con animación. */
+.echo-button__spinner {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    border-right-color: var(--color-stich-on-surface);
+    border-left-color: transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    border-width: 2px;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    left: 50%;
+    top: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: var(--duration-fast);
+}
+
+.echo-button--loading .echo-button__spinner {
+    opacity: 1;
+}
+

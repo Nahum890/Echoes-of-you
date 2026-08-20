@@ -123,7 +123,7 @@ public class EchoRecorder : MonoBehaviour
         if (playback == null) playback = obj.AddComponent<EchoPlayback>();
 
         float duration = Mathf.Max(_pendingFutureEcho[_pendingFutureEcho.Count - 1].time, 0.05f);
-        playback.BeginPlayback(_pendingFutureEcho, duration, null, EchoPlaybackMode.Future, 0f);
+        playback.BeginPlayback(_pendingFutureEcho, duration, null, EchoPlaybackMode.Future, _degradationPerReplay);
         _echoes.Add(playback);
         EchoCreated?.Invoke(_echoes.Count);
 
@@ -274,8 +274,13 @@ public class EchoRecorder : MonoBehaviour
             _pendingFutureEcho.Clear();
             _pendingFutureEcho.AddRange(_frames);
             _frames.Clear();
+            TrimEchoesIfNeeded();
+            Vector3 spawnPos = _pendingFutureEcho.Count > 0 ? _pendingFutureEcho[0].position : transform.position;
+            TriggerFutureEcho();
             RecordingStopped?.Invoke(true);
-            hud?.ShowToast("Eco futuro preparado", new Color(0.7f, 0.85f, 1f, 1f), 1.25f);
+            GameProgress.RecordEchoCreated();
+            hud?.ShowToast("Eco futuro creado", new Color(0.48f, 0.94f, 0.78f, 1f), 1.25f);
+            GameFeelController.Instance?.PlayEchoSpawn(spawnPos);
             RefreshHud();
             return;
         }

@@ -50,7 +50,10 @@ public static class GameProgress
         "Integración"
     };
 
-    public static int TotalLevels => LevelScenes.Length;
+    /// <summary>Niveles del bloque jugable (competencia): N01–N06. El resto queda fuera del build.</summary>
+    public const int BlockLevelCount = 6;
+
+    public static int TotalLevels => Mathf.Min(BlockLevelCount, LevelScenes.Length);
 
     static bool _initialized;
 
@@ -119,7 +122,7 @@ public static class GameProgress
     public static int GetCompletedCount()
     {
         int completed = 0;
-        for (int i = 0; i < LevelScenes.Length; i++)
+        for (int i = 0; i < Mathf.Min(LevelScenes.Length, BlockLevelCount); i++)
         {
             if (IsSceneCompleted(LevelScenes[i]))
                 completed++;

@@ -1,0 +1,79 @@
+/* ============================================================
+   EchoLoading — pantalla de carga
+   Estados: loading / complete / error (indeterminate via C# animación loop)
+   Solo tokens (0 hardcodeado). RULE-UI-001/002.
+   ============================================================ */
+
+@import "../EchoesDesignTokens.uss";
+
+.echo-loading {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: var(--color-void-black);
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: var(--duration-slow);
+    transition-timing-function: var(--easing-standard);
+    z-index: var(--z-loading);
+}
+
+/* ENTERING */
+.echo-loading--entering {
+    opacity: 1;
+}
+
+/* VISIBLE */
+.echo-loading--visible {
+    opacity: 1;
+}
+
+/* EXITING */
+.echo-loading--exiting {
+    opacity: 0;
+    transition-duration: var(--duration-fast);
+}
+
+.echo-loading__title {
+    font-size: var(--size-screen-title);
+    color: var(--color-fluorescent-sick);
+    -unity-text-align: middle-center;
+    margin-bottom: var(--space-2xl);
+}
+
+.echo-loading__track {
+    width: 400px;
+    height: 6px;
+    background-color: var(--color-corridor-navy);
+    border-width: 1px;
+    border-color: var(--color-institutional-teal);
+}
+
+.echo-loading__fill {
+    height: 100%;
+    width: 0%;
+    background-color: var(--color-memory-amber);
+    transition-property: width;
+    transition-duration: var(--duration-slow);
+}
+
+/* COMPLETE */
+.echo-loading--complete .echo-loading__title {
+    color: var(--color-sage-green);
+}
+
+.echo-loading--complete .echo-loading__fill {
+    background-color: var(--color-sage-green);
+    width: 100%;
+}
+
+/* ERROR */
+.echo-loading--error .echo-loading__title {
+    color: var(--color-wrongness-red);
+}
+
+.echo-loading--error .echo-loading__fill {
+    background-color: var(--color-wrongness-red);
+    width: 100%;
+}

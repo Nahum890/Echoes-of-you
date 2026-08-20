@@ -19,10 +19,10 @@ public class UpdateLevelLighting
     {
         string ch;
         if (levelNum <= 3) ch = "I";
-        else if (levelNum <= 6) ch = "II";
+        else if (levelNum == 4 || levelNum == 5 || levelNum == 8) ch = "II";
         else if (levelNum <= 9) ch = "III";
-        else if (levelNum <= 12) ch = "IV";
-        else if (levelNum <= 14) ch = "V";
+        else if (levelNum <= 11) ch = "IV";
+        else if (levelNum <= 13) ch = "V";
         else ch = "VI";
 
         switch (ch)

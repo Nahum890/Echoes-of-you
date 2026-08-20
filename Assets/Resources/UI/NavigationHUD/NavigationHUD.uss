@@ -39,7 +39,7 @@
 }
 
 .sys-tag {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 11px;
     letter-spacing: 2px;
     color: rgba(99, 212, 250, 0.75);
@@ -57,13 +57,13 @@
 }
 
 .location-icon {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 14px;
     color: #63d4fa;
 }
 
 .location-label {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 14px;
     color: #e4e2dc;
     letter-spacing: 1px;
@@ -149,13 +149,13 @@
 }
 
 .prompt-key {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 14px;
     color: #E8B262;
 }
 
 .prompt-action {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/GaramondBold.ttf');
+    /* default font */
     font-size: 15px;
     letter-spacing: 1px;
     color: #e4e2dc;
@@ -184,14 +184,14 @@
 }
 
 .echo-title {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 11px;
     letter-spacing: 2px;
     color: rgba(228, 226, 220, 0.7);
 }
 
 .echo-count {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 14px;
     color: #63d4fa;
     letter-spacing: 1px;
@@ -321,14 +321,14 @@
 }
 
 .rec-mode-title {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 15px;
     letter-spacing: 2px;
     color: #ffdad6;
 }
 
 .rec-fragment-label {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 13px;
     letter-spacing: 1.5px;
     color: #63d4fa;
@@ -347,21 +347,21 @@
 }
 
 .rec-buffer-title {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 14px;
     letter-spacing: 1px;
     color: #e4e2dc;
 }
 
 .rec-buffer-value {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 15px;
     letter-spacing: 1px;
     color: #63d4fa;
 }
 
 .rec-version-tag {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/Courier.ttf');
+    /* default font */
     font-size: 11px;
     letter-spacing: 2px;
     color: rgba(149, 144, 135, 0.65);
@@ -484,7 +484,7 @@
 }
 
 .rec-main-label {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 36px;
     color: #fffeff;
     letter-spacing: 4px;
@@ -513,13 +513,13 @@
 }
 
 .rec-stop-key {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 15px;
     color: #E8B262;
 }
 
 .rec-stop-text {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/CourierBold.ttf');
+    /* default font */
     font-size: 14px;
     letter-spacing: 2px;
     color: #e4e2dc;
