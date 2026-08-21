@@ -31,23 +31,35 @@ Material:
     m_Ints: []
     m_Floats:
     - _AffineStrength: 0.5
+    - _AmbientFloor: 0.6
+    - _DepthDistort: 0.005
     - _DepthJitter: 0.002
     - _DitherStrength: 0.6
     - _FlatAmbient: 1
     - _FlickerStrength: 0.15
+    - _FluorescentEdge: 0.1
     - _FluorescentHum: 0.35
     - _FogDensity: 0.016
+    - _FresnelInvert: 0.3
     - _QuantizeColors: 32
     - _ScanlineFreq: 120
     - _Smoothness: 0.15
-    - _SpecularAnomaly: 0.25
+    - _SnapPixelSize: 2
+    - _SpecularAnomaly: 0.15
+    - _StainNoiseScale: 4
     - _StainScale: 6
     - _StainStrength: 0.5
+    - _StainThreshold: 0.7
     - _VertexSnap: 16
+    - _WearHeight: 1.5
+    - _WearNoiseScale: 8
     m_Colors:
     - _BaseColor: {r: 0.7882353, g: 0.83137256, b: 0.6901961, a: 1}
     - _EmissionColor: {r: 0.9480001, g: 0.996, b: 0.828, a: 1.2}
     - _FogColor: {r: 0.38, g: 0.39, b: 0.41, a: 1}
     - _SpecColor: {r: 0.9, g: 0.92, b: 0.95, a: 1}
+    - _StainColor: {r: 0.05, g: 0.08, b: 0.12, a: 1}
+    - _SubsurfaceTint: {r: 0, g: 0.08, b: 0.12, a: 1}
+    - _WearColor: {r: 0.08, g: 0.1, b: 0.14, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

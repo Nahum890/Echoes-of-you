@@ -23,6 +23,7 @@ public static class LoFiTextureGenerator
         CreateLockerMetal();
         CreateCeilingTile();
         CreateDoorPainted();
+        CreatePlasterNeutral();
 
         AssetDatabase.Refresh();
 
@@ -34,9 +35,10 @@ public static class LoFiTextureGenerator
         ConfigureImporter("tex_locker_metal_128.png", 128);
         ConfigureImporter("tex_ceiling_tile_128.png", 128);
         ConfigureImporter("tex_door_painted_128.png", 128);
+        ConfigureImporter("tex_plaster_neutral_128.png", 128);
 
         AssetDatabase.SaveAssets();
-        Debug.Log("[Lo-Fi Textures] Successfully generated and configured 8 lo-fi textures.");
+        Debug.Log("[Lo-Fi Textures] Successfully generated and configured 9 lo-fi textures.");
     }
 
     private static void CreateSchoolWood()
@@ -274,6 +276,34 @@ public static class LoFiTextureGenerator
         }
         tex.Apply();
         SavePng(tex, "tex_door_painted_128.png");
+    }
+
+    // Yeso NEUTRO (gris claro), pensado para que el material lo tinte con su
+    // propio _BaseColor. tex_plaster_wall_128 esta tenido de teal (2B4A4A), asi
+    // que sirve para paredes teal pero convertiria en teal una pared rosa.
+    // Las paredes por capitulo necesitan detalle de superficie sin color propio.
+    private static void CreatePlasterNeutral()
+    {
+        int size = 128;
+        Texture2D tex = new Texture2D(size, size, TextureFormat.RGB24, false);
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                // Grano fino de gotele + ondulacion suave de llana.
+                float grain = (Random.value - 0.5f) * 0.10f;
+                float trowel = (Mathf.PerlinNoise(x * 0.03f, y * 0.03f) - 0.5f) * 0.12f;
+
+                // Alguna descamacion de pintura, dispersa y estable.
+                float peel = Hash01(x >> 2, y >> 2) > 0.955f ? -0.16f : 0f;
+
+                float v = Mathf.Clamp01(0.92f + grain + trowel + peel);
+                tex.SetPixel(x, y, new Color(v, v, v, 1f));
+            }
+        }
+        tex.Apply();
+        SavePng(tex, "tex_plaster_neutral_128.png");
     }
 
     /// <summary>Hash determinista en [0,1). No usa Random para que el patron

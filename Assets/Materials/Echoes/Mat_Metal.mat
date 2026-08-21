@@ -24,12 +24,13 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 05228f5c30691ab44aaba8d3e719a921, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _AffineStrength: 0.5
+    - _AmbientFloor: 0.6
     - _DepthJitter: 0.002
     - _DitherStrength: 0.6
     - _FlatAmbient: 1
@@ -39,12 +40,13 @@ Material:
     - _QuantizeColors: 32
     - _ScanlineFreq: 120
     - _Smoothness: 0.6
+    - _SnapPixelSize: 2
     - _SpecularAnomaly: 0.55
     - _StainScale: 6
     - _StainStrength: 0.7
     - _VertexSnap: 16
     m_Colors:
-    - _BaseColor: {r: 0.3, g: 0.33, b: 0.38, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _FogColor: {r: 0.38, g: 0.39, b: 0.41, a: 1}
     - _SpecColor: {r: 0.9, g: 0.92, b: 0.95, a: 1}

@@ -24,8 +24,8 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _CeilingTex:
-        m_Texture: {fileID: 2800000, guid: cb6ee4f224cc82c4bb0390f917b8eb27, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: cff2cb3977314e947a6c012f3e190f18, type: 3}
+        m_Scale: {x: 4, y: 4}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
@@ -38,7 +38,7 @@ Material:
     - _StainScale: 5
     - _StainStrength: 0.35
     m_Colors:
-    - _BaseColor: {r: 0.8, g: 0.79, b: 0.76, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _FogColor: {r: 0.13, g: 0.135, b: 0.14, a: 1}
     - _GridColor: {r: 0.3, g: 0.29, b: 0.27, a: 1}

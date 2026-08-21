@@ -1,5 +1,27 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8827960206353421707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b0382b0c92d470eba227c478061e920, type: 3}
+  m_Name: Echoes PS1 Post
+  m_EditorClassIdentifier: Assembly-CSharp::PS1PostFeature
+  m_Active: 1
+  settings:
+    colorDepth: 5
+    ditherStrength: 1
+    ditherScale: 1
+    scanlineStrength: 0.12
+    scanlinePeriod: 2
+    applyInSceneView: 0
+    injectionPoint: 600
+  m_Shader: {fileID: 4800000, guid: 0285da9fe19046cdb7d6c0ed0a97d162, type: 3}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24,7 +46,8 @@ MonoBehaviour:
     probeSamplingDebugMesh: {fileID: 0}
     probeSamplingDebugTexture: {fileID: 0}
     probeVolumeBlendStatesCS: {fileID: 0}
-  m_RendererFeatures: []
+  m_RendererFeatures:
+  - {fileID: -8827960206353421707}
   m_RendererFeatureMap: 
   m_UseNativeRenderPass: 0
   xrSystemData: {fileID: 0}
