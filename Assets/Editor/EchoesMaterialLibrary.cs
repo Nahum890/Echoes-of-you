@@ -408,7 +408,7 @@ public static Material FloorMat            => GetOrCreateArchitectureMaterial("M
         {
             texPath = "Assets/Textures/LoFi/tex_chalkboard_256.png";
         }
-        else if (name == "Mat_Cork")
+        else if (name == "Mat_CorkBoard")   // el material se llama Mat_CorkBoard: "Mat_Cork" no casaba nunca
         {
             texPath = "Assets/Textures/LoFi/tex_cork_board_128.png";
         }

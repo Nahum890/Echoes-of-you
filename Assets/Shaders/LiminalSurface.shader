@@ -58,6 +58,9 @@ Shader "Echoes/LiminalSurface" {
             float _StainNoiseScale; float _StainThreshold; float _StainStrength;
             float _WearNoiseScale; float _WearHeight; float _CrackThreshold;
             float _ColorBands; float _FogDensity; float _SpecularAnomaly; float _Smoothness; float _DepthDistort;
+            // Sin _BaseTex_ST el tiling del inspector se ignoraba: los materiales
+            // guardaban 2x4 / 5x5 y el shader siempre muestreaba a 1x1.
+            float4 _BaseTex_ST;
             CBUFFER_END
 
             TEXTURE2D(_BaseTex); SAMPLER(sampler_BaseTex);
@@ -73,7 +76,7 @@ Shader "Echoes/LiminalSurface" {
                 worldPos.y += sin(worldPos.x * 8.0 + worldPos.z * 8.0 + _Time.y * 0.25) * _DepthDistort;
                 float4 clipPos = TransformWorldToHClip(worldPos);
                 o.position = clipPos; o.clipPos = clipPos;
-                o.uv = input.uv; o.normal = TransformObjectToWorldNormal(input.normal);
+                o.uv = TRANSFORM_TEX(input.uv, _BaseTex); o.normal = TransformObjectToWorldNormal(input.normal);
                 o.worldPos = worldPos; o.viewDir = normalize(_WorldSpaceCameraPos - worldPos);
                 return o;
             }
