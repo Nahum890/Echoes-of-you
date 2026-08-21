@@ -253,7 +253,6 @@ public static Material FloorMat            => GetOrCreateArchitectureMaterial("M
                     break;
                 case "faded-mustard":
                     mat.SetFloat("_StainStrength", 0.5f);
-                    mat.SetFloat("_QuantizeColors", 24f);
                     break;
                 case "sage-green":
                     mat.SetFloat("_StainStrength", 0.45f);
@@ -268,7 +267,6 @@ public static Material FloorMat            => GetOrCreateArchitectureMaterial("M
                     break;
                 case "memory-amber":
                     mat.SetFloat("_FlickerStrength", 0.05f);
-                    mat.SetFloat("_QuantizeColors", 16f);
                     break;
                 default:
                     mat.SetFloat("_StainStrength", 0.5f);
