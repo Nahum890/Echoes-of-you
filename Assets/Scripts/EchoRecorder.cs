@@ -73,11 +73,18 @@ public class EchoRecorder : MonoBehaviour
         _playbackMode = mode;
         _degradationPerReplay = degradation;
         recordFuture = future;
-        _slotLocked = new bool[maxEchoes];
+
+        // maxEchoes llega como -1 cuando no hay LevelBlueprint (el caso de todas las
+        // escenas actuales): new bool[-1] lanzaba OverflowException y abortaba tanto
+        // esta configuracion como el resto de LevelRuntimeController.Start().
+        int slots = maxEchoes > 0 ? maxEchoes : this.maxEchoes;
+        if (slots < 1) slots = 1;
+
+        _slotLocked = new bool[slots];
         if (lockSlots && lockedIndices != null)
         {
             foreach (var i in lockedIndices)
-                if (i >= 0 && i < maxEchoes)
+                if (i >= 0 && i < slots)
                     _slotLocked[i] = true;
         }
 

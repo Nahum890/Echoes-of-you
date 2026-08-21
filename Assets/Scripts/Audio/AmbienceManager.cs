@@ -70,6 +70,7 @@ public class AmbienceManager : MonoBehaviour
         if (roomToneClip != null)
         {
             _roomToneSource = gameObject.AddComponent<AudioSource>();
+            _roomToneSource.playOnAwake = false;   // sin esto suena vacia antes de asignar el clip
             _roomToneSource.clip = roomToneClip;
             _roomToneSource.loop = true;
             _roomToneSource.volume = roomToneVolume;
@@ -82,6 +83,7 @@ public class AmbienceManager : MonoBehaviour
         if (hallwayClip != null)
         {
             _hallwaySource = gameObject.AddComponent<AudioSource>();
+            _hallwaySource.playOnAwake = false;   // sin esto suena vacia antes de asignar el clip
             _hallwaySource.clip = hallwayClip;
             _hallwaySource.loop = true;
             _hallwaySource.volume = hallwayVolume;
@@ -94,6 +96,7 @@ public class AmbienceManager : MonoBehaviour
         if (ventilationClip != null)
         {
             _ventilationSource = gameObject.AddComponent<AudioSource>();
+            _ventilationSource.playOnAwake = false;   // sin esto suena vacia antes de asignar el clip
             _ventilationSource.clip = ventilationClip;
             _ventilationSource.loop = true;
             _ventilationSource.volume = ventilationVolume;
@@ -106,6 +109,7 @@ public class AmbienceManager : MonoBehaviour
         if (industrialClip != null)
         {
             _industrialSource = gameObject.AddComponent<AudioSource>();
+            _industrialSource.playOnAwake = false;   // sin esto suena vacia antes de asignar el clip
             _industrialSource.clip = industrialClip;
             _industrialSource.loop = true;
             _industrialSource.volume = industrialVolume;
@@ -118,6 +122,7 @@ public class AmbienceManager : MonoBehaviour
         if (distantClangClip != null)
         {
             _distantClangSource = gameObject.AddComponent<AudioSource>();
+            _distantClangSource.playOnAwake = false;   // sin esto suena vacia antes de asignar el clip
             _distantClangSource.spatialBlend = 1f;
             _distantClangSource.minDistance = 10f;
             _distantClangSource.maxDistance = 50f;
@@ -130,6 +135,7 @@ public class AmbienceManager : MonoBehaviour
         if (metalConcreteClip != null)
         {
             _metalConcreteSource = gameObject.AddComponent<AudioSource>();
+            _metalConcreteSource.playOnAwake = false;   // sin esto suena vacia antes de asignar el clip
             _metalConcreteSource.spatialBlend = 1f;
             if (ambienceGroup != null) _metalConcreteSource.outputAudioMixerGroup = ambienceGroup;
         }
@@ -138,6 +144,7 @@ public class AmbienceManager : MonoBehaviour
         if (fluorescentHumClip != null)
         {
             _fluorescentHumSource = gameObject.AddComponent<AudioSource>();
+            _fluorescentHumSource.playOnAwake = false;   // sin esto suena vacia antes de asignar el clip
             _fluorescentHumSource.clip = fluorescentHumClip;
             _fluorescentHumSource.loop = true;
             _fluorescentHumSource.volume = fluorescentHumVolume;
@@ -150,6 +157,7 @@ public class AmbienceManager : MonoBehaviour
         if (tapeHissClip != null)
         {
             _tapeHissSource = gameObject.AddComponent<AudioSource>();
+            _tapeHissSource.playOnAwake = false;   // sin esto suena vacia antes de asignar el clip
             _tapeHissSource.clip = tapeHissClip;
             _tapeHissSource.loop = true;
             _tapeHissSource.volume = tapeHissVolume;
@@ -162,6 +170,7 @@ public class AmbienceManager : MonoBehaviour
         if (memoryWhisperClip != null)
         {
             _memoryWhisperSource = gameObject.AddComponent<AudioSource>();
+            _memoryWhisperSource.playOnAwake = false;   // sin esto suena vacia antes de asignar el clip
             _memoryWhisperSource.spatialBlend = 1f;
             _memoryWhisperSource.minDistance = 2f;
             _memoryWhisperSource.maxDistance = 15f;
@@ -186,6 +195,7 @@ public class AmbienceManager : MonoBehaviour
             var go = new GameObject("MetalConcreteOneShot");
             go.transform.position = position;
             var src = go.AddComponent<AudioSource>();
+            src.playOnAwake = false;   // sin esto suena vacia antes de asignar el clip
             src.clip = metalConcreteClip;
             src.volume = metalConcreteVolume;
             src.spatialBlend = 1f;
@@ -206,6 +216,7 @@ public class AmbienceManager : MonoBehaviour
             var go = new GameObject("MemoryWhisperOneShot");
             go.transform.position = position;
             var src = go.AddComponent<AudioSource>();
+            src.playOnAwake = false;   // sin esto suena vacia antes de asignar el clip
             src.clip = memoryWhisperClip;
             src.volume = memoryWhisperVolume;
             src.spatialBlend = 1f;

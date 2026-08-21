@@ -50,6 +50,21 @@ namespace Echoes.UI
             public string ending_id = "";
             public string voice_final = "";
             public string narration = "";
+
+            // Los tres campos siguientes son la capa que explica el final. Antes
+            // el epilogo eran dos frases y el jugador se quedaba sin saber por
+            // que habia llegado ahi ni que le habia pasado a Lyra.
+            //
+            //   why        — por que ESTE final y no otro, en terminos de lo que
+            //                el jugador hizo (mirar o no, confiar o no, tocar o
+            //                no). Es la unica parte que habla de sus decisiones.
+            //   reflection — el cuerpo narrativo: lo que Aiden entiende ahora
+            //                sobre Lyra y sobre si misma. Es donde vive la
+            //                historia que el gameplay solo insinua.
+            //   closing    — la ultima linea antes de los creditos.
+            public string why = "";
+            public string reflection = "";
+            public string closing = "";
         }
 
         [System.Serializable]

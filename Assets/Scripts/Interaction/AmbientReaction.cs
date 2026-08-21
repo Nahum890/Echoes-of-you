@@ -77,6 +77,7 @@ namespace Echoes.Interaction
             GameObject go = new GameObject("AmbientReactionSFX");
             go.transform.position = transform.position;
             AudioSource src = go.AddComponent<AudioSource>();
+            src.playOnAwake = false;   // sin esto suena vacia antes de asignar el clip
             src.clip = reactionSound;
             src.spatialBlend = 1f;
             src.minDistance = 2f;

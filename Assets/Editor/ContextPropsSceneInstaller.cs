@@ -37,12 +37,12 @@ public static class ContextPropsSceneInstaller
         "--- DECOR ---"
     };
 
-    [MenuItem("Echoes of You/Props/Install Contextual Props (Levels 1-3)")]
+    [MenuItem("Echoes of You/Props/Install Contextual Props (Block 1-6)")]
     public static void InstallAll()
     {
         int installed = 0, skipped = 0;
         InstallAllCore(out installed, out skipped);
-        EditorUtility.DisplayDialog("Contextual Props", $"Instalados {installed} props en Levels 1-3.\nOmitidos: {skipped} (ancla no encontrada).", "OK");
+        EditorUtility.DisplayDialog("Contextual Props", $"Instalados {installed} props en Levels 1-6.\nOmitidos: {skipped} (ancla no encontrada).", "OK");
     }
 
     /// <summary>Núcleo sin diálogo modal (invocable desde consola/MCP sin bloquear el editor).</summary>
@@ -59,7 +59,7 @@ public static class ContextPropsSceneInstaller
 
         string originalScene = SceneManager.GetActiveScene().path;
 
-        for (int level = 1; level <= 3; level++)
+        for (int level = 1; level <= 6; level++)   // el bloque jugable entero
         {
             string scenePath = $"Assets/Scenes/Level_{level:D2}.unity";
             if (AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath) == null)

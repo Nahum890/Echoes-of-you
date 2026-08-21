@@ -98,7 +98,12 @@
         <ui:VisualElement name="epiloguePanel" class="epilogue-panel" style="display: none;">
             <ui:Label class="epilogue-tag" text="EPILOGO // RECUERDO RESTAURADO" />
             <ui:Label name="epilogue-voice" class="epilogue-voice" text="" />
-            <ui:Label name="epilogue-narration" class="epilogue-narration" text="" />
+            <ui:ScrollView name="epilogue-scroll" class="epilogue-scroll">
+                <ui:Label name="epilogue-narration" class="epilogue-narration" text="" />
+                <ui:Label name="epilogue-why" class="epilogue-why" text="" />
+                <ui:Label name="epilogue-reflection" class="epilogue-reflection" text="" />
+                <ui:Label name="epilogue-closing" class="epilogue-closing" text="" />
+            </ui:ScrollView>
             <ui:Button name="epilogue-continue" class="epilogue-continue" text="Continuar" />
         </ui:VisualElement>
 

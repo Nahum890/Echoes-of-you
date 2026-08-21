@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Mat_PlasterWall
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_Shader: {fileID: 4800000, guid: afcdfedd7dc5c7048bf1cb5d37e71723, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -30,8 +30,7 @@ Material:
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap:
-    RenderType: Opaque
+  stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
   m_LockedProperties: 
@@ -41,6 +40,10 @@ Material:
     - _BaseMap:
         m_Texture: {fileID: 2800000, guid: 618d9377b2d456c4ba9f175b93a8aaba, type: 3}
         m_Scale: {x: 2, y: 4}
+        m_Offset: {x: 0, y: 0}
+    - _BaseTex:
+        m_Texture: {fileID: 2800000, guid: 618d9377b2d456c4ba9f175b93a8aaba, type: 3}
+        m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
@@ -63,8 +66,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 004a5fc83e3f452d80740319be4187b2, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: 618d9377b2d456c4ba9f175b93a8aaba, type: 3}
+        m_Scale: {x: 2, y: 4}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
@@ -97,8 +100,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _AddPrecomputedVelocity: 0
+    - _AffineStrength: 0.5
     - _AlphaClip: 0
     - _AlphaToMask: 0
+    - _AmbientFloor: 0.6
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -111,6 +116,9 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
+    - _FlatAmbient: 1
+    - _FlickerStrength: 0.15
+    - _FluorescentHum: 0.35
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -121,9 +129,13 @@ Material:
     - _ReceiveShadows: 1
     - _Smoothness: 0.7
     - _SmoothnessTextureChannel: 0
+    - _SnapPixelSize: 2
+    - _SpecularAnomaly: 0.25
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
+    - _StainScale: 6
+    - _StainStrength: 0.4
     - _Surface: 0
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1

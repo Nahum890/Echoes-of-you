@@ -289,6 +289,7 @@ namespace Echoes.Interaction
 
             GameObject host = new GameObject("InteractionPromptSFX");
             AudioSource src = host.AddComponent<AudioSource>();
+            src.playOnAwake = false;   // sin esto suena vacia antes de asignar el clip
             src.clip = clip;
             src.spatialBlend = 0f;
             src.volume = 0.35f;

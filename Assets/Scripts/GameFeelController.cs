@@ -87,6 +87,7 @@ public class GameFeelController : MonoBehaviour
     float _fovPulseTimer;
     float _fovPulseDuration;
 
+    GameObject _ambientRoot;
     AudioSource _ambientSource1;
     AudioSource _ambientSource2;
     AudioSource _ambientSource3;
@@ -112,6 +113,10 @@ public class GameFeelController : MonoBehaviour
             audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
             audioSource = gameObject.AddComponent<AudioSource>();
+
+        // Esta fuente solo se usa via PlayOneShot: si queda en playOnAwake sin clip,
+        // Unity escupe "Only custom filters can be played" al cargar cada nivel.
+        audioSource.playOnAwake = false;
         audioSource.spatialBlend = 0.65f;
 
         var audioMgr = EchoesAudioManager.EnsureExists();
@@ -158,45 +163,53 @@ public class GameFeelController : MonoBehaviour
         SetupAmbientAudio();
     }
 
+    /// <summary>
+    /// Crea una AudioSource ya configurada sin que Unity intente reproducirla vacia.
+    /// AddComponent&lt;AudioSource&gt;() la crea con playOnAwake=true, y Unity la evalua
+    /// dentro de la propia llamada: si el objeto esta activo y aun no tiene clip,
+    /// escupe "Only custom filters can be played" antes de que podamos configurarla.
+    /// Anadiendola sobre un hijo inactivo evitamos esa ventana.
+    /// </summary>
+    AudioSource CreateLoopSource(string nombre, AudioClip clip, float volumen, AudioMixerGroup grupo)
+    {
+        if (clip == null) return null;
+
+        if (_ambientRoot == null)
+        {
+            _ambientRoot = new GameObject("AmbientAudio");
+            _ambientRoot.transform.SetParent(transform, false);
+            _ambientRoot.SetActive(false);          // clave: inactivo mientras se configura
+        }
+
+        var host = new GameObject(nombre);
+        host.transform.SetParent(_ambientRoot.transform, false);
+
+        AudioSource src = host.AddComponent<AudioSource>();
+        src.playOnAwake = false;
+        src.clip = clip;
+        src.loop = true;
+        src.volume = volumen;
+        src.spatialBlend = 0f;
+        if (grupo != null) src.outputAudioMixerGroup = grupo;
+        return src;
+    }
+
     void SetupAmbientAudio()
     {
         var audioMgr = EchoesAudioManager.EnsureExists();
         AudioMixerGroup musicGroup = audioMgr != null ? audioMgr.FindGroup("Music") : null;
 
-        // 1. Room Tone loop
-        if (ambientLoopClip != null)
-        {
-            _ambientSource1 = gameObject.AddComponent<AudioSource>();
-            _ambientSource1.clip = ambientLoopClip;
-            _ambientSource1.loop = true;
-            _ambientSource1.volume = 0.15f * defaultVolume;
-            _ambientSource1.spatialBlend = 0f;
-            if (musicGroup != null) _ambientSource1.outputAudioMixerGroup = musicGroup;
-            _ambientSource1.Play();
-        }
+        _ambientSource1 = CreateLoopSource("RoomTone",    ambientLoopClip,     0.15f * defaultVolume, musicGroup);
+        _ambientSource2 = CreateLoopSource("Drone",       industrialDroneClip, 0.12f * defaultVolume, musicGroup);
+        _ambientSource3 = CreateLoopSource("Ventilacion", ventilationHumClip,  0.08f * defaultVolume, musicGroup);
 
-        // 2. Industrial Drone / Synth loop
-        if (industrialDroneClip != null)
+        // Ya configuradas: se activan y arrancan juntas.
+        if (_ambientRoot != null)
         {
-            _ambientSource2 = gameObject.AddComponent<AudioSource>();
-            _ambientSource2.clip = industrialDroneClip;
-            _ambientSource2.loop = true;
-            _ambientSource2.volume = 0.12f * defaultVolume;
-            _ambientSource2.spatialBlend = 0f;
-            if (musicGroup != null) _ambientSource2.outputAudioMixerGroup = musicGroup;
-            _ambientSource2.Play();
-        }
-
-        // 3. Ventilation Hum loop
-        if (ventilationHumClip != null)
-        {
-            _ambientSource3 = gameObject.AddComponent<AudioSource>();
-            _ambientSource3.clip = ventilationHumClip;
-            _ambientSource3.loop = true;
-            _ambientSource3.volume = 0.08f * defaultVolume;
-            _ambientSource3.spatialBlend = 0f;
-            if (musicGroup != null) _ambientSource3.outputAudioMixerGroup = musicGroup;
-            _ambientSource3.Play();
+            _ambientRoot.SetActive(true);
+            if (_ambientSource1 != null) _ambientSource1.Play();
+            if (_ambientSource2 != null) _ambientSource2.Play();
+            if (_ambientSource3 != null) _ambientSource3.Play();
         }
 
         if (clockChimeClip != null)
@@ -631,6 +644,7 @@ public class GameFeelController : MonoBehaviour
         GameObject audioObject = new GameObject("OneShotAudio");
         audioObject.transform.position = position;
         AudioSource source = audioObject.AddComponent<AudioSource>();
+        source.playOnAwake = false;   // sin esto suena vacia antes de asignar el clip
         source.clip = clip;
         source.volume = volume * 1.35f; // Aumentar ligeramente para presencia
         source.pitch = pitch;

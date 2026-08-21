@@ -9,6 +9,14 @@ using UnityEngine;
 [RequireComponent(typeof(PressurePlate))]
 public class PressurePlateEchoOnly : MonoBehaviour
 {
+    // El Eco reproduce las posiciones absolutas que grabo el jugador
+    // (EchoRecorder guarda transform.position y el Eco nace en _frames[0].position).
+    // Si una barrera impide al jugador pisar la placa, la grabacion nunca contiene
+    // ese punto, el Eco tampoco la pisa y el puzzle se vuelve irresoluble.
+    // El filtro por actor ya garantiza que solo el Eco la active: el jugador puede
+    // pisarla y no pasa nada, que ademas ensena la regla.
+    [Tooltip("Barrera fisica que impide al jugador pisar la placa. Dejar desactivada: rompe la solubilidad del puzzle.")]
+    [SerializeField] bool blockPlayerPhysically = false;
     [SerializeField] float repulsionForce = 4.0f;
 
     PressurePlate _plate;
@@ -42,7 +50,22 @@ public class PressurePlateEchoOnly : MonoBehaviour
             _plate.ConfigureAcceptedActors(false, true, true);
         }
 
-        CreatePlayerBarrier();
+        if (blockPlayerPhysically)
+            CreatePlayerBarrier();
+        else
+            RemovePlayerBarrier();
+    }
+
+    void RemovePlayerBarrier()
+    {
+        Transform existing = transform.Find("EchoOnly_PlayerBarrier");
+        if (existing == null)
+            return;
+        if (Application.isPlaying)
+            Destroy(existing.gameObject);
+        else
+            DestroyImmediate(existing.gameObject);
+        _barrierObj = null;
     }
 
     void CreatePlayerBarrier()
@@ -70,7 +93,7 @@ public class PressurePlateEchoOnly : MonoBehaviour
         if (other == null)
             return;
 
-        if (other.CompareTag("Player"))
+        if (blockPlayerPhysically && other.CompareTag("Player"))
         {
             CharacterController cc = other.GetComponent<CharacterController>();
             if (cc != null)

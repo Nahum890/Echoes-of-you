@@ -93,6 +93,7 @@ public class EchoPlayback : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         if (_audioSource == null)
             _audioSource = gameObject.AddComponent<AudioSource>();
+        _audioSource.playOnAwake = false;   // sin clip asignado aun; evita el error de audio al nacer el Eco
 
         ConfigureSpatialVoicePlayback();
         RemoveVoiceDegradingFilters();

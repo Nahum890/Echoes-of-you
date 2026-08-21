@@ -89,6 +89,7 @@ public class MenuHoverSystem : MonoBehaviour
 
         // AudioSource para el CRT ambient hum
         _crtAmbientSource = gameObject.AddComponent<AudioSource>();
+        _crtAmbientSource.playOnAwake = false;   // sin esto suena vacia antes de asignar el clip
         _crtAmbientSource.spatialBlend = 0f;
         _crtAmbientSource.loop = true;
         _crtAmbientSource.volume = 0f;

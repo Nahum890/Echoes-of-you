@@ -39,6 +39,10 @@ cámara**. Borra todo el trabajo de ambientación.
 
 ✅ **Verificado, usado varias veces en esta sesión**
 
+⚠️ La ruta del editor es literal y hay **dos versiones instaladas**
+(`6000.4.3f1` y `2022.3.62f1`): apuntar siempre a la primera. Y `<ruta del
+proyecto>` cambia entre los dos portátiles — ver [01](01-ESTADO-ACTUAL.md#entorno-de-desarrollo).
+
 Sirve para importar, compilar shaders y ejecutar menús sin tocar la GUI:
 
 ```bash

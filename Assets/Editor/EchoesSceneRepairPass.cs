@@ -67,6 +67,15 @@ public static class EchoesSceneRepairPass
         ("fence", "Mat_Arch_Metal"),
         ("railing", "Mat_Arch_Metal"),
         ("baranda", "Mat_Arch_Metal"),
+        // Mobiliario de aula: el pupitre es tablero de madera y la cajonera
+        // chapa. Ver EchoesSchoolFurniturePass, que ademas los rescata del
+        // token ambar cuando ya tienen material asignado.
+        ("desk", "Mat_Arch_Seating"),
+        ("pupitre", "Mat_Arch_Seating"),
+        ("drawer", "Mat_Arch_Metal"),
+        ("cajon", "Mat_Arch_Metal"),
+        ("radiador", "Mat_Arch_Metal"),
+        ("radiator", "Mat_Arch_Metal"),
         ("resonance", "Mat_Plate"),
         ("plate", "Mat_Plate"),
         ("chalkboard", "Mat_Chalkboard"),
@@ -148,8 +157,14 @@ public static class EchoesSceneRepairPass
             for (int i = 0; i < mats.Length; i++)
             {
                 bool isMissing = mats[i] == null;
+                // "Universal Render Pipeline/Lit" es como se llama el material
+                // por defecto cuando se referencia el asset del propio paquete,
+                // y NO casaba con "Lit" a secas: por eso quedaban 13 slots sin
+                // reparar en el bloque jugable (radiadores, EnergyCore...).
                 bool isDefault = mats[i] != null &&
-                                 (mats[i].name == "Lit" || mats[i].name == "Default-Material");
+                                 (mats[i].name == "Lit" ||
+                                  mats[i].name == "Universal Render Pipeline/Lit" ||
+                                  mats[i].name == "Default-Material");
                 if (!isMissing && !isDefault)
                 {
                     continue;

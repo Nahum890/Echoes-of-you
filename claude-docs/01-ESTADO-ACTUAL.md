@@ -1,6 +1,8 @@
 # 01 — Estado actual
 
-Corte: **2026-08-20**.
+Corte: **2026-08-20**. Re-verificado el mismo día desde el **segundo portátil**
+(ver [Entorno](#entorno-de-desarrollo) — la ruta del proyecto no es la misma en
+las dos máquinas).
 
 ## Stack
 
@@ -33,30 +35,59 @@ cosa: default volume profile y shader stripping, no el pipeline.
 
 ## Ramas
 
-✅ **Verificado** (`git ls-remote`)
+✅ **Verificado** (`git ls-remote`, 2026-08-20)
+
+Remotas — solo tres:
 
 ```
-main                  60f6e438   ← todo el trabajo de esta sesión
+main                  0b47754a   ← todo el trabajo de esta sesión
 ps1-liminal-shaders   07400319   ← ya mergeada en main, borrable
 ws01-cleanup          a4719883   ← absorbida por main, borrable
 ```
 
-`main` local y `origin/main` sincronizados, working tree limpio.
+⚠️ **Locales que no existen en remoto.** En el portátil 2 hay además siete ramas
+sin rastrear o con upstream borrado. No confundirlas con trabajo pendiente sin
+mirarlas antes:
 
-Hay además un `stash@{0}` local con churn viejo de Unity de `ws01-cleanup`, sin
-valor.
+```
+Arreglar-animaciones                db759145
+Greybox                             bb4d0940
+Mejorar_la_estetica_y_jugabilidad   db091b24   (upstream: gone)
+arrglar-plate-fov                   00b2e10b
+cambios-camara                      501ef041
+exp/ual1-retest                     7e0790f9
+urp-migration                       ba23430b   (upstream: gone)
+```
 
-⚠️ **Heredado — flujo multi-máquina:** el usuario trabaja en **2 portátiles**.
-Para reconciliar ramas divergentes con escenas `.unity` grandes: **merge de una
-pasada, nunca rebase**. Preferencia del usuario: merge commit, no squash.
+### Stashes
 
-## Trabajo de esta sesión (los 3 commits en `main`)
+✅ **Verificado.** Hay **cuatro**, no uno. Solo el primero es reciente:
+
+```
+stash@{0}  pre-pull-20260820 cambios locales de arte/escenas   ← ver abajo
+stash@{1}  WIP on exp/ual1-retest
+stash@{2}  On Prueba: !!GitHub_Desktop<Prueba>
+stash@{3}  WIP on main: ae50a01 Refactor code structure...
+```
+
+`stash@{0}` se creó al traer `main` en el portátil 2: había 50 archivos de arte
+sin commitear (materiales, texturas LoFi, escenas 03-06, config URP) que
+bloqueaban el fast-forward. Es **churn regenerado**, no trabajo nuevo: los pases
+de arte usan `Random.value`, así que producen un diff distinto en cada ejecución
+aunque el resultado sea equivalente, y lo que traía el pull ya viene commiteado
+como asset. Descartable salvo por las capturas untracked que arrastró
+(`Assets/Screenshots/audit_L06_*.png`).
+
+Los tres restantes son de sesiones antiguas y ninguno se ha evaluado.
+
+## Trabajo de esta sesión (los 4 commits en `main`)
 
 | Commit | Qué |
 |---|---|
 | `07400319` | Look PS1 movido al pipeline + reparación de los shaders de mundo y personaje |
 | `85483521` | Texturizado de superficies: 3 mecanismos que eran no-ops |
 | `60f6e438` | Geometría huérfana, fog volumes recolocados, fuentes de luz visibles |
+| `0b47754a` | Estos documentos (`claude-docs/`) |
 
 Detalle en [02](02-PIPELINE-VISUAL.md), [03](03-MATERIALES-Y-SUPERFICIES.md) y
 [04](04-AUDITORIA-ESCENAS.md).
@@ -65,10 +96,18 @@ Detalle en [02](02-PIPELINE-VISUAL.md), [03](03-MATERIALES-Y-SUPERFICIES.md) y
 
 ✅ **Verificado**
 
-- Unity abre **la copia de OneDrive**:
-  `C:\Users\User\OneDrive\Escritorio\Proyectos\games\echoes-of-you`.
-  `C:\dev\echoes-of-you` es un clon sin `Library/` que Unity nunca abrió; editar
-  ahí **no llega al editor**.
+- ⚠️ **La ruta del proyecto es distinta en cada portátil.** No dar ninguna por
+  supuesta: comprobar dónde hay `Library/`, porque esa es la copia que Unity
+  abre. Editar un clon sin `Library/` **no llega al editor**.
+
+  | | Ruta | `Library/` |
+  |---|---|---|
+  | Portátil 1 | `C:\Users\User\OneDrive\Escritorio\Proyectos\games\echoes-of-you` | sí |
+  | Portátil 1 | `C:\dev\echoes-of-you` | no — clon muerto |
+  | Portátil 2 | `C:\Users\lol xdd\OneDrive\Documentos\Colegio\Echoes of you` | sí ✅ |
+
+- **Dos editores instalados** en el portátil 2: `6000.4.3f1` (el del proyecto) y
+  `2022.3.62f1`. Al lanzar batch mode, apuntar explícitamente al primero.
 - Log del editor: `%LOCALAPPDATA%\Unity\Editor\Editor.log`. Para saber si la
   compilación actual está limpia hay que filtrar `error CS` **posteriores a la
   última línea `Completed reload`** — el log acumula errores viejos y engaña.

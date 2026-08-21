@@ -68,10 +68,25 @@ namespace Echoes.UI
             if (voice != null) voice.text = entry != null && !string.IsNullOrEmpty(entry.voice_final) ? entry.voice_final : "...";
             if (narration != null) narration.text = entry != null ? entry.narration : "";
 
+            // Capa larga del epilogo: por que este final, la historia detras y
+            // el cierre. Cada label se oculta si viene vacio, para que un final
+            // sin texto extendido no deje huecos en el panel.
+            SetOrHide(_root?.Q<Label>("epilogue-why"), entry?.why);
+            SetOrHide(_root?.Q<Label>("epilogue-reflection"), entry?.reflection);
+            SetOrHide(_root?.Q<Label>("epilogue-closing"), entry?.closing);
+
             VN_EndingFlags.Instance?.SetSalirDelColegio(ending == EndingID.Aceptacion);
 
             _epiloguePanel.style.display = DisplayStyle.Flex;
             if (_epilogueContinue != null) _epilogueContinue.clicked += OnEpilogueContinue;
+        }
+
+        static void SetOrHide(Label label, string text)
+        {
+            if (label == null) return;
+            bool has = !string.IsNullOrEmpty(text);
+            label.text = has ? text : "";
+            label.style.display = has ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         void OnEpilogueContinue()

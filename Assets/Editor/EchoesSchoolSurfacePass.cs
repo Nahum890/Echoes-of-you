@@ -80,6 +80,28 @@ public static class EchoesSchoolSurfacePass
         // estas dos no, sin razon aparente.
         new Surface("Mat_LiminalPlaster_Teal", "tex_plaster_neutral_128", 2f, 4f, false, "variante liminal teal"),
         new Surface("Mat_LiminalPlaster_Void", "tex_plaster_neutral_128", 2f, 4f, false, "variante liminal void"),
+
+        // Las otras cuatro variantes liminales SI tenian textura, pero la
+        // generica Tex_Liminal_Plaster_512, que no lee como yeso de escuela.
+        // Son 65 usos repartidos por el bloque jugable.
+        new Surface("Mat_LiminalPlaster_Navy",    "tex_plaster_neutral_128", 2f, 4f, false, "variante liminal navy"),
+        new Surface("Mat_LiminalPlaster_Mustard", "tex_plaster_neutral_128", 2f, 4f, false, "variante liminal mostaza"),
+        new Surface("Mat_LiminalPlaster_Rose",    "tex_plaster_neutral_128", 2f, 4f, false, "variante liminal rosa"),
+        new Surface("Mat_LiminalPlaster_Sage",    "tex_plaster_neutral_128", 2f, 4f, false, "variante liminal sage"),
+
+        // Estos dos llevaban tex_plaster_wall_128, que trae color teal PROPIO
+        // (2B4A4A). Con _BaseColor blanco tenia de teal toda la arquitectura de
+        // los seis capitulos. Con la neutra + whiteBase=false cada uno conserva
+        // su color: Mat_Architecture es gris (0.353) y sale yeso neutro, y
+        // institutional-teal es teal por _BaseColor, no por textura.
+        new Surface("Mat_Architecture",             "tex_plaster_neutral_128", 2f, 4f, false, "arquitectura generica: 95 usos en el bloque"),
+        new Surface("Mat_Token_institutional-teal", "tex_plaster_neutral_128", 2f, 4f, false, "token teal usado como superficie"),
+
+        // Suelos. Ya tenian el linoleo asignado, pero al no estar en la tabla
+        // su tiling no lo gestionaba nadie, y es la superficie que mas pantalla
+        // ocupa. KenneyTiling lo reescala luego segun el tamano real.
+        new Surface("Mat_LinoleumFloor", "tex_linoleum_floor_128", 4f, 4f, false, "suelo de linoleo: 49 usos en el bloque"),
+        new Surface("Mat_Floor",         "tex_linoleum_floor_128", 4f, 4f, false, "suelo generico"),
     };
 
     [MenuItem("Echoes of You/Art/Apply School Surfaces", false, 30)]

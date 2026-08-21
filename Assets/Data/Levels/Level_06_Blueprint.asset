@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level_06_Blueprint
   m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
   levelName: Level_06
-  nextLevel: Level_07
+  nextLevel: CreditsScene
   actNumber: 2
   archetype: 1
   echoEnabled: 1

@@ -254,7 +254,7 @@
     /* default font */
     -unity-text-align: middle-center;
     letter-spacing: 1px;
-    margin-bottom: 64px;
+    margin-bottom: 30px;
     white-space: normal;
     opacity: 1;
 }
@@ -290,4 +290,46 @@
     color: #E8B262;
     border-color: #E8B262;
     scale: 0.97 0.97;
+}
+
+/* El epilogo pasa de dos frases a un cuerpo narrativo, asi que necesita
+   scroll: en 16:9 a 1080p entra casi entero, pero en pantallas mas bajas o
+   con el final de Aceptacion (el mas largo) se desborda. */
+.epilogue-scroll {
+    width: 100%;
+    max-height: 52%;
+    margin-bottom: 40px;
+}
+
+/* Por que este final y no otro. En ambar, el color de "memoria" del juego,
+   porque habla de lo que el jugador hizo, no de lo que Aiden siente. */
+.epilogue-why {
+    font-size: 19px;
+    color: #E8B262;
+    -unity-text-align: middle-center;
+    white-space: normal;
+    margin-bottom: 28px;
+    opacity: 1;
+}
+
+/* El cuerpo de la historia. Alineado a la izquierda: son varios parrafos y
+   centrarlos los vuelve ilegibles. */
+.epilogue-reflection {
+    font-size: 20px;
+    color: #ccc6bc;
+    -unity-text-align: upper-left;
+    -unity-paragraph-spacing: 18px;
+    white-space: normal;
+    margin-bottom: 32px;
+    padding: 0 4%;
+    opacity: 1;
+}
+
+.epilogue-closing {
+    font-size: 26px;
+    color: #fffeff;
+    -unity-text-align: middle-center;
+    letter-spacing: 1px;
+    white-space: normal;
+    opacity: 1;
 }

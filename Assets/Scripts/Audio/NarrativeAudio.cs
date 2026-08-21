@@ -81,6 +81,7 @@ public static class NarrativeAudio
         var go = new GameObject("MemoryDiscoverySFX");
         go.transform.position = position;
         var src = go.AddComponent<AudioSource>();
+        src.playOnAwake = false;   // sin esto suena vacia antes de asignar el clip
         src.clip = _memoryDiscovery;
         src.volume = 0.6f;
         src.spatialBlend = 1f;
@@ -102,6 +103,7 @@ public static class NarrativeAudio
         var go = new GameObject("MemoryWhisperSFX");
         go.transform.position = position;
         var src = go.AddComponent<AudioSource>();
+        src.playOnAwake = false;   // sin esto suena vacia antes de asignar el clip
         src.clip = _memoryWhisper;
         src.volume = 0.4f;
         src.spatialBlend = 1f;

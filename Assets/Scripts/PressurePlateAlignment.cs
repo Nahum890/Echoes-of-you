@@ -13,7 +13,11 @@ public class PressurePlateAlignment : MonoBehaviour
 
     static readonly string[] EchoPlateNameHints = { "Eco", "eco", "Echo" };
 
-    void Awake()
+    // En Start, no en Awake: LevelEnvironmentBootstrap escala la geometria del nivel
+    // (x2) despues de los Awake. Alinear y dimensionar antes de eso hacia que
+    // ExpandTriggerForProjection leyese un lossyScale a medias y dejase el trigger
+    // al doble de lo pedido.
+    void Start()
     {
         if (!echoProjectionPlate)
             echoProjectionPlate = IsEchoPlateName(gameObject.name);
@@ -83,7 +87,21 @@ public class PressurePlateAlignment : MonoBehaviour
 
         // XZ ampliados: la proyección del eco abarca un área más ancha que la placa
         // (antes 2.4f muy delgado → el eco en movimiento la atravesaba por los lados).
-        box.size = new Vector3(Mathf.Max(box.size.x, 2.8f), height, Mathf.Max(box.size.z, 2.8f));
-        box.center = new Vector3(0f, (height * 0.5f) - 0.1f, 0f);
+        //
+        // OJO: box.size es LOCAL. Las medidas de arriba estan pensadas en metros de
+        // mundo, y las placas llegan a runtime con lossyScale 4 (escala de la escena
+        // x2 sobre un transform que ya venia a x2). Asignarlas tal cual convertia una
+        // placa de 2.8 m en un trigger de 11.2 x 6.6 x 11.2 m que detectaba al eco
+        // desde media sala. Convertimos de mundo a local antes de asignar.
+        Vector3 escala = transform.lossyScale;
+        float sx = Mathf.Abs(escala.x) > 0.0001f ? Mathf.Abs(escala.x) : 1f;
+        float sy = Mathf.Abs(escala.y) > 0.0001f ? Mathf.Abs(escala.y) : 1f;
+        float sz = Mathf.Abs(escala.z) > 0.0001f ? Mathf.Abs(escala.z) : 1f;
+
+        float anchoMundo = Mathf.Max(box.size.x * sx, 2.8f);
+        float fondoMundo = Mathf.Max(box.size.z * sz, 2.8f);
+
+        box.size = new Vector3(anchoMundo / sx, height / sy, fondoMundo / sz);
+        box.center = new Vector3(0f, ((height * 0.5f) - 0.1f) / sy, 0f);
     }
 }

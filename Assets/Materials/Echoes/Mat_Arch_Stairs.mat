@@ -30,7 +30,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AffineStrength: 0.5
-    - _AmbientFloor: 0.6
+    - _AmbientFloor: 1.15
     - _DepthJitter: 0.002
     - _DitherStrength: 0.6
     - _FlatAmbient: 1
