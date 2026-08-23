@@ -1,14 +1,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEngine.SceneManagement;
 
 namespace Echoes.UI
 {
     /// <summary>
-    /// SettingsController — Singleton unificado para MainMenu + Pause.
-    /// Categorías via EchoTabs: Video / Audio / Controles / Accesibilidad / Gameplay.
-    /// Aplicación inmediata en runtime.
+    /// SettingsController — singleton unificado para MainMenu + Pausa.
+    /// Categorías vía EchoTabs: Vídeo / Audio / Controles / Accesibilidad / Gameplay.
+    ///
+    /// Todo control pasa por <see cref="EchoesSettings"/>, que es quien guarda y
+    /// quien aplica. Antes cada ajuste hacía su propio PlayerPrefs + SendMessage y
+    /// varios no llegaban a ningún consumidor:
+    ///
+    /// - sensibilidad: escribía "CameraSensitivity" y avisaba a ThirdPersonCamera
+    ///   con un método que no existía; la cámara viva lee "MouseSensitivity".
+    /// - tiempo extra de grabación: solo escribía la clave, nadie la leía.
+    /// - niebla: escribía "FogDensity" y el bootstrap de nivel la pisaba con
+    ///   "Echoes.GameFogDensity".
+    /// - subtítulos, tamaño de subtítulo, fondo de subtítulo y reducir destellos:
+    ///   se buscaban en el UXML y no se registraba callback ninguno.
+    /// - "Borrar Todo" llamaba a UnityEditor.EditorUtility.DisplayDialog **sin**
+    ///   guardas de compilación: no funcionaba fuera del editor y rompía la build.
+    /// - "Restaurar Defecto" hacía PlayerPrefs.DeleteAll(), que además del ajuste
+    ///   borraba el progreso de la partida.
     /// </summary>
     public class SettingsController : MonoBehaviour
     {
@@ -29,8 +43,8 @@ namespace Echoes.UI
             return Instance;
         }
 
-        /// <summary>Fired when the user closes settings (CERRAR TERMINAL / Aplicar cambios).
-        /// Hosts like PauseMenu restore their previous UI state on this event.</summary>
+        /// <summary>Se dispara al cerrar los ajustes (CERRAR TERMINAL / Aplicar cambios).
+        /// Los anfitriones como PauseMenu restauran su UI previa con este evento.</summary>
         public static event System.Action SettingsClosed;
 
         [Header("Templates")]
@@ -43,7 +57,7 @@ namespace Echoes.UI
         Button _tabVideo, _tabAudio, _tabControles, _tabAccesibilidad, _tabGameplay;
         VisualElement _panelVideo, _panelAudio, _panelControles, _panelAccesibilidad, _panelGameplay;
 
-        // Video
+        // Vídeo
         DropdownField _resDropdown;
         Toggle _fullscreenToggle, _vsyncToggle;
         DropdownField _scaleDropdown;
@@ -69,8 +83,15 @@ namespace Echoes.UI
         Slider _sldFog, _sldEcho;
         Label _lblFogVal, _lblEchoVal;
 
-        // Buttons
+        // Botones
         Button _btnRestoreDefaults, _btnSettingsBack, _btnSettingsApply, _btnDeleteProgress;
+
+        /// <summary>
+        /// Mientras se rellenan los controles desde los valores guardados, los
+        /// callbacks de cambio no deben aplicar nada: si no, LoadCurrentSettings
+        /// dispara Apply* con valores a medio cargar.
+        /// </summary>
+        bool _loading;
 
         void Awake()
         {
@@ -81,27 +102,16 @@ namespace Echoes.UI
             }
             Instance = this;
             DontDestroyOnLoad(gameObject);
-
-            if (_settingsTemplate == null)
-            {
-                _settingsTemplate = Resources.Load<VisualTreeAsset>("UI/SettingsUI");
-                if (_settingsTemplate == null)
-                    _settingsTemplate = Resources.Load<VisualTreeAsset>("SettingsUI");
-            }
+            ResolveTemplate();
         }
 
         void OnEnable()
         {
-            // Restore static ref after domain reload (DontDestroyOnLoad objects survive but statics are cleared)
+            // Recupera la referencia estática tras un domain reload: los objetos
+            // DontDestroyOnLoad sobreviven pero los statics se limpian.
             if (Instance == null)
                 Instance = this;
-
-            if (_settingsTemplate == null)
-            {
-                _settingsTemplate = Resources.Load<VisualTreeAsset>("UI/SettingsUI");
-                if (_settingsTemplate == null)
-                    _settingsTemplate = Resources.Load<VisualTreeAsset>("SettingsUI");
-            }
+            ResolveTemplate();
         }
 
         void OnDestroy()
@@ -109,41 +119,38 @@ namespace Echoes.UI
             if (Instance == this) Instance = null;
         }
 
+        void ResolveTemplate()
+        {
+            if (_settingsTemplate != null) return;
+            _settingsTemplate = Resources.Load<VisualTreeAsset>("UI/SettingsUI")
+                             ?? Resources.Load<VisualTreeAsset>("SettingsUI");
+        }
+
         public void Setup(VisualElement root, VisualTreeAsset template)
         {
             _root = root;
-            _settingsTemplate = template;
+            if (template != null) _settingsTemplate = template;
+            ResolveTemplate();
             InitializeUI();
         }
 
         public void ShowInContainer(VisualElement container)
         {
-            if (_settingsTemplate == null)
-            {
-                _settingsTemplate = Resources.Load<VisualTreeAsset>("UI/SettingsUI");
-                if (_settingsTemplate == null)
-                    _settingsTemplate = Resources.Load<VisualTreeAsset>("SettingsUI");
-            }
+            ResolveTemplate();
             if (container == null || _settingsTemplate == null) return;
 
             container.Clear();
             var panel = _settingsTemplate.CloneTree();
-            // CloneTree() returns a TemplateContainer wrapper with no classes and no height;
-            // the settings root inside is position:absolute, so the wrapper collapses to 0 height.
-            // Stretch the wrapper to fill the host panel or nothing renders and nothing is clickable.
+            // CloneTree() devuelve un TemplateContainer sin clases ni altura; el root
+            // de ajustes que lleva dentro es position:absolute, así que el wrapper
+            // colapsa a 0 de alto. Hay que estirarlo o no se ve ni se puede pulsar.
             panel.style.position = Position.Absolute;
             panel.style.left = 0;
             panel.style.top = 0;
             panel.style.right = 0;
             panel.style.bottom = 0;
 
-            var ssTheme = Resources.Load<StyleSheet>("UI/EchoesTheme");
-            if (ssTheme != null && !panel.styleSheets.Contains(ssTheme))
-                panel.styleSheets.Add(ssTheme);
-
-            var ssSettings = Resources.Load<StyleSheet>("UI/SettingsUI");
-            if (ssSettings != null && !panel.styleSheets.Contains(ssSettings))
-                panel.styleSheets.Add(ssSettings);
+            AttachStyleSheets(panel);
 
             container.Add(panel);
             _settingsContainer = panel;
@@ -151,180 +158,200 @@ namespace Echoes.UI
             ShowTab("Video");
         }
 
+        void AttachStyleSheets(VisualElement panel)
+        {
+            var ssTheme = Resources.Load<StyleSheet>("UI/EchoesTheme");
+            if (ssTheme != null && !panel.styleSheets.Contains(ssTheme))
+                panel.styleSheets.Add(ssTheme);
+
+            var ssSettings = Resources.Load<StyleSheet>("UI/SettingsUI");
+            if (ssSettings != null && !panel.styleSheets.Contains(ssSettings))
+                panel.styleSheets.Add(ssSettings);
+        }
+
         void InitializeUI()
         {
             if (_root == null || _settingsTemplate == null) return;
             _settingsContainer = _settingsTemplate.CloneTree();
-            var ssTheme = Resources.Load<StyleSheet>("UI/EchoesTheme");
-            if (ssTheme != null && !_settingsContainer.styleSheets.Contains(ssTheme))
-                _settingsContainer.styleSheets.Add(ssTheme);
-            var ssSettings = Resources.Load<StyleSheet>("UI/SettingsUI");
-            if (ssSettings != null && !_settingsContainer.styleSheets.Contains(ssSettings))
-                _settingsContainer.styleSheets.Add(ssSettings);
+            AttachStyleSheets(_settingsContainer);
             _root.Add(_settingsContainer);
             InitializeUIFromContainer(_settingsContainer);
         }
 
         void InitializeUIFromContainer(VisualElement container)
         {
-            // REMOVED: if (_initialized) return; — global flag prevents re-init in PauseMenu
-            // Each container needs its own initialization since it's a fresh CloneTree()
-            
-            // Clear previous event subscriptions to avoid double-firing
-            _tabVideo?.UnregisterCallback<ClickEvent>(_ => ShowTab("Video"));
-            _tabAudio?.UnregisterCallback<ClickEvent>(_ => ShowTab("Audio"));
-            _tabControles?.UnregisterCallback<ClickEvent>(_ => ShowTab("Controles"));
-            _tabAccesibilidad?.UnregisterCallback<ClickEvent>(_ => ShowTab("Accesibilidad"));
-            _tabGameplay?.UnregisterCallback<ClickEvent>(_ => ShowTab("Gameplay"));
-            
-            // Tabs
+            // Cada contenedor es un CloneTree() nuevo: los VisualElement son otros,
+            // así que no hace falta desregistrar nada del anterior.
+
+            // ── Tabs ──
             _tabVideo         = container.Q<Button>("tabVideo");
             _tabAudio         = container.Q<Button>("tabAudio");
             _tabControles     = container.Q<Button>("tabControles");
             _tabAccesibilidad = container.Q<Button>("tabAccesibilidad");
             _tabGameplay      = container.Q<Button>("tabGameplay");
 
-            _panelVideo       = container.Q("panelVideo");
-            _panelAudio       = container.Q("panelAudio");
-            _panelControles   = container.Q("panelControles");
+            _panelVideo         = container.Q("panelVideo");
+            _panelAudio         = container.Q("panelAudio");
+            _panelControles     = container.Q("panelControles");
             _panelAccesibilidad = container.Q("panelAccesibilidad");
-            _panelGameplay    = container.Q("panelGameplay");
+            _panelGameplay      = container.Q("panelGameplay");
 
-            // Unregister previous click handlers to avoid double-firing on re-init
-            _tabVideo?.UnregisterCallback<ClickEvent>(OnTabVideoClicked);
-            _tabAudio?.UnregisterCallback<ClickEvent>(OnTabAudioClicked);
-            _tabControles?.UnregisterCallback<ClickEvent>(OnTabControlesClicked);
-            _tabAccesibilidad?.UnregisterCallback<ClickEvent>(OnTabAccesibilidadClicked);
-            _tabGameplay?.UnregisterCallback<ClickEvent>(OnTabGameplayClicked);
+            if (_tabVideo != null)         _tabVideo.clicked         += () => ShowTab("Video");
+            if (_tabAudio != null)         _tabAudio.clicked         += () => ShowTab("Audio");
+            if (_tabControles != null)     _tabControles.clicked     += () => ShowTab("Controles");
+            if (_tabAccesibilidad != null) _tabAccesibilidad.clicked += () => ShowTab("Accesibilidad");
+            if (_tabGameplay != null)      _tabGameplay.clicked      += () => ShowTab("Gameplay");
 
-            if (_tabVideo != null) _tabVideo.RegisterCallback<ClickEvent>(OnTabVideoClicked);
-            if (_tabAudio != null) _tabAudio.RegisterCallback<ClickEvent>(OnTabAudioClicked);
-            if (_tabControles != null) _tabControles.RegisterCallback<ClickEvent>(OnTabControlesClicked);
-            if (_tabAccesibilidad != null) _tabAccesibilidad.RegisterCallback<ClickEvent>(OnTabAccesibilidadClicked);
-            if (_tabGameplay != null) _tabGameplay.RegisterCallback<ClickEvent>(OnTabGameplayClicked);
-
-            // VIDEO
-            _resDropdown = container.Q<DropdownField>("ResolutionDropdown");
+            // ── VÍDEO ──
+            _resDropdown      = container.Q<DropdownField>("ResolutionDropdown");
             _fullscreenToggle = container.Q<Toggle>("FullscreenToggle");
-            _vsyncToggle = container.Q<Toggle>("VsyncToggle");
-            _scaleDropdown = container.Q<DropdownField>("ScaleDropdown");
+            _vsyncToggle      = container.Q<Toggle>("VsyncToggle");
+            _scaleDropdown    = container.Q<DropdownField>("ScaleDropdown");
 
             if (_scaleDropdown != null)
             {
                 _scaleDropdown.choices = new List<string>(GameSettings.UIScaleNames);
-                _scaleDropdown.value = GameSettings.UIScaleName;
-                _scaleDropdown.RegisterValueChangedCallback(evt => ApplyUIScale(evt.newValue));
+                _scaleDropdown.RegisterValueChangedCallback(evt => { if (!_loading) ApplyUIScale(evt.newValue); });
             }
 
             SetupResolutions();
 
-            // AUDIO
-            _sldMaster = container.Q<Slider>("sldMaster");
-            _sldMusic = container.Q<Slider>("sldMusic");
-            _sldSfx = container.Q<Slider>("sldSfx");
+            if (_fullscreenToggle != null)
+                _fullscreenToggle.RegisterValueChangedCallback(evt => { if (!_loading) { EchoesSettings.Fullscreen = evt.newValue; ApplyVideo(); } });
+            if (_vsyncToggle != null)
+                _vsyncToggle.RegisterValueChangedCallback(evt => { if (!_loading) { EchoesSettings.VSync = evt.newValue; ApplyVideo(); } });
+            if (_resDropdown != null)
+                _resDropdown.RegisterValueChangedCallback(_ => { if (!_loading) ApplyVideo(); });
+
+            // ── AUDIO ──
+            _sldMaster    = container.Q<Slider>("sldMaster");
+            _sldMusic     = container.Q<Slider>("sldMusic");
+            _sldSfx       = container.Q<Slider>("sldSfx");
             _sldEchoVoice = container.Q<Slider>("sldEchoVoice");
 
-            _lblMasterVal = container.Q<Label>("lblMasterVal");
-            _lblMusicVal = container.Q<Label>("lblMusicVal");
-            _lblSfxVal = container.Q<Label>("lblSfxVal");
+            _lblMasterVal    = container.Q<Label>("lblMasterVal");
+            _lblMusicVal     = container.Q<Label>("lblMusicVal");
+            _lblSfxVal       = container.Q<Label>("lblSfxVal");
             _lblEchoVoiceVal = container.Q<Label>("lblEchoVoiceVal");
 
-            if (_sldMaster != null) _sldMaster.RegisterValueChangedCallback(evt => { UpdateLabel(_lblMasterVal, evt.newValue); ApplyAudio(); });
-            if (_sldMusic != null) _sldMusic.RegisterValueChangedCallback(evt => { UpdateLabel(_lblMusicVal, evt.newValue); ApplyAudio(); });
-            if (_sldSfx != null) _sldSfx.RegisterValueChangedCallback(evt => { UpdateLabel(_lblSfxVal, evt.newValue); ApplyAudio(); });
-            if (_sldEchoVoice != null) _sldEchoVoice.RegisterValueChangedCallback(evt => { UpdateLabel(_lblEchoVoiceVal, evt.newValue); ApplyAudio(); });
+            if (_sldMaster != null)
+                _sldMaster.RegisterValueChangedCallback(evt => { SetPercentLabel(_lblMasterVal, evt.newValue); if (!_loading) { EchoesSettings.MasterVolume = evt.newValue; EchoesSettings.ApplyAudio(); } });
+            if (_sldMusic != null)
+                _sldMusic.RegisterValueChangedCallback(evt => { SetPercentLabel(_lblMusicVal, evt.newValue); if (!_loading) { EchoesSettings.MusicVolume = evt.newValue; EchoesSettings.ApplyAudio(); } });
+            if (_sldSfx != null)
+                _sldSfx.RegisterValueChangedCallback(evt => { SetPercentLabel(_lblSfxVal, evt.newValue); if (!_loading) { EchoesSettings.SfxVolume = evt.newValue; EchoesSettings.ApplyAudio(); } });
+            if (_sldEchoVoice != null)
+                _sldEchoVoice.RegisterValueChangedCallback(evt => { SetPercentLabel(_lblEchoVoiceVal, evt.newValue); if (!_loading) { EchoesSettings.EchoVolume = evt.newValue; EchoesSettings.ApplyAudio(); } });
 
-            if (_fullscreenToggle != null) _fullscreenToggle.RegisterValueChangedCallback(evt => ApplyVideo());
-            if (_vsyncToggle != null) _vsyncToggle.RegisterValueChangedCallback(evt => ApplyVideo());
-            if (_resDropdown != null) _resDropdown.RegisterValueChangedCallback(evt => ApplyVideo());
-
-            // CONTROLES
-            _btnSensLow = container.Q<Button>("btnSensLow");
-            _btnSensMed = container.Q<Button>("btnSensMed");
-            _btnSensHigh = container.Q<Button>("btnSensHigh");
+            // ── CONTROLES ──
+            _btnSensLow        = container.Q<Button>("btnSensLow");
+            _btnSensMed        = container.Q<Button>("btnSensMed");
+            _btnSensHigh       = container.Q<Button>("btnSensHigh");
             _sensitivitySlider = container.Q<Slider>("SensitivitySlider");
-            _lblCamSensVal = container.Q<Label>("lblCamSensVal");
+            _lblCamSensVal     = container.Q<Label>("lblCamSensVal");
 
-            if (_btnSensLow != null) _btnSensLow.clicked += () => SetSensitivityPreset("Low", 0.5f);
-            if (_btnSensMed != null) _btnSensMed.clicked += () => SetSensitivityPreset("Medium", 1.0f);
-            if (_btnSensHigh != null) _btnSensHigh.clicked += () => SetSensitivityPreset("High", 2.0f);
+            if (_btnSensLow != null)  _btnSensLow.clicked  += () => SetSensitivityPreset(0.5f);
+            if (_btnSensMed != null)  _btnSensMed.clicked  += () => SetSensitivityPreset(1.0f);
+            if (_btnSensHigh != null) _btnSensHigh.clicked += () => SetSensitivityPreset(2.0f);
+
             if (_sensitivitySlider != null)
             {
                 _sensitivitySlider.RegisterValueChangedCallback(evt =>
                 {
-                    _lblCamSensVal.text = evt.newValue.ToString("F1");
-                    PlayerPrefs.SetFloat("CameraSensitivity", evt.newValue);
-                    ApplySensitivity();
+                    SetText(_lblCamSensVal, evt.newValue.ToString("F1"));
+                    UpdateSensitivityPresetUI(evt.newValue);
+                    if (_loading) return;
+                    EchoesSettings.Sensitivity = evt.newValue;
+                    EchoesSettings.ApplySensitivity();
                 });
             }
 
-            // ACCESIBILIDAD
+            // ── ACCESIBILIDAD ──
             _textSizeDropdown = container.Q<DropdownField>("TextSizeDropdown");
             if (_textSizeDropdown != null)
             {
                 _textSizeDropdown.choices = new List<string>(GameSettings.UIScaleNames);
-                _textSizeDropdown.value = GameSettings.UIScaleName;
-                _textSizeDropdown.RegisterValueChangedCallback(evt => ApplyUIScale(evt.newValue));
+                _textSizeDropdown.RegisterValueChangedCallback(evt => { if (!_loading) ApplyUIScale(evt.newValue); });
             }
 
-            _highContrastToggle = container.Q<Toggle>("HighContrastToggle");
-            _subtitlesToggle = container.Q<Toggle>("SubtitlesToggle");
-            _subtitleSizeSlider = container.Q<Slider>("SubtitleSizeSlider");
-            _subtitleBgToggle = container.Q<Toggle>("SubtitleBgToggle");
+            _highContrastToggle  = container.Q<Toggle>("HighContrastToggle");
+            _subtitlesToggle     = container.Q<Toggle>("SubtitlesToggle");
+            _subtitleSizeSlider  = container.Q<Slider>("SubtitleSizeSlider");
+            _subtitleBgToggle    = container.Q<Toggle>("SubtitleBgToggle");
             _reduceFlashesToggle = container.Q<Toggle>("ReduceFlashesToggle");
-            _reduceMotionToggle = container.Q<Toggle>("ReduceMotionToggle");
+            _reduceMotionToggle  = container.Q<Toggle>("ReduceMotionToggle");
 
             if (_highContrastToggle != null)
-            {
-                _highContrastToggle.value = PlayerPrefs.GetInt("HighContrast", 0) == 1;
-                _highContrastToggle.RegisterValueChangedCallback(evt => ApplyHighContrast(evt.newValue));
-            }
+                _highContrastToggle.RegisterValueChangedCallback(evt => { if (!_loading) { EchoesSettings.HighContrast = evt.newValue; EchoesSettings.ApplyAccessibility(); } });
             if (_reduceMotionToggle != null)
-            {
-                _reduceMotionToggle.value = PlayerPrefs.GetInt("ReduceMotion", 0) == 1;
-                _reduceMotionToggle.RegisterValueChangedCallback(evt => ApplyReduceMotion(evt.newValue));
-            }
+                _reduceMotionToggle.RegisterValueChangedCallback(evt => { if (!_loading) { EchoesSettings.ReduceMotion = evt.newValue; EchoesSettings.ApplyAccessibility(); } });
+            // Estos cuatro se consultaban en el UXML y no se registraba nada:
+            // eran controles muertos que se movían y no hacían nada.
+            if (_subtitlesToggle != null)
+                _subtitlesToggle.RegisterValueChangedCallback(evt => { if (!_loading) { EchoesSettings.Subtitles = evt.newValue; EchoesSettings.ApplyAccessibility(); } });
+            if (_subtitleBgToggle != null)
+                _subtitleBgToggle.RegisterValueChangedCallback(evt => { if (!_loading) { EchoesSettings.SubtitleBackground = evt.newValue; EchoesSettings.ApplyAccessibility(); } });
+            if (_subtitleSizeSlider != null)
+                _subtitleSizeSlider.RegisterValueChangedCallback(evt => { if (!_loading) { EchoesSettings.SubtitleSize = evt.newValue; EchoesSettings.ApplyAccessibility(); } });
+            if (_reduceFlashesToggle != null)
+                _reduceFlashesToggle.RegisterValueChangedCallback(evt => { if (!_loading) EchoesSettings.ReduceFlashes = evt.newValue; });
 
-            // GAMEPLAY
+            // ── GAMEPLAY ──
             _extraRecordTimeSlider = container.Q<Slider>("ExtraRecordTimeSlider");
             _lblExtraRecordTimeVal = container.Q<Label>("lblExtraRecordTimeVal");
             if (_extraRecordTimeSlider != null)
             {
-                _extraRecordTimeSlider.value = PlayerPrefs.GetFloat("ExtraRecordTime", 0f);
-                _lblExtraRecordTimeVal.text = Mathf.RoundToInt(_extraRecordTimeSlider.value) + "%";
                 _extraRecordTimeSlider.RegisterValueChangedCallback(evt =>
                 {
-                    _lblExtraRecordTimeVal.text = Mathf.RoundToInt(evt.newValue) + "%";
-                    PlayerPrefs.SetFloat("ExtraRecordTime", evt.newValue);
-                    ApplyExtraRecordTime();
+                    SetText(_lblExtraRecordTimeVal, Mathf.RoundToInt(evt.newValue) + "%");
+                    if (_loading) return;
+                    EchoesSettings.ExtraRecordTimePercent = evt.newValue;
+                    EchoesSettings.ApplyExtraRecordTime();
                 });
             }
 
-            _sldFog = container.Q<Slider>("sldFog");
-            _sldEcho = container.Q<Slider>("sldEcho");
+            _sldFog    = container.Q<Slider>("sldFog");
+            _sldEcho   = container.Q<Slider>("sldEcho");
             _lblFogVal = container.Q<Label>("lblFogVal");
             _lblEchoVal = container.Q<Label>("lblEchoVal");
 
-            if (_sldFog != null) _sldFog.RegisterValueChangedCallback(evt => { UpdateFogLabel(evt.newValue); ApplyFog(); });
-            if (_sldEcho != null) _sldEcho.RegisterValueChangedCallback(evt => { UpdateLabel(_lblEchoVal, evt.newValue); ApplyEchoOpacity(); });
+            if (_sldFog != null)
+            {
+                _sldFog.RegisterValueChangedCallback(evt =>
+                {
+                    SetText(_lblFogVal, evt.newValue.ToString("F3"));
+                    if (_loading) return;
+                    EchoesSettings.FogDensity = evt.newValue;
+                    EchoesSettings.ApplyFog();
+                });
+            }
+            if (_sldEcho != null)
+            {
+                _sldEcho.RegisterValueChangedCallback(evt =>
+                {
+                    SetPercentLabel(_lblEchoVal, evt.newValue);
+                    if (_loading) return;
+                    EchoesSettings.EchoOpacity = evt.newValue;
+                    EchoesSettings.ApplyEchoOpacity();
+                });
+            }
 
-            // BUTTONS
+            // ── BOTONES ──
             _btnRestoreDefaults = container.Q<Button>("btnRestoreDefaults");
-            _btnSettingsBack = container.Q<Button>("btnSettingsBack");
-            _btnSettingsApply = container.Q<Button>("btnSettingsApply");
-            _btnDeleteProgress = container.Q<Button>("btnDeleteProgress");
+            _btnSettingsBack    = container.Q<Button>("btnSettingsBack");
+            _btnSettingsApply   = container.Q<Button>("btnSettingsApply");
+            _btnDeleteProgress  = container.Q<Button>("btnDeleteProgress");
 
             if (_btnRestoreDefaults != null) _btnRestoreDefaults.clicked += RestoreFactoryDefaults;
-            if (_btnSettingsBack != null) _btnSettingsBack.clicked += HideSettings;
-            if (_btnSettingsApply != null) _btnSettingsApply.clicked += ApplyAll;
-            if (_btnDeleteProgress != null) _btnDeleteProgress.clicked += DeleteAllProgress;
+            if (_btnSettingsBack != null)    _btnSettingsBack.clicked    += HideSettings;
+            if (_btnSettingsApply != null)   _btnSettingsApply.clicked   += ApplyAll;
+            if (_btnDeleteProgress != null)  _btnDeleteProgress.clicked  += ConfirmDeleteAllProgress;
 
             LoadCurrentSettings();
         }
 
         void ShowTab(string tabName)
         {
-            // Panels use .settings-panel.hidden (display:none) and .settings-tab--active for the selected tab
             _panelVideo?.AddToClassList("hidden");
             _panelAudio?.AddToClassList("hidden");
             _panelControles?.AddToClassList("hidden");
@@ -350,75 +377,100 @@ namespace Echoes.UI
         void SetupResolutions()
         {
             if (_resDropdown == null) return;
+
             Resolution[] resolutions = Screen.resolutions;
             _filteredResolutions = new List<Resolution>();
-            List<string> options = new List<string>();
+            var options = new List<string>();
+            var seen = new HashSet<string>();
+
+            int savedW = PlayerPrefs.GetInt(EchoesSettings.KeyResWidth, Screen.width);
+            int savedH = PlayerPrefs.GetInt(EchoesSettings.KeyResHeight, Screen.height);
             int currentResIndex = 0;
 
             for (int i = 0; i < resolutions.Length; i++)
             {
-                _filteredResolutions.Add(resolutions[i]);
                 string option = resolutions[i].width + " x " + resolutions[i].height;
+                // Screen.resolutions repite la misma resolución una vez por refresco;
+                // sin deduplicar, el desplegable sale con veinte entradas iguales.
+                if (!seen.Add(option)) continue;
+
+                _filteredResolutions.Add(resolutions[i]);
                 options.Add(option);
-                if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
-                    currentResIndex = i;
+                if (resolutions[i].width == savedW && resolutions[i].height == savedH)
+                    currentResIndex = options.Count - 1;
             }
 
             _resDropdown.choices = options;
-            if (options.Count > 0) _resDropdown.index = Mathf.Clamp(currentResIndex, 0, options.Count - 1);
+            if (options.Count > 0)
+                _resDropdown.index = Mathf.Clamp(currentResIndex, 0, options.Count - 1);
         }
 
+        /// <summary>
+        /// Rellena los controles con lo guardado. <see cref="_loading"/> evita que
+        /// cada asignación dispare su Apply* con el estado a medio construir.
+        /// </summary>
         void LoadCurrentSettings()
         {
-            var audioMgr = EchoesAudioManager.EnsureExists();
-            if (_sldMaster != null) _sldMaster.value = audioMgr != null ? audioMgr.GetMasterVolume() : PlayerPrefs.GetFloat("MasterVolume", 0.84f);
-            if (_sldMusic != null) _sldMusic.value = audioMgr != null ? audioMgr.GetMusicVolume() : PlayerPrefs.GetFloat("MusicVolume", 0.6f);
-            if (_sldSfx != null) _sldSfx.value = audioMgr != null ? audioMgr.GetSFXVolume() : PlayerPrefs.GetFloat("SfxVolume", 0.72f);
-            if (_sldEchoVoice != null) _sldEchoVoice.value = audioMgr != null ? audioMgr.GetEchoVolume() : PlayerPrefs.GetFloat("EchoVolume", 0.7f);
-
-            UpdateLabel(_lblMasterVal, _sldMaster.value);
-            UpdateLabel(_lblMusicVal, _sldMusic.value);
-            UpdateLabel(_lblSfxVal, _sldSfx.value);
-            UpdateLabel(_lblEchoVoiceVal, _sldEchoVoice.value);
-
-            if (_fullscreenToggle != null) _fullscreenToggle.value = Screen.fullScreen;
-            if (_vsyncToggle != null) _vsyncToggle.value = QualitySettings.vSyncCount > 0;
-            if (_scaleDropdown != null) _scaleDropdown.value = GameSettings.UIScaleName;
-            if (_textSizeDropdown != null) _textSizeDropdown.value = GameSettings.UIScaleName;
-
-            float sens = PlayerPrefs.GetFloat("CameraSensitivity", 1f);
-            if (_sensitivitySlider != null) _sensitivitySlider.value = sens;
-            _lblCamSensVal.text = sens.ToString("F1");
-            UpdateSensitivityPresetUI(sens);
-
-            float fog = PlayerPrefs.GetFloat("FogDensity", 0.035f);
-            if (_sldFog != null) _sldFog.value = fog;
-            UpdateFogLabel(fog);
-
-            float echo = PlayerPrefs.GetFloat("EchoOpacity", 0.6f);
-            if (_sldEcho != null) _sldEcho.value = echo;
-            UpdateLabel(_lblEchoVal, echo);
-
-            // Accesibilidad
-            if (_highContrastToggle != null) _highContrastToggle.value = PlayerPrefs.GetInt("HighContrast", 0) == 1;
-            if (_reduceMotionToggle != null) _reduceMotionToggle.value = PlayerPrefs.GetInt("ReduceMotion", 0) == 1;
-
-            // Gameplay
-            if (_extraRecordTimeSlider != null)
+            _loading = true;
+            try
             {
-                _extraRecordTimeSlider.value = PlayerPrefs.GetFloat("ExtraRecordTime", 0f);
-                _lblExtraRecordTimeVal.text = Mathf.RoundToInt(_extraRecordTimeSlider.value) + "%";
+                SetSliderValue(_sldMaster, EchoesSettings.MasterVolume, _lblMasterVal);
+                SetSliderValue(_sldMusic, EchoesSettings.MusicVolume, _lblMusicVal);
+                SetSliderValue(_sldSfx, EchoesSettings.SfxVolume, _lblSfxVal);
+                SetSliderValue(_sldEchoVoice, EchoesSettings.EchoVolume, _lblEchoVoiceVal);
+
+                if (_fullscreenToggle != null) _fullscreenToggle.value = EchoesSettings.Fullscreen;
+                if (_vsyncToggle != null) _vsyncToggle.value = EchoesSettings.VSync;
+                if (_scaleDropdown != null) _scaleDropdown.value = GameSettings.UIScaleName;
+                if (_textSizeDropdown != null) _textSizeDropdown.value = GameSettings.UIScaleName;
+
+                float sens = EchoesSettings.Sensitivity;
+                if (_sensitivitySlider != null) _sensitivitySlider.value = sens;
+                SetText(_lblCamSensVal, sens.ToString("F1"));
+                UpdateSensitivityPresetUI(sens);
+
+                float fog = EchoesSettings.FogDensity;
+                if (_sldFog != null) _sldFog.value = fog;
+                SetText(_lblFogVal, fog.ToString("F3"));
+
+                float echo = EchoesSettings.EchoOpacity;
+                if (_sldEcho != null) _sldEcho.value = echo;
+                SetPercentLabel(_lblEchoVal, echo);
+
+                if (_highContrastToggle != null)  _highContrastToggle.value  = EchoesSettings.HighContrast;
+                if (_reduceMotionToggle != null)  _reduceMotionToggle.value  = EchoesSettings.ReduceMotion;
+                if (_reduceFlashesToggle != null) _reduceFlashesToggle.value = EchoesSettings.ReduceFlashes;
+                if (_subtitlesToggle != null)     _subtitlesToggle.value     = EchoesSettings.Subtitles;
+                if (_subtitleBgToggle != null)    _subtitleBgToggle.value    = EchoesSettings.SubtitleBackground;
+                if (_subtitleSizeSlider != null)  _subtitleSizeSlider.value  = EchoesSettings.SubtitleSize;
+
+                float extra = EchoesSettings.ExtraRecordTimePercent;
+                if (_extraRecordTimeSlider != null) _extraRecordTimeSlider.value = extra;
+                SetText(_lblExtraRecordTimeVal, Mathf.RoundToInt(extra) + "%");
+            }
+            finally
+            {
+                _loading = false;
             }
         }
 
-        void UpdateLabel(Label lbl, float val)
+        // ── Helpers de UI (todos tolerantes a null: antes un elemento ausente
+        //    lanzaba NullReference y abortaba el resto del cableado) ──
+
+        static void SetText(Label lbl, string text)
+        {
+            if (lbl != null) lbl.text = text;
+        }
+
+        static void SetPercentLabel(Label lbl, float val)
         {
             if (lbl != null) lbl.text = Mathf.RoundToInt(val * 100f) + "%";
         }
 
-        void UpdateFogLabel(float val)
+        static void SetSliderValue(Slider slider, float value, Label label)
         {
-            if (_lblFogVal != null) _lblFogVal.text = val.ToString("F3");
+            if (slider != null) slider.value = value;
+            SetPercentLabel(label, value);
         }
 
         void UpdateSensitivityPresetUI(float val)
@@ -427,26 +479,30 @@ namespace Echoes.UI
             _btnSensMed?.RemoveFromClassList("sensitivity-preset--active");
             _btnSensHigh?.RemoveFromClassList("sensitivity-preset--active");
 
-            if (Mathf.Approximately(val, 0.5f)) _btnSensLow?.AddToClassList("sensitivity-preset--active");
-            else if (Mathf.Approximately(val, 2.0f)) _btnSensHigh?.AddToClassList("sensitivity-preset--active");
+            if (val <= 0.7f) _btnSensLow?.AddToClassList("sensitivity-preset--active");
+            else if (val >= 1.6f) _btnSensHigh?.AddToClassList("sensitivity-preset--active");
             else _btnSensMed?.AddToClassList("sensitivity-preset--active");
         }
 
-        void SetSensitivityPreset(string name, float value)
+        void SetSensitivityPreset(float value)
         {
-            if (_sensitivitySlider != null) _sensitivitySlider.value = value;
-            _lblCamSensVal.text = value.ToString("F1");
+            if (_sensitivitySlider != null)
+            {
+                // El slider dispara su callback y ese aplica y guarda.
+                _sensitivitySlider.value = value;
+            }
+            else
+            {
+                EchoesSettings.Sensitivity = value;
+                EchoesSettings.ApplySensitivity();
+            }
+            SetText(_lblCamSensVal, value.ToString("F1"));
             UpdateSensitivityPresetUI(value);
-        }
-
-        void ShowSettings()
-        {
-            if (_settingsContainer != null)
-                _settingsContainer.RemoveFromClassList("hidden");
         }
 
         void HideSettings()
         {
+            EchoesSettings.Save();
             if (_settingsContainer != null)
                 _settingsContainer.AddToClassList("hidden");
             SettingsClosed?.Invoke();
@@ -454,52 +510,27 @@ namespace Echoes.UI
 
         void ApplyAll()
         {
-            ApplyAudio();
+            // Los callbacks ya han guardado cada valor según se tocaba; esto
+            // reaplica todo junto y persiste a disco.
             ApplyVideo();
-            ApplySensitivity();
-            ApplyFog();
-            ApplyEchoOpacity();
-            ApplyHighContrast(_highContrastToggle.value);
-            ApplyReduceMotion(_reduceMotionToggle.value);
-            ApplyExtraRecordTime();
-            PlayerPrefs.Save();
+            EchoesSettings.ApplyAll();
+            EchoesSettings.Save();
             HideSettings();
-        }
-
-        void ApplyAudio()
-        {
-            var audioMgr = EchoesAudioManager.EnsureExists();
-            float master = _sldMaster?.value ?? 0.84f;
-            float music = _sldMusic?.value ?? 0.6f;
-            float sfx = _sldSfx?.value ?? 0.72f;
-            float echoVoice = _sldEchoVoice?.value ?? 0.7f;
-
-            if (audioMgr != null)
-            {
-                audioMgr.SetMasterVolume(master);
-                audioMgr.SetMusicVolume(music);
-                audioMgr.SetSFXVolume(sfx);
-                audioMgr.SetEchoVolume(echoVoice);
-            }
-            else
-            {
-                AudioListener.volume = master;
-                PlayerPrefs.SetFloat("MasterVolume", master);
-                PlayerPrefs.SetFloat("MusicVolume", music);
-                PlayerPrefs.SetFloat("SfxVolume", sfx);
-                PlayerPrefs.SetFloat("EchoVolume", echoVoice);
-            }
         }
 
         void ApplyVideo()
         {
-            if (_fullscreenToggle != null) Screen.fullScreen = _fullscreenToggle.value;
-            if (_vsyncToggle != null) QualitySettings.vSyncCount = _vsyncToggle.value ? 1 : 0;
-            if (_resDropdown != null && _filteredResolutions != null && _resDropdown.index >= 0 && _resDropdown.index < _filteredResolutions.Count)
+            if (_fullscreenToggle != null) EchoesSettings.Fullscreen = _fullscreenToggle.value;
+            if (_vsyncToggle != null) EchoesSettings.VSync = _vsyncToggle.value;
+
+            if (_resDropdown != null && _filteredResolutions != null &&
+                _resDropdown.index >= 0 && _resDropdown.index < _filteredResolutions.Count)
             {
                 Resolution res = _filteredResolutions[_resDropdown.index];
-                Screen.SetResolution(res.width, res.height, Screen.fullScreen);
+                EchoesSettings.SetResolution(res.width, res.height);
             }
+
+            EchoesSettings.ApplyVideo();
         }
 
         void ApplyUIScale(string scale)
@@ -509,130 +540,55 @@ namespace Echoes.UI
             if (_textSizeDropdown != null && _textSizeDropdown.value != scale) _textSizeDropdown.value = scale;
         }
 
-        void ApplySensitivity()
-        {
-            float sens = _sensitivitySlider?.value ?? 1f;
-            PlayerPrefs.SetFloat("CameraSensitivity", sens);
-            var cam = FindAnyObjectByType<ThirdPersonCamera>();
-            cam?.SendMessage("ApplySavedSensitivity", SendMessageOptions.DontRequireReceiver);
-            UpdateSensitivityPresetUI(sens);
-        }
-
-        void ApplyFog()
-        {
-            float fog = _sldFog?.value ?? 0.035f;
-            PlayerPrefs.SetFloat("FogDensity", fog);
-            RenderSettings.fogDensity = fog;
-            RenderSettings.fog = fog > 0f;
-        }
-
-        void ApplyEchoOpacity()
-        {
-            float echo = _sldEcho?.value ?? 0.6f;
-            PlayerPrefs.SetFloat("EchoOpacity", echo);
-            var allPlaybacks = FindObjectsByType<EchoPlayback>(FindObjectsInactive.Exclude);
-            foreach (var playback in allPlaybacks) playback.SendMessage("ApplySavedEchoOpacity", SendMessageOptions.DontRequireReceiver);
-        }
-
-        void ApplyHighContrast(bool enabled)
-        {
-            PlayerPrefs.SetInt("HighContrast", enabled ? 1 : 0);
-            var allDocs = FindObjectsByType<UIDocument>(FindObjectsInactive.Exclude);
-            foreach (var doc in allDocs)
-            {
-                var root = doc.rootVisualElement;
-                if (enabled) root.AddToClassList("high-contrast");
-                else root.RemoveFromClassList("high-contrast");
-            }
-        }
-
-        void ApplyReduceMotion(bool enabled)
-        {
-            PlayerPrefs.SetInt("ReduceMotion", enabled ? 1 : 0);
-            var allDocs = FindObjectsByType<UIDocument>(FindObjectsInactive.Exclude);
-            foreach (var doc in allDocs)
-            {
-                var root = doc.rootVisualElement;
-                if (enabled) root.AddToClassList("reduce-motion");
-                else root.RemoveFromClassList("reduce-motion");
-            }
-        }
-
-        void ApplyExtraRecordTime()
-        {
-            float extra = _extraRecordTimeSlider?.value ?? 0f;
-            PlayerPrefs.SetFloat("ExtraRecordTime", extra);
-            // EchoRecorder picks this up in its maxRecordSeconds calculation
-        }
-
         void RestoreFactoryDefaults()
         {
-            if (_sldMaster != null) _sldMaster.value = 0.84f;
-            if (_sldMusic != null) _sldMusic.value = 0.6f;
-            if (_sldSfx != null) _sldSfx.value = 0.72f;
-            if (_sldEchoVoice != null) _sldEchoVoice.value = 0.7f;
-            UpdateLabel(_lblMasterVal, _sldMaster.value);
-            UpdateLabel(_lblMusicVal, _sldMusic.value);
-            UpdateLabel(_lblSfxVal, _sldSfx.value);
-            UpdateLabel(_lblEchoVoiceVal, _sldEchoVoice.value);
+            // Solo las claves de ajustes. La versión anterior hacía
+            // PlayerPrefs.DeleteAll() y se llevaba por delante niveles
+            // desbloqueados, ecos anclados y estadísticas.
+            EchoesSettings.RestoreDefaults();
+            GameSettings.SetUIScale(1.0f);
+            LoadCurrentSettings();
+            SetupResolutions();
+        }
 
-            if (_fullscreenToggle != null) _fullscreenToggle.value = true;
-            if (_vsyncToggle != null) _vsyncToggle.value = true;
-            if (_scaleDropdown != null) _scaleDropdown.value = "Normal";
-            ApplyUIScale("Normal");
+        /// <summary>
+        /// Borrado de progreso con confirmación en el propio juego. Antes usaba
+        /// <c>UnityEditor.EditorUtility.DisplayDialog</c> sin <c>#if UNITY_EDITOR</c>:
+        /// no existe fuera del editor, así que el botón era inútil en build — y de
+        /// hecho impedía compilar el jugador.
+        /// </summary>
+        void ConfirmDeleteAllProgress()
+        {
+            const string title = "Borrar Progreso Completo";
+            const string body =
+                "Esto eliminará TODOS los datos guardados:\n" +
+                "· Ecos anclados y Recuerdos completados\n" +
+                "· Niveles desbloqueados\n" +
+                "· Todos los ajustes\n\n" +
+                "Esta acción es IRREVERSIBLE.";
 
-            if (_sldFog != null) _sldFog.value = 0.035f;
-            if (_sldEcho != null) _sldEcho.value = 0.6f;
-            UpdateFogLabel(_sldFog.value);
-            UpdateLabel(_lblEchoVal, _sldEcho.value);
-
-            if (_sensitivitySlider != null) _sensitivitySlider.value = 1f;
-            _lblCamSensVal.text = "1.0";
-            UpdateSensitivityPresetUI(1f);
-
-            if (_highContrastToggle != null) _highContrastToggle.value = false;
-            if (_reduceMotionToggle != null) _reduceMotionToggle.value = false;
-            ApplyHighContrast(false);
-            ApplyReduceMotion(false);
-
-            if (_extraRecordTimeSlider != null)
+            if (ModalManager.Instance == null)
             {
-                _extraRecordTimeSlider.value = 0f;
-                _lblExtraRecordTimeVal.text = "0%";
+                Debug.LogWarning("[SettingsController] Sin ModalManager no hay confirmación posible; no se borra nada.");
+                return;
             }
 
-            if (_subtitlesToggle != null) _subtitlesToggle.value = false;
-            if (_subtitleBgToggle != null) _subtitleBgToggle.value = false;
-            if (_reduceFlashesToggle != null) _reduceFlashesToggle.value = false;
-
-            PlayerPrefs.DeleteAll();
-            LoadCurrentSettings();
+            ModalManager.Instance.ShowModal(title, body,
+                onConfirm: DeleteAllProgress,
+                onCancel: () => { });
         }
 
         void DeleteAllProgress()
         {
-            // Confirmación doble para evitar borrado accidental
-            if (UnityEditor.EditorUtility.DisplayDialog(
-                "Borrar Progreso Completo",
-                "Esto eliminará TODOS los datos guardados:\n- Ecos anclados y Recuerdos completados\n- Niveles desbloqueados\n- Todos los ajustes (video, audio, controles, accesibilidad, gameplay)\n\nEsta acción es IRREVERSIBLE.\n\n¿Estás seguro?",
-                "Sí, borrar todo", "Cancelar"))
-            {
-                PlayerPrefs.DeleteAll();
-                GameProgress.EnsureInitialized();
-                LoadCurrentSettings();
-                Debug.Log("[SettingsController] Progreso completo borrado por el usuario.");
-                
-                // Refresh level cards in main menu if present
-                var mainMenu = FindAnyObjectByType<MainMenuController>();
-                mainMenu?.SendMessage("RefreshLevelCards", SendMessageOptions.DontRequireReceiver);
-            }
-        }
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.Save();
+            GameProgress.EnsureInitialized();
+            EchoesSettings.ApplyAll();
+            LoadCurrentSettings();
+            Debug.Log("[SettingsController] Progreso completo borrado por el usuario.");
 
-        // Tab click handlers (named methods for proper unregistration on re-init)
-        void OnTabVideoClicked(ClickEvent evt) => ShowTab("Video");
-        void OnTabAudioClicked(ClickEvent evt) => ShowTab("Audio");
-        void OnTabControlesClicked(ClickEvent evt) => ShowTab("Controles");
-        void OnTabAccesibilidadClicked(ClickEvent evt) => ShowTab("Accesibilidad");
-        void OnTabGameplayClicked(ClickEvent evt) => ShowTab("Gameplay");
+            var mainMenu = FindAnyObjectByType<MainMenuController>();
+            mainMenu?.SendMessage("RefreshLevelCards", SendMessageOptions.DontRequireReceiver);
+        }
     }
 }

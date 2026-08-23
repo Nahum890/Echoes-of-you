@@ -18,6 +18,7 @@ public class EchoSpectralTrail : MonoBehaviour
     Renderer[] _sourceRenderers;
     float _nextSnapshotTime;
     Material _ghostMaterial;
+    readonly Dictionary<SkinnedMeshRenderer, Mesh> _bakedMeshCache = new Dictionary<SkinnedMeshRenderer, Mesh>();
 
     struct PoseSample
     {
@@ -174,6 +175,12 @@ public class EchoSpectralTrail : MonoBehaviour
     void OnDisable()
     {
         _history.Clear();
+        foreach (var kvp in _bakedMeshCache)
+        {
+            if (kvp.Value != null)
+                Destroy(kvp.Value);
+        }
+        _bakedMeshCache.Clear();
     }
 
     Mesh ResolveMesh(Renderer rendererRef)
@@ -183,8 +190,12 @@ public class EchoSpectralTrail : MonoBehaviour
 
         if (rendererRef is SkinnedMeshRenderer skinned)
         {
+            if (_bakedMeshCache.TryGetValue(skinned, out Mesh cached))
+                return cached;
+
             Mesh baked = new Mesh();
             skinned.BakeMesh(baked);
+            _bakedMeshCache[skinned] = baked;
             return baked;
         }
 

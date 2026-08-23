@@ -5,12 +5,31 @@ using UnityEngine.UIElements;
 namespace Echoes.UI
 {
     /// <summary>
-    /// PauseMenu — Menú de Pausa Narrativo 33% con diseño moderno.
-    /// Botones 100% funcionales: Reanudar, Reiniciar, Ajustes, Controles, Expediente, Salir.
+    /// PauseMenu — menú de pausa narrativo al 33% con diseño moderno.
+    /// Botones: Reanudar, Reiniciar, Ajustes, Controles, Expediente, Salir.
+    ///
+    /// Por qué los botones no respondían: todos los UIDocument del juego comparten
+    /// el mismo <c>EchoesPanelSettings</c>, así que están en **un solo panel** de UI
+    /// Toolkit y el orden de picking lo decide <c>sortingOrder</c>. El menú de pausa
+    /// se serializaba en las escenas con orden 10, mientras que
+    /// <c>VN_DialogueController</c> se pone a 500 y <c>TutorialOverlayController</c>
+    /// a 550. Comprobado en play mode: un <c>panel.Pick()</c> sobre la zona de los
+    /// botones devolvía <c>vn-dialogue-root</c>, no el botón. El overlay de la novela
+    /// visual, aunque no se viera, se comía cada clic.
+    ///
+    /// La solución es doble: el menú se sube por encima de esos overlays al pausar
+    /// (<see cref="PauseSortingOrder"/>) y las capas que no están mostrando nada
+    /// dejan de capturar el ratón.
     /// </summary>
     [RequireComponent(typeof(UIDocument))]
     public class PauseMenu : MonoBehaviour
     {
+        /// Por encima de VN (500) y del overlay de tutorial (550), y por debajo de
+        /// la pantalla de carga (9999), que sí debe taparlo todo.
+        public const int PauseSortingOrder = 900;
+        /// El modal de confirmación tiene que quedar sobre el propio menú.
+        public const int ModalSortingOrder = 950;
+
         [Header("Scenes")]
         [SerializeField] string hubSceneName = "MainMenu";
 
@@ -32,7 +51,13 @@ namespace Echoes.UI
 
         Button _btnCloseControls;
         Button _btnCloseExpediente;
-        bool _wired;
+
+        /// Se guarda el botón ya cableado, no un booleano global. Con el booleano,
+        /// si InitializeUI corría una vez con el árbol a medio clonar, quedaba
+        /// marcado como "cableado" y los botones no se enganchaban nunca.
+        Button _wiredResume;
+
+        public bool IsPaused => _paused;
 
         void OnEnable()
         {
@@ -56,49 +81,54 @@ namespace Echoes.UI
             if (_doc == null || _doc.rootVisualElement == null) return;
             _root = _doc.rootVisualElement;
 
-            if (_root != null)
-            {
-                _root.style.position = Position.Absolute;
-                _root.style.left = 0;
-                _root.style.top = 0;
-                _root.style.right = 0;
-                _root.style.bottom = 0;
-                _root.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
-                _root.style.height = new StyleLength(new Length(100, LengthUnit.Percent));
-            }
+            // Las escenas traen el PauseMenu serializado con sortingOrder 10, por
+            // debajo de los overlays narrativos. Se corrige aquí y no solo desde
+            // GameplayUIBootstrap para no depender del orden de arranque.
+            if (_doc.sortingOrder < PauseSortingOrder)
+                _doc.sortingOrder = PauseSortingOrder;
+
+            _root.style.position = Position.Absolute;
+            _root.style.left = 0;
+            _root.style.top = 0;
+            _root.style.right = 0;
+            _root.style.bottom = 0;
+            _root.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
+            _root.style.height = new StyleLength(new Length(100, LengthUnit.Percent));
 
             _pauseRoot = _root.Q("pause-root");
             if (_pauseRoot == null) return;
 
-            _pauseNav = _root.Q("pause-nav");
-            _settingsPanel = _root.Q("pause-settings-panel");
-            _controlsPanel = _root.Q("pause-controls-panel");
+            _pauseNav        = _root.Q("pause-nav");
+            _settingsPanel   = _root.Q("pause-settings-panel");
+            _controlsPanel   = _root.Q("pause-controls-panel");
             _expedientePanel = _root.Q("pause-expediente-panel");
 
-            _btnResume      = _pauseRoot.Q<Button>("btn-resume");
-            _btnReiniciar   = _pauseRoot.Q<Button>("btn-reiniciar");
-            _btnSettings    = _pauseRoot.Q<Button>("btn-settings");
-            _btnControles   = _pauseRoot.Q<Button>("btn-controles");
-            _btnExpediente  = _pauseRoot.Q<Button>("btn-expediente");
-            _btnHub         = _pauseRoot.Q<Button>("btn-hub");
+            _btnResume     = _pauseRoot.Q<Button>("btn-resume");
+            _btnReiniciar  = _pauseRoot.Q<Button>("btn-reiniciar");
+            _btnSettings   = _pauseRoot.Q<Button>("btn-settings");
+            _btnControles  = _pauseRoot.Q<Button>("btn-controles");
+            _btnExpediente = _pauseRoot.Q<Button>("btn-expediente");
+            _btnHub        = _pauseRoot.Q<Button>("btn-hub");
 
             _btnCloseControls   = _pauseRoot.Q<Button>("btn-close-controls");
             _btnCloseExpediente = _pauseRoot.Q<Button>("btn-close-expediente");
 
-            // Wire button events just once
-            if (!_wired)
+            // Solo se cablea cuando el árbol está realmente clonado, y se re-cablea
+            // si UIDocument lo ha vuelto a clonar (los Button serían otros objetos).
+            if (_btnResume != null && !ReferenceEquals(_btnResume, _wiredResume))
             {
-                _wired = true;
-            if (_btnResume != null) _btnResume.clicked += Resume;
-            if (_btnReiniciar != null) _btnReiniciar.clicked += ConfirmReiniciar;
-            if (_btnSettings != null) _btnSettings.clicked += ShowSettings;
-            if (_btnControles != null) _btnControles.clicked += ShowControls;
-            if (_btnExpediente != null) _btnExpediente.clicked += ShowExpediente;
-            if (_btnHub != null) _btnHub.clicked += ConfirmHub;
+                _wiredResume = _btnResume;
 
-            if (_btnCloseControls != null) _btnCloseControls.clicked += HideControls;
-            if (_btnCloseExpediente != null) _btnCloseExpediente.clicked += HideExpediente;
-        }
+                _btnResume.clicked     += Resume;
+                if (_btnReiniciar != null)  _btnReiniciar.clicked  += ConfirmReiniciar;
+                if (_btnSettings != null)   _btnSettings.clicked   += ShowSettings;
+                if (_btnControles != null)  _btnControles.clicked  += ShowControls;
+                if (_btnExpediente != null) _btnExpediente.clicked += ShowExpediente;
+                if (_btnHub != null)        _btnHub.clicked        += ConfirmHub;
+
+                if (_btnCloseControls != null)   _btnCloseControls.clicked   += HideControls;
+                if (_btnCloseExpediente != null) _btnCloseExpediente.clicked += HideExpediente;
+            }
 
             if (!_paused)
             {
@@ -111,28 +141,74 @@ namespace Echoes.UI
 
         void Update()
         {
-            if (!_paused && Input.GetKeyDown(KeyCode.Escape))
+            if (!Input.GetKeyDown(KeyCode.Escape))
+                return;
+
+            // Con un modal abierto, ESC lo cierra a él. Antes ESC llegaba a la vez
+            // al modal y al menú, y reanudaba la partida por detrás del diálogo.
+            if (ModalManager.Instance != null && ModalManager.Instance.IsModalOpen)
+                return;
+
+            if (!_paused)
             {
                 Pause();
+                return;
             }
-            else if (_paused && Input.GetKeyDown(KeyCode.Escape))
+
+            // Con un subpanel abierto, ESC vuelve a la navegación principal.
+            if (IsVisible(_settingsPanel))        HideSettings();
+            else if (IsVisible(_controlsPanel))   HideControls();
+            else if (IsVisible(_expedientePanel)) HideExpediente();
+            else                                  Resume();
+        }
+
+        static bool IsVisible(VisualElement element)
+        {
+            return element != null && !element.ClassListContains("hidden");
+        }
+
+        /// <summary>
+        /// Sube el menú (y su modal) por encima de los overlays narrativos, y les
+        /// quita el picking a las capas que no están mostrando nada. Sin esto los
+        /// clics del menú se los quedaba el root a pantalla completa del VN.
+        /// </summary>
+        void EnsureTopmost()
+        {
+            if (_doc != null && _doc.sortingOrder < PauseSortingOrder)
+                _doc.sortingOrder = PauseSortingOrder;
+
+            if (ModalManager.Instance != null)
             {
-                // Si algún subpanel está abierto, cerrarlo y volver a la navegación principal
-                if (_settingsPanel != null && !_settingsPanel.ClassListContains("hidden"))
+                var modalDoc = ModalManager.Instance.GetComponent<UIDocument>();
+                if (modalDoc != null && modalDoc.sortingOrder < ModalSortingOrder)
+                    modalDoc.sortingOrder = ModalSortingOrder;
+            }
+
+            _pauseRoot?.BringToFront();
+            ReleaseIdleOverlays();
+        }
+
+        /// <summary>
+        /// Los overlays a pantalla completa que están ocultos siguen siendo
+        /// pickables si su raíz quedó en display:Flex (pasa mientras el VN espera a
+        /// que su panel se enganche, hasta 180 frames). Se les pone pickingMode
+        /// Ignore para que no intercepten nada mientras no muestren contenido.
+        /// </summary>
+        static void ReleaseIdleOverlays()
+        {
+            foreach (var doc in FindObjectsByType<UIDocument>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+            {
+                if (doc == null || doc.rootVisualElement == null) continue;
+                if (doc.GetComponent<PauseMenu>() != null) continue;
+                if (ModalManager.Instance != null && doc.gameObject == ModalManager.Instance.gameObject) continue;
+                if (doc.sortingOrder < PauseSortingOrder) continue;
+
+                for (int i = 0; i < doc.rootVisualElement.childCount; i++)
                 {
-                    HideSettings();
-                }
-                else if (_controlsPanel != null && !_controlsPanel.ClassListContains("hidden"))
-                {
-                    HideControls();
-                }
-                else if (_expedientePanel != null && !_expedientePanel.ClassListContains("hidden"))
-                {
-                    HideExpediente();
-                }
-                else
-                {
-                    Resume();
+                    VisualElement child = doc.rootVisualElement[i];
+                    bool showing = child.resolvedStyle.display != DisplayStyle.None
+                                && child.resolvedStyle.opacity > 0.01f;
+                    child.pickingMode = showing ? PickingMode.Position : PickingMode.Ignore;
                 }
             }
         }
@@ -153,6 +229,8 @@ namespace Echoes.UI
             gameHUD?.SetVisible(false);
 
             InitializeUI();
+            EnsureTopmost();
+
             _pauseRoot?.RemoveFromClassList("hidden");
             _pauseNav?.RemoveFromClassList("hidden");
             _settingsPanel?.AddToClassList("hidden");
@@ -162,7 +240,6 @@ namespace Echoes.UI
             RefreshChapterHeader();
             RefreshExpedienteStats();
 
-            // Focus en Reanudar
             _btnResume?.Focus();
         }
 
@@ -173,11 +250,9 @@ namespace Echoes.UI
             UnityEngine.Cursor.lockState = UnityEngine.CursorLockMode.Locked;
             UnityEngine.Cursor.visible = false;
 
-            // Liberar cámara del jugador
             var cam = FindAnyObjectByType<SimpleFollowCamera>();
             if (cam != null) cam.Frozen = false;
 
-            // Mostrar HUD gameplay
             var gameHUD2 = FindAnyObjectByType<GameHUD>();
             gameHUD2?.SetVisible(true);
 
@@ -187,48 +262,49 @@ namespace Echoes.UI
         void ConfirmReiniciar()
         {
             string currentScene = SceneManager.GetActiveScene().name;
-            if (ModalManager.Instance == null)
+
+            void DoRestart()
             {
                 Resume();
                 PostProcessingSetup.PrepareForSceneReload();
                 LoadingScreenController.TransitionToScene(currentScene);
+            }
+
+            if (ModalManager.Instance == null)
+            {
+                DoRestart();
                 return;
             }
 
+            EnsureTopmost();
             ModalManager.Instance.ShowModal(
                 "Reiniciar Capítulo",
                 "Se reiniciará el nivel actual y se reestablecerán los ecos.",
-                onConfirm: () =>
-                {
-                    Resume();
-                    PostProcessingSetup.PrepareForSceneReload();
-                    LoadingScreenController.TransitionToScene(currentScene);
-                },
-                onCancel: () => { }
-            );
+                onConfirm: DoRestart,
+                onCancel: () => { });
         }
 
         void ConfirmHub()
         {
-            if (ModalManager.Instance == null)
+            void DoExit()
             {
                 UnpauseForMenu();
                 PostProcessingSetup.PrepareForSceneReload();
                 LoadingScreenController.TransitionToScene(hubSceneName);
+            }
+
+            if (ModalManager.Instance == null)
+            {
+                DoExit();
                 return;
             }
 
+            EnsureTopmost();
             ModalManager.Instance.ShowModal(
                 "Volver al Menú Principal",
                 "¿Deseas volver al menú principal? El progreso de los ecos se guardará.",
-                onConfirm: () =>
-                {
-                    UnpauseForMenu();
-                    PostProcessingSetup.PrepareForSceneReload();
-                    LoadingScreenController.TransitionToScene(hubSceneName);
-                },
-                onCancel: () => { }
-            );
+                onConfirm: DoExit,
+                onCancel: () => { });
         }
 
         void ShowSettings()
@@ -330,7 +406,8 @@ namespace Echoes.UI
             int levelIndex = GameProgress.GetSceneIndex(sceneName);
             int displayLevelNum = levelIndex >= 0 ? levelIndex + 1 : 1;
 
-            // Etapa psicológica basada en nivel (1-4: Convicción, 5-8: Negación/Culpa, 9-12: Desilusión, 13-15: Aceptación)
+            // Etapa psicológica según nivel (1-4 Convicción, 5-8 Negación/Culpa,
+            // 9-12 Desilusión, 13-15 Aceptación).
             string stageTitle = "ETAPA: CONVICCIÓN";
             string stageDesc = "Aiden se resiste a aceptar la alteración de los recuerdos. La memoria aún es una barrera.";
             if (displayLevelNum >= 13)
@@ -402,4 +479,3 @@ namespace Echoes.UI
         }
     }
 }
-

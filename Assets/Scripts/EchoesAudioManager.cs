@@ -83,9 +83,22 @@ public class EchoesAudioManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the AudioMixer reference for routing AudioSources to specific groups.
+    /// Referencia al AudioMixer para enrutar AudioSources a grupos concretos.
+    ///
+    /// Se recarga sola si viene nula. Importa porque <see cref="SetMixerVolume"/>
+    /// se sale sin hacer nada cuando el mixer es null: una referencia perdida
+    /// (asset reimportado, prefab sin serializar el campo) convertía **todos** los
+    /// sliders de volumen en un no-op sin un solo mensaje en consola.
     /// </summary>
-    public AudioMixer Mixer => audioMixer;
+    public AudioMixer Mixer
+    {
+        get
+        {
+            if (audioMixer == null)
+                audioMixer = Resources.Load<AudioMixer>("EchoesAudioMixer");
+            return audioMixer;
+        }
+    }
 
     /// <summary>
     /// Finds a mixer group by name (e.g. "Music", "SFX", "Echo", "Master").
@@ -328,17 +341,34 @@ public class EchoesAudioManager : MonoBehaviour
     /// Converts a linear 0-1 value to decibels and sets it on the mixer.
     /// Uses logarithmic scaling: 0 → -80dB (silence), 1 → 0dB (full).
     /// </summary>
+    /// Para no inundar la consola: cada fallo se avisa una sola vez.
+    static readonly System.Collections.Generic.HashSet<string> _warnedParams = new System.Collections.Generic.HashSet<string>();
+
     void SetMixerVolume(string parameterName, float linearValue)
     {
-        if (audioMixer == null) return;
+        AudioMixer mixer = Mixer;
+        if (mixer == null)
+        {
+            if (_warnedParams.Add("__mixer__"))
+                Debug.LogWarning("[Echoes Audio] No se encontró EchoesAudioMixer en Resources: los ajustes de volumen no tendrán efecto.");
+            return;
+        }
 
         float dB;
         if (linearValue <= 0.0001f)
-            dB = -80f; // Effectively silent
+            dB = -80f; // silencio efectivo
         else
             dB = Mathf.Log10(linearValue) * 20f;
 
-        audioMixer.SetFloat(parameterName, dB);
+        // SetFloat devuelve false cuando el parámetro expuesto no resuelve a ningún
+        // efecto. Ignorar ese false es lo que mantuvo oculto durante tanto tiempo
+        // que 11 de los 12 buses tenían el GUID de volumen a ceros y ningún slider
+        // salvo el maestro movía nada.
+        if (!mixer.SetFloat(parameterName, dB) && _warnedParams.Add(parameterName))
+        {
+            Debug.LogWarning($"[Echoes Audio] El parámetro expuesto '{parameterName}' no existe o no está enlazado en el mixer. " +
+                             "Ejecuta Echoes of You > Production > Repair Audio Mixer (volúmenes).");
+        }
     }
 
     /// <summary>
@@ -350,7 +380,13 @@ public class EchoesAudioManager : MonoBehaviour
         if (Instance != null) return Instance;
 
         EchoesAudioManager existing = FindAnyObjectByType<EchoesAudioManager>();
-        if (existing != null) return existing;
+        if (existing != null)
+        {
+            // Sin esto, Instance seguía a null tras un domain reload y cada
+            // llamada a EnsureExists repetía el FindAnyObjectByType.
+            Instance = existing;
+            return existing;
+        }
 
         GameObject go = new GameObject("EchoesAudioManager");
         EchoesAudioManager mgr = go.AddComponent<EchoesAudioManager>();

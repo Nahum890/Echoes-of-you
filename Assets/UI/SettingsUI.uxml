@@ -255,7 +255,7 @@
                             <ui:Label text="Densidad de articulación atmosférica." class="settings-item-hint" />
                         </ui:VisualElement>
                         <ui:VisualElement style="align-items: flex-end;">
-                            <ui:Slider name="sldFog" label="" low-value="0" high-value="0.1" value="0.035" class="settings-slider" />
+                            <ui:Slider name="sldFog" label="" low-value="0" high-value="0.02" value="0.008" class="settings-slider" />
                             <ui:Label name="lblFogVal" text="0.035" class="settings-slider-value" />
                         </ui:VisualElement>
                     </ui:VisualElement>

@@ -201,16 +201,21 @@ public class EchoPlayback : MonoBehaviour
         if (_anim != null)
             _anim.speed = 0f;
 
-        if (mode != EchoPlaybackMode.Standard)
-            ApplyAnalogAudioFilters();
+        // El color analógico de los modos no estándar lo aplica ahora
+        // ApplyVoiceProcessing, que parte de un desgaste mínimo del 35% para
+        // ellos. Tener dos sitios ajustando los mismos filtros hacía que el
+        // último en escribir ganara sin que se notara.
 
         _pendingVoiceClip = voiceClip;
+        _voicePass = 0;
+        _voiceExhausted = false;
         if (_audioSource != null)
         {
             _audioSource.clip = voiceClip;
             ConfigureSpatialVoicePlayback();
-            if (mode == EchoPlaybackMode.Standard)
-                RemoveVoiceDegradingFilters();
+            RemoveVoiceDegradingFilters();
+            if (voiceClip != null)
+                ApplyVoiceProcessing(0);
             // La voz arranca al terminar la latencia, junto con el movimiento.
         }
     }
@@ -220,8 +225,7 @@ public class EchoPlayback : MonoBehaviour
         _latencyRemaining = 0f;
         SetEchoAlpha(PlaybackAlpha);
         PhaseChanged?.Invoke(EchoPlaybackPhase.Playback);
-        if (_audioSource != null && _pendingVoiceClip != null)
-            _audioSource.Play();
+        StartVoice();
     }
 
     void ConfigureSpatialVoicePlayback()
@@ -229,9 +233,13 @@ public class EchoPlayback : MonoBehaviour
         if (_audioSource == null)
             return;
 
-        _audioSource.loop = true;
+        // loop = false a propósito: cada repetición la relanza EchoPlayback al dar
+        // la vuelta el bucle de movimiento (ver AdvanceVoicePass). Con loop = true
+        // el AudioSource se reiniciaba solo, siempre idéntico y a volumen pleno, y
+        // no había forma de saber por qué pasada iba para degradarla.
+        _audioSource.loop = false;
         _audioSource.playOnAwake = false;
-        _audioSource.volume = 1f;
+        _audioSource.volume = VoiceStartVolume;
         _audioSource.pitch = 1f;
         _audioSource.spatialBlend = 1f;
         _audioSource.dopplerLevel = 0.05f;
@@ -244,16 +252,161 @@ public class EchoPlayback : MonoBehaviour
         _audioSource.bypassReverbZones = true;
     }
 
+    // ═══════════════════════════════════════════════════════════════════
+    // VOZ DEL ECO — clara una vez, luego se va apagando
+    // ═══════════════════════════════════════════════════════════════════
+    //
+    // EchoRecorder graba la voz real del jugador por micrófono mientras se
+    // mantiene R, y el eco la reproduce. Antes eso era un AudioSource con
+    // loop = true y volume = 1: la misma toma, idéntica y a tope, para siempre.
+    //
+    // Ahora la primera pasada suena limpia — se entiende lo que dijo el jugador —
+    // y cada repetición se aleja un poco más: baja de volumen, se le cierra el
+    // filtro de agudos, se le abre la cola de eco y el tono cae ligeramente, como
+    // una cinta que se va borrando. Cuando deja de ser audible, se para.
+
+    /// Volumen de la primera pasada, la que tiene que oírse clara.
+    const float VoiceStartVolume = 1f;
+    /// Cuánto sobrevive cada repetición respecto de la anterior.
+    const float VoiceDecayPerPass = 0.58f;
+    /// Por debajo de esto ya no se relanza: es ruido inaudible ocupando una voz.
+    const float VoiceMinAudibleVolume = 0.05f;
+    /// Corte del paso bajo en la primera pasada: por encima del rango de voz,
+    /// así que no ensucia nada y la toma se entiende entera.
+    const float VoiceLowPassClear = 22000f;
+    /// Corte al que tiende conforme se degrada: sonido de teléfono lejano.
+    const float VoiceLowPassSpent = 620f;
+
+    AudioLowPassFilter _voiceLowPass;
+    AudioHighPassFilter _voiceHighPass;
+    AudioEchoFilter _voiceEcho;
+    AudioReverbFilter _voiceReverb;
+
+    /// 0 = la primera vez que el eco dice la frase.
+    int _voicePass;
+    /// Se queda en true cuando la voz ya se ha apagado del todo.
+    bool _voiceExhausted;
+
+    /// <summary>Se dispara cada vez que el eco vuelve a decir la frase. El
+    /// argumento es el número de pasada (0 = la primera, la clara).</summary>
+    public event System.Action<int> VoiceRepeated;
+
+    void EnsureVoiceFilters()
+    {
+        if (_voiceLowPass == null)
+        {
+            _voiceLowPass = GetComponent<AudioLowPassFilter>();
+            if (_voiceLowPass == null) _voiceLowPass = gameObject.AddComponent<AudioLowPassFilter>();
+        }
+        if (_voiceHighPass == null)
+        {
+            _voiceHighPass = GetComponent<AudioHighPassFilter>();
+            if (_voiceHighPass == null) _voiceHighPass = gameObject.AddComponent<AudioHighPassFilter>();
+        }
+        if (_voiceEcho == null)
+        {
+            _voiceEcho = GetComponent<AudioEchoFilter>();
+            if (_voiceEcho == null) _voiceEcho = gameObject.AddComponent<AudioEchoFilter>();
+            _voiceEcho.delay = 190f;      // ms — se percibe como eco, no como reverb
+            _voiceEcho.decayRatio = 0.35f;
+            _voiceEcho.dryMix = 1f;
+        }
+        if (_voiceReverb == null)
+        {
+            _voiceReverb = GetComponent<AudioReverbFilter>();
+            if (_voiceReverb == null) _voiceReverb = gameObject.AddComponent<AudioReverbFilter>();
+            _voiceReverb.reverbPreset = AudioReverbPreset.Hallway;
+        }
+    }
+
+    /// <summary>
+    /// Ajusta el procesado de la voz para la pasada indicada. Pasada 0 = limpia.
+    /// </summary>
+    void ApplyVoiceProcessing(int pass)
+    {
+        if (_audioSource == null)
+            return;
+
+        EnsureVoiceFilters();
+
+        // 0 en la primera pasada, tendiendo a 1 conforme se repite.
+        float wear = 1f - Mathf.Pow(VoiceDecayPerPass, Mathf.Max(0, pass));
+        // Los modos no estándar (Ambient, Inversion, Future…) ya nacen degradados.
+        if (playbackMode != EchoPlaybackMode.Standard)
+            wear = Mathf.Max(wear, 0.35f);
+        // El nivel puede pedir una degradación más agresiva desde el blueprint.
+        if (degradationPerReplay > 0f)
+            wear = Mathf.Clamp01(wear + pass * degradationPerReplay);
+
+        float volume = VoiceStartVolume * Mathf.Pow(VoiceDecayPerPass, Mathf.Max(0, pass));
+        if (playbackMode != EchoPlaybackMode.Standard)
+            volume *= 0.85f;
+
+        _audioSource.volume = volume;
+        // Caída de tono muy leve: da la sensación de cinta gastada sin volver la
+        // frase ininteligible en la primera repetición.
+        _audioSource.pitch = Mathf.Lerp(1f, 0.93f, wear);
+
+        _voiceLowPass.cutoffFrequency = Mathf.Lerp(VoiceLowPassClear, VoiceLowPassSpent, wear);
+        _voiceLowPass.lowpassResonanceQ = Mathf.Lerp(1f, 1.6f, wear);
+
+        // Adelgazar por abajo aleja la voz sin enturbiarla.
+        _voiceHighPass.cutoffFrequency = Mathf.Lerp(60f, 420f, wear);
+
+        // La cola de eco crece: en la primera pasada casi no está.
+        _voiceEcho.wetMix = Mathf.Lerp(0f, 0.55f, wear);
+        _voiceEcho.decayRatio = Mathf.Lerp(0.2f, 0.55f, wear);
+
+        _voiceReverb.dryLevel = Mathf.Lerp(0f, -900f, wear);
+        _voiceReverb.room = Mathf.Lerp(-2000f, -400f, wear);
+    }
+
+    /// <summary>
+    /// Arranca la voz de la primera pasada. La llama EndLatency, junto con el
+    /// primer movimiento del eco.
+    /// </summary>
+    void StartVoice()
+    {
+        if (_audioSource == null || _pendingVoiceClip == null)
+            return;
+
+        _voicePass = 0;
+        _voiceExhausted = false;
+        ApplyVoiceProcessing(0);
+        _audioSource.time = 0f;
+        _audioSource.Play();
+        VoiceRepeated?.Invoke(0);
+    }
+
+    /// <summary>
+    /// El bucle de movimiento ha dado la vuelta: el eco vuelve a decir la frase,
+    /// un poco más lejos que la vez anterior.
+    /// </summary>
+    void AdvanceVoicePass()
+    {
+        if (_audioSource == null || _pendingVoiceClip == null || _voiceExhausted)
+            return;
+
+        _voicePass++;
+
+        float nextVolume = VoiceStartVolume * Mathf.Pow(VoiceDecayPerPass, _voicePass);
+        if (nextVolume < VoiceMinAudibleVolume)
+        {
+            // Ya no se oye: se apaga en vez de seguir gastando una voz del mixer.
+            _voiceExhausted = true;
+            _audioSource.Stop();
+            return;
+        }
+
+        ApplyVoiceProcessing(_voicePass);
+        _audioSource.Stop();
+        _audioSource.time = 0f;
+        _audioSource.Play();
+        VoiceRepeated?.Invoke(_voicePass);
+    }
+
     void RemoveVoiceDegradingFilters()
     {
-        AudioLowPassFilter lowPass = GetComponent<AudioLowPassFilter>();
-        if (lowPass != null)
-            DestroySafe(lowPass);
-
-        AudioReverbFilter reverb = GetComponent<AudioReverbFilter>();
-        if (reverb != null)
-            DestroySafe(reverb);
-
         AudioDistortionFilter distortion = GetComponent<AudioDistortionFilter>();
         if (distortion != null)
             DestroySafe(distortion);
@@ -338,17 +491,6 @@ public class EchoPlayback : MonoBehaviour
     public float degradationPerReplay = 0.0f;
     private int _playCount = 0;
 
-    void ApplyAnalogAudioFilters()
-    {
-        AudioLowPassFilter lp = GetComponent<AudioLowPassFilter>();
-        if (lp == null) lp = gameObject.AddComponent<AudioLowPassFilter>();
-        lp.cutoffFrequency = 2500f;
-
-        AudioHighPassFilter hp = GetComponent<AudioHighPassFilter>();
-        if (hp == null) hp = gameObject.AddComponent<AudioHighPassFilter>();
-        hp.cutoffFrequency = 400f;
-    }
-
     void FixedUpdate()
     {
         if (!_playing || _frames.Count == 0)
@@ -368,15 +510,9 @@ public class EchoPlayback : MonoBehaviour
             _time = 0f;
             _playCount++;
 
-            // Apply incremental degradation effects to audio pitch
-            if (degradationPerReplay > 0f)
-            {
-                float totalDegradation = Mathf.Clamp01(_playCount * degradationPerReplay * 5f);
-                if (_audioSource != null)
-                {
-                    _audioSource.pitch = Mathf.Max(0.75f, 1f - totalDegradation * 0.2f);
-                }
-            }
+            // El eco vuelve a empezar el recorrido: también vuelve a decir la
+            // frase, una pasada más gastada que la anterior.
+            AdvanceVoicePass();
         }
 
         // Degradation: time offset drifts slightly with each replay loop

@@ -59,6 +59,141 @@ public static class EchoesLevelRedesignPass
         Debug.Log("[Rediseño N02-N03]\n" + log);
     }
 
+    [MenuItem("Echoes of You/Design/Preparar bloque para presentar (N01-N06)", false, 299)]
+    public static void PrepareBlockForShowcase()
+    {
+        var log = new StringBuilder();
+        for (int level = 1; level <= 6; level++)
+            ApplyToLevel(level, log);
+        Debug.Log("[Bloque listo]" + System.Environment.NewLine + log);
+    }
+
+    [MenuItem("Echoes of You/Design/Botones: respuesta inmediata (N01-N06)", false, 303)]
+    public static void TightenAllPlates()
+    {
+        var log = new StringBuilder();
+        for (int level = 1; level <= 6; level++)
+        {
+            string path = ScenePath(level);
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(path) == null) continue;
+            Scene scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+            log.AppendLine("======== " + scene.name + " ========");
+            TightenPlates(scene, log);
+            EnforceDoorTiming(scene, log);
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+        }
+        Debug.Log("[Botones inmediatos]" + System.Environment.NewLine + log);
+    }
+
+    /// <summary>
+    /// Deja todas las placas con respuesta inmediata y aceptando al jugador.
+    ///
+    /// Dos cosas hacian que pareciera que se quedaban encendidas:
+    ///  - autoReleaseTimer > 0 mantiene la placa pisada despues de bajarte.
+    ///  - la caja de deteccion era mas grande que la placa visible, asi que
+    ///    salias de ella y seguias dentro de la zona.
+    /// </summary>
+    static void TightenPlates(Scene scene, StringBuilder log)
+    {
+        int n = 0, temporizadores = 0, aceptan = 0, soloEco = 0;
+
+        foreach (PressurePlate pp in Object.FindObjectsByType<PressurePlate>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            n++;
+            var so = new SerializedObject(pp);
+
+            SerializedProperty timer = so.FindProperty("autoReleaseTimer");
+            if (timer != null && timer.floatValue > 0f)
+            {
+                log.AppendLine("  " + pp.gameObject.name + ": autoReleaseTimer "
+                    + timer.floatValue.ToString("0.00") + " -> 0 (se apagaba tarde)");
+                timer.floatValue = 0f;
+                temporizadores++;
+            }
+
+            if (!so.FindProperty("acceptPlayer").boolValue) aceptan++;
+            so.FindProperty("acceptPlayer").boolValue = true;
+            so.FindProperty("acceptEcho").boolValue = true;
+            so.FindProperty("acceptEchoProjection").boolValue = true;
+            so.ApplyModifiedPropertiesWithoutUndo();
+
+            var comp = pp.GetComponent<PressurePlateEchoOnly>();
+            if (comp != null) { Object.DestroyImmediate(comp); soloEco++; }
+            Transform barrera = pp.transform.Find("EchoOnly_PlayerBarrier");
+            if (barrera != null) Object.DestroyImmediate(barrera.gameObject);
+        }
+
+        log.AppendLine("  placas=" + n + " | temporizadores a 0: " + temporizadores
+            + " | pasan a aceptar al jugador: " + aceptan + " | componentes solo-Eco retirados: " + soloEco);
+    }
+
+    [MenuItem("Echoes of You/Design/Puertas sin enganche (N01-N06)", false, 302)]
+    public static void UnlatchAllDoors()
+    {
+        var log = new StringBuilder();
+        for (int level = 1; level <= 6; level++)
+        {
+            string path = ScenePath(level);
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(path) == null) continue;
+            Scene scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+            log.AppendLine("======== " + scene.name + " ========");
+            if (EnforceDoorTiming(scene, log))
+            {
+                EditorSceneManager.MarkSceneDirty(scene);
+                EditorSceneManager.SaveScene(scene);
+            }
+        }
+        Debug.Log("[Puertas sin enganche]" + System.Environment.NewLine + log);
+    }
+
+    /// <summary>
+    /// Una puerta con latchOpen se queda abierta para siempre en cuanto se cumple
+    /// la condicion una sola vez. Eso anula la mecanica: la gracia es que la placa
+    /// se suelta al bajarte y la puerta se cierra, asi que hay que cruzar MIENTRAS
+    /// el Eco la sostiene. PressurePlate ya libera al instante (autoReleaseTimer=0);
+    /// el enganche estaba en la puerta.
+    /// </summary>
+    static bool EnforceDoorTiming(Scene scene, StringBuilder log)
+    {
+        bool cambiada = false;
+
+        foreach (DoorController d in Object.FindObjectsByType<DoorController>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (d.latchOpen)
+            {
+                d.latchOpen = false;
+                EditorUtility.SetDirty(d);
+                cambiada = true;
+                log.AppendLine("  " + d.gameObject.name + ": latchOpen SI -> no (ahora se cierra al soltar la placa)");
+            }
+
+            int placas = d.plates == null ? 0 : d.plates.Length;
+            int validas = 0;
+            if (d.plates != null) foreach (PressurePlate pp in d.plates) if (pp != null) validas++;
+            if (validas == 0)
+                log.AppendLine("  AVISO " + d.gameObject.name + ": " + placas + " placas asignadas, " + validas
+                    + " validas -> DoorController la deja CERRADA para siempre, el nivel no se puede terminar");
+        }
+
+        // Lo mismo en las conexiones de PuzzleWire.
+        foreach (PuzzleWire w in Object.FindObjectsByType<PuzzleWire>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (w.connections == null) continue;
+            foreach (var c in w.connections)
+            {
+                if (!c.latchOpen) continue;
+                c.latchOpen = false;
+                EditorUtility.SetDirty(w);
+                cambiada = true;
+                log.AppendLine("  PuzzleWire -> " + (c.door == null ? "?" : c.door.gameObject.name) + ": latchOpen SI -> no");
+            }
+        }
+
+        if (!cambiada) log.AppendLine("  ninguna puerta con enganche");
+        return cambiada;
+    }
+
     [MenuItem("Echoes of You/Design/Validar reglas de spec (N01-N06)", false, 301)]
     public static void ValidateBlock()
     {
@@ -98,10 +233,14 @@ public static class EchoesLevelRedesignPass
         SplitLargeFloors(scene, log);       // sin esto, 8 luces para 1600 m2 de suelo
         FixOversizedProps(scene, log);
         RepaintFurniture(scene, log);       // el ambar vuelve a significar algo
+        if (level == 2) LayOutTwinPlates(scene, log);   // LEVEL_SPEC_02: las dos placas a la vista
+        RaiseRooms(scene, log);             // antes del techo: sube los muros
         BuildCeilings(scene, log);          // antes de la luz: las luminarias cuelgan del techo
         TuneCameraForInteriors(scene, log); // despues del techo: la camara tiene que caber debajo
         FixPlateClearance(scene, log);      // antes de la luz: las ACCENT siguen a las placas
         BuildLightingHierarchy(scene, log);
+        TightenPlates(scene, log);       // se apaga al bajarte
+        EnforceDoorTiming(scene, log);   // el timing es la mecanica
         BuildPuzzleCables(scene, log);
         EnforceLightBudget(scene, log);
         Validate(scene, log);
@@ -159,6 +298,165 @@ public static class EchoesLevelRedesignPass
             + "  Baked/Mixed -> Realtime=" + convertidas
             + "  valores recortados=" + recortadas);
         log.AppendLine("  ambiente Flat #0F141A 0.15 | niebla ExpSq #1C2430 d=0.008");
+    }
+
+    // ------------------------------------------------------------------
+    // 1.-2 Las dos placas de N02, a la vista
+    // ------------------------------------------------------------------
+    /// <summary>
+    /// LEVEL_SPEC_02 coloca las dos placas en [-3,0,25] y [3,0,25]: separadas 6 m,
+    /// en la misma sala, visibles a la vez. La escena las tenia repartidas: la del
+    /// jugador en mitad del pasillo (se pisa sola al pasar, parece averiada) y la
+    /// del Eco 24 m a la izquierda dentro de un aula lateral, sin linea de vision,
+    /// asi que el jugador no llegaba a saber que existia y el puzzle se leia
+    /// incompleto.
+    ///
+    /// Se recoloca la del Eco al lado de la del jugador y ambas se apartan de la
+    /// linea de marcha, para que se lean como un par y no se pisen sin querer.
+    /// </summary>
+    static void LayOutTwinPlates(Scene scene, StringBuilder log)
+    {
+        DoorController puerta = Object.FindAnyObjectByType<DoorController>();
+        if (puerta == null) { log.AppendLine("  placas gemelas: no hay puerta de referencia"); return; }
+
+        PressurePlate jugador = null, eco = null;
+        foreach (PressurePlate pp in Object.FindObjectsByType<PressurePlate>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            var so = new SerializedObject(pp);
+            bool aceptaJugador = so.FindProperty("acceptPlayer").boolValue;
+            if (aceptaJugador && jugador == null) jugador = pp;
+            else if (!aceptaJugador && eco == null) eco = pp;
+        }
+        if (jugador == null || eco == null) { log.AppendLine("  placas gemelas: no encontre la pareja"); return; }
+
+        // El ancla es la PUERTA, no la posicion actual de las placas: si se toma
+        // la placa como referencia, cada pase la desplaza otra vez y el par se va
+        // arrastrando por el pasillo.
+        Vector3 pd = puerta.transform.position;
+        const float Separacion = 3f;    // 3 m de editor = 6 m de juego (LEVEL_SPEC_02)
+        const float DistanciaAntesDeLaPuerta = 11f;
+
+        Vector3 centro = new Vector3(pd.x, pd.y, pd.z - DistanciaAntesDeLaPuerta);
+        Vector3 posJugador = SobreElSuelo(new Vector3(centro.x - Separacion * 0.5f, centro.y, centro.z), jugador.transform.position);
+        Vector3 posEco = SobreElSuelo(new Vector3(centro.x + Separacion * 0.5f, centro.y, centro.z), eco.transform.position);
+
+        Vector3 antesJ = jugador.transform.position;
+        Vector3 antesE = eco.transform.position;
+        jugador.transform.position = posJugador;
+        eco.transform.position = posEco;
+
+        // Ambas placas aceptan jugador Y Eco. El puzzle sigue exigiendo dos
+        // actores — nadie puede estar en dos sitios a la vez — pero deja de
+        // castigar al jugador por pisar "la que no era", que solo confundia.
+        foreach (PressurePlate pp in new[] { jugador, eco })
+        {
+            var so = new SerializedObject(pp);
+            so.FindProperty("acceptPlayer").boolValue = true;
+            so.FindProperty("acceptEcho").boolValue = true;
+            so.FindProperty("acceptEchoProjection").boolValue = true;
+            so.ApplyModifiedPropertiesWithoutUndo();
+
+            // La barrera fisica de las placas solo-Eco ya no pinta nada aqui.
+            var soloEco = pp.GetComponent<PressurePlateEchoOnly>();
+            if (soloEco != null) Object.DestroyImmediate(soloEco);
+            Transform barrera = pp.transform.Find("EchoOnly_PlayerBarrier");
+            if (barrera != null) Object.DestroyImmediate(barrera.gameObject);
+        }
+        Physics.SyncTransforms();
+
+        log.AppendLine("  placas gemelas (LEVEL_SPEC_02, ancladas a la puerta):");
+        log.AppendLine("     jugador " + antesJ.ToString("0.0") + " -> " + posJugador.ToString("0.0"));
+        log.AppendLine("     eco     " + antesE.ToString("0.0") + " -> " + posEco.ToString("0.0"));
+        log.AppendLine("     separacion " + (Vector3.Distance(posJugador, posEco) * 2f).ToString("0.0")
+            + " m de juego, a " + (DistanciaAntesDeLaPuerta * 2f).ToString("0") + " m de la puerta");
+    }
+
+    static Vector3 SobreElSuelo(Vector3 deseada, Vector3 respaldo)
+    {
+        RaycastHit h;
+        if (Physics.Raycast(new Vector3(deseada.x, deseada.y + 5f, deseada.z), Vector3.down, out h, 20f, ~0, QueryTriggerInteraction.Ignore))
+            return new Vector3(deseada.x, h.point.y + 0.05f, deseada.z);
+        return respaldo;
+    }
+
+    // ------------------------------------------------------------------
+    // 1.-1 Techos mas altos
+    // ------------------------------------------------------------------
+    /// <summary>
+    /// Sube los muros de cada sala para que el techo quede mas alto, manteniendo
+    /// el suelo donde esta. BuildCeilings mide los bounds despues, asi que la losa
+    /// sigue a los muros sin tocar nada mas.
+    /// </summary>
+    static void RaiseRooms(Scene scene, StringBuilder log)
+    {
+        // Altura OBJETIVO en metros de juego, no un incremento: asi el pase se
+        // puede reejecutar sin que las salas crezcan sin parar.
+        const float AlturaPasillo = 14f;
+        const float AlturaSalaGrande = 20f;
+
+        GameObject env = FindRoot(scene, "--- ENVIRONMENT ---");
+        if (env == null) { log.AppendLine("  altura: sin root ENVIRONMENT"); return; }
+
+        int muros = 0, salas = 0;
+        float masBaja = float.MaxValue, masAlta = 0f;
+
+        foreach (Transform sala in env.transform)
+        {
+            // Tamaño de la sala para decidir cuanto techo merece.
+            Bounds b = new Bounds();
+            bool tiene = false;
+            foreach (Collider c in sala.GetComponentsInChildren<Collider>())
+            {
+                if (c.isTrigger) continue;
+                Bounds cb = c.bounds;
+                if (cb.size.magnitude > 300f) continue;
+                if (!tiene) { b = cb; tiene = true; } else b.Encapsulate(cb);
+            }
+            if (!tiene) continue;
+
+            float anchoJuego = b.size.x * 2f;
+            float fondoJuego = b.size.z * 2f;
+            if (anchoJuego < 4f || fondoJuego < 4f) continue;
+
+            float objetivoJuego = Mathf.Min(anchoJuego, fondoJuego) >= 14f ? AlturaSalaGrande : AlturaPasillo;
+
+            float escalaSala = Mathf.Abs(sala.lossyScale.y);
+            if (escalaSala < 0.001f) continue;
+            // metros de juego -> unidades locales del muro
+            float objetivoLocal = objetivoJuego / (escalaSala * 2f);
+
+            bool tocada = false;
+            foreach (Transform hijo in sala.GetComponentsInChildren<Transform>())
+            {
+                string n = hijo.name.ToLower();
+                if (!n.Contains("wall") && !n.Contains("muro") && !n.Contains("pared")) continue;
+                if (hijo.GetComponent<Renderer>() == null && hijo.GetComponent<Collider>() == null) continue;
+
+                Vector3 sc = hijo.localScale;
+                if (sc.y < 0.5f) continue;   // no es un muro vertical
+
+                float baseY = hijo.localPosition.y - sc.y * 0.5f;   // el suelo no se toca
+                hijo.localScale = new Vector3(sc.x, objetivoLocal, sc.z);
+                Vector3 pos = hijo.localPosition;
+                hijo.localPosition = new Vector3(pos.x, baseY + objetivoLocal * 0.5f, pos.z);
+                muros++;
+                tocada = true;
+            }
+            if (tocada)
+            {
+                salas++;
+                masBaja = Mathf.Min(masBaja, objetivoJuego);
+                masAlta = Mathf.Max(masAlta, objetivoJuego);
+            }
+        }
+
+        // Sin esto, Collider.bounds sigue devolviendo la caja ANTERIOR al cambio de
+        // transform, y BuildCeilings coloca la losa a la altura vieja.
+        Physics.SyncTransforms();
+
+        log.AppendLine("  altura (objetivo absoluto): " + muros + " muros en " + salas + " salas -> "
+            + (masBaja == float.MaxValue ? "-" : masBaja.ToString("0")) + " a " + masAlta.ToString("0")
+            + " m de juego, el suelo no se mueve");
     }
 
     // ------------------------------------------------------------------
@@ -233,6 +531,7 @@ public static class EchoesLevelRedesignPass
             troceados++;
         }
 
+        Physics.SyncTransforms();
         if (troceados == 0) log.AppendLine("  suelos: nada que trocear");
         else log.AppendLine("  suelos troceados: " + troceados + " mallas gigantes -> " + baldosas
             + " baldosas de ~10 m (cada una con su propio cupo de 8 luces)");
@@ -289,6 +588,7 @@ public static class EchoesLevelRedesignPass
             ajustados++;
         }
 
+        Physics.SyncTransforms();
         if (ajustados == 0) log.AppendLine("  props: ninguno fuera de escala");
     }
 
@@ -441,6 +741,10 @@ public static class EchoesLevelRedesignPass
     /// </summary>
     static void BuildCeilings(Scene scene, StringBuilder log)
     {
+        // Los bounds de collider se leen aqui: hay que asegurarse de que reflejan
+        // el estado actual y no el previo a los cambios de transform de este pase.
+        Physics.SyncTransforms();
+
         Material matTecho = AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/Echoes/Mat_LiminalCeiling.mat");
         Material matTubo = AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/Echoes/Mat_Fluorescent.mat");
         GameObject env = FindRoot(scene, "--- ENVIRONMENT ---");
@@ -682,14 +986,16 @@ public static class EchoesLevelRedesignPass
             if (!Physics.Raycast(destino + Vector3.up * 4f, Vector3.down, out suelo, 12f, ~0, QueryTriggerInteraction.Ignore))
                 continue;
 
+            // Solo se AVISA, no se mueve: estas placas son decisiones de diseño y
+            // el nivel puede estar abierto en el editor mientras corre el pase.
+            // Mover geometria de otro por debajo es peor que dejar el aviso.
             destino.y = suelo.point.y + 0.05f;
-            p.transform.position = destino;
             movidas++;
-            log.AppendLine("  placa separada de la pared: " + p.gameObject.name
-                + " " + pos.ToString("0.00") + " -> " + destino.ToString("0.00"));
+            log.AppendLine("  AVISO holgura: " + p.gameObject.name + " en " + pos.ToString("0.00")
+                + " esta a menos de 1.5 m de una pared; sugerido " + destino.ToString("0.00"));
         }
 
-        if (movidas == 0) log.AppendLine("  holgura de placas: nada que mover");
+        if (movidas == 0) log.AppendLine("  holgura de placas: todas con espacio suficiente");
     }
 
 

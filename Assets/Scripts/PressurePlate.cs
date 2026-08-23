@@ -156,9 +156,11 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
         Vector3 center = transform.TransformPoint(box.center);
         Vector3 halfExtents = Vector3.Scale(box.size, transform.lossyScale) * 0.5f;
 
-        // Inflar detección en TODAS las direcciones (antes solo Y), para que la placa
-        // reaccione cuando el player/eco entra desde los lados — no solo desde arriba.
-        halfExtents += Vector3.one * 0.15f;
+        // Margen minimo en horizontal: la placa debe apagarse en cuanto te bajas de
+        // ella. Un margen generoso en XZ hacia que siguiera contando medio metro
+        // por fuera del borde visible y parecia que se quedaba encendida.
+        // En vertical si hace falta holgura: el eco en proyeccion no pisa el suelo.
+        halfExtents += new Vector3(0.04f, 0.45f, 0.04f);
         center.y += 0.1f;
 
         int hitCount = Physics.OverlapBoxNonAlloc(center, halfExtents, _overlapBuffer, transform.rotation);

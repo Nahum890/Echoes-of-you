@@ -42,6 +42,8 @@ public class MainMenuController : MonoBehaviour
     VisualElement _panelStabilityMap;
     VisualElement _panelCalibrationPreview;
     VisualElement _panelDisconnectOffline;
+    VisualElement _panelGallery;
+    readonly Echoes.UI.GalleryController _gallery = new Echoes.UI.GalleryController();
     VisualElement _rightContentContainer;
     string _activePreviewPanelName = "panel-neural-archives";
     Coroutine _terminalLogCoroutine;
@@ -54,6 +56,7 @@ public class MainMenuController : MonoBehaviour
     Button _btnSettings;
     Button _btnExit;
     Button _btnCredits;
+    Button _btnGallery;
     Button _activeNavButton;
 
     // Settings Controls - Audio
@@ -137,6 +140,7 @@ public class MainMenuController : MonoBehaviour
         _panelStabilityMap = _root.Q("panel-stability-map");
         _panelCalibrationPreview = _root.Q("panel-calibration-preview");
         _panelDisconnectOffline = _root.Q("panel-disconnect-offline");
+        _panelGallery = _root.Q("panel-gallery");
 
         // Side nav buttons
         _btnContinue = _root.Q<Button>("nav-continue");
@@ -146,6 +150,7 @@ public class MainMenuController : MonoBehaviour
         _btnSettings = _root.Q<Button>("nav-settings");
         _btnExit = _root.Q<Button>("nav-exit");
         _btnCredits = _root.Q<Button>("nav-credits");
+        _btnGallery = _root.Q<Button>("nav-gallery");
 
         // Setup hover behaviors + acciones de nav (una sola vez)
         if (!_wired)
@@ -159,6 +164,7 @@ public class MainMenuController : MonoBehaviour
             RegisterButtonClick("nav-settings", ShowSettings);
             RegisterButtonClick("nav-exit", ShowExitConfirm);
             RegisterButtonClick("nav-credits", ShowCredits);
+            RegisterButtonClick("nav-gallery", ShowGallery);
         }
 
         GameProgress.EnsureInitialized();
@@ -328,6 +334,11 @@ public class MainMenuController : MonoBehaviour
             _btnCredits.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnCredits, MainMenuCinematicWorld.MenuAmbience.Void, "Créditos"));
             _btnCredits.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnCredits));
         }
+        if (_btnGallery != null)
+        {
+            _btnGallery.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnGallery, MainMenuCinematicWorld.MenuAmbience.Void, "Archivo Visual"));
+            _btnGallery.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnGallery));
+        }
         if (_btnExit != null)
         {
             _btnExit.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnExit, MainMenuCinematicWorld.MenuAmbience.Disconnect, "Salir del Recuerdo"));
@@ -378,6 +389,7 @@ public class MainMenuController : MonoBehaviour
         _btnChapters?.RemoveFromClassList("nav-item--active");
         _btnSettings?.RemoveFromClassList("nav-item--active");
         _btnCredits?.RemoveFromClassList("nav-item--active");
+        _btnGallery?.RemoveFromClassList("nav-item--active");
         _btnExit?.RemoveFromClassList("nav-item--active");
         activeBtn?.AddToClassList("nav-item--active");
 
@@ -403,6 +415,7 @@ public class MainMenuController : MonoBehaviour
         if (_activeNavButton == _btnLevels || _activeNavButton == _btnChapters) return "Archivos Escolares";
         if (_activeNavButton == _btnSettings) return "Ajustar Receptor";
         if (_activeNavButton == _btnCredits) return "Créditos";
+        if (_activeNavButton == _btnGallery) return "Archivo Visual";
         if (_activeNavButton == _btnExit) return "Salir del Recuerdo";
         return "Recuerdo Aislado";
     }
@@ -413,6 +426,7 @@ public class MainMenuController : MonoBehaviour
         if (btn == _btnNewGame) return "panel-neural-archives";
         if (btn == _btnLevels || btn == _btnChapters) return "panel-stability-map";
         if (btn == _btnSettings) return "panel-calibration-preview";
+        if (btn == _btnGallery) return "panel-gallery";
         if (btn == _btnExit) return "panel-disconnect-offline";
         return "panel-neural-archives";
     }
@@ -429,6 +443,7 @@ public class MainMenuController : MonoBehaviour
         _panelStabilityMap?.RemoveFromClassList("preview-panel--visible");
         _panelCalibrationPreview?.RemoveFromClassList("preview-panel--visible");
         _panelDisconnectOffline?.RemoveFromClassList("preview-panel--visible");
+        _panelGallery?.RemoveFromClassList("preview-panel--visible");
 
         // Show the target panel
         var target = _root.Q(panelName);
@@ -441,6 +456,12 @@ public class MainMenuController : MonoBehaviour
         else if (panelName == "panel-neural-archives")
         {
             RefreshNeuralArchives();
+        }
+        else if (panelName == "panel-gallery")
+        {
+            // También al pasar el ratón por el ítem de nav, no solo al pulsarlo:
+            // el panel se muestra en hover como los demás y debe traer imagen.
+            _gallery.Attach(_panelGallery);
         }
     }
 
@@ -483,6 +504,7 @@ public class MainMenuController : MonoBehaviour
         _panelStabilityMap?.RemoveFromClassList("preview-panel--visible");
         _panelCalibrationPreview?.RemoveFromClassList("preview-panel--visible");
         _panelDisconnectOffline?.RemoveFromClassList("preview-panel--visible");
+        _panelGallery?.RemoveFromClassList("preview-panel--visible");
     }
 
     void ShowStabilityMap()
@@ -520,6 +542,33 @@ public class MainMenuController : MonoBehaviour
         _activePreviewPanelName = ""; // reset para forzar refresco
         ShowPreviewPanel("panel-calibration-preview");
         LoadCurrentSettingsIntoUI();
+    }
+
+    /// <summary>
+    /// Abre la galería: carrusel con las imágenes del juego cargadas de Resources.
+    /// </summary>
+    void ShowGallery()
+    {
+        _settingsPanel?.AddToClassList("hidden");
+        _levelSelectPanel?.AddToClassList("hidden");
+        _voidIntro?.AddToClassList("hidden");
+        _mainContent?.RemoveFromClassList("hidden");
+        _rightContentContainer?.RemoveFromClassList("hidden");
+
+        if (_menuBg != null)
+            _menuBg.style.opacity = 1f;
+
+        if (_heroTitle != null)
+            _heroTitle.text = "Archivo Visual";
+
+        SetActiveNav(_btnGallery);
+        _activePreviewPanelName = ""; // reset para forzar refresco
+        ShowPreviewPanel("panel-gallery");
+
+        // Attach es idempotente: la primera vez construye el catálogo y las
+        // miniaturas, las siguientes solo refresca la imagen actual.
+        _gallery.Attach(_panelGallery);
+        _panelGallery?.Focus();
     }
 
     // --- Actions ---

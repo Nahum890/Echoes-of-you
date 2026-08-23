@@ -51,11 +51,32 @@ public class EchoRecorder : MonoBehaviour
     MaterialPropertyBlock _rimBlock;
     readonly List<Renderer> _rimRenderers = new List<Renderer>();
 
+    /// <summary>
+    /// Duración base del nivel, antes del bonus de accesibilidad. Se guarda aparte
+    /// porque <see cref="ApplySavedExtraRecordTime"/> reescala sobre ella y aplicar
+    /// el porcentaje dos veces iría acumulando.
+    /// </summary>
+    float _baseRecordSeconds = -1f;
+
     public bool IsRecording => _recording;
     public int EchoCount => _echoes.Count;
     public int MaxEchoes => maxEchoes;
     public float MaxRecordSeconds => maxRecordSeconds;
     public float RecordingElapsed => _recording ? Mathf.Min(Time.time - _recordStartTime, maxRecordSeconds) : 0f;
+
+    /// <summary>
+    /// Aplica el slider "tiempo extra de grabación" (Ajustes &gt; Gameplay).
+    /// Antes ese slider solo escribía la clave <c>ExtraRecordTime</c> en
+    /// PlayerPrefs y ningún sistema la leía — el comentario del menú decía
+    /// "EchoRecorder picks this up" y era falso.
+    /// </summary>
+    public void ApplySavedExtraRecordTime()
+    {
+        if (_baseRecordSeconds <= 0f)
+            _baseRecordSeconds = maxRecordSeconds;
+
+        maxRecordSeconds = _baseRecordSeconds * EchoesSettings.ExtraRecordTimeMultiplier;
+    }
     public float LastClipDuration => _lastRecordDuration;
     public bool HasEchoes => _echoes.Count > 0;
 
@@ -89,9 +110,15 @@ public class EchoRecorder : MonoBehaviour
         }
 
         if (maxRecordSeconds > 0f)
+        {
             this.maxRecordSeconds = maxRecordSeconds;
+            _baseRecordSeconds = maxRecordSeconds;
+        }
         if (maxEchoes > 0)
             this.maxEchoes = maxEchoes;
+
+        // El blueprint define la duración base; el bonus de accesibilidad va encima.
+        ApplySavedExtraRecordTime();
     }
 
     public void LockSlot(int idx)
@@ -168,6 +195,7 @@ public class EchoRecorder : MonoBehaviour
 
     void OnEnable()
     {
+        ApplySavedExtraRecordTime();
         ForceUnlockPlayer();
         RefreshHud();
     }

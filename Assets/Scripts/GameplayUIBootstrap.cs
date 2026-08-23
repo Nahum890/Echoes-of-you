@@ -44,8 +44,20 @@ public static class GameplayUIBootstrap
             CreateUIDocument<GameHUD>("GameHUD", "UI/GameHUDUI", panel, 10);
 
         // --- PauseMenu ---
-        if (Object.FindAnyObjectByType<PauseMenu>() == null)
-            CreateUIDocument<PauseMenu>("PauseMenu", "UI/PauseMenuUI", panel, 20);
+        // Todos los UIDocument comparten el mismo PanelSettings, así que están en
+        // un único panel de UI Toolkit y el picking lo decide sortingOrder. El menú
+        // de pausa iba a 20, por debajo del overlay del VN (500) y del tutorial
+        // (550): esas capas a pantalla completa se comían sus clics aunque no
+        // estuvieran mostrando nada.
+        var pauseMenu = Object.FindAnyObjectByType<PauseMenu>();
+        if (pauseMenu == null)
+            pauseMenu = CreateUIDocument<PauseMenu>("PauseMenu", "UI/PauseMenuUI", panel, PauseMenu.PauseSortingOrder);
+
+        // Las escenas traen su propio PauseMenu serializado con sortingOrder 10;
+        // hay que subirlo también a él.
+        var pauseDoc = pauseMenu != null ? pauseMenu.GetComponent<UIDocument>() : null;
+        if (pauseDoc != null && pauseDoc.sortingOrder < PauseMenu.PauseSortingOrder)
+            pauseDoc.sortingOrder = PauseMenu.PauseSortingOrder;
 
         // --- ModalManager ---
         if (ModalManager.Instance == null)
@@ -53,10 +65,16 @@ public static class GameplayUIBootstrap
             var go = new GameObject("ModalManager");
             var doc = go.AddComponent<UIDocument>();
             doc.panelSettings = panel;
-            doc.sortingOrder = 30;
+            doc.sortingOrder = PauseMenu.ModalSortingOrder; // por encima del propio menú
             var mm = go.AddComponent<ModalManager>();
             var tmpl = Resources.Load<VisualTreeAsset>("UI/EchoesModal");
             mm.Setup(doc.rootVisualElement, tmpl);
+        }
+        else
+        {
+            var modalDoc = ModalManager.Instance.GetComponent<UIDocument>();
+            if (modalDoc != null && modalDoc.sortingOrder < PauseMenu.ModalSortingOrder)
+                modalDoc.sortingOrder = PauseMenu.ModalSortingOrder;
         }
 
         // --- SettingsController ---

@@ -36,6 +36,21 @@ public class LightFlicker : MonoBehaviour
     {
         if (targetLight == null) return;
 
+        // Accesibilidad > "Reducir destellos": el fluorescente se queda fijo en su
+        // intensidad base en vez de parpadear. El toggle existía en el menú pero no
+        // tenía ningún consumidor en el juego.
+        if (EchoesSettings.ReduceFlashes)
+        {
+            if (!Mathf.Approximately(targetLight.intensity, baseIntensity))
+            {
+                targetLight.intensity = baseIntensity;
+                OnIntensityChange?.Invoke(baseIntensity);
+                if (audioSource != null && audioSource.isPlaying)
+                    audioSource.volume = maxHumVolume;
+            }
+            return;
+        }
+
         if (Time.time >= nextActionTime)
         {
             // Genera una intensidad fluctuante para simular mal contacto eléctrico o desgaste

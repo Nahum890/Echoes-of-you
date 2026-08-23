@@ -91,10 +91,21 @@ public class ThirdPersonCamera : MonoBehaviour
         return EchoesCameraAuthority.IsCinemachineActiveInScene();
     }
 
+    /// <summary>
+    /// Relee la sensibilidad guardada. El menú de ajustes ya llamaba a este nombre
+    /// por SendMessage, pero el método no existía: era un no-op silencioso.
+    /// El valor base de la cámara (1.15) se conserva como escala propia.
+    /// </summary>
+    public void ApplySavedSensitivity()
+    {
+        mouseSensitivity = 1.15f * EchoesSettings.Sensitivity;
+    }
+
     void Start()
     {
         _cameraShake = GetComponent<CameraShake>();
         _camera = GetComponent<Camera>();
+        ApplySavedSensitivity();
 
         if (GetComponent<SimpleFollowCamera>() != null && GetComponent<SimpleFollowCamera>().enabled)
         {

@@ -18,9 +18,16 @@ public static partial class UIBootstrap
             {
 #if UNITY_EDITOR
                 _panelSettings = UnityEditor.AssetDatabase.LoadAssetAtPath<PanelSettings>(PanelSettingsPath);
-#else
-                _panelSettings = Resources.Load<PanelSettings>("EchoesPanelSettings");
 #endif
+                // El asset dentro de Resources vive en Assets/Resources/UI/, así que
+                // la ruta de carga es "UI/EchoesPanelSettings". La ruta antigua
+                // ("EchoesPanelSettings") no existe: en build devolvía null y sin
+                // PanelSettings no se creaba **ninguna** UI de gameplay — ni HUD ni
+                // menú de pausa.
+                if (_panelSettings == null)
+                    _panelSettings = Resources.Load<PanelSettings>("UI/EchoesPanelSettings");
+                if (_panelSettings == null)
+                    _panelSettings = Resources.Load<PanelSettings>("EchoesPanelSettings");
                 if (_panelSettings != null)
                 {
                     _panelSettings.scale = GameSettings.UIScaleFactor;

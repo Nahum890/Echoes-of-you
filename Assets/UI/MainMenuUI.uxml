@@ -86,7 +86,15 @@
                         </ui:VisualElement>
                     </ui:VisualElement>
 
-                    <!-- 6. Salir -->
+                    <!-- 6. Galería -->
+                    <ui:VisualElement class="nav-item-block">
+                        <ui:VisualElement class="nav-btn-row">
+                            <ui:Button name="nav-gallery" text="Galería" class="menu-nav-btn" />
+                            <ui:Label text="→" class="menu-nav-arrow" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <!-- 7. Salir -->
                     <ui:VisualElement class="nav-item-block nav-item-block--exit">
                         <ui:VisualElement class="nav-btn-row">
                             <ui:Button name="nav-exit" text="Salir" class="menu-nav-btn menu-nav-btn--exit" />
@@ -535,6 +543,37 @@
                 </ui:VisualElement>
 
                 <!-- Panel 4: Exit confirm -->
+                <!-- Panel: Galería (carrusel de imágenes del juego) -->
+                <ui:VisualElement name="panel-gallery" class="menu-panel">
+                    <ui:VisualElement class="menu-panel-header-row">
+                        <ui:VisualElement style="flex-grow: 1;">
+                            <ui:Label text="ARCHIVO_VISUAL // 002" class="menu-header-tag" />
+                            <ui:Label text="Galería" class="menu-panel-title" />
+                        </ui:VisualElement>
+                        <ui:Label name="lbl-gallery-counter" text="0 / 0" class="gallery-counter" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="menu-panel-separator" />
+
+                    <!-- Escenario del carrusel: flecha / imagen / flecha -->
+                    <ui:VisualElement class="gallery-stage">
+                        <ui:Button name="btn-gallery-prev" text="&#8249;" class="gallery-arrow" />
+                        <ui:VisualElement class="gallery-frame">
+                            <ui:Image name="gallery-image" class="gallery-image" picking-mode="Ignore" />
+                            <ui:Label name="lbl-gallery-empty" text="No hay imágenes en el archivo." class="gallery-empty hidden" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:Button name="btn-gallery-next" text="&#8250;" class="gallery-arrow" />
+                    </ui:VisualElement>
+
+                    <!-- Pie: título de la imagen y tira de miniaturas -->
+                    <ui:VisualElement class="gallery-footer">
+                        <ui:VisualElement class="gallery-caption-row">
+                            <ui:Label name="lbl-gallery-caption" text="" class="gallery-caption" />
+                            <ui:Label name="lbl-gallery-meta" text="" class="gallery-meta" />
+                        </ui:VisualElement>
+                        <ui:ScrollView name="gallery-thumbs" mode="Horizontal" class="gallery-thumbs" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
                 <ui:VisualElement name="panel-disconnect-offline" class="menu-panel menu-panel--centered">
                     <ui:Label text="CLAUSURAR EXPEDIENTE" class="menu-panel-title" style="color: #B23A3A;" />
                     <ui:Label text="¿Deseas cerrar el expediente y abandonar la sintonía?" class="menu-panel-subtitle" style="max-width: 400px; -unity-text-align: middle-center;" />

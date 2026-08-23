@@ -98,8 +98,14 @@ public class PressurePlateAlignment : MonoBehaviour
         float sy = Mathf.Abs(escala.y) > 0.0001f ? Mathf.Abs(escala.y) : 1f;
         float sz = Mathf.Abs(escala.z) > 0.0001f ? Mathf.Abs(escala.z) : 1f;
 
-        float anchoMundo = Mathf.Max(box.size.x * sx, 2.8f);
-        float fondoMundo = Mathf.Max(box.size.z * sz, 2.8f);
+        // NO se ensancha en XZ. Antes se forzaba a 2.8 m como minimo, asi que la
+        // zona de deteccion sobresalia medio metro por cada lado de la placa que
+        // se ve: te bajabas de ella y seguia contando como pisada. La respuesta
+        // tiene que coincidir con lo que el jugador ve.
+        // La altura si se amplia: el eco en proyeccion no cae por gravedad y
+        // puede quedar unos centimetros por encima.
+        float anchoMundo = box.size.x * sx;
+        float fondoMundo = box.size.z * sz;
 
         box.size = new Vector3(anchoMundo / sx, height / sy, fondoMundo / sz);
         box.center = new Vector3(0f, ((height * 0.5f) - 0.1f) / sy, 0f);

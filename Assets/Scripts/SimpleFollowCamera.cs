@@ -34,8 +34,16 @@ public class SimpleFollowCamera : MonoBehaviour
     [Tooltip("Distancia maxima a la que puede retroceder para encuadrar. Solo se aplica con Ecos activos.")]
     public float framingMaxDistance = 16f;
     [Tooltip("Cuanto se desplaza el punto de mira hacia el centro entre jugador y Eco. 0 = siempre al jugador.")]
-    [Range(0f, 1f)] public float framingLookBias = 0.45f;
+    // Estaba en 0.45: con un Eco activo la camara se iba casi a medio camino
+    // entre los dos y el jugador dejaba de estar centrado, que se percibe como
+    // \"la camara no me sigue\". 0.18 deja ver al Eco sin descentrar al jugador.
+    [Range(0f, 1f)] public float framingLookBias = 0.18f;
     public float framingSmoothTime = 0.35f;
+
+    // Distancia con la que arranca el nivel. Sirve de referencia para que la
+    // rueda del raton siga funcionando cuando el encuadre automatico esta
+    // mandando: ver el calculo de shotDistance en LateUpdate.
+    float _baseDistance = -1f;
 
     Vector3 _velocity = Vector3.zero;
     Vector2 _smoothMouse;
@@ -56,6 +64,18 @@ public class SimpleFollowCamera : MonoBehaviour
         set => _frozen = value;
     }
 
+    /// <summary>
+    /// Relee la sensibilidad guardada. El menú de ajustes llamaba a esto por
+    /// <c>SendMessage("ApplySavedSensitivity")</c> desde siempre, pero el método
+    /// no existía en ninguna clase y además el menú escribía en otra clave
+    /// (<c>CameraSensitivity</c>) distinta de la que se leía aquí: el slider de
+    /// sensibilidad no movía nada. Ahora ambos lados pasan por EchoesSettings.
+    /// </summary>
+    public void ApplySavedSensitivity()
+    {
+        mouseSensitivity = EchoesSettings.Sensitivity;
+    }
+
     void Start()
     {
         if (EchoesCameraAuthority.IsCinemachineActiveInScene())
@@ -64,9 +84,10 @@ public class SimpleFollowCamera : MonoBehaviour
             return;
         }
 
-        mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1f);
+        ApplySavedSensitivity();
         _cam = GetComponent<Camera>();
         _framedDistance = distance;
+        _baseDistance = Mathf.Max(0.01f, distance);
         if (target != null) Snap();
     }
 
@@ -84,7 +105,6 @@ public class SimpleFollowCamera : MonoBehaviour
 
         if (Cursor.lockState == CursorLockMode.Locked || true)
         {
-            mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1f);
             float rawX = Input.GetAxis("Mouse X") * mouseSensitivity;
             float rawY = Input.GetAxis("Mouse Y") * mouseSensitivity;
             float deadZone = 0.05f;
@@ -148,7 +168,18 @@ public class SimpleFollowCamera : MonoBehaviour
             wanted = Mathf.Min(wanted, framingMaxDistance);
 
             _framedDistance = Mathf.SmoothDamp(_framedDistance, wanted, ref _framedDistanceVel, framingSmoothTime, Mathf.Infinity, Time.unscaledDeltaTime);
-            shotDistance = _framedDistance;
+
+            // El encuadre propone una distancia, pero la rueda del raton tiene
+            // que seguir mandando. Antes esto era shotDistance = _framedDistance
+            // a secas: con un Eco en pantalla el encuadre ganaba siempre y el
+            // zoom del jugador no hacia absolutamente nada.
+            //
+            // Ahora el zoom se aplica como FACTOR sobre lo que pide el encuadre:
+            // sin tocar la rueda el factor es 1 y se ve el encuadre completo;
+            // al acercar, se acerca de forma proporcional.
+            if (_baseDistance <= 0f) _baseDistance = Mathf.Max(0.01f, distance);
+            float zoomFactor = distance / _baseDistance;
+            shotDistance = Mathf.Clamp(_framedDistance * zoomFactor, minDistance, framingMaxDistance);
 
             float targetWeight = count > 1 ? framingLookBias : 0f;
             _focusWeight = Mathf.MoveTowards(_focusWeight, targetWeight, Time.unscaledDeltaTime / Mathf.Max(0.01f, framingSmoothTime));

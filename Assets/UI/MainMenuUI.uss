@@ -944,3 +944,156 @@
     /* default font */
     margin-bottom: 24px;
 }
+/* ============================================================
+   GALERÍA — carrusel de imágenes del juego
+   Paleta y bordes tomados de .menu-panel para que no desentone
+   con el resto del menú.
+   ============================================================ */
+
+.gallery-counter {
+    font-size: 13px;
+    color: #E8B262;
+    letter-spacing: 2px;
+    -unity-text-align: middle-right;
+    margin-top: 8px;
+}
+
+/* Fila principal: flecha | imagen | flecha */
+.gallery-stage {
+    flex-direction: row;
+    align-items: center;
+    flex-grow: 1;
+    /* min-height 0 es imprescindible: sin él un hijo flexible con imagen
+       empuja el panel y la tira de miniaturas se sale por abajo. */
+    min-height: 0;
+    margin-bottom: 16px;
+}
+
+.gallery-frame {
+    flex-grow: 1;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    background-color: rgba(6, 8, 12, 0.9);
+    border-width: 1px;
+    border-color: rgba(149, 144, 135, 0.25);
+    justify-content: center;
+    align-items: center;
+    margin-left: 12px;
+    margin-right: 12px;
+    overflow: hidden;
+}
+
+.gallery-image {
+    width: 100%;
+    height: 100%;
+}
+
+.gallery-empty {
+    font-size: 14px;
+    color: #8C96A5;
+    letter-spacing: 1px;
+}
+
+/* ===== FLECHAS ===== */
+.gallery-arrow {
+    width: 48px;
+    height: 96px;
+    flex-shrink: 0;
+    font-size: 34px;
+    color: #E8B262;
+    background-color: rgba(10, 12, 16, 0.85);
+    border-width: 1px;
+    border-color: rgba(232, 178, 98, 0.35);
+    border-radius: 0;
+    padding: 0;
+    transition-property: background-color, border-color, color;
+    transition-duration: 120ms;
+}
+
+.gallery-arrow:hover {
+    background-color: rgba(232, 178, 98, 0.16);
+    border-color: #E8B262;
+    color: #F5C87A;
+}
+
+.gallery-arrow:disabled {
+    opacity: 0.25;
+}
+
+/* ===== PIE: TÍTULO Y MINIATURAS ===== */
+.gallery-footer {
+    flex-shrink: 0;
+    flex-direction: column;
+}
+
+.gallery-caption-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 10px;
+}
+
+.gallery-caption {
+    font-size: 16px;
+    color: #E2E6EC;
+    letter-spacing: 1px;
+    flex-shrink: 1;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.gallery-meta {
+    font-size: 11px;
+    color: #6C788A;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+    margin-left: 16px;
+}
+
+.gallery-thumbs {
+    height: 84px;
+    flex-shrink: 0;
+    background-color: rgba(6, 8, 12, 0.6);
+    border-width: 1px;
+    border-color: rgba(149, 144, 135, 0.18);
+}
+
+.gallery-thumbs .unity-scroll-view__content-container {
+    flex-direction: row;
+    align-items: center;
+    padding: 6px;
+}
+
+.gallery-thumb {
+    width: 96px;
+    height: 68px;
+    flex-shrink: 0;
+    margin: 0;
+    margin-right: 6px;
+    padding: 0;
+    background-color: rgba(10, 12, 16, 0.9);
+    border-width: 1px;
+    border-color: rgba(149, 144, 135, 0.25);
+    border-radius: 0;
+    overflow: hidden;
+    opacity: 0.55;
+    transition-property: opacity, border-color;
+    transition-duration: 120ms;
+}
+
+.gallery-thumb:hover {
+    opacity: 0.9;
+    border-color: rgba(232, 178, 98, 0.6);
+}
+
+.gallery-thumb--active {
+    opacity: 1;
+    border-color: #E8B262;
+    border-width: 2px;
+}
+
+.gallery-thumb-img {
+    width: 100%;
+    height: 100%;
+}
