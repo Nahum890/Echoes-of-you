@@ -36,7 +36,7 @@ namespace Echoes.Narrative
                 Instance = null;
         }
 
-        void InitializeDefaults()
+        public void InitializeDefaults()
         {
             _variables.Clear();
             if (_variableStore != null)
@@ -121,9 +121,8 @@ namespace Echoes.Narrative
                 return;
 
             _inNarrativeMode = false;
-            _currentModeType = InteractionType.Inspect;
-
             bool shouldUnlock = _currentModeType == InteractionType.Dialogue || _currentModeType == InteractionType.Choice;
+            _currentModeType = InteractionType.Inspect;
             if (!_movementWasLocked && shouldUnlock)
             {
                 var player = FindAnyObjectByType<PlayerController>();

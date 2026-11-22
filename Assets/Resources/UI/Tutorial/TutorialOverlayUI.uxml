@@ -11,8 +11,12 @@
             <!-- Close Button Top Right -->
             <ui:Button name="btn-close-tutorial" class="tutorial-close-btn" text="✕ CERRAR" />
 
-            <!-- Tutorial Image -->
-            <ui:VisualElement name="tutorial-image" class="tutorial-image" />
+            <ui:VisualElement class="tutorial-steps">
+                <ui:Label class="tutorial-title" text="Tu primer eco" />
+                <ui:Label class="tutorial-step" text="Acércate a la placa con W, A, S y D." />
+                <ui:Label class="tutorial-step" text="Sobre la placa, mantén R unos segundos sin moverte. Suelta R para crear tu eco." />
+                <ui:Label class="tutorial-step" text="El eco repite lo que grabaste. Déjalo sobre la placa y cruza la puerta." />
+            </ui:VisualElement>
 
             <!-- Footer Bar with Key Prompt -->
             <ui:VisualElement name="tutorial-footer" class="tutorial-footer">

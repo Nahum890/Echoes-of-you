@@ -107,7 +107,6 @@
     /* default font */
     color: var(--color-body-neutral);
     white-space: normal;
-    line-height: 26px;
 }
 
 .text-body-sm {
@@ -410,7 +409,6 @@
     /* default font */
     max-width: 450px;
     -unity-text-align: middle-center;
-    line-height: 20px;
     margin-bottom: 48px;
 }
 
@@ -636,7 +634,6 @@
     font-size: 14px;
     color: var(--color-ink);
     white-space: normal;
-    line-height: 18px;
     flex-grow: 1;
 }
 
@@ -679,7 +676,6 @@
     font-size: 12px;
     color: var(--color-chalkboard-text);
     white-space: normal;
-    line-height: 16px;
 }
 
 /* ============================================================

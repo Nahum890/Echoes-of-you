@@ -36,6 +36,7 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
     float _pulsePhase;
 
     // Cache material property IDs
+    static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
     static readonly int ColorId = Shader.PropertyToID("_Color");
     static readonly int EmissionColorId = Shader.PropertyToID("_EmissionColor");
     static readonly Collider[] _overlapBuffer = new Collider[16];
@@ -136,6 +137,7 @@ public class PressurePlate : MonoBehaviour, IResettableLevelObject
             if (_propBlock == null) _propBlock = new MaterialPropertyBlock();
             _renderer.GetPropertyBlock(_propBlock);
             _propBlock.SetColor(ColorId, pressed ? activeColor : inactiveColor);
+            _propBlock.SetColor(BaseColorId, pressed ? activeColor : inactiveColor);
             _propBlock.SetColor(EmissionColorId, pressed ? emissionActive : emissionInactive);
             _renderer.SetPropertyBlock(_propBlock);
         }

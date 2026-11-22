@@ -9,6 +9,18 @@ using UnityEngine.UIElements;
 
 public class SettingsPanelPlayModeTests
 {
+    [UnitySetUp]
+    public IEnumerator EntrarEnPlay()
+    {
+        yield return new EnterPlayMode();
+    }
+
+    [UnityTearDown]
+    public IEnumerator SalirDePlay()
+    {
+        yield return new ExitPlayMode();
+    }
+
     [UnityTest]
     public IEnumerator SettingsPanelRendersVisibleAndClickable_InPauseMenu()
     {
@@ -25,16 +37,8 @@ public class SettingsPanelPlayModeTests
         var pause = Object.FindFirstObjectByType(pauseType);
         Assert.IsNotNull(pause, "PauseMenu instance not found in Level_01");
 
-        var settingsType = System.AppDomain.CurrentDomain.GetAssemblies()
-            .Select(a => a.GetType("Echoes.UI.SettingsController"))
-            .FirstOrDefault(t => t != null);
-        Assert.IsNotNull(settingsType, "SettingsController type not found");
-
-        var settingsInstanceProp = settingsType.GetProperty("Instance",
-            BindingFlags.Public | BindingFlags.Static);
-        Assert.IsNotNull(settingsInstanceProp, "SettingsController.Instance property not found");
-        object settingsInstance = settingsInstanceProp.GetValue(null);
-        Assert.IsNotNull(settingsInstance, "SettingsController.Instance is null in Level_01");
+        pauseType.GetMethod("Pause", BindingFlags.Public | BindingFlags.Instance).Invoke(pause, null);
+        pauseType.GetMethod("ShowSettings", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(pause, null);
 
         var go = ((Component)pause).gameObject;
         var doc = go.GetComponent<UIDocument>();
@@ -42,19 +46,9 @@ public class SettingsPanelPlayModeTests
         var rootEl = doc.rootVisualElement;
 
         var pauseRoot = rootEl.Q("pause-root");
-        var nav = rootEl.Q("pause-nav");
         var panel = rootEl.Q("pause-settings-panel");
         Assert.IsNotNull(pauseRoot, "pause-root not found");
         Assert.IsNotNull(panel, "pause-settings-panel not found");
-
-        pauseRoot.RemoveFromClassList("hidden");
-        nav.AddToClassList("hidden");
-        panel.RemoveFromClassList("hidden");
-
-        var showInContainer = settingsType.GetMethod("ShowInContainer",
-            BindingFlags.Public | BindingFlags.Instance);
-        Assert.IsNotNull(showInContainer, "ShowInContainer method not found");
-        showInContainer.Invoke(settingsInstance, new object[] { panel });
 
         yield return null;
         yield return null;

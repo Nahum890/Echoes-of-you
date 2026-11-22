@@ -14,7 +14,17 @@ public static class EchoesUrpSetup
     public const string RendererAssetPath = "Assets/Settings/Echoes_UniversalRenderer.asset";
     public const string UrpAssetPath = "Assets/Settings/Echoes_URPAsset.asset";
 
-    [InitializeOnLoadMethod]
+    // Los assets pueden estar sin importar durante InitializeOnLoad (especialmente con Library nueva).
+    class PipelinePostprocessor : AssetPostprocessor
+    {
+        static void OnPostprocessAllAssets(string[] imported, string[] deleted, string[] moved,
+            string[] movedFrom, bool didDomainReload)
+        {
+            if (didDomainReload)
+                EditorApplication.delayCall += AssignUrpPipeline;
+        }
+    }
+
     [MenuItem("Echoes of You/URP/Assign URP Pipeline Asset")]
     public static void AssignUrpPipeline()
     {
@@ -36,14 +46,13 @@ public static class EchoesUrpSetup
         }
         QualitySettings.SetQualityLevel(current, false);
 
-        AssetDatabase.SaveAssets();
         Debug.Log($"[Echoes URP] Pipeline asignado exitosamente: {AssetDatabase.GetAssetPath(urp)} (Graphics + {levels} niveles de Quality).");
     }
 
     public static UniversalRenderPipelineAsset EnsureUrpAsset()
     {
         UniversalRenderPipelineAsset urp = FindUrpAsset();
-        if (urp != null)
+        if (urp != null && AssetDatabase.GetAssetPath(urp) != UrpAssetPath)
             return urp;
 
         EnsureDirectory(SettingsFolder);
@@ -52,6 +61,11 @@ public static class EchoesUrpSetup
         UniversalRendererData rendererData = AssetDatabase.LoadAssetAtPath<UniversalRendererData>(RendererAssetPath);
         if (rendererData == null)
         {
+            if (File.Exists(RendererAssetPath))
+            {
+                Debug.LogError("[Echoes URP] No se pudo importar el renderer existente: " + RendererAssetPath);
+                return null;
+            }
             rendererData = ScriptableObject.CreateInstance<UniversalRendererData>();
             AssetDatabase.CreateAsset(rendererData, RendererAssetPath);
             Debug.Log($"[Echoes URP] Creado UniversalRendererData en {RendererAssetPath}");
@@ -61,12 +75,24 @@ public static class EchoesUrpSetup
         urp = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(UrpAssetPath);
         if (urp == null)
         {
+            if (File.Exists(UrpAssetPath)) return null;
             urp = UniversalRenderPipelineAsset.Create(rendererData);
             AssetDatabase.CreateAsset(urp, UrpAssetPath);
             Debug.Log($"[Echoes URP] Creado UniversalRenderPipelineAsset en {UrpAssetPath}");
         }
-
-        AssetDatabase.SaveAssets();
+        else
+        {
+            var serialized = new SerializedObject(urp);
+            var renderers = serialized.FindProperty("m_RendererDataList");
+            if (renderers.arraySize == 0) renderers.arraySize = 1;
+            var slot = renderers.GetArrayElementAtIndex(0);
+            if (slot.objectReferenceValue == null)
+            {
+                slot.objectReferenceValue = rendererData;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+                AssetDatabase.SaveAssetIfDirty(urp);
+            }
+        }
         return urp;
     }
 

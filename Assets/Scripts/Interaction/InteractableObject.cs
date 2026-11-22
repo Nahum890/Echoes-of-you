@@ -68,7 +68,8 @@ namespace Echoes.Interaction
         public float Cooldown => _narrativeData != null ? _narrativeData.Cooldown : cooldown;
         public float TriggerRadius => _narrativeData != null ? _narrativeData.TriggerRadius : triggerRadius;
         public string DisplayName => _narrativeData != null ? _narrativeData.DisplayName : displayName;
-        public string InteractableId => _narrativeData != null ? _narrativeData.InteractableId : "";
+        public string InteractableId => !string.IsNullOrEmpty(_narrativeData?.InteractableId)
+            ? _narrativeData.InteractableId : gameObject.scene.name + "/" + gameObject.name + "/" + CommentKey;
         public InteractionType InteractionType => _narrativeData != null ? _narrativeData.InteractionType : InteractionType.Inspect;
         public string PromptText
         {

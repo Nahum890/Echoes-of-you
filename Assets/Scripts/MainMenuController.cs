@@ -579,8 +579,19 @@ public class MainMenuController : MonoBehaviour
         LoadLevel(continueScene);
     }
 
+    bool _startAfterReset;
+
     void StartNewGame()
     {
+        if (GameProgress.HasStartedGame)
+        {
+            var confirm = _root.Q("reset-progress-panel");
+            if (confirm == null) return;
+            _startAfterReset = true;
+            confirm.RemoveFromClassList("hidden");
+            confirm.Q<Button>("btn-reset-progress-cancel")?.Focus();
+            return;
+        }
         LoadLevel(firstLevelScene);
     }
 
@@ -593,6 +604,7 @@ public class MainMenuController : MonoBehaviour
 
     void OnResetProgressCancel()
     {
+        _startAfterReset = false;
         var resetPanel = _root?.Q("reset-progress-panel");
         resetPanel?.AddToClassList("hidden");
     }
@@ -1248,7 +1260,14 @@ public class MainMenuController : MonoBehaviour
     void ConfirmResetProgress()
     {
         _resetArmed = false;
+        bool startNew = _startAfterReset;
+        OnResetProgressCancel();
         GameProgress.ResetProgress();
+        if (startNew)
+        {
+            LoadLevel(firstLevelScene);
+            return;
+        }
         SetLabelText("lbl-reset-hint", "Expediente borrado. Solo el primer recuerdo est├í disponible.");
         if (_heroTitle != null)
             _heroTitle.text = "Recuerdo Aislado";

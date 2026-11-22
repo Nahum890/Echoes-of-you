@@ -197,7 +197,6 @@
     font-size: var(--size-interface-sm);
     color: var(--color-stich-on-surface);
     white-space: normal;
-    line-height: var(--size-interface-md);
     opacity: 1;
 }
 

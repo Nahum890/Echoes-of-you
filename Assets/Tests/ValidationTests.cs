@@ -13,6 +13,17 @@ public class ValidationTests
         return Directory.GetParent(Application.dataPath).FullName;
     }
 
+    [TestCase("MainMenuController")]
+    [TestCase("PlayerController")]
+    [TestCase("EchoRecorder")]
+    [TestCase("LevelExit")]
+    public void ScriptsDeLaPartidaTienenClaseImportada(string nombre)
+    {
+        var script = AssetDatabase.LoadAssetAtPath<MonoScript>($"Assets/Scripts/{nombre}.cs");
+        Assert.IsNotNull(script);
+        Assert.AreEqual(nombre, script.GetClass()?.Name, $"Unity perdió la clase de {nombre} al importar el proyecto.");
+    }
+
     [Test]
     public void TestYamlSpecsExistAndHaveUniqueIds()
     {

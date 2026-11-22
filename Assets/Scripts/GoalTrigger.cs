@@ -11,6 +11,7 @@ public class GoalTrigger : MonoBehaviour, IResettableLevelObject
     [SerializeField] bool useDoorOpenState;
     [SerializeField] bool usePuzzleSignalState;
     [SerializeField] bool accumulateOnce = true;
+    [SerializeField] bool completeOnPlayerEntry;
 
     bool _satisfied;
 
@@ -57,6 +58,13 @@ public class GoalTrigger : MonoBehaviour, IResettableLevelObject
     public void MarkSatisfied()
     {
         SetSatisfied(true);
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        if (completeOnPlayerEntry && !_satisfied && other.CompareTag("Player")
+            && (doorController == null || doorController.IsOpen))
+            SetSatisfied(true);
     }
 
     public void ResetLevelState()

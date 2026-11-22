@@ -66,7 +66,7 @@ public class LevelExit : MonoBehaviour
         // N15: no invocar Invoke(nameof(LoadNext)) si VN gate activo en LevelRuntimeController
         // El gate manejará la carga del siguiente nivel
         var lrc = LevelRuntimeController.Instance;
-        if (lrc != null && !lrc.IsLevelCompletedAndGateActive())
+        if (lrc == null || !lrc.IsLevelCompletedAndGateActive())
         {
             Invoke(nameof(LoadNext), delaySeconds);
         }

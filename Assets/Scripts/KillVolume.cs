@@ -9,6 +9,8 @@ public class KillVolume : MonoBehaviour
     [SerializeField] string playerTag = "Player";
     [SerializeField] float deathDelay = 0f;
 
+    [SerializeField] string deathMessage;
+
     void Awake()
     {
         gameObject.layer = LayerMask.NameToLayer("Hazard"); // Layer 10
@@ -38,6 +40,6 @@ public class KillVolume : MonoBehaviour
         if (controller == null)
             return;
 
-        controller.HandlePlayerDeath(position, deathDelay);
+        controller.HandlePlayerDeath(position, deathDelay, deathMessage);
     }
 }

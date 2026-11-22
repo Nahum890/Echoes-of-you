@@ -69,7 +69,6 @@
     color: var(--color-stich-on-surface);
     -unity-text-align: middle-center;
     white-space: normal;
-    line-height: var(--size-interface-lg);
     max-width: 600px;
     margin-bottom: var(--space-2xl);
     opacity: 1;

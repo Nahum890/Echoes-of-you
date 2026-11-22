@@ -703,7 +703,10 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
 
             Vector3 localPosition = child.localPosition;
             child.localPosition = new Vector3(localPosition.x * scale, localPosition.y, localPosition.z * scale);
-            child.localScale = Vector3.Scale(child.localScale, Vector3.one * scale);
+            // El centro Y no se escala. Conservar la altura del volumen de caída
+            // evita que su borde letal suba por encima del suelo o del puente.
+            float heightScale = child.GetComponent<KillVolume>() != null ? 1f : scale;
+            child.localScale = Vector3.Scale(child.localScale, new Vector3(scale, heightScale, scale));
             marker.Scaled = true;
             scaledAny = true;
         }

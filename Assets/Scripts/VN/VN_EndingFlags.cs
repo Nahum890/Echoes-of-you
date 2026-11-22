@@ -8,7 +8,7 @@ namespace Echoes.VN
         public static VN_EndingFlags Instance { get; private set; }
 
         readonly Dictionary<string, bool> _flags = new();
-        int _comprehensionScore;
+        int _memoryBonus;
         int _lyraArtifactsSeen;
         bool _loadedFromDisk;
 
@@ -46,7 +46,18 @@ namespace Echoes.VN
 
         public IReadOnlyDictionary<string, bool> Flags => _flags;
 
-        public int ComprehensionScore => _comprehensionScore;
+        public int ComprehensionScore
+        {
+            get
+            {
+                int score = _lyraArtifactsSeen + _memoryBonus;
+                foreach (var flag in _flags)
+                    if (flag.Value && (BlockEndingResolver.CountsForBlock(flag.Key) || OpennessFlags.Contains(flag.Key)))
+                        score++;
+                return score;
+            }
+        }
+        public int MemoryBonus => _memoryBonus;
         public int LyraArtifactsSeen => _lyraArtifactsSeen;
 
         // Openness flags inject +1 comprehension. Pattern-holding flags inject +0.
@@ -61,19 +72,7 @@ namespace Echoes.VN
         public void SetFlag(string key, bool value = true)
         {
             if (string.IsNullOrEmpty(key)) return;
-            bool wasOpenness = OpennessFlags.Contains(key);
-            bool previouslySet = _flags.TryGetValue(key, out var prev) && prev;
             _flags[key] = value;
-
-            if (value && wasOpenness && !previouslySet)
-            {
-                _comprehensionScore += 1;
-                Debug.Log($"[VN_EndingFlags] Openness '{key}' set - comprehension={_comprehensionScore}");
-            }
-            else if (value && !previouslySet)
-            {
-                Debug.Log($"[VN_EndingFlags] Pattern '{key}' set (no comprehension)");
-            }
         }
 
         public bool GetFlag(string key)
@@ -84,8 +83,13 @@ namespace Echoes.VN
         public void BumpLyraArtifactSeen()
         {
             _lyraArtifactsSeen++;
-            _comprehensionScore += 1;
-            Debug.Log($"[VN_EndingFlags] Lyra artifact inspected ({_lyraArtifactsSeen}). comprehension={_comprehensionScore}");
+        }
+
+        public void AddMemoryBonus(int amount) => _memoryBonus += Mathf.Max(0, amount);
+        public void RestoreMemoryCounts(int artifacts, int bonus)
+        {
+            _lyraArtifactsSeen = Mathf.Max(0, artifacts);
+            _memoryBonus = Mathf.Max(0, bonus);
         }
 
         public bool GetSalirDelColegio() => GetFlag("salir_del_colegio");
@@ -94,7 +98,7 @@ namespace Echoes.VN
         public void ClearAll()
         {
             _flags.Clear();
-            _comprehensionScore = 0;
+            _memoryBonus = 0;
             _lyraArtifactsSeen = 0;
         }
 

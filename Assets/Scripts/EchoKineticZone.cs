@@ -17,6 +17,7 @@ public class EchoKineticZone : MonoBehaviour, IResettableLevelObject
     [SerializeField] bool requireEcho = true;
     [SerializeField] bool acceptPlayer;
 
+    Coroutine _relayFlight;
     int _echoCount;
     int _playerCount;
 
@@ -80,7 +81,8 @@ public class EchoKineticZone : MonoBehaviour, IResettableLevelObject
         bool echoPresent = _echoCount > 0;
         bool playerPresent = _playerCount > 0;
 
-        if (requireEcho && !echoPresent)
+        bool relayPowered = role == EchoKineticRole.MomentumRelay && shieldField != null && shieldField.IsShielded;
+        if (requireEcho && !echoPresent && !relayPowered)
             return;
 
         if (!requireEcho && !echoPresent && !playerPresent)
@@ -108,6 +110,12 @@ public class EchoKineticZone : MonoBehaviour, IResettableLevelObject
                 if (momentumRelayTarget != null && other.CompareTag("Player"))
                 {
                     PlayerController player = other.GetComponent<PlayerController>();
+                    if (shieldField != null && player != null)
+                    {
+                        if (_relayFlight == null && shieldField.IsShielded && !player.IsInputLocked)
+                            _relayFlight = StartCoroutine(CarryToLanding(player));
+                        break;
+                    }
                     Vector3 dir = (momentumRelayTarget.position - other.transform.position);
                     dir.y = 0f;
                     if (dir.sqrMagnitude > 0.01f)
@@ -124,6 +132,33 @@ public class EchoKineticZone : MonoBehaviour, IResettableLevelObject
                 completionSignal?.MarkSatisfied();
                 break;
         }
+    }
+
+    System.Collections.IEnumerator CarryToLanding(PlayerController player)
+    {
+        Vector3 start = player.transform.position;
+        Vector3 end = momentumRelayTarget.position;
+        var landing = momentumRelayTarget.GetComponent<Collider>();
+        if (landing != null) end.y = landing.bounds.max.y + 0.1f;
+        float duration = Mathf.Max(0.25f, Vector3.Distance(start, end) / Mathf.Max(1f, momentumRelayForce));
+        float elapsed = 0f;
+        while (elapsed < duration && player != null && player.Controller.enabled && !player.IsInputLocked)
+        {
+            yield return null;
+            if (player == null || !player.Controller.enabled || player.IsInputLocked) break;
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            Vector3 next = Vector3.Lerp(start, end, t) + Vector3.up * (12f * t * (1f - t));
+            if ((next - player.transform.position).sqrMagnitude > 9f) break;
+            player.Controller.Move(next - player.transform.position);
+        }
+        _relayFlight = null;
+    }
+
+    void OnDisable()
+    {
+        if (_relayFlight != null) StopCoroutine(_relayFlight);
+        _relayFlight = null;
     }
 
     public void ResetLevelState()

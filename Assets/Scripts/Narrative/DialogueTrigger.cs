@@ -15,6 +15,7 @@ namespace Echoes.Narrative
 
         InteractableObject _interactable;
         bool _consumed;
+        string MemoryId => !string.IsNullOrEmpty(_data?.InteractableId) ? _data.InteractableId : _interactable.InteractableId;
 
         public InteractableData Data => _data;
         public bool IsConsumed => _consumed;
@@ -28,7 +29,7 @@ namespace Echoes.Narrative
         {
             if (_consumed) return false;
             if (_data == null) return true;
-            if (_data.OneTimeOnly && MemorySystem.Instance != null && MemorySystem.Instance.HasBeenInspected(_data.InteractableId))
+            if (_data.OneTimeOnly && MemorySystem.Instance != null && MemorySystem.Instance.HasBeenInspected(MemoryId))
                 return false;
             return true;
         }
@@ -82,7 +83,7 @@ namespace Echoes.Narrative
                 hud.ShowInspection(_data.DisplayName, entry.text);
 
             if (MemorySystem.Instance != null)
-                MemorySystem.Instance.RegisterMemory(_data.InteractableId, _data.MemoryEffect);
+                MemorySystem.Instance.RegisterMemory(MemoryId, _data.MemoryEffect, _data.IsLyraArtifact);
 
             ApplyVisualStateChange();
             MarkConsumed();
@@ -138,8 +139,8 @@ namespace Echoes.Narrative
             if (hud != null)
                 hud.ShowInspection(_interactable.DisplayName, entry.text);
 
-            if (_interactable.IsLyraArtifact && VN_EndingFlags.Instance != null)
-                VN_EndingFlags.Instance.BumpLyraArtifactSeen();
+            if (_interactable.IsLyraArtifact)
+                MemorySystem.Instance?.RegisterMemory(_interactable.InteractableId, null, true);
         }
 
         void ApplyChoiceEffects(DialogueChoice choice)
@@ -244,6 +245,7 @@ namespace Echoes.Narrative
         {
             if (_data != null && _data.OneTimeOnly)
             {
+                MemorySystem.Instance?.RegisterMemory(MemoryId, null);
                 _consumed = true;
                 _interactable.enabled = false;
             }

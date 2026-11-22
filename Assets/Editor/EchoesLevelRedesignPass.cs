@@ -653,15 +653,11 @@ public static class EchoesLevelRedesignPass
         so.FindProperty("distance").floatValue = distancia;
         so.FindProperty("maxDistance").floatValue = Mathf.Max(distancia + 2f, 7f);
         so.FindProperty("minDistance").floatValue = 2f;
-        // El retroceso automatico al soltar un Eco tampoco puede subir del techo.
-        SerializedProperty framing = so.FindProperty("framingMaxDistance");
-        if (framing != null) framing.floatValue = Mathf.Min(9f, (alturaMax - offsetY) / Mathf.Sin(pitch * Mathf.Deg2Rad));
         so.ApplyModifiedPropertiesWithoutUndo();
 
         log.AppendLine("  camara ajustada a interior: techo mas bajo " + techoMin.ToString("0.00")
             + " m -> altura de camara " + altura.ToString("0.00") + " m (pitch " + pitch
-            + ", dist " + distancia.ToString("0.0") + ", encuadre max "
-            + (framing != null ? framing.floatValue.ToString("0.0") : "-") + ")");
+            + ", dist " + distancia.ToString("0.0") + ")");
     }
 
     // ------------------------------------------------------------------

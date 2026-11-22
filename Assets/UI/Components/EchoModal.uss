@@ -57,7 +57,6 @@
     font-size: var(--size-body);
     color: var(--color-fluorescent-sick);
     white-space: normal;
-    line-height: 28px;
     margin-bottom: var(--space-lg);
     flex-grow: 1;
 }

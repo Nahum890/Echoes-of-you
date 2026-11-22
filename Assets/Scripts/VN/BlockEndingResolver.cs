@@ -27,6 +27,8 @@ namespace Echoes.VN
             "speak_below_doubt"    // N6  — la memoria es real
         };
 
+        public static bool CountsForBlock(string key) => key == UnlockFutureEcho || BlockOpennessFlags.Contains(key);
+
         public static int ComputeComprehension(IReadOnlyDictionary<string, bool> flags, int lyraArtifactsSeen)
         {
             int score = Mathf.Max(0, lyraArtifactsSeen);
@@ -34,9 +36,8 @@ namespace Echoes.VN
             {
                 foreach (var kv in flags)
                 {
-                    if (kv.Value && BlockOpennessFlags.Contains(kv.Key)) score += 1;
+                    if (kv.Value && CountsForBlock(kv.Key)) score += 1;
                 }
-                if (Get(flags, UnlockFutureEcho)) score += 1;
             }
             return score;
         }
@@ -70,7 +71,7 @@ namespace Echoes.VN
         {
             var f = VN_EndingFlags.Instance;
             if (f == null) return EndingID.Aislamiento;
-            return Resolve(f.Flags, f.LyraArtifactsSeen);
+            return Resolve(f.Flags, f.LyraArtifactsSeen + f.MemoryBonus);
         }
 
         public static void PersistEnding(EndingID id)

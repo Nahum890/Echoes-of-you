@@ -30,20 +30,18 @@ namespace Echoes.Narrative
                 Instance = null;
         }
 
-        public void RegisterMemory(string interactableId, MemoryEffect effect)
+        public void RegisterMemory(string interactableId, MemoryEffect effect, bool isLyraArtifact = false)
         {
-            if (string.IsNullOrEmpty(interactableId))
+            if (string.IsNullOrEmpty(interactableId) || !_inspected.Add(interactableId))
                 return;
 
-            _inspected.Add(interactableId);
-
-            if (effect == null)
-                return;
+            var ctrl = NarrativeStateController.Instance;
+            ctrl?.SetVariable("objects_inspected_count", _inspected.Count);
 
             var flags = VN_EndingFlags.Instance;
             if (flags != null)
             {
-                if (effect.FlagsAdded != null)
+                if (effect?.FlagsAdded != null)
                 {
                     for (int i = 0; i < effect.FlagsAdded.Length; i++)
                     {
@@ -52,22 +50,14 @@ namespace Echoes.Narrative
                     }
                 }
 
-                if (effect.IsLyraArtifact)
+                if (isLyraArtifact || effect?.IsLyraArtifact == true)
                     flags.BumpLyraArtifactSeen();
 
-                if (effect.ComprehensionDelta > 0)
-                {
-                    for (int i = 0; i < effect.ComprehensionDelta; i++)
-                        flags.BumpLyraArtifactSeen();
-                }
+                flags.AddMemoryBonus(effect?.ComprehensionDelta ?? 0);
             }
 
-            var ctrl = NarrativeStateController.Instance;
-            if (ctrl != null && effect.VariableChanges != null)
+            if (ctrl != null && effect?.VariableChanges != null)
                 ctrl.ApplyVariableChanges(effect.VariableChanges);
-
-            if (ctrl != null)
-                ctrl.SetVariable("objects_inspected_count", _inspected.Count);
 
             Debug.Log($"[MemorySystem] Registered memory '{interactableId}'. Total inspected: {_inspected.Count}");
         }

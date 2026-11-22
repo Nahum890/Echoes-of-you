@@ -233,13 +233,8 @@ namespace Echoes.Interaction
                 _ => "VN/Sprites/aiden/Aiden_Feliz",
             };
 
-            if (obj.IsLyraArtifact && VN_EndingFlags.Instance != null)
-            {
-                VN_EndingFlags.Instance.BumpLyraArtifactSeen();
-
-                if (MemorySystem.Instance != null && !string.IsNullOrEmpty(obj.InteractableId))
-                    MemorySystem.Instance.RegisterMemory(obj.InteractableId, obj.NarrativeData?.MemoryEffect);
-            }
+            if (obj.IsLyraArtifact)
+                MemorySystem.Instance?.RegisterMemory(obj.InteractableId, obj.NarrativeData?.MemoryEffect, true);
 
             VN_OverlayController.Instance?.Play(title, text, spritePath);
         }

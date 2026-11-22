@@ -12,7 +12,6 @@ namespace Echoes.UI
         [SerializeField] UIDocument _doc;
         VisualElement _root;
         VisualElement _container;
-        VisualElement _tutorialImage;
         Button _btnClose;
         Button _btnContinue;
         Label _promptLabel;
@@ -121,7 +120,6 @@ namespace Echoes.UI
                 _root.style.flexGrow = 1;
             }
 
-            _tutorialImage = _root.Q<VisualElement>("tutorial-image");
             _btnClose = _root.Q<Button>("btn-close-tutorial");
             _btnContinue = _root.Q<Button>("btn-continue-tutorial");
             _promptLabel = _root.Q<Label>("tutorial-prompt-text");
@@ -132,33 +130,6 @@ namespace Echoes.UI
             if (_btnContinue != null)
                 _btnContinue.clicked += CloseTutorial;
 
-            // Load high-resolution tutorial texture/sprite
-            LoadTutorialImage();
-        }
-
-        void LoadTutorialImage()
-        {
-            if (_tutorialImage == null) return;
-
-            var sprite = Resources.Load<Sprite>("UI/Tutorial/Tutorial_Level01");
-            if (sprite != null)
-            {
-                _tutorialImage.style.backgroundImage = new StyleBackground(sprite);
-                _tutorialImage.style.unityBackgroundScaleMode = ScaleMode.ScaleToFit;
-                return;
-            }
-
-            var tex = Resources.Load<Texture2D>("UI/Tutorial/Tutorial_Level01");
-#if UNITY_EDITOR
-            if (tex == null)
-                tex = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/UI/Tutorial/Tutorial_Level01.png") ??
-                      UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/UI/Tutorial/Tutorial_Level01.jpg");
-#endif
-            if (tex != null)
-            {
-                _tutorialImage.style.backgroundImage = new StyleBackground(tex);
-                _tutorialImage.style.unityBackgroundScaleMode = ScaleMode.ScaleToFit;
-            }
         }
 
         void Update()
@@ -209,7 +180,6 @@ namespace Echoes.UI
                 _root.style.display = DisplayStyle.Flex;
             }
 
-            LoadTutorialImage();
         }
 
         public void CloseTutorial()

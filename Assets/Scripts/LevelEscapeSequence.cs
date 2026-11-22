@@ -53,6 +53,7 @@ public class LevelEscapeSequence : MonoBehaviour
         if (goal == null)
             goal = LevelGoal.Instance;
 
+        if (_escapeComplete) return;
         if (!_escapeActive)
         {
             if (goal != null && goal.IsReady && !_escapeActive)

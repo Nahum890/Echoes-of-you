@@ -38,7 +38,6 @@
     font-size: var(--size-small);
     color: var(--color-paper);
     white-space: normal;
-    line-height: 22px;
 }
 
 @keyframes tutorial-enter {

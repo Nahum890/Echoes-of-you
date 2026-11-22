@@ -405,7 +405,6 @@
     font-size: 15px;
     color: #ccc6bc;
     /* default font */
-    line-height: 22px;
     margin-bottom: 20px;
     white-space: normal;
 }

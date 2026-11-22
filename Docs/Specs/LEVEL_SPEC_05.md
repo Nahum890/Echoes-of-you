@@ -55,6 +55,12 @@ solution:
     - "Echo residual (2.5s) keeps Plate_Bridge_A held — Platform_Bridge乘客回升 ABOVE → Player stands on platform after it ascends; reaches [0,7,50] → Door_Exit auto-opens; reaches LevelExit at [0,8,56]."
 ---
 
+## Escena jugable · La cortina inestable
+
+Desde el inicio, la rampa izquierda lleva a una placa iluminada. Sobre la placa, mantener R sin moverse durante dos segundos y soltar. El eco sostiene el escudo a distancia. Cuando la cortina central cambia de rojo a azul, bajar al impulsor de la primera plataforma para cruzar hacia la salida. Al retirar el eco, la cortina recupera el peligro.
+
+El laberinto de tres puertas descrito en la ficha de arriba corresponde a un diseño anterior.
+
 # LEVEL 05 — Laberinto de timing (Chapter II close)
 
 **Archetype**: Experimentation — the second time the player sees "time+sequence matters". Now applied to a spatial maze.

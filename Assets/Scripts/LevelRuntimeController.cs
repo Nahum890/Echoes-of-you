@@ -71,6 +71,15 @@ public class LevelRuntimeController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
+        // Al entrar directamente a un nivel también deben existir los servicios de la partida.
+        if (Echoes.Narrative.NarrativeStateController.Instance == null)
+            new GameObject("NarrativeStateController").AddComponent<Echoes.Narrative.NarrativeStateController>();
+        if (Echoes.Narrative.MemorySystem.Instance == null)
+            new GameObject("MemorySystem").AddComponent<Echoes.Narrative.MemorySystem>();
+        if (VN_EndingFlags.Instance == null)
+            new GameObject("VN_EndingFlags").AddComponent<VN_EndingFlags>();
+        VN_EndingFlags.Instance.LoadFromDisk();
+
         _hud = FindAnyObjectByType<GameHUD>();
         _recorder = FindAnyObjectByType<EchoRecorder>();
         if (_recorder != null)
@@ -139,7 +148,6 @@ public class LevelRuntimeController : MonoBehaviour
         if (GameProgress.GetSceneIndex(sceneName) >= 0)
             GameProgress.SetLastPlayedScene(sceneName);
 
-        VN_EndingFlags.Instance?.LoadFromDisk();
 
         PlayerController player = FindAnyObjectByType<PlayerController>();
         if (player != null)
@@ -163,27 +171,15 @@ public class LevelRuntimeController : MonoBehaviour
         
         if (deaths < 3) return;
 
-        string hint = "";
-        if (sceneName == "Level_01")
-            hint = deaths == 1 ? "Mantén F y manda la proyección a la zona azul lateral." : "Suelta F cuando la proyección esté sobre la zona azul; cruza mientras el puente sube.";
-        else if (sceneName == "Level_02")
-            hint = deaths == 1 ? "La zona azul izquierda empuja el bloque gigante." : "Proyecta con F hacia la zona azul, suelta F, y usa el elevador cuando el bloque libere la ruta.";
-        else if (sceneName == "Level_03")
-            hint = deaths == 1 ? "Lleva la proyección al pasillo izquierdo (zona azul)." : "Suelta F cuando el eco esté en la zona azul, cruza el puente y activa la placa final.";
-        else if (sceneName == "Level_04")
-            hint = deaths == 1 ? "Proyecta con F hasta la placa del pasillo izquierdo." : "Suelta F, cruza por el centro y pisa tu placa en la isla; hacen falta las dos placas.";
-        else if (sceneName == "Level_05")
-            hint = deaths == 1 ? "Divide el puzzle en tres consecuencias." : "Un eco mueve el bloque, otro cubre la energia, y otro entra/sale de la trampa.";
-        else if (sceneName == "Level_06")
-            hint = deaths == 1 ? "No busques una sola grabacion perfecta." : "Usa tres ecos: contrapeso, proteccion del nucleo y trampa final.";
-        else if (sceneName == "Level_07")
-            hint = deaths == 1 ? "Sala de enlace: proyecta al pasillo izquierdo." : "Activa la placa del eco y luego la tuya en el corredor central.";
-        else if (sceneName == "Level_08")
-            hint = deaths == 1 ? "Los bordes rojos matan: no saltes al vacío." : "Proyecta al pasillo izquierdo, suelta F y cruza el puente central.";
-        else if (sceneName == "Level_09")
-            hint = deaths == 1 ? "El muro rojo mata si lo tocas sin eco." : "Atraviesa el muro con F; cuando se vuelva azul, cruza.";
-        else if (sceneName == "Level_10")
-            hint = deaths == 1 ? "Evita el foso rojo al inicio." : "Activa la placa del eco y luego la tuya para abrir el núcleo.";
+        string hint = sceneName switch
+        {
+            "Level_01" => "Quédate sobre la placa, mantén R unos segundos y suelta R antes de caminar hacia la puerta.",
+            "Level_02" => "Deja un eco quieto sobre una placa mientras buscas la otra.",
+            "Level_04" => "Activa las placas en el orden que indica el objetivo.",
+            "Level_05" => "Subí la rampa izquierda. Sobre la placa iluminada, mantené R sin moverte y soltá R.",
+            "Level_06" => "Graba al personaje quieto en la placa. Cruza mientras el eco sostiene el puente.",
+            _ => ResolveObjective()
+        };
 
         if (!string.IsNullOrEmpty(hint))
             _hud.ShowToast("Pista: " + hint, new Color(0.5f, 0.8f, 1f, 1f), 4.5f);
@@ -234,7 +230,7 @@ public class LevelRuntimeController : MonoBehaviour
         _hud?.SetObjective(nextObjective);
     }
 
-    public void HandlePlayerDeath(Vector3 position, float restartDelay = 1.2f)
+    public void HandlePlayerDeath(Vector3 position, float restartDelay = 1.2f, string deathMessage = null)
     {
         if (_completed || _restartRequested)
             return;
@@ -247,7 +243,7 @@ public class LevelRuntimeController : MonoBehaviour
 
         _completed = true;
         _hud ??= FindAnyObjectByType<GameHUD>();
-        _hud?.ShowToast("Reiniciando memoria...", new Color(1f, 0.43f, 0.43f, 1f), restartDelay);
+        _hud?.ShowToast(string.IsNullOrEmpty(deathMessage) ? "Reiniciando memoria..." : deathMessage, new Color(1f, 0.43f, 0.43f, 1f), restartDelay);
         _gameState?.NotifyPlayerDeath(position);
         RequestRestart(restartDelay);
     }
@@ -285,6 +281,7 @@ public class LevelRuntimeController : MonoBehaviour
             bool isMicro = IsMicroLevel(levelIdx);
             gate.Show(levelIdx, isMicro, (chosen) => {
                 VN_EndingFlags.Instance?.SetFlag($"ch{levelIdx}_choice_1", chosen);
+                VN_EndingFlags.Instance?.SaveToDisk();
 
                 // Nivel final del bloque: resolver el final y cargar la escena de cierre.
                 if (!string.IsNullOrEmpty(finaleSceneName))

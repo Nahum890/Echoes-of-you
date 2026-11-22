@@ -10,7 +10,10 @@ public class EchoShieldField : MonoBehaviour, IResettableLevelObject
     [SerializeField] float activeIntensity = 4f;
     [SerializeField] float shieldedIntensity = 1.3f;
     [SerializeField] PuzzleSignal completionSignal;
+    [Tooltip("Distancia en metros desde la que un eco neutraliza la cortina.")]
+    [SerializeField, Min(0f)] float echoReach = 1.25f;
 
+    [SerializeField] PressurePlate controlPlate;
     int _echoCount;
     MaterialPropertyBlock _block;
     static readonly int ColorId = Shader.PropertyToID("_Color");
@@ -58,7 +61,7 @@ public class EchoShieldField : MonoBehaviour, IResettableLevelObject
         {
             Vector3 center = transform.TransformPoint(_boxCollider.center);
             Vector3 halfExtents = Vector3.Scale(_boxCollider.size, transform.lossyScale) * 0.5f;
-            hitCount = Physics.OverlapBoxNonAlloc(center, halfExtents, _overlapBuffer, transform.rotation);
+            hitCount = Physics.OverlapBoxNonAlloc(center, halfExtents + Vector3.one * echoReach, _overlapBuffer, transform.rotation);
         }
         else
         {
@@ -68,7 +71,7 @@ public class EchoShieldField : MonoBehaviour, IResettableLevelObject
         }
 
         int previousEchoCount = _echoCount;
-        _echoCount = 0;
+        _echoCount = controlPlate != null && controlPlate.IsPressed ? 1 : 0;
         Collider playerCollider = null;
 
         for (int i = 0; i < hitCount; i++)
@@ -107,27 +110,8 @@ public class EchoShieldField : MonoBehaviour, IResettableLevelObject
 
     bool OverlapsPlayerBody(Collider playerCollider)
     {
-        CharacterController cc = playerCollider.GetComponent<CharacterController>();
-        if (cc == null)
-            return true;
-
-        BoxCollider box = GetComponent<BoxCollider>();
-        if (box == null)
-            return true;
-
-        Vector3 center = transform.TransformPoint(box.center);
-        Vector3 halfExtents = Vector3.Scale(box.size, transform.lossyScale) * 0.5f;
-        Vector3 playerCenter = playerCollider.transform.TransformPoint(cc.center);
-        float playerRadius = cc.radius * 0.95f;
-        float playerHalfHeight = Mathf.Max(cc.height * 0.5f - playerRadius, 0.05f);
-
-        Vector3 closest = center - playerCenter;
-        float dx = Mathf.Max(Mathf.Abs(closest.x) - halfExtents.x, 0f);
-        float dy = Mathf.Max(Mathf.Abs(closest.y) - halfExtents.y, 0f);
-        float dz = Mathf.Max(Mathf.Abs(closest.z) - halfExtents.z, 0f);
-
-        float distSq = dx * dx + dy * dy + dz * dz;
-        return distSq <= playerRadius * playerRadius + playerHalfHeight * 0.25f;
+        return Physics.ComputePenetration(_collider, transform.position, transform.rotation,
+            playerCollider, playerCollider.transform.position, playerCollider.transform.rotation, out _, out _);
     }
 
     public void ResetLevelState()
@@ -151,6 +135,8 @@ public class EchoShieldField : MonoBehaviour, IResettableLevelObject
 
                 rendererRef.GetPropertyBlock(_block);
                 _block.SetColor(ColorId, color);
+                _block.SetColor(Shader.PropertyToID("_BaseColor"), color);
+                _block.SetColor(Shader.PropertyToID("_EmissiveColor"), emission);
                 _block.SetColor(EmissionColorId, emission);
                 rendererRef.SetPropertyBlock(_block);
             }

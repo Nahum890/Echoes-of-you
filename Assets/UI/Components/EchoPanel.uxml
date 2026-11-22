@@ -1,10 +1,4 @@
 <UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
-    <!-- EchoPanel — contenedor colapsable animado.
-         Uso:
-           <ui:VisualElement class="echo-panel" name="echoPanel">
-               ...contenido...
-           </ui:VisualElement>
-         Colapso animado activado al añadir/quitar .echo-panel--collapsed desde C#.
-         Soporta header opcional + indicator ▸ vía clases. -->
+    <!-- EchoPanel — contenedor colapsable animado. -->
     <ui:VisualElement class="echo-panel" name="echoPanel" />
 </UXML>

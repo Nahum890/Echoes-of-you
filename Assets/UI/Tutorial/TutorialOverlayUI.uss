@@ -68,13 +68,25 @@
     color: #ffffff;
 }
 
-.tutorial-image {
-    width: 100%;
+.tutorial-steps {
     flex-grow: 1;
-    -unity-background-scale-mode: scale-to-fit;
-    background-position: center;
-    background-repeat: no-repeat;
-    border-radius: 8px;
+    flex-shrink: 1;
+    width: 85%;
+    max-width: 720px;
+    justify-content: center;
+}
+
+.tutorial-title {
+    font-size: 34px;
+    color: #a2ecfc;
+    -unity-font-style: bold;
+    margin-bottom: 14px;
+}
+
+.tutorial-step {
+    font-size: 22px;
+    white-space: normal;
+    color: #e2f7fd;
     margin-bottom: 10px;
 }
 

@@ -7,7 +7,9 @@ namespace Echoes.Narrative
     [System.Serializable]
     public class NarrativeSaveData
     {
-        public int schemaVersion = 1;
+        public int schemaVersion = 2;
+        public int lyraArtifactsSeen;
+        public int memoryBonus;
         public List<FlagEntry> flags = new();
         public List<VariableEntry> variables = new();
         public List<string> inspectedInteractables = new();
@@ -97,6 +99,8 @@ namespace Echoes.Narrative
             if (data == null) return;
 
             var flags = VN_EndingFlags.Instance;
+            flags?.ClearAll();
+            flags?.RestoreMemoryCounts(data.lyraArtifactsSeen, data.memoryBonus);
             if (flags != null && data.flags != null)
             {
                 for (int i = 0; i < data.flags.Count; i++)
@@ -107,6 +111,7 @@ namespace Echoes.Narrative
             }
 
             var ctrl = NarrativeStateController.Instance;
+            ctrl?.InitializeDefaults();
             if (ctrl != null && data.variables != null)
             {
                 var dict = new Dictionary<string, float>();
@@ -146,6 +151,8 @@ namespace Echoes.Narrative
             var flags = VN_EndingFlags.Instance;
             if (flags != null)
             {
+                data.lyraArtifactsSeen = flags.LyraArtifactsSeen;
+                data.memoryBonus = flags.MemoryBonus;
                 var allFlags = flags.Flags;
                 foreach (var kv in allFlags)
                     data.flags.Add(new FlagEntry(kv.Key, kv.Value));

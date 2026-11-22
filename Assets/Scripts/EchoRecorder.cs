@@ -4,7 +4,7 @@ using UnityEngine;
 using Echoes.UI;
 
 /// <summary>
-/// Grabación por mantener F/R: duración definida por el LevelBlueprint del nivel
+/// Grabación por mantener R: duración definida por el LevelBlueprint del nivel
 /// (LevelRuntimeController aplica maxRecordSeconds vía SetMode). Genera un eco que repite el bucle.
 /// Retardo de inicio de reproducción: 0.0s (instantáneo).
 /// </summary>
@@ -196,8 +196,21 @@ public class EchoRecorder : MonoBehaviour
     void OnEnable()
     {
         ApplySavedExtraRecordTime();
-        ForceUnlockPlayer();
         RefreshHud();
+    }
+
+    void OnDisable()
+    {
+        if (!_recording) return;
+        _recording = false;
+        DisableRecordingRim();
+        if (_micClip != null && !string.IsNullOrEmpty(_micDevice))
+            Microphone.End(_micDevice);
+        _micClip = null;
+        _micDevice = null;
+        _frames.Clear();
+        GameStateController.Instance?.SetRecording(false, transform.position, transform.up);
+        RecordingStopped?.Invoke(false);
     }
 
     void Update()
@@ -207,7 +220,7 @@ public class EchoRecorder : MonoBehaviour
 
         bool hold = Input.GetKey(KeyCode.R);
 
-        if (hold && !_recording)
+        if (Input.GetKeyDown(KeyCode.R) && !_recording && !_playerController.IsInputLocked && Time.timeScale > 0f)
             StartRecording();
 
         if (_recording && !hold)
@@ -271,7 +284,6 @@ public class EchoRecorder : MonoBehaviour
         float elapsed = Time.time - _recordStartTime;
         _lastRecordDuration = elapsed;
         GameStateController.Instance?.SetRecording(false, transform.position, transform.up);
-        _playerController?.SetInputLocked(false);
 
         GameFeelController.Instance?.PlayRecordStop(transform.position);
         SetAnimatorTriggerIfExists("RecordStop");
@@ -376,7 +388,6 @@ public class EchoRecorder : MonoBehaviour
         DisableRecordingRim();
         _frames.Clear();
         _lastRecordDuration = 0f;
-        _playerController?.SetInputLocked(false);
         GameStateController.Instance?.SetRecording(false, transform.position, transform.up);
 
         // Terminate microphone recording if it's currently running

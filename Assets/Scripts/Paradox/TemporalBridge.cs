@@ -11,7 +11,8 @@ public class TemporalBridge : MonoBehaviour, IResettableLevelObject
     [SerializeField] Color activeColor = new Color(0f, 0.9f, 1f, 0.85f);
     [SerializeField] Color inactiveColor = new Color(0f, 0.9f, 1f, 0.08f);
 
-    private Material _material;
+    [SerializeField] PressurePlate controlPlate;
+    [SerializeField] Renderer deckRenderer;
     private Material[] _materials = System.Array.Empty<Material>();
     private int _echoCount = 0;
     private bool _isActive = false;
@@ -56,14 +57,19 @@ public class TemporalBridge : MonoBehaviour, IResettableLevelObject
             }
         }
         _materials = mats.ToArray();
-        if (_materials.Length > 0) _material = _materials[0];
+
 
         UpdateState(false);
     }
 
+    void FixedUpdate()
+    {
+        if (controlPlate != null && controlPlate.IsPressed != _isActive)
+            UpdateState(controlPlate.IsPressed);
+    }
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Echo"))
+        if (controlPlate == null && other.CompareTag("Echo"))
         {
             _echoCount++;
             EvaluateState();
@@ -72,7 +78,7 @@ public class TemporalBridge : MonoBehaviour, IResettableLevelObject
 
     void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Echo"))
+        if (controlPlate == null && other.CompareTag("Echo"))
         {
             _echoCount = Mathf.Max(0, _echoCount - 1);
             EvaluateState();
@@ -91,6 +97,7 @@ public class TemporalBridge : MonoBehaviour, IResettableLevelObject
     private void UpdateState(bool active)
     {
         _isActive = active;
+        if (deckRenderer != null) deckRenderer.enabled = active;
         if (bridgeCollider != null)
             bridgeCollider.enabled = active;
 

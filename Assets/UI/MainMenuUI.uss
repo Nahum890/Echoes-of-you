@@ -373,7 +373,6 @@
     opacity: 0.65;
     /* default font */
     -unity-text-align: middle-right;
-    line-height: 14px;
 }
 
 /* ============================================================

@@ -330,7 +330,7 @@ public static class GameProgress
         if (completedLevels == 0)
             return "El Cuaderno aguarda tu primera decisión. Proyecta un eco antes de cruzar lo imposible.";
         if (completedLevels < totalLevels / 2)
-            return "Varios capítulos siguen desalineados. Usa la proyección (F) para actuar sin mover tu cuerpo.";
+            return "Varios capítulos siguen desalineados. Mantén R para grabar tu recorrido y suéltala para crear un eco.";
         if (completedLevels < totalLevels)
             return "El recorrido avanza. Evita ecos en rutas que cierran tu propio camino.";
         return "Todos los nodos de memoria están activos. El Archivo reconoce tu patrón.";
@@ -352,10 +352,17 @@ public static class GameProgress
         return $"{secs}s";
     }
 
-        public static void ResetProgress()
-        {
-            Echoes.Narrative.NarrativeSaveBridge.ClearSave();
-            PlayerPrefs.DeleteKey(UnlockedCountKey);
+    public static bool HasStartedGame => PlayerPrefs.HasKey(LastPlayedKey) || GetCompletedCount() > 0
+        || Echoes.Narrative.NarrativeSaveBridge.HasSave();
+
+    public static void ResetProgress()
+    {
+        Echoes.Narrative.NarrativeSaveBridge.ClearSave();
+        Echoes.VN.VN_EndingFlags.Instance?.ClearAll();
+        Echoes.Narrative.MemorySystem.Instance?.ClearAll();
+        Echoes.Narrative.NarrativeStateController.Instance?.InitializeDefaults();
+        Echoes.VN.BlockEndingResolver.ClearPersistedEnding();
+        PlayerPrefs.DeleteKey(UnlockedCountKey);
         PlayerPrefs.DeleteKey(TotalEchoesKey);
         PlayerPrefs.DeleteKey(TotalPlayTimeKey);
         PlayerPrefs.DeleteKey(LastPlayedKey);
@@ -365,6 +372,8 @@ public static class GameProgress
         {
             PlayerPrefs.DeleteKey(CompletedPrefix + LevelScenes[i]);
             PlayerPrefs.DeleteKey(DeathsPrefix + LevelScenes[i]);
+            PlayerPrefs.DeleteKey("PlayTime_" + LevelScenes[i]);
+            PlayerPrefs.DeleteKey("Echoes_" + LevelScenes[i]);
         }
 
         PlayerPrefs.SetInt(UnlockedCountKey, 1);
