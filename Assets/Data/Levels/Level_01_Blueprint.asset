@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level_01_Blueprint
   m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
   levelName: Level_01
-  nextLevel: Level_02
+  nextLevel: Level_06
   actNumber: 1
   archetype: 0
   echoEnabled: 1
@@ -106,7 +106,7 @@ MonoBehaviour:
     position: {x: 0, y: 0.1, z: 44}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
-    customData: Level_02
+    customData: Level_06
     targetSignals: []
   - name: LevelGoal
     type: 13

@@ -176,8 +176,8 @@ public class LevelRuntimeController : MonoBehaviour
             "Level_01" => "Quédate sobre la placa, mantén R unos segundos y suelta R antes de caminar hacia la puerta.",
             "Level_02" => "Deja un eco quieto sobre una placa mientras buscas la otra.",
             "Level_04" => "Activa las placas en el orden que indica el objetivo.",
-            "Level_05" => "Subí la rampa izquierda. Sobre la placa iluminada, mantené R sin moverte y soltá R.",
-            "Level_06" => "Graba al personaje quieto en la placa. Cruza mientras el eco sostiene el puente.",
+            "Level_05" => "El programa conserva el final de la obra. En la cinta quedó grabado el comienzo.",
+            "Level_06" => "En la ficha del último jueves hay dos marcas de tinta.",
             _ => ResolveObjective()
         };
 
@@ -284,12 +284,22 @@ public class LevelRuntimeController : MonoBehaviour
                 VN_EndingFlags.Instance?.SaveToDisk();
 
                 // Nivel final del bloque: resolver el final y cargar la escena de cierre.
-                if (!string.IsNullOrEmpty(finaleSceneName))
+                string destination = GameProgress.GetCampaignDestination(gameObject.scene.name);
+                if (destination == "CreditsScene" || (destination == null && !string.IsNullOrEmpty(finaleSceneName)))
                 {
                     var ending = Echoes.VN.BlockEndingResolver.ResolveFromRuntime();
                     Echoes.VN.BlockEndingResolver.PersistEnding(ending);
                     Debug.Log($"[LevelRuntime] Final del bloque resuelto: {ending}");
-                    LoadingScreenController.TransitionToScene(finaleSceneName);
+                    if (destination == "CreditsScene" || finaleSceneName == "CreditsScene")
+                        CreditsController.Open(ending);
+                    else
+                        LoadingScreenController.TransitionToScene(finaleSceneName);
+                    return;
+                }
+
+                if (destination != null)
+                {
+                    LoadingScreenController.TransitionToScene(destination);
                     return;
                 }
 

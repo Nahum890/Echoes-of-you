@@ -42,17 +42,15 @@
                 <ui:VisualElement class="vn-panel-noise" picking-mode="Ignore" />
 
                 <!-- Dialogue Text Row -->
-                <ui:VisualElement class="vn-text-row">
+                <ui:ScrollView name="vn-text-scroll" class="vn-text-row" vertical-scroller-visibility="Auto">
                     <ui:Label name="dialogue-text" class="vn-dialogue-text" text="" />
-                    <ui:Label name="typewriter-cursor" class="vn-typewriter-cursor" text="_" />
-                </ui:VisualElement>
+                </ui:ScrollView>
 
                 <!-- Controls Anchor (Bottom Right) -->
                 <ui:VisualElement class="vn-controls-anchor">
-                    <ui:Button name="btn-backlog" text="LOG" class="vn-control-btn" />
-                    <ui:Button name="btn-auto" text="AUTO" class="vn-control-btn" />
-                    <ui:Button name="btn-skip" text="SKIP" class="vn-control-btn vn-control-btn--skip" />
-                    <ui:Label name="advance-prompt" text="[E] CONTINUAR" class="vn-advance-prompt" />
+                    <ui:Button name="btn-auto" text="Automático" class="vn-control-btn" />
+                    <ui:Button name="btn-skip" text="Saltar diálogo" class="vn-control-btn vn-control-btn--skip" />
+                    <ui:Label name="advance-prompt" text="E · Continuar" class="vn-advance-prompt" />
                 </ui:VisualElement>
             </ui:VisualElement>
 

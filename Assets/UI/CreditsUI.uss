@@ -1,335 +1,347 @@
 /* ============================================================
-   CreditsUI â€” RediseÃ±o Stich (solid, crisp, legible)
-   Fondo sÃ³lido, tipografÃ­a cargada, secciones con tarjetas
+   CreditsUI — Rediseño Stitch (sólido, nítido, legible)
+   Layout en columna: cabecera / scroll / pie con el botón volver.
+   Fondo opaco: los créditos nunca dejan ver otra escena detrás.
    ============================================================ */
 
 @import "EchoesDesignTokens.uss";
 
-/* ===== ROOT ===== */
+/* ===== RAIZ ===== */
 .credits-root {
-    background-color: var(--color-glass-bg-strong);
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #202920;
+    flex-direction: column;
+    overflow: hidden;
 }
 
-/* ===== HEADER FIJO ===== */
+/* ===== CABECERA FIJA ===== */
+.credits-page { flex-grow: 1; min-height: 0; }
+
 .credits-header {
-    position: absolute;
-    left: 0; top: 0; right: 0;
-    height: 100px;
-    background-color: #131410;
-    border-bottom-width: 2px;
-    border-bottom-color: #E8B262;
     flex-direction: row;
     align-items: center;
-    padding: 0 48px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    min-height: 88px;
+    padding: 16px 48px;
+    background-color: #202920;
+    border-bottom-width: 2px;
+    border-bottom-color: #ebcb90;
 }
 
 .credits-header-title {
-    font-size: 36px;
-    color: #E8B262;
-    /* default font */
-    letter-spacing: 2px;
+    font-size: 34px;
+    color: #ebcb90;
+    letter-spacing: 3px;
+    white-space: nowrap;
+    flex-shrink: 0;
     opacity: 1;
 }
 
 .credits-header-subtitle {
-    font-size: 16px;
+    font-size: 15px;
     color: #ccc6bc;
-    /* default font */
     letter-spacing: 1px;
     margin-left: 24px;
+    white-space: normal;
+    flex-shrink: 1;
     opacity: 1;
 }
 
-/* ===== SCROLL AREA ===== */
+/* ===== ZONA DE SCROLL ===== */
 .credits-container {
-    position: absolute;
-    left: 0; top: 100px; right: 0; bottom: 0;
-    background-color: var(--color-glass-bg-strong);
+    flex-grow: 1;
+    min-height: 0;
+    align-items: center;
+    background-color: #202920;
 }
 
 .credits-scroll {
-    position: absolute;
-    left: 20%; right: 20%;
-    top: 0; bottom: 0;
-    padding: 48px 0;
+    width: 88%;
+    max-width: 920px;
+    min-height: 0;
+    flex-grow: 1;
+    padding: 40px 0 0 0;
     background-color: transparent;
 }
 
 /* ===== SECCIONES (tarjetas) ===== */
 .credits-section {
-    background-color: #131410;
+    background-color: #303c32;
     border-width: 1px;
     border-color: #4a463f;
     border-left-width: 4px;
-    border-left-color: #E8B262;
-    padding: 28px 32px;
-    margin-bottom: 20px;
+    border-left-color: #ebcb90;
+    padding: 24px 28px;
+    margin-bottom: 18px;
     align-items: flex-start;
-    min-height: 154px;
-}
-
-.credits-section--two-text {
-    min-height: 186px;
-}
-
-.credits-section--thanks {
-    min-height: 178px;
+    flex-shrink: 0;
 }
 
 .credits-section--title {
-    background-color: #1b1c18;
+    background-color: #303c32;
     border-left-color: #fffeff;
     border-left-width: 6px;
-    padding: 40px 36px;
-    margin-bottom: 32px;
+    padding: 36px 32px;
+    margin-bottom: 28px;
     align-items: center;
-    min-height: 226px;
 }
 
 .credits-section--close {
-    background-color: #1b1c18;
-    border-left-color: #E8B262;
+    background-color: #303c32;
+    border-left-color: #ebcb90;
     border-left-width: 6px;
-    padding: 40px 36px;
-    margin-bottom: 32px;
+    padding: 36px 32px;
+    margin-bottom: 28px;
     align-items: center;
-    min-height: 198px;
 }
 
 /* ===== TITULO PRINCIPAL ===== */
 .credits-title-main {
-    font-size: 52px;
-    color: #E8B262;
-    /* default font */
+    font-size: 50px;
+    color: #ebcb90;
     -unity-text-align: middle-center;
-    letter-spacing: 4px;
-    margin-bottom: 16px;
+    letter-spacing: 5px;
+    margin-bottom: 14px;
+    white-space: normal;
     opacity: 1;
-    min-height: 62px;
 }
 
 .credits-subtitle {
-    font-size: 22px;
+    font-size: 21px;
     color: #e4e2dc;
-    /* default font */
     -unity-text-align: middle-center;
-    margin-top: 8px;
+    margin-top: 6px;
     letter-spacing: 1px;
+    white-space: normal;
     opacity: 1;
-    min-height: 26px;
 }
 
 /* ===== SEPARADOR ===== */
 .credits-separator {
     height: 2px;
     width: 240px;
-    background-color: #E8B262;
-    margin: 16px 0;
+    max-width: 80%;
+    background-color: #ebcb90;
+    margin: 14px 0;
+    flex-shrink: 0;
 }
 
 /* ===== HEADING DE SECCION ===== */
 .credits-heading {
-    font-size: 18px;
-    color: #E8B262;
-    /* default font */
-    -unity-text-align: middle-left;
+    font-size: 17px;
+    color: #ebcb90;
     letter-spacing: 3px;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
+    white-space: normal;
     opacity: 1;
-    min-height: 22px;
 }
 
 .credits-heading--close {
-    font-size: 32px;
-    color: #E8B262;
-    /* default font */
+    font-size: 30px;
+    color: #ebcb90;
     -unity-text-align: middle-center;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     letter-spacing: 2px;
-    min-height: 38px;
 }
 
 /* ===== NOMBRES ===== */
 .credits-name {
     font-size: 18px;
     color: #e4e2dc;
-    /* default font */
-    -unity-text-align: middle-left;
     letter-spacing: 1px;
     margin-bottom: 6px;
+    white-space: normal;
     opacity: 1;
-    min-height: 22px;
 }
 
 /* ===== TEXTO BODY ===== */
 .credits-text {
-    font-size: 16px;
+    font-size: 15px;
     color: #ccc6bc;
-    /* default font */
-    -unity-text-align: middle-left;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     letter-spacing: 1px;
+    white-space: normal;
     opacity: 1;
-    min-height: 20px;
 }
 
-/* ===== BACK BUTTON â€” SOLID ===== */
+/* ===== PIE CON BOTON VOLVER ===== */
+.credits-footer {
+    flex-shrink: 0;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 16px 24px 20px 24px;
+    background-color: #202920;
+    border-top-width: 1px;
+    border-top-color: #4a463f;
+}
+
 .credit-back-btn {
-    position: absolute;
-    left: 50%;
-    bottom: 32px;
-    translate: -50% 0;
-    min-width: 320px;
-    font-size: 18px;
+    min-width: 180px;
+    max-width: 90%;
+    font-size: 17px;
     color: #e4e2dc;
-    /* default font */
-    background-color: #1b1c18;
+    background-color: #303c32;
     border-width: 1px;
     border-color: #4a463f;
     border-left-width: 4px;
-    border-left-color: #E8B262;
-    padding: 18px 36px;
+    border-left-color: #ebcb90;
+    padding: 14px 32px;
     letter-spacing: 2px;
     -unity-text-align: middle-center;
+    white-space: normal;
     opacity: 1;
     transition-property: color, border-color, background-color, scale;
     transition-duration: 150ms;
     transition-timing-function: linear;
-    border-radius: 0;
 }
 
 .credit-back-btn:hover {
     color: #fffeff;
     background-color: #2a2a26;
-    border-color: #E8B262;
-    scale: 1.03 1.03;
+    border-color: #ebcb90;
+    scale: 1.02 1.02;
 }
 
 .credit-back-btn:active {
-    color: #E8B262;
-    border-color: #E8B262;
-    scale: 0.97 0.97;
+    color: #ebcb90;
+    border-color: #ebcb90;
+    scale: 0.98 0.98;
 }
 
-/* ===== PADDING FINAL SCROLL ===== */
+/* ===== RESPIRO FINAL DEL SCROLL ===== */
 .credits-end-padding {
-    height: 160px;
+    height: 32px;
+    flex-shrink: 0;
 }
 
-/* ===== EPILOGO (final del bloque) ===== */
+/* ===== EPILOGO ===== */
 .epilogue-panel {
     position: absolute;
-    left: 0; top: 100px; right: 0; bottom: 0;
-    background-color: var(--color-glass-bg-strong);
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: #202920;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 80px 15%;
+    padding: 40px 8% 28px 8%;
 }
 
 .epilogue-tag {
-    font-size: 16px;
-    color: #E8B262;
-    /* default font */
+    font-size: 15px;
+    color: #ebcb90;
     letter-spacing: 4px;
-    margin-bottom: 40px;
+    margin-bottom: 24px;
     -unity-text-align: middle-center;
+    white-space: normal;
+    flex-shrink: 0;
     opacity: 1;
 }
 
 .epilogue-voice {
-    font-size: 44px;
+    font-size: 40px;
     color: #fffeff;
-    /* default font */
     -unity-text-align: middle-center;
     letter-spacing: 1px;
-    margin-bottom: 28px;
+    margin-bottom: 20px;
     white-space: normal;
+    flex-shrink: 0;
     opacity: 1;
 }
 
 .epilogue-narration {
-    font-size: 22px;
+    font-size: 21px;
     color: #ccc6bc;
-    /* default font */
     -unity-text-align: middle-center;
     letter-spacing: 1px;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
     white-space: normal;
     opacity: 1;
 }
 
 .epilogue-continue {
-    min-width: 320px;
-    font-size: 18px;
+    min-width: 180px;
+    max-width: 90%;
+    font-size: 17px;
     color: #e4e2dc;
-    /* default font */
-    background-color: #1b1c18;
+    background-color: #303c32;
     border-width: 1px;
     border-color: #4a463f;
     border-left-width: 4px;
-    border-left-color: #E8B262;
-    padding: 18px 36px;
+    border-left-color: #ebcb90;
+    padding: 14px 32px;
     letter-spacing: 2px;
     -unity-text-align: middle-center;
+    white-space: normal;
+    margin-top: 20px;
+    flex-shrink: 0;
     opacity: 1;
     transition-property: color, border-color, background-color, scale;
     transition-duration: 150ms;
     transition-timing-function: linear;
-    border-radius: 0;
 }
 
 .epilogue-continue:hover {
     color: #fffeff;
     background-color: #2a2a26;
-    border-color: #E8B262;
-    scale: 1.03 1.03;
+    border-color: #ebcb90;
+    scale: 1.02 1.02;
 }
 
 .epilogue-continue:active {
-    color: #E8B262;
-    border-color: #E8B262;
-    scale: 0.97 0.97;
+    color: #ebcb90;
+    border-color: #ebcb90;
+    scale: 0.98 0.98;
 }
 
-/* El epilogo pasa de dos frases a un cuerpo narrativo, asi que necesita
-   scroll: en 16:9 a 1080p entra casi entero, pero en pantallas mas bajas o
-   con el final de Aceptacion (el mas largo) se desborda. */
+/* El epilogo largo necesita scroll: crece con el panel, nunca se desborda. */
 .epilogue-scroll {
     width: 100%;
-    max-height: 52%;
-    margin-bottom: 40px;
+    max-width: 920px;
+    flex-grow: 1;
+    min-height: 0;
+    margin-bottom: 8px;
 }
 
 /* Por que este final y no otro. En ambar, el color de "memoria" del juego,
    porque habla de lo que el jugador hizo, no de lo que Aiden siente. */
 .epilogue-why {
-    font-size: 19px;
-    color: #E8B262;
+    font-size: 18px;
+    color: #ebcb90;
     -unity-text-align: middle-center;
     white-space: normal;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
     opacity: 1;
 }
 
 /* El cuerpo de la historia. Alineado a la izquierda: son varios parrafos y
    centrarlos los vuelve ilegibles. */
 .epilogue-reflection {
-    font-size: 20px;
+    font-size: 19px;
     color: #ccc6bc;
     -unity-text-align: upper-left;
-    -unity-paragraph-spacing: 18px;
+    -unity-paragraph-spacing: 16px;
     white-space: normal;
-    margin-bottom: 32px;
+    margin-bottom: 28px;
     padding: 0 4%;
     opacity: 1;
 }
 
 .epilogue-closing {
-    font-size: 26px;
+    font-size: 25px;
     color: #fffeff;
     -unity-text-align: middle-center;
     letter-spacing: 1px;
     white-space: normal;
+    margin-bottom: 12px;
     opacity: 1;
 }
+
+.credit-back-btn:focus, .epilogue-continue:focus {
+    border-color: #f6e6b8;
+    background-color: #405242;
+}
+
+.credits-section .unity-label { max-width: 100%; }

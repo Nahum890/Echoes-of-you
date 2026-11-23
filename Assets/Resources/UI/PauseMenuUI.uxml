@@ -26,7 +26,7 @@
 
                 <!-- Chapter Info -->
                 <ui:VisualElement class="pause-chapter-info">
-                    <ui:Label class="pause-main-title" text="CAPÍTULO PAUSADO" />
+                    <ui:Label class="pause-main-title" text="En pausa" />
                     <ui:Label class="pause-chapter-subtitle" name="lbl-pause-chapter" text="Chapter I: Primer Eco" />
                     <ui:VisualElement class="pause-location-container">
                         <ui:Label class="pause-location-text" name="lbl-pause-location" text="Checkpoint: Pasillo Principal" />
@@ -63,7 +63,6 @@
 
         <!-- Right Side: Residual Archival Stamp -->
         <ui:VisualElement class="pause-right-view" picking-mode="Ignore">
-            <ui:Label class="pause-rec-text" text="REC_0392 // A. PIERCE // ERROR_MEMORY_CORRUPTED" picking-mode="Ignore" />
         </ui:VisualElement>
 
         <!-- Sub-Panel: Controles (Overlay) -->
@@ -71,7 +70,7 @@
             <ui:VisualElement class="pause-subpanel-card">
                 <ui:VisualElement class="pause-subpanel-header">
                     <ui:Label class="pause-subpanel-tag" text="GUÍA DE REGISTRO // ENTRADA DE COMANDOS" />
-                    <ui:Label class="pause-subpanel-title" text="CONTROLES DEL SISTEMA" />
+                    <ui:Label class="pause-subpanel-title" text="Controles" />
                 </ui:VisualElement>
 
                 <ui:VisualElement class="controls-grid">
@@ -96,15 +95,9 @@
                         <ui:VisualElement class="control-keys-box">
                             <ui:Label class="control-key control-key--accent" text="R" />
                         </ui:VisualElement>
-                        <ui:Label class="control-desc" text="Mantener: Grabar Eco Temporal (hasta 12s de acciones)" />
+                        <ui:Label class="control-desc" text="Mantén R para grabar. Suelta R para crear el eco." />
                     </ui:VisualElement>
 
-                    <ui:VisualElement class="control-entry">
-                        <ui:VisualElement class="control-keys-box">
-                            <ui:Label class="control-key" text="F" />
-                        </ui:VisualElement>
-                        <ui:Label class="control-desc" text="Limpiar / Descartar todos los ecos activos de la sala" />
-                    </ui:VisualElement>
 
                     <ui:VisualElement class="control-entry">
                         <ui:VisualElement class="control-keys-box">

@@ -31,9 +31,19 @@ public class LevelLightingSettings : MonoBehaviour
     [Header("Relleno automático")]
     [Tooltip("Si está activo, el bootstrap NO añade luces EchoesFill_ extra.")]
     public bool disableRuntimeFillLights;
+    [Tooltip("Solo las luminarias de la escena iluminan el mundo. Desactiva el relleno del shader y las luces auxiliares de los ecos.")]
+    public bool fixturesOnly;
+
+    void OnDisable()
+    {
+        if (fixturesOnly && Application.isPlaying)
+            Shader.SetGlobalFloat("_EchoesFixturesOnly", 0f);
+    }
 
     public void ApplyNow()
     {
+        if (Application.isPlaying)
+            Shader.SetGlobalFloat("_EchoesFixturesOnly", fixturesOnly ? 1f : 0f);
         if (overrideAmbient)
         {
             RenderSettings.ambientMode = AmbientMode.Flat;

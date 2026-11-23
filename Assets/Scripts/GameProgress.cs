@@ -10,7 +10,7 @@ public static class GameProgress
     const string LastPlayedKey = "Echoes.LastPlayedScene";
     const string SessionsKey = "Echoes.SessionCount";
     const string ProgressVersionKey = "Echoes.ProgressVersion";
-    const int CurrentProgressVersion = 2;
+    const int CurrentProgressVersion = 3;
 
     static readonly string[] LevelScenes =
     {
@@ -52,6 +52,33 @@ public static class GameProgress
 
     /// <summary>Niveles del bloque jugable (competencia): N01–N06. El resto queda fuera del build.</summary>
     public const int BlockLevelCount = 6;
+    // Content IDs stay stable for puzzle data, narrative choices and save keys.
+    static readonly int[] CampaignOrder = { 1, 6, 5, 4, 3, 2 };
+
+    public static string GetChapterScene(int chapter) => LevelScenes[CampaignOrder[chapter - 1] - 1];
+
+    public static string GetCampaignDestination(string sceneName)
+    {
+        int index = GetChapterIndex(sceneName);
+        if (index < 0 || index >= TotalLevels) return null;
+        return index + 1 == TotalLevels ? "CreditsScene" : GetChapterScene(index + 2);
+    }
+
+    public static int GetChapterIndex(string sceneName)
+    {
+        int contentIndex = GetSceneIndex(sceneName);
+        return contentIndex >= 0 && contentIndex < BlockLevelCount
+            ? System.Array.IndexOf(CampaignOrder, contentIndex + 1)
+            : contentIndex;
+    }
+
+    static int FirstUnfinishedChapter()
+    {
+        for (int chapter = 1; chapter < TotalLevels; chapter++)
+            if (!IsSceneCompleted(GetChapterScene(chapter)))
+                return chapter;
+        return TotalLevels;
+    }
 
     public static int TotalLevels => Mathf.Min(BlockLevelCount, LevelScenes.Length);
 
@@ -74,6 +101,7 @@ public static class GameProgress
                     PlayerPrefs.SetInt(CompletedPrefix + LevelScenes[i], 0);
             }
 
+            PlayerPrefs.SetInt(UnlockedCountKey, FirstUnfinishedChapter());
             PlayerPrefs.SetInt(ProgressVersionKey, CurrentProgressVersion);
             PlayerPrefs.Save();
         }
@@ -144,11 +172,11 @@ public static class GameProgress
 
     public static bool IsSceneUnlocked(string sceneName)
     {
-        int index = GetSceneIndex(sceneName);
+        int index = GetChapterIndex(sceneName);
         if (index < 0)
             return false;
 
-        return index < GetUnlockedCount();
+        return index < TotalLevels && (index < GetUnlockedCount() || IsSceneCompleted(sceneName));
     }
 
     public static bool IsSceneCompleted(string sceneName)
@@ -158,14 +186,14 @@ public static class GameProgress
 
     public static void MarkSceneCompleted(string sceneName)
     {
+        EnsureInitialized();
         int index = GetSceneIndex(sceneName);
         if (index < 0)
             return;
 
         PlayerPrefs.SetInt(CompletedPrefix + sceneName, 1);
 
-        int unlocked = GetUnlockedCount();
-        int nextUnlocked = Mathf.Clamp(Mathf.Max(unlocked, index + 2), 1, TotalLevels);
+        int nextUnlocked = Mathf.Max(GetUnlockedCount(), FirstUnfinishedChapter());
         PlayerPrefs.SetInt(UnlockedCountKey, nextUnlocked);
         PlayerPrefs.Save();
     }
@@ -173,7 +201,7 @@ public static class GameProgress
     public static string GetHighestUnlockedSceneName()
     {
         int unlockedIndex = Mathf.Clamp(GetUnlockedCount() - 1, 0, TotalLevels - 1);
-        return LevelScenes[unlockedIndex];
+        return GetChapterScene(unlockedIndex + 1);
     }
 
     public static string GetLevelDisplayName(string sceneName)
@@ -294,8 +322,9 @@ public static class GameProgress
         int unlocked = GetUnlockedCount();
         for (int i = 0; i < unlocked; i++)
         {
-            if (!IsSceneCompleted(LevelScenes[i]))
-                return LevelScenes[i];
+            string scene = GetChapterScene(i + 1);
+            if (!IsSceneCompleted(scene))
+                return scene;
         }
 
         return GetHighestUnlockedSceneName();

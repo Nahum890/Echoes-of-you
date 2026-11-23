@@ -146,12 +146,14 @@ public class EchoKineticZone : MonoBehaviour, IResettableLevelObject
         {
             yield return null;
             if (player == null || !player.Controller.enabled || player.IsInputLocked) break;
-            elapsed += Time.deltaTime;
+            elapsed += Mathf.Min(Time.deltaTime, 0.06f);
             float t = Mathf.Clamp01(elapsed / duration);
             Vector3 next = Vector3.Lerp(start, end, t) + Vector3.up * (12f * t * (1f - t));
             if ((next - player.transform.position).sqrMagnitude > 9f) break;
             player.Controller.Move(next - player.transform.position);
         }
+        if (elapsed >= duration && player != null && (player.transform.position - end).sqrMagnitude < 0.64f)
+            completionSignal?.MarkSatisfied();
         _relayFlight = null;
     }
 

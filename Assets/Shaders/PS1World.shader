@@ -9,6 +9,8 @@ Shader "Echoes/PS1World"
     {
         _BaseColor ("Base Color", Color) = (0.32, 0.34, 0.36, 1)
         _BaseTex ("Albedo", 2D) = "white" {}
+        [Toggle(_SCHOOL_WORLD_UV)] _SchoolWorldUV ("School architectural projection", Float) = 0
+        _SchoolRepeatMeters ("School texture width and height (m)", Vector) = (2, 2, 0, 0)
 
         [Header(PS1)]
         _SnapPixelSize ("Rejilla de snap (px internos)", Range(0, 8)) = 2
@@ -21,6 +23,10 @@ Shader "Echoes/PS1World"
         _FlickerStrength ("Parpadeo del tubo", Range(0,1)) = 0.15
         _FlatAmbient ("Ambiente plano", Range(0,2)) = 1.0
         _AmbientFloor ("Suelo de ambiente", Range(0,1)) = 0.6
+
+        _CeilingFill ("Relleno del techo", Range(0,1)) = 0.42
+        _HallwayLightStrength ("Fluorescentes del menú", Range(0,2)) = 0
+        _HallwayLightColor ("Tono de los fluorescentes", Color) = (1,0.91,0.72,1)
 
         [Header(Surface)]
         _Smoothness ("Smoothness", Range(0,1)) = 0.15
@@ -43,6 +49,7 @@ Shader "Echoes/PS1World"
             float4 _EmissionColor;
             float4 _SpecColor;
             float4 _BaseTex_ST;
+            float4 _SchoolRepeatMeters;
             float _SnapPixelSize;
             float _AffineStrength;
             float _StainStrength;
@@ -51,9 +58,14 @@ Shader "Echoes/PS1World"
             float _FlickerStrength;
             float _FlatAmbient;
             float _AmbientFloor;
+            float _CeilingFill;
+            float _HallwayLightStrength;
+            float4 _HallwayLightColor;
             float _Smoothness;
             float _SpecularAnomaly;
         CBUFFER_END
+        float4 _EchoesSchoolSpot;
+        float _EchoesFixturesOnly;
         ENDHLSL
 
         Pass
@@ -68,6 +80,7 @@ Shader "Echoes/PS1World"
             #pragma target 4.5
 
             #pragma shader_feature_local _EMISSION
+            #pragma shader_feature_local_fragment _SCHOOL_WORLD_UV
 
             // Sin estos keywords GetMainLight() devuelve shadowAttenuation = 1
             // siempre: la luz direccional nunca proyectaba sombra sobre estos
@@ -125,6 +138,13 @@ Shader "Echoes/PS1World"
             half4 Frag(Varyings input) : SV_Target
             {
                 float2 uv = lerp(input.uv, input.uvAffine, _AffineStrength);
+                #if defined(_SCHOOL_WORLD_UV)
+                    float3 n = abs(input.normalWS);
+                    bool horizontal = n.y > max(n.x, n.z);
+                    uv = horizontal ? input.positionWS.xz : float2(n.x > n.z ? input.positionWS.z : input.positionWS.x, input.positionWS.y);
+                    uv /= _SchoolRepeatMeters.xy;
+                    if (!horizontal) uv.y = clamp(uv.y, 0.002, 0.998);
+                #endif
                 half3 albedo = _BaseColor.rgb * SAMPLE_TEXTURE2D(_BaseTex, sampler_BaseTex, uv).rgb;
 
                 half3 normalWS = normalize(input.normalWS);
@@ -160,8 +180,27 @@ Shader "Echoes/PS1World"
                 #endif
 
                 half upFacing = saturate(normalWS.y);
-                half3 ceilingLight = half3(0.9, 0.92, 1.0) * upFacing * 0.42;
+                half3 ceilingLight = half3(0.9, 0.92, 1.0) * upFacing * _CeilingFill;
                 half3 lighting = albedo * (ambient + directional + ceilingLight);
+
+                if (_HallwayLightStrength > 0.0)
+                {
+                    // Posiciones de los seis tubos de MainMenuCinematicWorld.
+                    float tubeIndex = clamp(round((input.positionWS.z + 2.0) / 5.2), 0.0, 5.0);
+                    float3 toTube = float3(0.0, 3.27, -2.0 + tubeIndex * 5.2) - input.positionWS;
+                    float incidence = saturate(dot(normalWS, normalize(toTube + float3(0.0, 0.001, 0.0))));
+                    float falloff = exp(-dot(toTube.xz * toTube.xz, float2(0.14, 0.42)));
+                    lighting += albedo * _HallwayLightColor.rgb * falloff * incidence *
+                                _HallwayLightStrength * 0.62;
+
+                    if (_EchoesSchoolSpot.w > 0.002)
+                    {
+                        float3 toSpot = _EchoesSchoolSpot.xyz - input.positionWS;
+                        float spot = exp(-dot(toSpot, toSpot) * 0.84);
+                        float direction = max(0.12, saturate(dot(normalWS, normalize(toSpot + float3(0.0, 0.001, 0.0)))));
+                        lighting += albedo * half3(1.0, 0.82, 0.57) * spot * direction * _EchoesSchoolSpot.w * 0.9;
+                    }
+                }
 
                 // Zumbido fluorescente parpadeante.
                 float flicker = 1.0 - _FlickerStrength *
@@ -172,9 +211,11 @@ Shader "Echoes/PS1World"
                 half3 halfDir = normalize(mainLight.direction + viewDirWS);
                 half spec = pow(saturate(dot(normalWS, halfDir)), specExp) * _Smoothness * _SpecularAnomaly;
                 lighting += _SpecColor.rgb * mainLight.color.rgb * spec * 0.5;
+                if (_EchoesFixturesOnly > 0.5)
+                    lighting = 0;
 
                 // Fluorescentes point: son additional lights.
-                #if defined(_ADDITIONAL_LIGHTS)
+                #if defined(_ADDITIONAL_LIGHTS) || defined(_ADDITIONAL_LIGHTS_VERTEX)
                 // LIGHT_LOOP_BEGIN, en su variante Forward+ (cluster), lee campos de
                 // una variable llamada 'inputData'. El proyecto hoy va en Forward
                 // (m_RenderingMode: 0) y no la usaria, pero si alguien cambia a
@@ -186,6 +227,10 @@ Shader "Echoes/PS1World"
                 inputData.normalizedScreenSpaceUV = screenUV;
 
                 uint addCount = GetAdditionalLightsCount();
+                #if defined(_ADDITIONAL_LIGHTS_VERTEX)
+                    // Long hallway walls need the cone evaluated between vertices.
+                    if (_EchoesFixturesOnly < 0.5) addCount = 0;
+                #endif
                 LIGHT_LOOP_BEGIN(addCount)
                     Light addLight = GetAdditionalLight(lightIndex, input.positionWS, half4(1, 1, 1, 1));
                     half aNdotL = saturate(dot(normalWS, addLight.direction));
@@ -199,7 +244,8 @@ Shader "Echoes/PS1World"
                 #endif
 
                 #if defined(_EMISSION)
-                    lighting += _EmissionColor.rgb;
+                    if (_EchoesFixturesOnly < 0.5)
+                        lighting += _EmissionColor.rgb;
                 #endif
 
                 // Niebla por capitulo: vive en RenderSettings (lighting_profiles.yaml),

@@ -15,10 +15,10 @@
 
                 <ui:VisualElement class="settings-sidebar-header">
                     <ui:VisualElement class="settings-title-container">
-                        <ui:Label name="lblSettingsTitle" text="CALIBRACIÓN" class="settings-logo-title" />
-                        <ui:Label text="CALIBRACIÓN" class="settings-logo-shadow" />
+                        <ui:Label name="lblSettingsTitle" text="Ajustes" class="settings-logo-title" />
+                        <ui:Label text="Ajustes" class="settings-logo-shadow" />
                     </ui:VisualElement>
-                    <ui:Label name="lblSettingsSubtitle" text="SISTEMA_V.1.04 // ESTADO: INESTABLE" class="settings-logo-subtitle" />
+                    <ui:Label name="lblSettingsSubtitle" text="Preferencias del juego" class="settings-logo-subtitle" />
                     <ui:VisualElement class="settings-sidebar-divider" />
                 </ui:VisualElement>
 
@@ -27,11 +27,11 @@
                     <ui:Button name="tabAudio" text="AUDIO" class="settings-tab" />
                     <ui:Button name="tabControles" text="CONTROLES" class="settings-tab" />
                     <ui:Button name="tabAccesibilidad" text="ACCESIBILIDAD" class="settings-tab" />
-                    <ui:Button name="tabGameplay" text="GAMEPLAY" class="settings-tab" />
+                    <ui:Button name="tabGameplay" text="Juego" class="settings-tab" />
                 </ui:VisualElement>
 
                 <ui:VisualElement class="settings-sidebar-footer">
-                    <ui:Button name="btnSettingsBack" text="CERRAR TERMINAL" class="settings-close-btn" />
+                    <ui:Button name="btnSettingsBack" text="Volver" class="settings-close-btn" />
                 </ui:VisualElement>
             </ui:VisualElement>
 
@@ -39,16 +39,15 @@
             <ui:VisualElement class="settings-right">
 
                 <!-- VIDEO PANEL -->
-                <ui:VisualElement name="panelVideo" class="settings-panel">
+                <ui:ScrollView name="panelVideo" class="settings-panel" vertical-scroller-visibility="Auto">
                     <ui:VisualElement class="settings-panel-header">
-                        <ui:Label text="PARÁMETROS VISUALES" class="settings-panel-header-title" />
-                        <ui:Label text="REC" class="settings-panel-header-rec" />
+                        <ui:Label text="Pantalla y gráficos" class="settings-panel-header-title" />
                     </ui:VisualElement>
 
                     <ui:VisualElement class="settings-item">
                         <ui:VisualElement class="settings-item-info">
                             <ui:Label text="Resolución" class="settings-item-label" />
-                            <ui:Label text="Dimensiones de proyección temporal." class="settings-item-hint" />
+                            <ui:Label text="Tamaño de la imagen en pantalla." class="settings-item-hint" />
                         </ui:VisualElement>
                         <ui:VisualElement class="settings-item-control">
                             <ui:DropdownField name="ResolutionDropdown" label="" class="settings-dropdown" />
@@ -58,14 +57,14 @@
                     <ui:VisualElement class="settings-item settings-item--slider">
                         <ui:VisualElement class="settings-item-info">
                             <ui:Label text="Brillo" class="settings-item-label" />
-                            <ui:Label text="Nivel de exposición en la memoria." class="settings-item-hint" />
+                            <ui:Label text="Ajusta el brillo." class="settings-item-hint" />
                         </ui:VisualElement>
                     </ui:VisualElement>
 
                     <ui:VisualElement class="settings-item">
                         <ui:VisualElement class="settings-item-info">
                             <ui:Label text="Escala UI" class="settings-item-label" />
-                            <ui:Label text="Tamaño de proyección de interfaz." class="settings-item-hint" />
+                            <ui:Label text="Tamaño de la interfaz." class="settings-item-hint" />
                         </ui:VisualElement>
                         <ui:DropdownField name="ScaleDropdown" label="Escala" class="settings-dropdown" />
                     </ui:VisualElement>
@@ -73,7 +72,7 @@
                     <ui:VisualElement class="settings-item">
                         <ui:VisualElement class="settings-item-info">
                             <ui:Label text="Pantalla Completa" class="settings-item-label" />
-                            <ui:Label text="Modo de proyección exclusivo." class="settings-item-hint" />
+                            <ui:Label text="Juega en pantalla completa." class="settings-item-hint" />
                         </ui:VisualElement>
                         <ui:Toggle name="FullscreenToggle" label="" class="settings-toggle" />
                     </ui:VisualElement>
@@ -81,14 +80,14 @@
                     <ui:VisualElement class="settings-item">
                         <ui:VisualElement class="settings-item-info">
                             <ui:Label text="VSync" class="settings-item-label" />
-                            <ui:Label text="Sincronización vertical del visor." class="settings-item-hint" />
+                            <ui:Label text="Sincroniza los fotogramas con la pantalla." class="settings-item-hint" />
                         </ui:VisualElement>
                         <ui:Toggle name="VsyncToggle" label="" class="settings-toggle" />
                     </ui:VisualElement>
-                </ui:VisualElement>
+                </ui:ScrollView>
 
                 <!-- AUDIO PANEL -->
-                <ui:VisualElement name="panelAudio" class="settings-panel hidden">
+                <ui:ScrollView name="panelAudio" class="settings-panel hidden" vertical-scroller-visibility="Auto">
                     <ui:VisualElement class="settings-panel-header">
                         <ui:Label text="PARÁMETROS ACÚSTICOS" class="settings-panel-header-title" />
                     </ui:VisualElement>
@@ -136,10 +135,10 @@
                             <ui:Label name="lblEchoVoiceVal" text="70%" class="settings-slider-value" />
                         </ui:VisualElement>
                     </ui:VisualElement>
-                </ui:VisualElement>
+                </ui:ScrollView>
 
                 <!-- CONTROLES PANEL -->
-                <ui:VisualElement name="panelControles" class="settings-panel hidden">
+                <ui:ScrollView name="panelControles" class="settings-panel hidden" vertical-scroller-visibility="Auto">
                     <ui:VisualElement class="settings-panel-header">
                         <ui:Label text="PARÁMETROS DE CONTROL" class="settings-panel-header-title" />
                     </ui:VisualElement>
@@ -167,10 +166,10 @@
                             <ui:Label text="Próximamente: editor de bindings." class="settings-item-hint" />
                         </ui:VisualElement>
                     </ui:VisualElement>
-                </ui:VisualElement>
+                </ui:ScrollView>
 
                 <!-- ACCESIBILIDAD PANEL -->
-                <ui:VisualElement name="panelAccesibilidad" class="settings-panel hidden">
+                <ui:ScrollView name="panelAccesibilidad" class="settings-panel hidden" vertical-scroller-visibility="Auto">
                     <ui:VisualElement class="settings-panel-header">
                         <ui:Label text="ACCESIBILIDAD" class="settings-panel-header-title" />
                     </ui:VisualElement>
@@ -230,10 +229,10 @@
                         </ui:VisualElement>
                         <ui:Toggle name="ReduceMotionToggle" label="" class="settings-toggle" />
                     </ui:VisualElement>
-                </ui:VisualElement>
+                </ui:ScrollView>
 
                 <!-- GAMEPLAY PANEL -->
-                <ui:VisualElement name="panelGameplay" class="settings-panel hidden">
+                <ui:ScrollView name="panelGameplay" class="settings-panel hidden" vertical-scroller-visibility="Auto">
                     <ui:VisualElement class="settings-panel-header">
                         <ui:Label text="PARÁMETROS DE JUEGO" class="settings-panel-header-title" />
                     </ui:VisualElement>
@@ -278,7 +277,7 @@
                         </ui:VisualElement>
                         <ui:Button name="btnDeleteProgress" text="Borrar Todo" class="settings-delete-btn" />
                     </ui:VisualElement>
-                </ui:VisualElement>
+                </ui:ScrollView>
 
                 <!-- Action bar -->
                 <ui:VisualElement class="settings-actions">

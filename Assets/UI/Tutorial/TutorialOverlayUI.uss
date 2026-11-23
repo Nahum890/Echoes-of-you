@@ -7,8 +7,7 @@
     width: 100%;
     height: 100%;
     flex-grow: 1;
-    background-color: #030508;
-    z-index: 500;
+    background-color: #202b24;
 }
 
 .tutorial-hidden {
@@ -32,7 +31,7 @@
     bottom: 0;
     width: 100%;
     height: 100%;
-    background-color: #030508;
+    background-color: #202b24;
     border-width: 0;
     border-radius: 0;
     padding-top: 10px;
@@ -48,23 +47,21 @@
     position: absolute;
     top: 14px;
     right: 18px;
-    z-index: 20;
     background-color: rgba(18, 24, 34, 0.85);
     border-width: 1px;
     border-color: rgba(99, 212, 250, 0.5);
     border-radius: 6px;
-    color: #a2ecfc;
+    color: #efd099;
     font-size: 14px;
     padding: 6px 16px;
     -unity-font-style: bold;
-    cursor: pointer;
     transition-property: background-color, border-color, color;
     transition-duration: 150ms;
 }
 
 .tutorial-close-btn:hover {
     background-color: rgba(99, 212, 250, 0.25);
-    border-color: #63d4fa;
+    border-color: #ebcb90;
     color: #ffffff;
 }
 
@@ -78,7 +75,7 @@
 
 .tutorial-title {
     font-size: 34px;
-    color: #a2ecfc;
+    color: #efd099;
     -unity-font-style: bold;
     margin-bottom: 14px;
 }
@@ -86,13 +83,14 @@
 .tutorial-step {
     font-size: 22px;
     white-space: normal;
-    color: #e2f7fd;
+    color: #f5edd8;
     margin-bottom: 10px;
 }
 
 .tutorial-footer {
     width: 100%;
-    height: 52px;
+    min-height: 52px;
+    flex-wrap: wrap;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
@@ -106,27 +104,28 @@
 
 .tutorial-prompt-text {
     font-size: 16px;
-    color: #e2f7fd;
+    color: #f5edd8;
     -unity-font-style: bold;
     letter-spacing: 1px;
 }
 
 .tutorial-continue-btn {
-    background-color: #164e63;
+    background-color: #354438;
     border-width: 1px;
-    border-color: #63d4fa;
+    border-color: #ebcb90;
     border-radius: 6px;
     color: #ffffff;
     font-size: 14px;
     -unity-font-style: bold;
     padding: 8px 24px;
-    cursor: pointer;
     transition-property: background-color, border-color, scale;
     transition-duration: 150ms;
 }
 
 .tutorial-continue-btn:hover {
-    background-color: #0891b2;
-    border-color: #a5f3fc;
+    background-color: #52634c;
+    border-color: #f6e6b8;
     scale: 1.03 1.03;
 }
+.tutorial-title, .tutorial-prompt-text, .tutorial-continue-btn { white-space: normal; }
+.tutorial-prompt-text { flex-shrink: 1; }

@@ -1,733 +1,334 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
-/// <summary>
-/// Escena 3D viva detrás del menú: arquitectura y elementos interactivos procedimentales.
-/// Implementa un sistema de ambientes dinámicos estilo PS2 con iluminación volumétrica simulada y sombras suaves.
-/// Recrea las escenas visuales de "Vortex" y "Crystals/Circuit" de forma tridimensional, animada y de alta fidelidad.
-/// </summary>
+/// <summary>Pasillo escolar detrás del menú principal, iluminado según la sección activa.</summary>
 public class MainMenuCinematicWorld : MonoBehaviour
 {
-    public enum MenuAmbience
-    {
-        Void,
-        Stability,
-        System,
-        Disconnect
-    }
+    public enum MenuAmbience { Void, Stability, System, Disconnect }
+    public enum SchoolProp { Door, Notebook, Lockers, Clock, Notice, Projector, Exit }
 
-    [SerializeField] int distantEchoWalkers = 5;
-    [SerializeField] float orbitRadius = 22f;
-    [SerializeField] float orbitSpeed = 4.5f;
-    [SerializeField] float fogPulseSpeed = 0.15f;
+    readonly Dictionary<SchoolProp, (Transform moving, Vector3 offset, Vector3 rotation, Material ink)> _props = new();
+    readonly Dictionary<SchoolProp, float> _propAmounts = new();
+    SchoolProp? _hoverProp;
+    static readonly int SchoolSpot = Shader.PropertyToID("_EchoesSchoolSpot");
+    Vector3 _spotPosition;
+    float _spotAmount;
 
     public static MainMenuCinematicWorld Instance { get; private set; }
 
-    Transform _cameraPivot;
-    float _orbitAngle;
-    Material _archMat;
-    Material _echoMat;
-    Material _circuitMat;
-    Material _packetMat;
+    readonly List<Material> _materials = new();
+    Camera _camera;
+    float _cameraTime;
+    Color _lightColor = new(1f, 0.91f, 0.72f);
 
-    Light _dirLight;
-    Light _vortexLight;
-
-    // Ambience Targets
-    MenuAmbience _targetAmbience = MenuAmbience.Void;
-    float _targetOrbitSpeed;
-    float _targetOrbitRadius;
-    float _targetFogDensity;
-    Color _targetFogColor;
-    Color _targetAmbientLight;
-    Color _targetArchColor;
-    Color _targetEchoColor;
-    float _targetEchoSpeed;
-
-    // Light target settings
-    float _targetLightIntensity = 0.65f;
-    Color _targetLightColor = new Color(0.55f, 0.7f, 0.95f, 1f);
-    float _currentLightIntensity = 0.65f;
-    Color _currentLightColor = new Color(0.55f, 0.7f, 0.95f, 1f);
-
-    // Camera target settings
-    float _targetCameraPitch = 12f;
-    float _targetCameraYOffset = 3f;
-    float _currentCameraPitch = 12f;
-    float _currentCameraYOffset = 3f;
-
-    // Container Scale targets
-    float _targetVoidScale = 1f;
-    float _targetStabilityScale = 0f;
-    float _targetSystemScale = 0f;
-    float _targetDisconnectScale = 0f;
-
-    float _currentVoidScale = 1f;
-    float _currentStabilityScale = 0f;
-    float _currentSystemScale = 0f;
-    float _currentDisconnectScale = 0f;
-
-    // Roots for each category
-    Transform _voidRoot;
-    Transform _stabilityRoot;
-    Transform _systemRoot;
-    Transform _disconnectRoot;
-
-    // Interpolation Current values
-    float _currentOrbitSpeed;
-    float _currentOrbitRadius;
-    float _currentFogDensity;
-    Color _currentFogColor;
-    Color _currentAmbientLight;
-    Color _currentArchColor;
-    Color _currentEchoColor;
-    float _currentEchoSpeed;
-
-    public float CurrentEchoSpeed => _currentEchoSpeed;
-
-static void Bootstrap()
+    const float SecondsBetweenViews = 12f;
+    static readonly Pose[] CameraViews =
     {
-        UnityEngine.Debug.Log("[MainMenuCinematicWorld] Bootstrap() running");
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "MainMenu")
-        {
-            UnityEngine.Debug.Log("[MainMenuCinematicWorld] Not MainMenu scene, returning");
-            return;
-        }
+        new(new Vector3(-1.45f, 1.52f, -4.2f), Quaternion.Euler(2.5f, 4.5f, 0f)),
+        new(new Vector3(0.1f, 1.73f, -1.4f), Quaternion.Euler(-4f, 9f, 0f)),
+        new(new Vector3(1.7f, 1.25f, 1.15f), Quaternion.Euler(2f, -9f, 0f)),
+        new(new Vector3(0.35f, 1.43f, -1.8f), Quaternion.Euler(1f, -3.5f, 0f)),
+    };
+    Color _targetFog = new(0.023f, 0.032f, 0.028f);
+    Color _targetLight = new(1f, 0.91f, 0.72f);
 
-        var existing = UnityEngine.Object.FindAnyObjectByType<MainMenuCinematicWorld>();
-        UnityEngine.Debug.Log(string.Format("[MainMenuCinematicWorld] Found existing: {0}", existing != null));
-        if (existing != null)
-        {
-            UnityEngine.Debug.Log("[MainMenuCinematicWorld] Existing found, returning");
-            return;
-        }
+    void Awake() => Instance = this;
 
-        UnityEngine.Debug.Log("[MainMenuCinematicWorld] Creating new instance");
-        GameObject root = new GameObject("MainMenuCinematicWorld");
-        root.AddComponent<MainMenuCinematicWorld>();
+    void Start()
+    {
+        _camera = Camera.main;
+        if (_camera == null) return;
+
+        Pose initial = CameraViews[0];
+        _camera.transform.SetPositionAndRotation(initial.position, initial.rotation);
+        _camera.fieldOfView = 53f;
+        _camera.clearFlags = CameraClearFlags.SolidColor;
+        _camera.backgroundColor = _targetFog;
+
+        RenderSettings.ambientMode = AmbientMode.Flat;
+        RenderSettings.ambientLight = new Color(0.025f, 0.03f, 0.028f);
+        RenderSettings.fog = true;
+        RenderSettings.fogMode = FogMode.Exponential;
+        RenderSettings.fogDensity = 0.046f;
+        RenderSettings.fogColor = _targetFog;
+
+        foreach (var root in gameObject.scene.GetRootGameObjects())
+            foreach (var light in root.GetComponentsInChildren<Light>())
+                light.enabled = false;
+
+        BuildHallway();
     }
 
-        void Awake()
-        {
-            UnityEngine.Debug.Log("[MainMenuCinematicWorld] Awake() called");
-            Instance = this;
-        }
-
-void Start()
+    void OnDestroy()
     {
-        UnityEngine.Debug.Log("[MainMenuCinematicWorld] Start() called");
-        BuildMaterials();
-        BuildVoid();
-
-        // Build 3D environments procedurally
-        BuildVoidVortex();
-        BuildStabilityGrid();
-        BuildSystemCalibration();
-        BuildDisconnect();
-
-        BuildDistantEchoes();
-        BuildCameraRig();
-        ApplyLiminalFog();
-
-        // Initialize targets & currents to Void ambience immediately to prevent startup pops
-        SetAmbience(MenuAmbience.Void);
-        _currentOrbitSpeed = _targetOrbitSpeed;
-        _currentOrbitRadius = _targetOrbitRadius;
-        _currentFogDensity = _targetFogDensity;
-        _currentFogColor = _targetFogColor;
-        _currentAmbientLight = _targetAmbientLight;
-        _currentArchColor = _targetArchColor;
-        _currentEchoColor = _targetEchoColor;
-        _currentEchoSpeed = _targetEchoSpeed;
-        _currentCameraPitch = _targetCameraPitch;
-        _currentCameraYOffset = _targetCameraYOffset;
-        _currentLightIntensity = _targetLightIntensity;
-        _currentLightColor = _targetLightColor;
-
-        // Initialize scale states
-        _currentVoidScale = 1f;
-        _currentStabilityScale = 0f;
-        _currentSystemScale = 0f;
-        _currentDisconnectScale = 0f;
-
-        if (_voidRoot != null) _voidRoot.localScale = Vector3.one;
-        if (_stabilityRoot != null) _stabilityRoot.localScale = Vector3.zero;
-        if (_systemRoot != null) _systemRoot.localScale = Vector3.zero;
-        if (_disconnectRoot != null) _disconnectRoot.localScale = Vector3.zero;
+        if (Instance == this)
+        {
+            Instance = null;
+            Shader.SetGlobalVector(SchoolSpot, Vector4.zero);
+        }
+        foreach (var material in _materials) Destroy(material);
     }
+
+    public void PreviewProp(SchoolProp? prop) => _hoverProp = prop;
 
     public void SetAmbience(MenuAmbience ambience)
     {
-        _targetAmbience = ambience;
-
-        // Set all scale targets to 0 first, then enable the active one
-        _targetVoidScale = 0f;
-        _targetStabilityScale = 0f;
-        _targetSystemScale = 0f;
-        _targetDisconnectScale = 0f;
-
-        switch (ambience)
+        (_targetFog, _targetLight) = ambience switch
         {
-            case MenuAmbience.Void:
-                _targetVoidScale = 1f;
-                _targetOrbitSpeed = orbitSpeed * 1.5f;
-                _targetOrbitRadius = 8f;
-                _targetFogDensity = 0.008f;
-                _targetFogColor = new Color(0.02f, 0.04f, 0.08f, 1f);
-                _targetAmbientLight = new Color(0.20f, 0.25f, 0.35f, 1f);
-                _targetArchColor = new Color(0.20f, 0.28f, 0.40f, 1f);
-                _targetEchoColor = new Color(0.50f, 0.90f, 1f, 0.9f);
-                _targetEchoSpeed = 2.0f;
-                _targetCameraPitch = 25f;
-                _targetCameraYOffset = 2f;
-                _targetLightIntensity = 0.15f; // Dim the moon, let center vortex glow dominate
-                _targetLightColor = new Color(0.3f, 0.5f, 0.8f, 1f);
-                break;
-
-            case MenuAmbience.Stability:
-                _targetStabilityScale = 1f;
-                _targetOrbitSpeed = 1.5f;
-                _targetOrbitRadius = 20f;
-                _targetFogDensity = 0.02f;
-                _targetFogColor = new Color(0.02f, 0.03f, 0.06f, 1f);
-                _targetAmbientLight = new Color(0.1f, 0.15f, 0.25f, 1f);
-                _targetArchColor = new Color(0.2f, 0.3f, 0.5f, 1f);
-                _targetEchoColor = new Color(0.4f, 0.6f, 0.9f, 0.6f);
-                _targetEchoSpeed = 0.5f;
-                _targetCameraPitch = 55f;
-                _targetCameraYOffset = 6f;
-                _targetLightIntensity = 0.5f;
-                _targetLightColor = new Color(0.5f, 0.6f, 0.8f, 1f);
-                break;
-
-            case MenuAmbience.System:
-                _targetSystemScale = 1f;
-                _targetOrbitSpeed = 1.0f;
-                _targetOrbitRadius = 16f;
-                _targetFogDensity = 0.015f;
-                _targetFogColor = new Color(0.01f, 0.04f, 0.04f, 1f);
-                _targetAmbientLight = new Color(0.05f, 0.2f, 0.18f, 1f);
-                _targetArchColor = new Color(0.15f, 0.25f, 0.22f, 1f);
-                _targetEchoColor = new Color(0.25f, 0.9f, 0.7f, 0.7f);
-                _targetEchoSpeed = 0.8f;
-                _targetCameraPitch = 15f;
-                _targetCameraYOffset = 1.2f;
-                _targetLightIntensity = 0.1f; // Dim the moon, let the calibration spotlights shine
-                _targetLightColor = new Color(0.2f, 0.7f, 0.6f, 1f);
-                break;
-
-            case MenuAmbience.Disconnect:
-                _targetDisconnectScale = 1f;
-                _targetOrbitSpeed = 0.4f;
-                _targetOrbitRadius = 24f;
-                _targetFogDensity = 0.06f;
-                _targetFogColor = new Color(0.06f, 0.02f, 0.02f, 1f);
-                _targetAmbientLight = new Color(0.15f, 0.05f, 0.05f, 1f);
-                _targetArchColor = new Color(0.4f, 0.15f, 0.15f, 1f);
-                _targetEchoColor = new Color(0.8f, 0.2f, 0.2f, 0.3f);
-                _targetEchoSpeed = 0.2f;
-                _targetCameraPitch = 15f;
-                _targetCameraYOffset = 3f;
-                _targetLightIntensity = 0.25f;
-                _targetLightColor = new Color(0.8f, 0.2f, 0.2f, 1f);
-                break;
-        }
+            MenuAmbience.Stability => (new Color(0.027f, 0.035f, 0.029f), new Color(0.90f, 0.95f, 0.81f)),
+            MenuAmbience.System => (new Color(0.021f, 0.028f, 0.031f), new Color(0.79f, 0.90f, 0.89f)),
+            MenuAmbience.Disconnect => (new Color(0.036f, 0.024f, 0.022f), new Color(0.97f, 0.75f, 0.63f)),
+            _ => (new Color(0.023f, 0.032f, 0.028f), new Color(1f, 0.91f, 0.72f)),
+        };
     }
 
-    void Update()
+    void LateUpdate()
     {
-        float lerpFactor = (_targetAmbience == MenuAmbience.Void) ? 2.5f : 3.75f;
-        float dt = Time.deltaTime;
+        if (_camera == null) return;
 
-        _currentOrbitSpeed = Mathf.Lerp(_currentOrbitSpeed, _targetOrbitSpeed, lerpFactor * dt);
-        _currentOrbitRadius = Mathf.Lerp(_currentOrbitRadius, _targetOrbitRadius, lerpFactor * dt);
-        _currentFogDensity = Mathf.Lerp(_currentFogDensity, _targetFogDensity, lerpFactor * dt);
-        _currentFogColor = Color.Lerp(_currentFogColor, _targetFogColor, lerpFactor * dt);
-        _currentAmbientLight = Color.Lerp(_currentAmbientLight, _targetAmbientLight, lerpFactor * dt);
-        _currentArchColor = Color.Lerp(_currentArchColor, _targetArchColor, lerpFactor * dt);
-        _currentEchoColor = Color.Lerp(_currentEchoColor, _targetEchoColor, lerpFactor * dt);
-        _currentEchoSpeed = Mathf.Lerp(_currentEchoSpeed, _targetEchoSpeed, lerpFactor * dt);
-
-        // Directional Light interpolation
-        _currentLightIntensity = Mathf.Lerp(_currentLightIntensity, _targetLightIntensity, lerpFactor * dt);
-        _currentLightColor = Color.Lerp(_currentLightColor, _targetLightColor, lerpFactor * dt);
-        if (_dirLight != null)
+        bool reduceMotion = EchoesSettings.ReduceMotion;
+        var highlighted = default((Transform moving, Vector3 offset, Vector3 rotation, Material ink));
+        bool highlight = _hoverProp.HasValue && _props.TryGetValue(_hoverProp.Value, out highlighted);
+        if (!reduceMotion)
         {
-            _dirLight.intensity = _currentLightIntensity;
-            _dirLight.color = _currentLightColor;
+            if (!highlight)
+                _cameraTime = Mathf.Repeat(_cameraTime + Time.unscaledDeltaTime, SecondsBetweenViews * CameraViews.Length);
+
+            Pose view = highlight ? GetPropView(_hoverProp.Value, highlighted.moving.parent.position) : GetHallwayView();
+            float delta = Time.unscaledDeltaTime;
+            float cameraBlend = 1f - Mathf.Exp(-3.9f * delta);
+            Vector3 currentPosition = _camera.transform.position;
+            float step = Mathf.Min(Vector3.Distance(currentPosition, view.position) * cameraBlend, 8.5f * delta);
+            _camera.transform.SetPositionAndRotation(
+                Vector3.MoveTowards(currentPosition, view.position, step),
+                Quaternion.Slerp(_camera.transform.rotation, view.rotation, cameraBlend));
         }
 
-        // Camera rig interpolation
-        _currentCameraPitch = Mathf.Lerp(_currentCameraPitch, _targetCameraPitch, lerpFactor * dt);
-        _currentCameraYOffset = Mathf.Lerp(_currentCameraYOffset, _targetCameraYOffset, lerpFactor * dt);
-
-        // Container scale interpolation
-        _currentVoidScale = Mathf.Lerp(_currentVoidScale, _targetVoidScale, lerpFactor * dt);
-        _currentStabilityScale = Mathf.Lerp(_currentStabilityScale, _targetStabilityScale, lerpFactor * dt);
-        _currentSystemScale = Mathf.Lerp(_currentSystemScale, _targetSystemScale, lerpFactor * dt);
-        _currentDisconnectScale = Mathf.Lerp(_currentDisconnectScale, _targetDisconnectScale, lerpFactor * dt);
-
-        // Update scales
-        if (_voidRoot != null) _voidRoot.localScale = Vector3.one * _currentVoidScale;
-        if (_stabilityRoot != null) _stabilityRoot.localScale = Vector3.one * _currentStabilityScale;
-        if (_systemRoot != null) _systemRoot.localScale = Vector3.one * _currentSystemScale;
-        if (_disconnectRoot != null) _disconnectRoot.localScale = Vector3.one * _currentDisconnectScale;
-
-        // Active scene animations
-        if (_voidRoot != null && _currentVoidScale > 0.01f)
+        float blend = reduceMotion ? 1f : 1f - Mathf.Exp(-5f * Time.unscaledDeltaTime);
+        if (highlight)
         {
-            // Spin the vortex
-            _voidRoot.Rotate(Vector3.up, 24f * dt * _currentEchoSpeed);
+            Vector3 propPosition = highlighted.moving.parent.position;
+            Vector3 targetSpot = propPosition + new Vector3(-0.65f, 0.55f, -0.45f);
+            _spotPosition = _spotAmount <= 0.01f ? targetSpot : Vector3.Lerp(_spotPosition, targetSpot, blend);
+        }
+        _spotAmount = Mathf.Lerp(_spotAmount, highlight ? 1f : 0f, blend);
+        Shader.SetGlobalVector(SchoolSpot, new Vector4(_spotPosition.x, _spotPosition.y, _spotPosition.z, _spotAmount));
+        foreach (var (prop, detail) in _props)
+        {
+            float amount = _propAmounts[prop];
+            float target = _hoverProp == prop ? 1f : 0f;
+            if (Mathf.Approximately(amount, target)) continue;
 
-            // Pulse center light intensity to create a breathing void effect
-            if (_vortexLight != null)
+            amount = Mathf.Lerp(amount, target, blend);
+            _propAmounts[prop] = amount;
+            float movement = reduceMotion ? 0f : amount;
+            detail.moving.localPosition = detail.offset * movement;
+            detail.moving.localRotation = Quaternion.Euler(detail.rotation * movement);
+            detail.ink.SetColor("_EmissionColor", new Color(0.61f, 0.45f, 0.24f) * Mathf.Lerp(0.045f, 0.68f, amount));
+        }
+        RenderSettings.fogColor = Color.Lerp(RenderSettings.fogColor, _targetFog, blend);
+        _camera.backgroundColor = RenderSettings.fogColor;
+
+        if (_lightColor == _targetLight) return;
+        _lightColor = Color.Lerp(_lightColor, _targetLight, blend);
+        foreach (var material in _materials)
+            if (material.HasProperty("_HallwayLightColor"))
+                material.SetColor("_HallwayLightColor", _lightColor);
+    }
+
+    Pose GetHallwayView()
+    {
+        float segment = _cameraTime / SecondsBetweenViews;
+        int index = Mathf.Min(Mathf.FloorToInt(segment), CameraViews.Length - 1);
+        Pose from = CameraViews[index];
+        Pose to = CameraViews[(index + 1) % CameraViews.Length];
+        float blend = Mathf.SmoothStep(0f, 1f, segment - index);
+        return new Pose(
+            Vector3.Lerp(from.position, to.position, blend),
+            Quaternion.Slerp(from.rotation, to.rotation, blend));
+    }
+
+    Pose GetPropView(SchoolProp prop, Vector3 subject)
+    {
+        // Las tomas se quedan en el centro del pasillo, fuera de los muebles.
+        Vector3 offset = prop switch
+        {
+            SchoolProp.Notebook => new(-2.35f, 0.90f, -2.55f),
+            SchoolProp.Clock => new(-2.75f, -0.56f, -2.95f),
+            SchoolProp.Lockers => new(-2.60f, 0.48f, -3.40f),
+            SchoolProp.Exit => new(-1.40f, -0.75f, -3.35f),
+            _ => new(-2.70f, 0.02f, -3.05f),
+        };
+
+        Vector3 position = subject + offset;
+        Quaternion aim = Quaternion.LookRotation(subject - position, Vector3.up);
+        // Deja el objeto a la derecha de la columna de navegación.
+        float rightOfCenter = Mathf.Atan(0.30f * Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad) * _camera.aspect) * Mathf.Rad2Deg;
+        return new Pose(position, aim * Quaternion.Euler(0f, -rightOfCenter, 0f));
+    }
+
+    void BuildHallway()
+    {
+        Shader shader = Shader.Find("Echoes/PS1World") ?? Shader.Find(EchoesUrpMaterials.LitShaderName);
+        Material plaster = Surface(shader, new Color(0.59f, 0.55f, 0.43f));
+        Material tile = Surface(shader, new Color(0.70f, 0.61f, 0.46f));
+        Material tileDark = Surface(shader, new Color(0.53f, 0.46f, 0.35f));
+        Material wainscot = Surface(shader, new Color(0.31f, 0.42f, 0.32f));
+        Material wood = Surface(shader, new Color(0.26f, 0.20f, 0.15f));
+        Material paint = Surface(shader, new Color(0.43f, 0.34f, 0.23f));
+        Material glass = Surface(shader, new Color(0.19f, 0.24f, 0.22f));
+        Material paper = Surface(shader, new Color(0.85f, 0.76f, 0.57f));
+        Material tube = Surface(shader, new Color(0.95f, 0.90f, 0.70f), emission: true);
+
+        Block("Techo", new Vector3(0, 3.6f, 11), new Vector3(7.5f, 0.24f, 35), plaster);
+        Block("Pared del fondo", new Vector3(0, 1.8f, 28), new Vector3(7.5f, 3.6f, 0.25f), plaster);
+        Block("Base del piso", new Vector3(0, -0.10f, 11), new Vector3(7.5f, 0.16f, 35), tileDark);
+
+        for (int side = -1; side <= 1; side += 2)
+        {
+            float wallX = side * 3.7f;
+            Block("Pared", new Vector3(wallX, 1.8f, 11), new Vector3(0.22f, 3.6f, 35), plaster);
+            Block("Zócalo verde", new Vector3(side * 3.56f, 0.58f, 11), new Vector3(0.08f, 1.16f, 35), wainscot);
+            Block("Listón", new Vector3(side * 3.5f, 1.17f, 11), new Vector3(0.08f, 0.09f, 35), wood);
+
+            for (int room = 0; room < 4; room++)
             {
-                _vortexLight.intensity = (4.5f + Mathf.Sin(Time.time * 4.5f) * 1.5f) * _currentVoidScale;
-                _vortexLight.range = 15f + Mathf.Cos(Time.time * 2.5f) * 3f;
-            }
-        }
-        if (_stabilityRoot != null && _currentStabilityScale > 0.01f)
-        {
-            // Slow rotation of the grid
-            _stabilityRoot.Rotate(Vector3.up, 6f * dt);
-        }
-        if (_systemRoot != null && _currentSystemScale > 0.01f)
-        {
-            // Slow rotation of the crystals and circuit board
-            _systemRoot.Rotate(Vector3.up, -8f * dt);
-        }
-        if (_disconnectRoot != null && _currentDisconnectScale > 0.01f)
-        {
-            // Drifting blocks
-            _disconnectRoot.Rotate(Vector3.up, 2f * dt);
-        }
-
-        // Update Camera Rig rotation — órbita suave original alrededor del vórtice
-        if (_cameraPivot != null)
-        {
-            _orbitAngle += orbitSpeed * Time.deltaTime;
-            _cameraPivot.rotation = Quaternion.Euler(12f, _orbitAngle, 0f);
-        }
-
-        // Update Materials
-        if (_archMat != null)
-        {
-            _archMat.color = _currentArchColor;
-        }
-        if (_echoMat != null)
-        {
-            _echoMat.color = _currentEchoColor;
-            _echoMat.SetColor("_EmissionColor", _currentEchoColor * 1.5f);
-        }
-
-        // Update Fog & Ambient lighting
-        float fogPulse = Mathf.Sin(Time.time * fogPulseSpeed) * (_currentFogDensity * 0.15f);
-        RenderSettings.fogDensity = _currentFogDensity + fogPulse;
-        RenderSettings.fogColor = _currentFogColor;
-        RenderSettings.ambientLight = _currentAmbientLight;
-    }
-
-    void BuildMaterials()
-    {
-        Shader shader = Shader.Find(EchoesUrpMaterials.LitShaderName);
-        _archMat = new Material(shader);
-        _archMat.color = new Color(0.45f, 0.5f, 0.65f, 1f);
-        _archMat.SetFloat("_Metallic", 0.3f);
-        _archMat.SetFloat("_Smoothness", 0.45f);
-
-        _echoMat = new Material(shader);
-        _echoMat.color = new Color(0.5f, 0.9f, 1f, 0.7f);
-        _echoMat.SetFloat("_Surface", 1f);
-        _echoMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        _echoMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-        _echoMat.SetInt("_ZWrite", 0);
-        _echoMat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-        _echoMat.EnableKeyword("_EMISSION");
-        _echoMat.SetColor("_EmissionColor", new Color(0.5f, 0.9f, 1f) * 3f);
-        _echoMat.renderQueue = 3000;
-
-        _circuitMat = new Material(shader);
-        _circuitMat.color = new Color(0.04f, 0.25f, 0.2f, 1f);
-        _circuitMat.SetFloat("_Metallic", 0.8f);
-        _circuitMat.SetFloat("_Smoothness", 0.7f);
-        _circuitMat.EnableKeyword("_EMISSION");
-        _circuitMat.SetColor("_EmissionColor", new Color(0.15f, 0.6f, 0.5f) * 1.5f);
-
-        _packetMat = new Material(shader);
-        _packetMat.color = new Color(0.35f, 0.95f, 0.8f, 1f);
-        _packetMat.EnableKeyword("_EMISSION");
-        _packetMat.SetColor("_EmissionColor", new Color(0.35f, 0.95f, 0.8f) * 5f);
-    }
-
-    void BuildVoid()
-    {
-        RenderSettings.fog = true;
-        RenderSettings.fogMode = FogMode.Exponential;
-        RenderSettings.fogColor = new Color(0.04f, 0.06f, 0.1f, 1f);
-        RenderSettings.ambientLight = new Color(0.4f, 0.45f, 0.55f, 1f);
-
-        GameObject lightObj = new GameObject("MenuMoon");
-        _dirLight = lightObj.AddComponent<Light>();
-        _dirLight.type = LightType.Directional;
-        _dirLight.color = new Color(0.7f, 0.8f, 1f, 1f);
-        _dirLight.intensity = 1.2f;
-        _dirLight.shadows = LightShadows.Soft;
-        lightObj.transform.rotation = Quaternion.Euler(28f, -40f, 0f);
-    }
-
-    // --- Procedural 3D Environment Builders ---
-
-    void BuildVoidVortex()
-    {
-        _voidRoot = new GameObject("VoidVortexContainer").transform;
-        _voidRoot.SetParent(transform);
-
-        // 1. Inner core: glowing, fast swirling emissive particles
-        int innerCount = 50;
-        for (int i = 0; i < innerCount; i++)
-        {
-            GameObject p = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            p.transform.SetParent(_voidRoot);
-
-            float t = (float)i / innerCount;
-            float angle = t * Mathf.PI * 8f;
-            float radius = 0.5f + t * 4f;
-            Vector3 pos = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(t * Mathf.PI * 2f) * 1f - 0.5f, Mathf.Sin(angle) * radius);
-
-            p.transform.position = pos;
-            p.transform.localScale = Vector3.one * Random.Range(0.15f, 0.35f);
-            p.transform.rotation = Random.rotation;
-
-            p.GetComponent<Renderer>().sharedMaterial = _echoMat;
-            p.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            Destroy(p.GetComponent<Collider>());
-        }
-
-        // 2. Outer ring: dark, shadow-casting tendril blocks
-        int outerCount = 45;
-        for (int i = 0; i < outerCount; i++)
-        {
-            GameObject p = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            p.transform.SetParent(_voidRoot);
-
-            float t = (float)i / outerCount;
-            float angle = t * Mathf.PI * 6f + Mathf.PI;
-            float radius = 3.5f + t * 11f;
-            Vector3 pos = new Vector3(Mathf.Cos(angle) * radius, Random.Range(-1.6f, 1.6f), Mathf.Sin(angle) * radius);
-
-            p.transform.position = pos;
-            p.transform.localScale = new Vector3(Random.Range(0.25f, 0.65f), Random.Range(1.8f, 3.8f), Random.Range(0.25f, 0.65f));
-            p.transform.rotation = Quaternion.LookRotation(pos) * Quaternion.Euler(Random.Range(-15f, 15f), Random.Range(-15f, 15f), Random.Range(-15f, 15f));
-
-            p.GetComponent<Renderer>().sharedMaterial = _archMat;
-            p.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
-            p.GetComponent<Renderer>().receiveShadows = true;
-            Destroy(p.GetComponent<Collider>());
-        }
-
-        // 3. Central pulsing light
-        GameObject centerLight = new GameObject("VortexCenterLight");
-        centerLight.transform.SetParent(_voidRoot);
-        centerLight.transform.position = new Vector3(0f, -0.5f, 0f);
-        _vortexLight = centerLight.AddComponent<Light>();
-        _vortexLight.type = LightType.Point;
-        _vortexLight.color = new Color(0.5f, 0.9f, 1f);
-        _vortexLight.intensity = 12f;
-        _vortexLight.range = 30f;
-        _vortexLight.shadows = LightShadows.Soft;
-    }
-
-    void BuildStabilityGrid()
-    {
-        _stabilityRoot = new GameObject("StabilityGridContainer").transform;
-        _stabilityRoot.SetParent(transform);
-
-        int nodeCount = 10;
-        Vector3[] nodePositions = new Vector3[nodeCount];
-
-        // Place nodes in a circuit/mental-map layout
-        for (int i = 0; i < nodeCount; i++)
-        {
-            float angle = i * (360f / nodeCount) * Mathf.Deg2Rad;
-            float radius = 4.5f + Mathf.Sin(i * 2f) * 1.5f;
-            Vector3 pos = new Vector3(Mathf.Cos(angle) * radius, Random.Range(-0.8f, 0.8f), Mathf.Sin(angle) * radius);
-            nodePositions[i] = pos;
-
-            GameObject node = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            node.transform.SetParent(_stabilityRoot);
-            node.transform.position = pos;
-            node.transform.localScale = Vector3.one * 0.55f;
-            node.GetComponent<Renderer>().sharedMaterial = _echoMat;
-            Destroy(node.GetComponent<Collider>());
-        }
-
-        // Connect nodes with line-like cylinders
-        for (int i = 0; i < nodeCount; i++)
-        {
-            int nextIndex = (i + 1) % nodeCount;
-            CreateConnection(nodePositions[i], nodePositions[nextIndex], _stabilityRoot);
-
-            if (i % 3 == 0)
-            {
-                int otherIndex = (i + 4) % nodeCount;
-                CreateConnection(nodePositions[i], nodePositions[otherIndex], _stabilityRoot);
-            }
-        }
-    }
-
-    void CreateConnection(Vector3 p1, Vector3 p2, Transform parent)
-    {
-        GameObject line = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        line.transform.SetParent(parent);
-
-        Vector3 dir = p2 - p1;
-        float distance = dir.magnitude;
-        line.transform.position = p1 + dir * 0.5f;
-        line.transform.up = dir.normalized;
-        line.transform.localScale = new Vector3(0.06f, distance * 0.5f, 0.06f);
-
-        line.GetComponent<Renderer>().sharedMaterial = _archMat;
-        Destroy(line.GetComponent<Collider>());
-    }
-
-    void BuildSystemCalibration()
-    {
-        _systemRoot = new GameObject("SystemCalibrationContainer").transform;
-        _systemRoot.SetParent(transform);
-
-        // Spawn central composite crystals (glowing nodes + shadows)
-        int crystalCount = 6;
-        for (int i = 0; i < crystalCount; i++)
-        {
-            GameObject crystalGroup = new GameObject($"CrystalCluster_{i}");
-            crystalGroup.transform.SetParent(_systemRoot);
-
-            float angle = i * (360f / crystalCount) * Mathf.Deg2Rad;
-            float radius = Random.Range(0.2f, 0.6f);
-            Vector3 centerPos = new Vector3(Mathf.Cos(angle) * radius, -0.5f, Mathf.Sin(angle) * radius);
-            crystalGroup.transform.position = centerPos;
-
-            // Make a cluster of 3 crystal pillars per group
-            int shards = 3;
-            for (int s = 0; s < shards; s++)
-            {
-                GameObject shard = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                shard.transform.SetParent(crystalGroup.transform);
-
-                float shardHeight = Random.Range(1.2f, 2.6f);
-                shard.transform.localPosition = new Vector3(Random.Range(-0.15f, 0.15f), shardHeight * 0.5f - 0.5f, Random.Range(-0.15f, 0.15f));
-
-                // Rotated to look like quartz/crystal facets
-                shard.transform.localRotation = Quaternion.Euler(Random.Range(-12f, 12f), Random.Range(0f, 360f), Random.Range(-12f, 12f));
-                shard.transform.localScale = new Vector3(0.2f, shardHeight, 0.2f);
-
-                shard.GetComponent<Renderer>().sharedMaterial = _echoMat;
-                shard.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
-                shard.GetComponent<Renderer>().receiveShadows = true;
-                Destroy(shard.GetComponent<Collider>());
+                float z = 1f + room * 6.5f + (side < 0 ? 1.6f : 0f);
+                Block("Marco de aula", new Vector3(side * 3.45f, 1.20f, z), new Vector3(0.19f, 2.40f, 1.53f), wood);
+                Block("Puerta de aula", new Vector3(side * 3.32f, 1.12f, z), new Vector3(0.12f, 2.24f, 1.31f), paint);
+                Block("Visor de aula", new Vector3(side * 3.24f, 1.67f, z), new Vector3(0.05f, 0.55f, 0.43f), glass);
+                Block("Manija", new Vector3(side * 3.19f, 1.0f, z - 0.47f), new Vector3(0.08f, 0.07f, 0.14f), paper);
+                Block("Placa de aula", new Vector3(side * 3.53f, 2.24f, z + 1.02f), new Vector3(0.08f, 0.18f, 0.32f), paper);
             }
         }
 
-        // Circuit board floor tracks & packets
-        int lineCount = 12;
-        for (int i = 0; i < lineCount; i++)
+        BuildSchoolProps(shader, wood, paint, glass, paper, wainscot);
+
+        for (int row = 0; row < 19; row++)
         {
-            float angle = i * (360f / lineCount) * Mathf.Deg2Rad;
-            float length = Random.Range(4f, 8f);
-            float width = 0.08f;
-
-            GameObject track = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            track.transform.SetParent(_systemRoot);
-
-            Vector3 startPos = new Vector3(Mathf.Cos(angle) * 0.8f, -0.98f, Mathf.Sin(angle) * 0.8f);
-            Vector3 endPos = new Vector3(Mathf.Cos(angle) * (length + 0.8f), -0.98f, Mathf.Sin(angle) * (length + 0.8f));
-
-            track.transform.position = startPos + (endPos - startPos) * 0.5f;
-            track.transform.rotation = Quaternion.Euler(0f, -angle * Mathf.Rad2Deg, 0f);
-            track.transform.localScale = new Vector3(width, 0.01f, length);
-
-            track.GetComponent<Renderer>().sharedMaterial = _circuitMat;
-            Destroy(track.GetComponent<Collider>());
-
-            // Spawn a packet traveler on this track
-            GameObject packet = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            packet.transform.SetParent(_systemRoot);
-            packet.transform.localScale = Vector3.one * 0.15f;
-            packet.GetComponent<Renderer>().sharedMaterial = _packetMat;
-            Destroy(packet.GetComponent<Collider>());
-
-            CircuitPacketMover mover = packet.AddComponent<CircuitPacketMover>();
-            mover.start = startPos;
-            mover.end = endPos;
-            mover.speed = Random.Range(0.4f, 0.8f);
-            mover.delay = Random.Range(0f, 1.5f);
+            float z = -4.55f + row * 1.75f;
+            for (int column = 0; column < 5; column++)
+                Block("Baldosa", new Vector3(-2.88f + column * 1.44f, -0.03f, z),
+                    new Vector3(1.43f, 0.05f, 1.74f), (row + column) % 2 == 0 ? tile : tileDark);
         }
 
-        // Spotlight pointing up on the crystals
-        GameObject spotLight = new GameObject("CrystalSpotLight");
-        spotLight.transform.SetParent(_systemRoot);
-        spotLight.transform.position = new Vector3(0f, -0.9f, 0f);
-        spotLight.transform.rotation = Quaternion.Euler(-90f, 0f, 0f);
-        Light l = spotLight.AddComponent<Light>();
-        l.type = LightType.Spot;
-        l.color = new Color(0.25f, 0.9f, 0.7f);
-        l.intensity = 6f;
-        l.range = 10f;
-        l.spotAngle = 55f;
-        l.shadows = LightShadows.Soft;
-
-        // Fill Light pointing from the side to create beautiful dual-tone shadows and specular highlights
-        GameObject fillLightObj = new GameObject("CrystalFillLight");
-        fillLightObj.transform.SetParent(_systemRoot);
-        fillLightObj.transform.position = new Vector3(3f, 2f, 3f);
-        Light fillLight = fillLightObj.AddComponent<Light>();
-        fillLight.type = LightType.Spot;
-        fillLight.color = new Color(0.1f, 0.5f, 0.9f); // Blue fill
-        fillLight.intensity = 4f;
-        fillLight.range = 12f;
-        fillLight.spotAngle = 50f;
-        fillLight.shadows = LightShadows.Soft;
-        fillLightObj.transform.LookAt(Vector3.up * 0.5f);
-    }
-
-    void BuildDisconnect()
-    {
-        _disconnectRoot = new GameObject("DisconnectContainer").transform;
-        _disconnectRoot.SetParent(transform);
-
-        // Fractured alert pieces drifting apart
-        int pieces = 14;
-        for (int i = 0; i < pieces; i++)
+        for (int i = 0; i < 6; i++)
         {
-            GameObject block = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            block.transform.SetParent(_disconnectRoot);
-
-            float angle = i * (360f / pieces) * Mathf.Deg2Rad;
-            float radius = Random.Range(3.5f, 9f);
-            Vector3 pos = new Vector3(Mathf.Cos(angle) * radius, Random.Range(-1.8f, 1.8f), Mathf.Sin(angle) * radius);
-            block.transform.position = pos;
-            block.transform.rotation = Random.rotation;
-            block.transform.localScale = new Vector3(Random.Range(0.4f, 1.8f), Random.Range(0.4f, 1.8f), Random.Range(0.4f, 1.8f));
-
-            block.GetComponent<Renderer>().sharedMaterial = _archMat;
-            block.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
-            block.GetComponent<Renderer>().receiveShadows = true;
-            Destroy(block.GetComponent<Collider>());
+            float z = -2f + i * 5.2f;
+            Block("Carcasa fluorescente", new Vector3(0, 3.45f, z), new Vector3(0.62f, 0.16f, 1.8f), glass);
+            Block("Tubo fluorescente", new Vector3(0, 3.34f, z), new Vector3(0.37f, 0.07f, 1.58f), tube);
         }
 
-        // Crimson pulsing light
-        GameObject alarmLight = new GameObject("AlarmLight");
-        alarmLight.transform.SetParent(_disconnectRoot);
-        alarmLight.transform.position = Vector3.zero;
-        Light l = alarmLight.AddComponent<Light>();
-        l.type = LightType.Point;
-        l.color = new Color(0.9f, 0.15f, 0.15f);
-        l.intensity = 3.5f;
-        l.range = 18f;
+        Block("Salida", new Vector3(0, 1.33f, 27.78f), new Vector3(1.85f, 2.63f, 0.24f), wood);
+        Block("Mirilla de salida", new Vector3(0, 1.84f, 27.62f), new Vector3(0.84f, 0.48f, 0.10f), glass);
+        Block("Luz de salida", new Vector3(0, 2.92f, 27.62f), new Vector3(0.65f, 0.14f, 0.1f), tube);
     }
 
-    void BuildDistantEchoes()
+    void BuildSchoolProps(Shader shader, Material wood, Material paint, Material glass, Material paper, Material green)
     {
-        Transform echoRoot = new GameObject("DistantEchoes").transform;
-        echoRoot.SetParent(transform);
-        GameObject echoModelSource = Resources.Load<GameObject>("EchoesEchoVisual");
+        // La pared derecha reúne los objetos del menú a lo largo del recorrido de cámara.
+        var door = MakeProp(SchoolProp.Door, new(3.12f, 1.63f, 5.9f), shader, Vector3.zero, new(0f, -19f, 0f));
+        Block("Placa de aula", new(3.36f, 2.1f, 5.9f), new(0.12f, 0.23f, 0.38f), paper);
+        Block("Aula · ventanilla", new(0f, 0f, 0.22f), new(0.09f, 0.48f, 0.44f), Ink(SchoolProp.Door), door);
+        Block("Marco de la ventanilla", new(3.22f, 1.63f, 6.12f), new(0.08f, 0.58f, 0.54f), wood);
 
-        for (int i = 0; i < distantEchoWalkers; i++)
+        Block("Mesa escolar", new(2.96f, 0.84f, 3.8f), new(0.87f, 0.13f, 1.3f), paint);
+        Block("Pata de pupitre", new(2.65f, 0.42f, 3.35f), new(0.1f, 0.78f, 0.1f), green);
+        Block("Pata de pupitre", new(2.65f, 0.42f, 4.23f), new(0.1f, 0.78f, 0.1f), green);
+        Block("Asiento", new(2.10f, 0.43f, 4.0f), new(0.47f, 0.10f, 0.5f), wood);
+        Block("Respaldo", new(1.89f, 0.66f, 4.0f), new(0.09f, 0.43f, 0.5f), paint);
+        Block("Soporte de silla", new(2.1f, 0.21f, 4.0f), new(0.13f, 0.42f, 0.13f), green);
+        var book = MakeProp(SchoolProp.Notebook, new(2.85f, 0.94f, 3.8f), shader, new(-0.14f, 0.08f, 0f), new(0f, 0f, -22f));
+        Block("Cuaderno", Vector3.zero, new(0.54f, 0.045f, 0.40f), Ink(SchoolProp.Notebook), book);
+        Block("Lomo", new(0.23f, 0.024f, 0f), new(0.045f, 0.03f, 0.40f), wood, book);
+
+        for (int i = 0; i < 3; i++)
         {
-            GameObject echo = echoModelSource != null
-                ? Instantiate(echoModelSource, echoRoot)
-                : new GameObject("DistantEchoModelMissing");
-            echo.name = $"DistantEcho_{i}";
-            echo.transform.position = new Vector3(Random.Range(-30f, 30f), Random.Range(-2f, 4f), Random.Range(15f, 40f));
-            echo.transform.localScale = Vector3.one * 0.85f;
-            ApplyDistantEchoMaterial(echo);
-            echo.AddComponent<MenuEchoWalker>();
+            float z = 7.8f + i * 0.68f;
+            Block("Casillero", new(3.28f, 0.98f, z), new(0.50f, 1.96f, 0.64f), green);
+            for (int grille = 0; grille < 3; grille++)
+                Block("Ranura", new(3.018f, 1.63f + grille * 0.066f, z), new(0.03f, 0.02f, 0.38f), glass);
         }
+        var locker = MakeProp(SchoolProp.Lockers, new(3.0f, 1.01f, 8.75f), shader, Vector3.zero, new(0f, -31f, 0f));
+        Block("Puerta de casillero", new(-0.02f, 0f, -0.27f), new(0.055f, 1.82f, 0.57f), green, locker);
+        Block("Etiqueta", new(-0.06f, 0.43f, -0.33f), new(0.03f, 0.12f, 0.27f), Ink(SchoolProp.Lockers), locker);
+
+        var clock = MakeProp(SchoolProp.Clock, new(3.31f, 2.52f, 5.05f), shader, Vector3.zero, new(65f, 0f, 0f));
+        Block("Reloj escolar", new(3.39f, 2.52f, 5.05f), new(0.13f, 0.52f, 0.52f), wood);
+        Block("Esfera", new(3.312f, 2.52f, 5.05f), new(0.03f, 0.44f, 0.44f), Ink(SchoolProp.Clock));
+        Block("Aguja", new(-0.027f, 0.11f, 0f), new(0.03f, 0.22f, 0.022f), glass, clock);
+        Block("Aguja corta", new(3.277f, 2.52f, 5.12f), new(0.024f, 0.026f, 0.14f), glass);
+
+        Block("Tablón de anuncios", new(3.49f, 1.9f, 3.1f), new(0.20f, 1.10f, 2.1f), wood);
+        Block("Hoja clavada", new(3.37f, 1.76f, 3.42f), new(0.04f, 0.38f, 0.33f), paper);
+        var notice = MakeProp(SchoolProp.Notice, new(3.34f, 2.01f, 2.88f), shader, new(-0.12f, 0.08f, 0f), new(8f, -12f, 0f));
+        Block("Aviso del tablón", Vector3.zero, new(0.04f, 0.55f, 0.40f), Ink(SchoolProp.Notice), notice);
+        for (int i = 0; i < 3; i++)
+            Block("Renglón", new(-0.028f, 0.11f - i * 0.075f, 0f), new(0.01f, 0.013f, 0.27f), wood, notice);
+
+        Block("Estante alto", new(3.25f, 1.18f, 10.23f), new(0.58f, 0.09f, 1.2f), wood);
+        Block("Proyector escolar", new(3.15f, 1.36f, 10.22f), new(0.62f, 0.31f, 0.51f), glass);
+        var projector = MakeProp(SchoolProp.Projector, new(2.81f, 1.37f, 10.22f), shader, new(-0.13f, 0f, 0f), Vector3.zero);
+        Block("Lente del proyector", Vector3.zero, new(0.11f, 0.16f, 0.22f), Ink(SchoolProp.Projector), projector);
+
+        Block("Soporte de salida", new(1.55f, 3.03f, 13.4f), new(0.035f, 1.05f, 0.035f), wood);
+        Block("Soporte de salida", new(2.05f, 3.03f, 13.4f), new(0.035f, 1.05f, 0.035f), wood);
+        var exit = MakeProp(SchoolProp.Exit, new(1.8f, 2.45f, 13.4f), shader, new(0f, 0.08f, 0f), new(0f, 0f, 6f));
+        Block("Placa de salida", Vector3.zero, new(0.70f, 0.27f, 0.095f), Ink(SchoolProp.Exit), exit);
+        Block("Flecha de salida", new(0f, 0f, -0.056f), new(0.31f, 0.036f, 0.015f), glass, exit);
+        Block("Extremo de flecha", new(0.15f, 0f, -0.056f), new(0.035f, 0.12f, 0.015f), glass, exit);
     }
 
-    void ApplyDistantEchoMaterial(GameObject echo)
+    Transform MakeProp(SchoolProp prop, Vector3 position, Shader shader, Vector3 offset, Vector3 rotation)
     {
-        if (echo == null)
-            return;
-
-        foreach (Collider col in echo.GetComponentsInChildren<Collider>(true))
-            Destroy(col);
-
-        foreach (Renderer rendererRef in echo.GetComponentsInChildren<Renderer>(true))
-            rendererRef.sharedMaterial = _echoMat;
+        var anchor = new GameObject(prop.ToString()).transform;
+        anchor.SetParent(transform, false);
+        anchor.localPosition = position;
+        var moving = new GameObject("Detalle móvil").transform;
+        moving.SetParent(anchor, false);
+        Material ink = Surface(shader, new Color(0.58f, 0.51f, 0.35f), emission: true);
+        ink.SetColor("_EmissionColor", new Color(0.61f, 0.45f, 0.24f) * 0.045f);
+        _props.Add(prop, (moving, offset, rotation, ink));
+        _propAmounts.Add(prop, 0f);
+        return moving;
     }
 
-    void BuildCameraRig()
+    Material Ink(SchoolProp prop) => _props[prop].ink;
+
+    Material Surface(Shader shader, Color color, bool emission = false)
     {
-        Camera main = Camera.main;
-        if (main == null)
-            return;
-
-        // Restaurar órbita suave original alrededor del vórtice
-        _cameraPivot = new GameObject("MenuCameraOrbit").transform;
-        _cameraPivot.position = Vector3.zero;
-        main.transform.SetParent(_cameraPivot);
-        main.transform.localPosition = new Vector3(0f, 3f, -orbitRadius);
-        main.transform.localRotation = Quaternion.Euler(8f, 0f, 0f);
-    }
-
-    void ApplyLiminalFog()
-    {
-        EchoesPresentationSettings.ApplyLightingPreset("liminal");
-    }
-
-    class MenuEchoWalker : MonoBehaviour
-    {
-        Vector3 _start;
-        float _phase;
-        float _timeAccumulator;
-
-        void Start()
+        var material = new Material(shader);
+        material.SetColor("_BaseColor", color);
+        if (material.HasProperty("_StainStrength"))
         {
-            _start = transform.position;
-            _phase = Random.value * 10f;
+            material.SetFloat("_StainStrength", 0.23f);
+            material.SetFloat("_FlickerStrength", 0f);
+            material.SetFloat("_SnapPixelSize", 1f);
+            material.SetFloat("_AmbientFloor", 0.23f);
+            material.SetFloat("_FlatAmbient", 0.24f);
+            material.SetFloat("_FluorescentHum", 0f);
+            material.SetFloat("_CeilingFill", 0f);
+            material.SetFloat("_HallwayLightStrength", 1f);
+            material.SetColor("_HallwayLightColor", _lightColor);
         }
-
-        void Update()
+        if (emission)
         {
-            float speed = MainMenuCinematicWorld.Instance != null ? MainMenuCinematicWorld.Instance.CurrentEchoSpeed : 1f;
-            _timeAccumulator += Time.deltaTime * speed;
-            float t = _timeAccumulator + _phase;
-            transform.position = _start + new Vector3(Mathf.Sin(t * 0.4f) * 4f, Mathf.Sin(t * 0.7f) * 0.3f, Mathf.Cos(t * 0.35f) * 3f);
+            material.EnableKeyword("_EMISSION");
+            material.SetColor("_EmissionColor", color * 1.5f);
         }
+        _materials.Add(material);
+        return material;
     }
 
-    class CircuitPacketMover : MonoBehaviour
+    void Block(string label, Vector3 position, Vector3 size, Material material, Transform parent = null)
     {
-        public Vector3 start;
-        public Vector3 end;
-        public float speed;
-        public float delay;
-        private float _t;
-        private float _delayTimer;
-
-        void Start()
-        {
-            _delayTimer = delay;
-            transform.position = start;
-        }
-
-        void Update()
-        {
-            if (_delayTimer > 0f)
-            {
-                _delayTimer -= Time.deltaTime;
-                return;
-            }
-
-            _t += Time.deltaTime * speed;
-            if (_t >= 1f)
-            {
-                _t = 0f;
-                _delayTimer = delay; // reset delay
-            }
-            transform.position = Vector3.Lerp(start, end, _t);
-        }
+        var block = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        block.name = label;
+        block.transform.SetParent(parent != null ? parent : transform, false);
+        block.transform.localPosition = position;
+        block.transform.localScale = size;
+        block.GetComponent<Renderer>().sharedMaterial = material;
+        Destroy(block.GetComponent<Collider>());
     }
 }

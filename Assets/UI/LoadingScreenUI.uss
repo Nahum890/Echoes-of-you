@@ -1,367 +1,47 @@
-/* ============================================================
-   LoadingScreenUI — ECHO ARCHIVE Loading Screen Styling
-   ============================================================ */
-
-/* ------------------------------------------------------------------
-   ROOT
-   ------------------------------------------------------------------ */
 .loading-root {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background-color: #030508;
-    opacity: 0;
-    transition-property: opacity;
-    transition-duration: 200ms;
-    transition-timing-function: ease-in-out;
-}
-
-.loading-root.loading-visible {
-    opacity: 1;
-}
-
-/* ------------------------------------------------------------------
-   BACKGROUND LAYERS
-   ------------------------------------------------------------------ */
-.loading-bg-base {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #131410;
-}
-
-.loading-bg-gradient {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(19, 20, 16, 0.85);
-}
-
-.loading-vignette {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    border-width: 56px;
-    border-color: rgba(10, 10, 13, 0.65);
-}
-
-.loading-scanlines {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    background-color: transparent;
-    opacity: 0.25;
-}
-
-/* ------------------------------------------------------------------
-   TOP METADATA (Archival Overlay)
-   ------------------------------------------------------------------ */
-.loading-top-left {
-    position: absolute;
-    top: 44px;
-    left: 56px;
-    flex-direction: column;
-    gap: 4px;
-    opacity: 0.75;
-}
-
-.loading-rec-id {
-    /* default font */
-    font-size: 13px;
-    letter-spacing: 2px;
-    color: #959087;
-}
-
-.loading-status-tag {
-    /* default font */
-    font-size: 12px;
-    letter-spacing: 1.5px;
-    color: #4a463f;
-}
-
-.loading-top-right {
-    position: absolute;
-    top: 44px;
-    right: 56px;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 4px;
-    opacity: 0.75;
-}
-
-.loading-sync-status {
-    /* default font */
-    font-size: 13px;
-    letter-spacing: 2px;
-    color: #63d4fa;
-}
-
-.loading-hex-tag {
-    /* default font */
-    font-size: 12px;
-    letter-spacing: 1.5px;
-    color: #959087;
-}
-
-/* ------------------------------------------------------------------
-   MAIN CONTENT CENTER
-   ------------------------------------------------------------------ */
-.loading-center-container {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    flex-direction: column;
-    align-items: center;
+    background-color: #111814;
     justify-content: center;
-}
-
-/* ------------------------------------------------------------------
-   CENTERPIECE: BROKEN O (256x256px)
-   ------------------------------------------------------------------ */
-.loading-centerpiece {
-    position: relative;
-    width: 256px;
-    height: 256px;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 32px;
 }
 
-.loading-echo-ring {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 256px;
-    height: 256px;
-    border-radius: 128px;
+.loading-card {
+    width: 86%;
+    max-width: 870px;
+    padding: 38px 48px;
+    background-color: #202b24;
     border-width: 1px;
-    border-color: rgba(99, 212, 250, 0.35);
+    border-color: #5d6250;
+    border-left-width: 4px;
+    border-left-color: #cfb685;
+    align-items: stretch;
 }
 
-.loading-inner-ghost-ring {
-    position: absolute;
-    left: 16px;
-    top: 16px;
-    width: 224px;
-    height: 224px;
-    border-radius: 112px;
-    border-width: 1px;
-    border-color: rgba(74, 70, 63, 0.50);
-}
-
-.loading-vector-canvas {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 256px;
-    height: 256px;
-}
-
-.loading-core-dot {
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    border-radius: 3px;
-    background-color: #63d4fa;
-}
-
-.loading-glitch-particle {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    border-radius: 2px;
-    background-color: #63d4fa;
-    opacity: 0.45;
-}
-
-.loading-glitch-particle--top-left {
-    left: 54px;
-    top: 54px;
-}
-
-.loading-glitch-particle--bottom-right {
-    right: 58px;
-    bottom: 64px;
-    background-color: #e4e2dc;
-    opacity: 0.30;
-}
-
-/* ------------------------------------------------------------------
-   TYPOGRAPHY STACK
-   ------------------------------------------------------------------ */
-.loading-typography-stack {
-    flex-direction: column;
+.loading-fixtures {
     align-items: center;
-    gap: 14px;
-    max-width: 800px;
+    align-self: center;
+    margin-bottom: 30px;
 }
 
-.loading-chapter-title {
-    /* default font */
-    font-size: 40px;
-    letter-spacing: 4px;
-    color: #fffeff;
+.loading-fixture {
+    background-color: #f2dbaf;
+    border-width: 2px;
+    border-color: #ab9467;
+    margin-bottom: 6px;
+}
+
+.loading-fixture--near { width: 112px; height: 12px; }
+.loading-fixture--middle { width: 78px; height: 9px; }
+.loading-fixture--far { width: 48px; height: 7px; }
+
+.loading-title, .loading-quote, .loading-hint .unity-label, .loading-status {
+    white-space: normal;
     -unity-text-align: middle-center;
-    text-transform: uppercase;
 }
 
-.loading-quote-wrapper {
-    min-height: 28px;
-    align-items: center;
-    justify-content: center;
-}
-
-.loading-quote {
-    /* default font */
-    font-size: 16px;
-    -unity-font-style: italic;
-    color: #959087;
-    letter-spacing: 0.5px;
-    -unity-text-align: middle-center;
-    opacity: 0.85;
-}
-
-.loading-hint-box {
-    margin-top: 8px;
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 24px;
-    background-color: rgba(31, 32, 28, 0.65);
-    border-width: 1px;
-    border-color: rgba(74, 70, 63, 0.45);
-    border-radius: 4px;
-}
-
-.loading-hint-icon {
-    /* default font */
-    font-size: 14px;
-    color: #63d4fa;
-}
-
-.loading-hint-text {
-    /* default font */
-    font-size: 13px;
-    letter-spacing: 1px;
-    color: #ccc6bc;
-}
-
-/* ------------------------------------------------------------------
-   BOTTOM ARCHIVAL METADATA & BARCODE
-   ------------------------------------------------------------------ */
-.loading-bottom-left {
-    position: absolute;
-    left: 56px;
-    bottom: 40px;
-    flex-direction: column;
-    gap: 4px;
-    opacity: 0.70;
-}
-
-.loading-bottom-status-row {
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
-}
-
-.loading-bottom-live-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
-    background-color: #63d4fa;
-}
-
-.loading-bottom-init-text {
-    /* default font */
-    font-size: 13px;
-    letter-spacing: 2px;
-    color: #959087;
-}
-
-.loading-pct {
-    /* default font */
-    font-size: 13px;
-    letter-spacing: 1.5px;
-    color: #63d4fa;
-}
-
-.loading-bottom-right {
-    position: absolute;
-    right: 56px;
-    bottom: 40px;
-    flex-direction: row;
-    align-items: flex-end;
-    gap: 4px;
-    height: 32px;
-    opacity: 0.40;
-}
-
-.loading-barcode-bar {
-    background-color: #959087;
-    width: 2px;
-}
-
-.loading-barcode-bar--wide {
-    width: 4px;
-}
-
-.h-full {
-    height: 32px;
-}
-
-.h-80 {
-    height: 26px;
-}
-
-.h-75 {
-    height: 24px;
-}
-
-.h-50 {
-    height: 16px;
-}
-
-.h-25 {
-    height: 8px;
-}
-
-.color-cyan {
-    background-color: #63d4fa;
-    opacity: 0.75;
-}
-
-/* ------------------------------------------------------------------
-   PROGRESS BAR (SLIM BOTTOM CENTER)
-   ------------------------------------------------------------------ */
-.loading-progress-bar-container {
-    position: absolute;
-    left: 50%;
-    bottom: 18px;
-    translate: -50% 0;
-    width: 380px;
-    height: 2px;
-    background-color: rgba(74, 70, 63, 0.40);
-    border-radius: 1px;
-    overflow: hidden;
-}
-
-.loading-bar-fill {
-    height: 100%;
-    width: 0%;
-    background-color: #63d4fa;
-}
+.loading-title { font-size: 37px; color: #f5e6c5; -unity-font-style: bold; }
+.loading-quote { font-size: 22px; color: #e2d9c3; margin: 10px 0 0; }
+.loading-hint { margin-top: 12px; }
+.loading-hint .unity-label { font-size: 18px; color: #c7c7af; }
+.loading-progress { margin-top: 28px; height: 6px; background-color: #50594a; }
+.loading-bar-fill { width: 0%; height: 100%; background-color: #dcbd86; }
+.loading-status { font-size: 18px; color: #e9d5a8; margin-top: 10px; }

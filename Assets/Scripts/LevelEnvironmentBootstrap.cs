@@ -510,6 +510,9 @@ public class LevelEnvironmentBootstrap : MonoBehaviour
 
     static void ApplyEchoPlateVisuals()
     {
+        var settings = Object.FindAnyObjectByType<LevelLightingSettings>();
+        if (settings != null && settings.fixturesOnly)
+            return;
         PressurePlate[] plates = Object.FindObjectsByType<PressurePlate>(FindObjectsInactive.Exclude);
         for (int i = 0; i < plates.Length; i++)
         {

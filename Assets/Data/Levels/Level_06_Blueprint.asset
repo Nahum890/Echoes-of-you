@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level_06_Blueprint
   m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
   levelName: Level_06
-  nextLevel: CreditsScene
+  nextLevel: Level_05
   actNumber: 2
   archetype: 1
   echoEnabled: 1
@@ -36,11 +36,11 @@ MonoBehaviour:
   directionalLightRotation: {x: 50, y: -30, z: 0}
   directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
   directionalLightIntensity: 0.85
-  narrativeIntroTitle: "Nivel 6 \u2014 Negaci\xF3n"
-  narrativeIntroDesc: Debo cruzar antes de ver que puedo cruzar.
+  narrativeIntroTitle: "Capítulo 2 — El turno de préstamos"
+  narrativeIntroDesc: Lyra dibujó una isla en el atlas que le guardé bajo el mostrador.
   narrativeIntroDuration: 8
-  puzzleObjectiveText: El puente existe solo cuando el eco lo atraviesa.
-  puzzleActiveText: El eco sostiene el puente.
+  puzzleObjectiveText: Averiguá por qué quedó pendiente el último préstamo.
+  puzzleActiveText: Devolución registrada. La pasarela quedó fija.
   puzzleCompleteText: 
   pathHints:
   - {x: 0, y: 1.1, z: -10}
@@ -139,14 +139,14 @@ MonoBehaviour:
     position: {x: 0, y: 1.1, z: 32}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: Level_07
+    customData: Level_05
     targetSignals: []
   - name: LevelGoal
     type: 13
     position: {x: 0, y: 1.1, z: 32}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: El puente existe solo mientras el eco lo sostiene.|Cruzaste.|.
+    customData: Averiguá por qué quedó pendiente el último préstamo.|Pasarela fija.|Devolución registrada.
     targetSignals:
     - PlacaEco_Puente
   - name: LevelRuntime
@@ -154,6 +154,5 @@ MonoBehaviour:
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-    customData: El puente existe solo cuando el eco lo atraviesa.|El eco sostiene
-      el puente.|.
+    customData: Buscá el registro de devoluciones junto al puente.|Pasarela fija.|Devolución registrada.
     targetSignals: []

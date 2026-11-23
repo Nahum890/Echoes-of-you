@@ -31,9 +31,12 @@ Material:
     m_Floats:
     - _AffineStrength: 0.5
     - _AmbientFloor: 0.6
+    - _CeilingFill: 0.42
     - _FlatAmbient: 1
     - _FlickerStrength: 0.15
     - _FluorescentHum: 0.35
+    - _HallwayLightStrength: 0
+    - _SchoolWorldUV: 0
     - _Smoothness: 0.15
     - _SnapPixelSize: 2
     - _SpecularAnomaly: 0.25
@@ -42,6 +45,8 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0.3529412, g: 0.2901961, b: 0.18039216, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
+    - _HallwayLightColor: {r: 1, g: 0.91, b: 0.72, a: 1}
+    - _SchoolRepeatMeters: {r: 2, g: 2, b: 0, a: 0}
     - _SpecColor: {r: 0.9, g: 0.92, b: 0.95, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

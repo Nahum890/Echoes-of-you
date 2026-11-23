@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/UI/EchoesTheme.uss" />
     <Style src="project://database/Assets/UI/ChapterIntroUI.uss" />
 
-    <ui:VisualElement name="chapter-intro-root" class="chapter-intro-root chapter-hidden" style="width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
+    <ui:VisualElement name="chapter-intro-root" class="chapter-intro-root chapter-hidden">
 
         <!-- Background vignette -->
         <ui:VisualElement class="chapter-vignette" />

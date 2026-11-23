@@ -383,7 +383,7 @@ namespace Echoes.UI
             string chapterText;
             if (sceneName.StartsWith("Level_"))
             {
-                string roman = GetRomanNumeral(displayLevelNum);
+                string roman = GetRomanNumeral(GameProgress.GetChapterIndex(sceneName) + 1);
                 string levelName = GameProgress.GetLevelDisplayName(sceneName);
                 chapterText = $"Capítulo {roman}: {levelName}";
             }

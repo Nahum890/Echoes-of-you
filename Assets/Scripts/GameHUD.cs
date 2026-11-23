@@ -4,185 +4,333 @@ using System.Collections;
 
 namespace Echoes.UI
 {
-    /// <summary>
-    /// GameHUD — Fase 4: Mínimo esencial.
-    /// Opacidad base 0.0. Fade 0.0→0.85 en 0.10s SOLO grabando (RULE-UI-004).
-    /// Elementos visibles:
-    ///   - Grabando: REC● + barra 12s + slots
-    ///   - Reproduciendo: ECO▶ + slots
-    ///   - Objetivo contextual, Toast, Key Prompt, Chalkboard, Footer states
-    /// </summary>
     [RequireComponent(typeof(UIDocument))]
     public class GameHUD : MonoBehaviour
     {
-        UIDocument _doc;
-        VisualElement _root;
+        public static GameHUD Instance { get; private set; }
 
-        // Elements
+        VisualElement _root;
         VisualElement _recordPanel;
-        VisualElement _recordDot;
-        VisualElement _recordBarFill;
+        VisualElement _recordProgress;
+        VisualElement _objective;
+        VisualElement _tapeArtwork;
+        VisualElement _recordFrame;
         VisualElement _echoSlots;
-        VisualElement _hudContainer;
-        VisualElement _stabilityFill;
-        VisualElement _recallFill;
+        readonly Vector2[] _tapeSamples = new Vector2[32];
+        int _sampleCursor;
+        float _remaining = 1f;
+        VisualElement _interaction;
+        VisualElement _chalkboardBox;
+        Label _recordMode;
+        Label _recordTime;
+        Label _recordHelp;
+        Label _echoCount;
+        Label _locationLabel;
         Label _objectiveText;
         Label _toastText;
         Label _echoStateLabel;
         Label _keyPromptLabel;
-        VisualElement _chalkboardBox;
+        Label _interactionKey;
+        Label _interactionAction;
+        Label _resonanceState;
         Label _chalkboardTitle;
         Label _chalkboardText;
-        VisualElement _recordingStatus;
-        VisualElement _playbackStatus;
 
-        // State
         bool _recording;
-        float _recordNorm;
-        int _echoCurrent, _echoMax;
-        float _targetOpacity;
-        float _currentOpacity;
+        int _echoCurrent = -1;
+        int _echoMax = -1;
+        float _recordMaxSeconds;
+        bool _locationLocked;
+        float _targetOpacity = 1f;
+        float _currentOpacity = 1f;
 
         void OnEnable()
         {
-            _doc = GetComponent<UIDocument>();
-            if (_doc == null || _doc.rootVisualElement == null) return;
-            _root = _doc.rootVisualElement;
+            Instance = this;
+            _root = GetComponent<UIDocument>().rootVisualElement;
+            if (_root == null) return;
 
+            _recordPanel = _root.Q("hud-record-panel");
+            _recordProgress = _root.Q("hud-record-progress");
+            _objective = _root.Q("hud-objective");
+            _tapeArtwork = _root.Q("hud-tape-artwork");
+            _recordFrame = _root.Q("hud-record-frame");
+            _echoSlots = _root.Q("hud-echo-slots");
+            if (_tapeArtwork != null)
+                _tapeArtwork.generateVisualContent += DrawTape;
+            _interaction = _root.Q("hud-interaction");
+            _chalkboardBox = _root.Q("chalkboard-box");
+            _recordMode = _root.Q<Label>("hud-record-mode");
+            _recordTime = _root.Q<Label>("hud-record-time");
+            _recordHelp = _root.Q<Label>("hud-record-help");
+            _echoCount = _root.Q<Label>("hud-echo-count");
+            _locationLabel = _root.Q<Label>("hud-location");
+            _objectiveText = _root.Q<Label>("hud-objective-text");
+            _toastText = _root.Q<Label>("hud-toast-text");
+            _echoStateLabel = _root.Q<Label>("hud-echo-state-label");
+            _keyPromptLabel = _root.Q<Label>("key-prompt-label");
+            _interactionKey = _root.Q<Label>("hud-interaction-key");
+            _interactionAction = _root.Q<Label>("hud-interaction-action");
+            _resonanceState = _root.Q<Label>("hud-resonance-state");
+            _chalkboardTitle = _root.Q<Label>("chalkboard-title");
+            _chalkboardText = _root.Q<Label>("chalkboard-text");
+
+            _recording = false;
+            _recordFrame?.AddToClassList("hidden");
+            _recordProgress?.AddToClassList("hidden");
+            _echoCurrent = _echoMax = -1;
+            _targetOpacity = _currentOpacity = 1f;
+            _root.style.opacity = 1f;
+            _root.pickingMode = PickingMode.Ignore;
             ApplySavedUIScale();
-            QueryElements();
-            _root.style.opacity = 0f; // Base opacity 0.0
-            _currentOpacity = 0f;
+            NavigationHUD.Instance?.Hide();
+
+            if (!_locationLocked)
+                SetLocation(GetSceneDisplayName(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name), false);
         }
 
-        void QueryElements()
+        void OnDisable()
         {
-            _recordPanel      = _root.Q("hud-record-panel");
-            _recordDot        = _root.Q("hud-record-dot");
-            _recordBarFill    = _root.Q("hud-record-bar-fill");
-            _echoSlots        = _root.Q("hud-echo-slots");
-            _hudContainer     = _root.Q("hud-container");
-            _stabilityFill    = _root.Q("hud-stability-fill");
-            _recallFill       = _root.Q("hud-recall-fill");
-            _objectiveText    = _root.Q<Label>("hud-objective-text");
-            _toastText        = _root.Q<Label>("hud-toast-text");
-            _echoStateLabel   = _root.Q<Label>("hud-echo-state-label");
-            _keyPromptLabel   = _root.Q<Label>("key-prompt-label");
-            _chalkboardBox    = _root.Q("chalkboard-box");
-            _chalkboardTitle  = _root.Q<Label>("chalkboard-title");
-            _chalkboardText   = _root.Q<Label>("chalkboard-text");
-            _recordingStatus  = _root.Q("hud-recording-status");
-            _playbackStatus   = _root.Q("hud-playback-status");
+            if (_tapeArtwork != null)
+                _tapeArtwork.generateVisualContent -= DrawTape;
+            if (Instance == this) Instance = null;
         }
 
         void Update()
         {
             if (_root == null) return;
 
-            // Fade logic
-            if (Mathf.Abs(_currentOpacity - _targetOpacity) > 0.01f)
-            {
-                _currentOpacity = Mathf.MoveTowards(_currentOpacity, _targetOpacity, Time.unscaledDeltaTime / 0.10f);
-                _root.style.opacity = _currentOpacity;
-            }
-
-            // Pulse record dot
-            if (_recording && _recordDot != null)
-            {
-                float pulse = Mathf.Sin(Time.unscaledTime * 4f) * 0.3f + 0.7f;
-                _recordDot.style.opacity = pulse;
-            }
-
-            // Update record bar
-            if (_recording && _recordBarFill != null)
-                _recordBarFill.style.width = Length.Percent(_recordNorm * 100f);
-
-            // Footer states
-            UpdateFooterStates();
+            bool dialogue = Echoes.VN.VN_DialogueController.Instance?.IsActive == true
+                || Echoes.VN.VN_OverlayController.Instance?.IsOpen == true
+                || TutorialOverlayController.Instance?.IsOpen == true;
+            float target = dialogue ? 0f : _targetOpacity;
+            if (_currentOpacity == target) return;
+            _currentOpacity = EchoesSettings.ReduceMotion
+                ? target
+                : Mathf.MoveTowards(_currentOpacity, target, Time.unscaledDeltaTime / 0.10f);
+            _root.style.opacity = _currentOpacity;
         }
-
-        void UpdateFooterStates()
-        {
-            if (_recordingStatus != null)
-            {
-                if (_recording)
-                    _recordingStatus.RemoveFromClassList("footer-item--inactive");
-                else
-                    _recordingStatus.AddToClassList("footer-item--inactive");
-            }
-
-            if (_playbackStatus != null)
-            {
-                if (_echoCurrent > 0 && !_recording)
-                    _playbackStatus.RemoveFromClassList("footer-item--inactive");
-                else
-                    _playbackStatus.AddToClassList("footer-item--inactive");
-            }
-        }
-
-        // ===== Public API =====
 
         public void SetRecording(bool recording, float normalizedTime01)
         {
-            _recording = recording;
-            _recordNorm = Mathf.Clamp01(normalizedTime01);
-            _targetOpacity = recording ? 0.85f : 0f; // RULE-UI-004
-
-            // Show/hide record panel
-            if (_recordPanel != null)
+            if (_recording != recording)
             {
+                _recording = recording;
+                _recordPanel?.EnableInClassList("hud-recorder--recording", recording);
+                _recordProgress?.EnableInClassList("hidden", !recording);
+                _recordFrame?.EnableInClassList("hidden", !recording);
+                _tapeArtwork?.MarkDirtyRepaint();
                 if (recording)
-                    _recordPanel.RemoveFromClassList("hidden");
-                else
-                    _recordPanel.AddToClassList("hidden");
+                {
+                    System.Array.Clear(_tapeSamples, 0, _tapeSamples.Length);
+                    _sampleCursor = 0;
+                }
+                if (_recordMode != null) _recordMode.text = recording ? "REC" : "CINTA DE ECO";
+                if (_recordHelp != null) _recordHelp.text = recording ? "Suelta R · Crear eco" : "Mantén R · Grabar";
             }
 
-            // Record dot pulse handled in Update
+            if (!recording) return;
+
+            float remaining = 1f - Mathf.Clamp01(normalizedTime01);
+            SetStability(remaining);
+            if (_recordTime != null)
+            {
+                string time = $"{remaining * _recordMaxSeconds:0.0} s";
+                if (_recordTime.text != time) _recordTime.text = time;
+            }
+            _recordPanel?.EnableInClassList("hud-recorder--low", remaining <= 0.2f);
         }
+
+        public void SetRecordDuration(float maxSeconds) => _recordMaxSeconds = Mathf.Max(0f, maxSeconds);
 
         public void SetEchoCount(int current, int max)
         {
-            _echoCurrent = Mathf.Max(0, current);
-            _echoMax = Mathf.Max(0, max);
-            RebuildEchoSlots();
+            if (_echoCurrent == current && _echoMax == max) return;
+
+            _echoCurrent = current;
+            _echoMax = max;
+            _echoStateLabel?.EnableInClassList("hidden", current == 0 || string.IsNullOrEmpty(_echoStateLabel.text));
+            _recordPanel?.EnableInClassList("hidden", max <= 0);
+            if (_echoCount != null) _echoCount.text = $"Ecos {current}/{max}";
+            _echoSlots?.Clear();
+            for (int i = 0; i < max && i < 8; i++)
+            {
+                var slot = new VisualElement { pickingMode = PickingMode.Ignore };
+                slot.AddToClassList(i < current ? "hud-splice-filled" : "hud-splice");
+                _echoSlots?.Add(slot);
+            }
         }
 
         public void SetEchoState(string state)
         {
-            if (_echoStateLabel != null)
-            {
-                _echoStateLabel.text = state ?? "";
-                _echoStateLabel.RemoveFromClassList("hidden");
-            }
+            if (_echoStateLabel == null || _echoStateLabel.text == state) return;
+            _echoStateLabel.text = state ?? string.Empty;
+            _echoStateLabel.EnableInClassList("hidden", string.IsNullOrEmpty(state) || _echoCurrent == 0);
+        }
+
+        public void SetResonance(string state)
+        {
+            if (_resonanceState == null) return;
+            _resonanceState.text = state ?? string.Empty;
+            _resonanceState.EnableInClassList("hidden", string.IsNullOrEmpty(state));
+        }
+
+        public void SetInteraction(string key, string action, bool primary = false)
+        {
+            if (_interaction == null) return;
+
+            bool hasAction = !string.IsNullOrEmpty(action);
+            _interaction.EnableInClassList("hidden", !hasAction);
+            if (!hasAction) return;
+
+            bool hasKey = !string.IsNullOrEmpty(key);
+            _interactionKey.EnableInClassList("hidden", !hasKey);
+            _interactionKey.text = key ?? string.Empty;
+            _interactionAction.text = action;
+            _interaction.EnableInClassList("hud-interaction--primary", primary);
+        }
+
+        /// <summary>
+        /// Fija la ubicación del HUD. Con <paramref name="lockLocation"/> el texto
+        /// deja de autocompletarse con el nombre de escena.
+        /// </summary>
+        public void SetLocation(string location, bool lockLocation = true)
+        {
+            if (_locationLabel == null) return;
+            _locationLabel.text = string.IsNullOrEmpty(location) ? "Escuela" : location;
+            _locationLocked = lockLocation && !string.IsNullOrEmpty(location);
         }
 
         public void SetObjective(string objective)
         {
-            if (_objectiveText != null)
+            if (_objectiveText == null) return;
+            bool has = !string.IsNullOrEmpty(objective);
+            _objectiveText.text = has ? objective : "";
+            _objective?.EnableInClassList("hidden", !has);
+        }
+
+        public void SetStability(float normalized01)
+        {
+            _remaining = Mathf.Clamp01(normalized01);
+            _tapeArtwork?.MarkDirtyRepaint();
+
+            if (!_recording || _recordFrame == null) return;
+            float reveal = EchoesSettings.ReduceMotion ? 1f : Mathf.Clamp01((1f - _remaining) * _recordMaxSeconds / 0.28f);
+            float size = Mathf.SmoothStep(0.94f, 1f, reveal);
+            _recordFrame.style.scale = new Scale(new Vector3(size, size, 1f));
+            _recordFrame.style.opacity = Mathf.Lerp(0.55f, 1f, reveal);
+            _recordFrame.EnableInClassList("hud-record-frame--low", _remaining <= 0.2f);
+        }
+
+        public void AddTapeSample(Vector2 movement)
+        {
+            if (!_recording) return;
+            _tapeSamples[_sampleCursor] = movement;
+            _sampleCursor = (_sampleCursor + 1) % _tapeSamples.Length;
+        }
+
+        void DrawTape(MeshGenerationContext context)
+        {
+            float width = _tapeArtwork.contentRect.width;
+        float height = _tapeArtwork.contentRect.height;
+            if (width < 110f || height < 30f) return;
+
+            Painter2D pen = context.painter2D;
+            var metal = new Color32(190, 165, 112, 255);
+            var aqua = new Color32(141, 225, 202, 255);
+            var iron = new Color32(40, 48, 42, 255);
+            var red = new Color32(245, 166, 131, 255);
+            float radius = height * 0.28f;
+            float centerY = height * 0.48f;
+            float side = radius + 11f;
+            var left = new Vector2(side, centerY);
+            var right = new Vector2(width - side, centerY);
+            Circle(pen, left, radius, metal, iron);
+            Circle(pen, right, radius, metal, iron);
+            float degrees = _recording && !EchoesSettings.ReduceMotion ? (1f - _remaining) * 1440f : 15f;
+            for (int i = 0; i < 3; i++)
             {
-                _objectiveText.text = objective ?? "";
-                _objectiveText.RemoveFromClassList("hidden");
+                float angle = (degrees + i * 120f) * Mathf.Deg2Rad;
+                Vector2 arm = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+                Line(pen, left + arm * (radius * 0.38f), left + arm * (radius * 0.77f), metal, 2f);
+                Line(pen, right - arm * (radius * 0.38f), right - arm * (radius * 0.77f), metal, 2f);
             }
+
+            float start = side + radius + 7f;
+            float length = width - start * 2f;
+            Line(pen, new(start, centerY), new(start + length, centerY), metal, 1f);
+
+            if (!_recording) return;
+            pen.BeginPath();
+            pen.strokeColor = _remaining > 0.2f ? aqua : red;
+            pen.lineWidth = 2f;
+            for (int i = 0; i < _tapeSamples.Length; i++)
+            {
+                Vector2 sample = _tapeSamples[(_sampleCursor + i) % _tapeSamples.Length];
+                Vector2 point = new(start + length * i / (_tapeSamples.Length - 1),
+                    centerY - Mathf.Clamp(sample.x * 0.75f + sample.y, -1f, 1f) * (height * 0.32f));
+                if (i == 0) pen.MoveTo(point);
+                else pen.LineTo(point);
+            }
+            pen.Stroke();
+            Line(pen, new(start, height - 6f), new(start + length * _remaining, height - 6f), _remaining > 0.2f ? aqua : red, 3f);
+        }
+
+        static void Circle(Painter2D pen, Vector2 center, float radius, Color outline, Color fill)
+        {
+            pen.BeginPath();
+            pen.fillColor = fill;
+            pen.strokeColor = outline;
+            pen.lineWidth = 1.5f;
+            pen.Arc(center, radius, 0f, 360f);
+            pen.ClosePath();
+            pen.Fill();
+            pen.Stroke();
+        }
+
+        static void Line(Painter2D pen, Vector2 from, Vector2 to, Color color, float width)
+        {
+            pen.BeginPath();
+            pen.strokeColor = color;
+            pen.lineWidth = width;
+            pen.MoveTo(from);
+            pen.LineTo(to);
+            pen.Stroke();
         }
 
         public void SetPrompt(string prompt)
         {
-            if (_keyPromptLabel != null)
+            if (_promptCoroutine != null)
             {
-                _keyPromptLabel.text = prompt ?? "";
-                _keyPromptLabel.RemoveFromClassList("hidden");
+                StopCoroutine(_promptCoroutine);
+                _promptCoroutine = null;
             }
+            if (_keyPromptLabel == null) return;
+            bool has = !string.IsNullOrEmpty(prompt);
+            _keyPromptLabel.text = has ? prompt : "";
+            if (has) _keyPromptLabel.RemoveFromClassList("hidden");
+            else _keyPromptLabel.AddToClassList("hidden");
         }
 
         public void SetPrompt(string prompt, float duration)
         {
-            SetPrompt(prompt); // Duration ignored - prompt is sticky until ClearPrompt()
+            SetPrompt(prompt);
+            if (!string.IsNullOrEmpty(prompt) && duration > 0f)
+                _promptCoroutine = StartCoroutine(HidePromptAfter(duration));
+        }
+
+        Coroutine _promptCoroutine;
+
+        IEnumerator HidePromptAfter(float delay)
+        {
+            yield return new WaitForSecondsRealtime(delay);
+            _promptCoroutine = null;
+            ClearPrompt();
         }
 
         public void ClearPrompt()
         {
-            if (_keyPromptLabel != null)
-                _keyPromptLabel.AddToClassList("hidden");
+            SetPrompt(null);
         }
 
         public void ShowToast(string message, Color color, float duration = 1.5f)
@@ -204,12 +352,10 @@ namespace Echoes.UI
 
         public void ShowChalkboard(string title, string text)
         {
-            if (_chalkboardBox != null)
-            {
-                _chalkboardTitle.text = title ?? "";
-                _chalkboardText.text = text ?? "";
-                _chalkboardBox.RemoveFromClassList("hidden");
-            }
+            if (_chalkboardBox == null) return;
+            if (_chalkboardTitle != null) _chalkboardTitle.text = title ?? "";
+            if (_chalkboardText != null) _chalkboardText.text = text ?? "";
+            _chalkboardBox.RemoveFromClassList("hidden");
         }
 
         public void HideChalkboard()
@@ -234,34 +380,31 @@ namespace Echoes.UI
             HideChalkboard();
         }
 
-        void RebuildEchoSlots()
-        {
-            if (_echoSlots == null) return;
-            _echoSlots.Clear();
-            for (int i = 0; i < _echoMax; i++)
-            {
-                var slot = new VisualElement();
-                slot.AddToClassList("hud-echo-slot");
-                if (i < _echoCurrent) slot.AddToClassList("hud-echo-slot--filled");
-                _echoSlots.Add(slot);
-            }
-        }
-
         public void SetVisible(bool visible)
         {
-            // Called by PauseMenu
-            if (_root != null)
-                _root.style.opacity = visible ? _currentOpacity : 0f;
+            _targetOpacity = visible ? 1f : 0f;
         }
 
         public void ApplySavedUIScale()
         {
             if (_root == null) return;
+            _root.EnableInClassList("hud-high-contrast", EchoesSettings.HighContrast);
             string scale = GameSettings.UIScaleName;
             _root.RemoveFromClassList("scale-large");
             _root.RemoveFromClassList("scale-xl");
             if (scale == "Large" || scale == "Grande") _root.AddToClassList("scale-large");
             else if (scale == "Extra Large" || scale == "Extra Grande") _root.AddToClassList("scale-xl");
+        }
+
+        static string GetSceneDisplayName(string sceneName)
+        {
+            if (string.IsNullOrEmpty(sceneName)) return "Escuela";
+            if (sceneName.StartsWith("Level_"))
+            {
+                string displayName = GameProgress.GetLevelDisplayName(sceneName);
+                if (!string.IsNullOrEmpty(displayName)) return displayName;
+            }
+            return sceneName;
         }
     }
 }

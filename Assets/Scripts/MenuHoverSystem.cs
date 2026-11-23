@@ -70,6 +70,7 @@ public class MenuHoverSystem : MonoBehaviour
     AudioSource _crtAmbientSource;
 
     readonly Dictionary<Button, MenuButtonHoverState> _buttonStates = new();
+    readonly List<Button> _schoolButtons = new();
 
     Button _btnContinue, _btnNewGame, _btnLevels, _btnChapters, _btnSettings, _btnCredits, _btnExit;
 
@@ -136,6 +137,15 @@ public class MenuHoverSystem : MonoBehaviour
         foreach (var kvp in _buttonStates)
             kvp.Value.Cleanup();
         _buttonStates.Clear();
+
+        foreach (var button in _schoolButtons)
+        {
+            button.UnregisterCallback<MouseEnterEvent>(OnSchoolHover);
+            button.UnregisterCallback<MouseLeaveEvent>(OnSchoolLeave);
+            button.UnregisterCallback<ClickEvent>(OnSchoolClick);
+            button.UnregisterCallback<FocusEvent>(OnSchoolFocus);
+        }
+        _schoolButtons.Clear();
     }
 
     void InitializeButtons()
@@ -154,6 +164,7 @@ public class MenuHoverSystem : MonoBehaviour
         RegisterButton(_btnChapters, "SELECCIÓN DE CAPÍTULOS");
         RegisterButton(_btnSettings, "AJUSTES");
         RegisterButton(_btnCredits,  "CRÉDITOS");
+        RegisterButton(_root.Q<Button>("nav-gallery"), "GALERÍA");
         RegisterButton(_btnExit,     "SALIR");
     }
 
@@ -164,6 +175,17 @@ public class MenuHoverSystem : MonoBehaviour
     void RegisterButton(Button btn, string label)
     {
         if (btn == null) return;
+
+        // El menú principal dibuja su propio indicador para cada objeto.
+        if (btn.ClassListContains("menu-nav-btn"))
+        {
+            _schoolButtons.Add(btn);
+            btn.RegisterCallback<MouseEnterEvent>(OnSchoolHover);
+            btn.RegisterCallback<MouseLeaveEvent>(OnSchoolLeave);
+            btn.RegisterCallback<ClickEvent>(OnSchoolClick);
+            btn.RegisterCallback<FocusEvent>(OnSchoolFocus);
+            return;
+        }
 
         // Añadir clase v2 al botón
         btn.AddToClassList("nav-item-v2");
@@ -185,6 +207,11 @@ public class MenuHoverSystem : MonoBehaviour
     // ═══════════════════════════════════════════════════════════════
     // CALLBACKS DE EVENTOS
     // ══════════════════════════════════════════════════════════════
+
+    void OnSchoolHover(MouseEnterEvent _) => PlayHoverIn();
+    void OnSchoolLeave(MouseLeaveEvent _) => PlayHoverOut();
+    void OnSchoolClick(ClickEvent _) => PlayClick();
+    void OnSchoolFocus(FocusEvent _) => PlayNavMove();
 
     void OnButtonMouseEnter(Button btn, MouseEnterEvent evt)
     {

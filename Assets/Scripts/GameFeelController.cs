@@ -45,6 +45,7 @@ public class GameFeelController : MonoBehaviour
     [SerializeField] AudioClip puzzleSolvedClip;
     [SerializeField] AudioClip recordClip;
     [SerializeField] AudioClip recordStopClip;
+    AudioClip _tapeLatchClip;
     [SerializeField] AudioClip echoSpawnClip;
     [SerializeField] AudioClip echoFadeClip;
     [SerializeField] AudioClip softErrorClip;
@@ -478,6 +479,7 @@ public class GameFeelController : MonoBehaviour
 
     public void PlayRecordStart(Vector3 position, Vector3 up)
     {
+        PlayClip3D(_tapeLatchClip, position, defaultVolume * 0.52f, 0.87f, "SFX_Player");
         PlayClip3D(recordClip, position, defaultVolume * 0.9f, 0.86f, "SFX_Player");
         cameraShake?.AddShake(recordShake);
         PulseCA(0.42f, 0.3f);
@@ -490,6 +492,7 @@ public class GameFeelController : MonoBehaviour
 
     public void PlayRecordStop(Vector3 position)
     {
+        PlayClip3D(_tapeLatchClip, position, defaultVolume * 0.40f, 1.17f, "SFX_Player");
         PlayClip3D(recordStopClip, position, defaultVolume * 0.95f, 1.08f, "SFX_Player");
         cameraShake?.AddShake(0.04f);
         PulseCA(0.32f, 0.15f);
@@ -612,6 +615,7 @@ public class GameFeelController : MonoBehaviour
         if (movementScrapeClip == null) movementScrapeClip = CreateToneClip("SFX_MechanicServo", 0.18f, 96f, 42f, 0.42f, WaveKind.Saw);
         if (gravityShiftClip == null) gravityShiftClip = CreateToneClip("SFX_GravityShift", 0.42f, 160f, 38f, 0.5f, WaveKind.Sine);
         if (puzzleSolvedClip == null) puzzleSolvedClip = CreateToneClip("SFX_PuzzleSolved", 0.5f, 360f, 720f, 0.46f, WaveKind.Sine);
+        if (_tapeLatchClip == null) _tapeLatchClip = CreateClickClip("SFX_TapeLatch", 0.065f, 0.7f);
         if (recordClip == null) recordClip = CreateToneClip("SFX_RecordStart", 0.2f, 520f, 260f, 0.34f, WaveKind.Triangle);
         if (recordStopClip == null) recordStopClip = CreateToneClip("SFX_RecordStop", 0.16f, 260f, 520f, 0.28f, WaveKind.Triangle);
         if (echoSpawnClip == null) echoSpawnClip = CreateToneClip("SFX_EchoSpawn", 0.42f, 620f, 210f, 0.38f, WaveKind.Sine);

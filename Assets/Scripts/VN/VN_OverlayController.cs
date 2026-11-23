@@ -11,6 +11,8 @@ namespace Echoes.VN
         public string speaker;
         [TextArea] public string text;
         public string spriteResourcePath;
+        public bool noticeboard;
+        public VN_DialogueController.DialogueLine.SpritePosition position;
     }
 
     public class VN_OverlayController : MonoBehaviour
@@ -37,12 +39,12 @@ namespace Echoes.VN
                 Instance = null;
         }
 
-        public void PlaySequence(IEnumerable<VN_Line> lines)
+        public void PlaySequence(IEnumerable<VN_Line> lines, Transform view = null)
         {
-            StartCoroutine(PlaySequenceRoutine(lines));
+            StartCoroutine(PlaySequenceRoutine(lines, view));
         }
 
-        IEnumerator PlaySequenceRoutine(IEnumerable<VN_Line> lines)
+        IEnumerator PlaySequenceRoutine(IEnumerable<VN_Line> lines, Transform view)
         {
             float timeout = Time.realtimeSinceStartup + 3f;
             while (VN_DialogueController.Instance == null && Time.realtimeSinceStartup < timeout)
@@ -60,10 +62,12 @@ namespace Echoes.VN
                     {
                         characterName = l.speaker,
                         text = l.text,
-                        spritePath = l.spriteResourcePath
+                        spritePath = l.spriteResourcePath,
+                        position = l.position,
+                        noticeboard = l.noticeboard
                     });
                 }
-                dc.PlaySequence(dialogueLines);
+                dc.PlaySequence(dialogueLines, view);
             }
             else
             {
@@ -71,9 +75,9 @@ namespace Echoes.VN
             }
         }
 
-        public void Play(string speaker, string text, string spritePath = "")
+        public void Play(string speaker, string text, string spritePath = "", bool noticeboard = false)
         {
-            PlaySequence(new[] { new VN_Line { speaker = speaker, text = text, spriteResourcePath = spritePath } });
+            PlaySequence(new[] { new VN_Line { speaker = speaker, text = text, spriteResourcePath = spritePath, noticeboard = noticeboard } });
         }
 
         public void CloseDialogue()

@@ -8,6 +8,10 @@
 @import "EchoesDesignTokens.uss";
 
 .chapter-intro-root {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    width: 100%;
+    height: 100%;
     background-color: var(--color-stich-surface);
     overflow: hidden;
     justify-content: center;
@@ -33,14 +37,15 @@
     align-items: center;
     justify-content: center;
     padding: var(--space-xl);
-    max-width: 1200px;
+    width: 90%;
+    max-width: 1100px;
 }
 
 .chapter-label {
     -unity-font: var(--font-interface-bold);
     font-size: var(--size-label-caps);
     color: var(--color-stich-on-surface-variant);
-    letter-spacing: 0.1em;
+    letter-spacing: 2px;
     -unity-text-transform: uppercase;
     margin-bottom: var(--space-lg);
     opacity: 1;
@@ -50,7 +55,7 @@
     -unity-font: var(--font-display);
     font-size: var(--size-display-md);
     color: var(--color-stich-amber);
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
     -unity-text-align: middle-center;
     margin-bottom: var(--space-md);
     opacity: 1;
@@ -102,3 +107,7 @@
     color: var(--color-stich-amber);
     border-color: var(--color-stich-amber);
 }
+
+.chapter-intro-root { background-color: #26312a; }
+.chapter-title, .chapter-start-btn { white-space: normal; max-width: 100%; }
+.chapter-start-btn:focus { border-color: #f2d69e; }

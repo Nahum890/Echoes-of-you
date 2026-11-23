@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/UI/EchoesTheme.uss" />
     <Style src="project://database/Assets/UI/MainMenuUI.uss" />
 
-    <ui:VisualElement name="root" class="root-fullscreen menu-stitch-root" style="width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
+    <ui:VisualElement name="root" class="root-fullscreen menu-stitch-root">
 
         <!-- BACKGROUND IMAGE LAYER -->
         <ui:VisualElement name="menu-bg-image" class="menu-bg-image" />
@@ -28,7 +28,7 @@
                 <!-- LOGO & TITLE AREA (Official Logo Image) -->
                 <ui:VisualElement class="menu-logo-area">
                     <ui:VisualElement name="menu-logo-img" class="menu-logo-image" />
-                    <ui:Label text="ARCHIVO DE MEMORIA" class="menu-logo-subtitle" />
+                    <ui:Label text="Archivo escolar" class="menu-logo-subtitle" />
                 </ui:VisualElement>
 
                 <!-- NAVIGATION LIST (Asymmetrical Left-Aligned with Vertical Guide Line) -->
@@ -38,10 +38,8 @@
 
                     <!-- 1. Continuar (Active State with Progress Info) -->
                     <ui:VisualElement class="nav-item-block">
-                        <ui:VisualElement class="menu-active-dot" picking-mode="Ignore" />
                         <ui:VisualElement class="nav-btn-row">
                             <ui:Button name="nav-continue" text="Continuar" class="menu-nav-btn menu-nav-btn--continue" />
-                            <ui:Label text="→" class="menu-nav-arrow" picking-mode="Ignore" />
                         </ui:VisualElement>
                         <!-- Progress info under Continuar -->
                         <ui:VisualElement class="menu-ctn-progress">
@@ -57,8 +55,7 @@
                     <!-- 2. Nuevo expediente -->
                     <ui:VisualElement class="nav-item-block">
                         <ui:VisualElement class="nav-btn-row">
-                            <ui:Button name="nav-newgame" text="Nuevo expediente" class="menu-nav-btn" />
-                            <ui:Label text="→" class="menu-nav-arrow" picking-mode="Ignore" />
+                            <ui:Button name="nav-newgame" text="Nueva partida" class="menu-nav-btn" />
                         </ui:VisualElement>
                     </ui:VisualElement>
 
@@ -66,7 +63,6 @@
                     <ui:VisualElement class="nav-item-block">
                         <ui:VisualElement class="nav-btn-row">
                             <ui:Button name="nav-chapters" text="Selección de capítulos" class="menu-nav-btn" />
-                            <ui:Label text="→" class="menu-nav-arrow" picking-mode="Ignore" />
                         </ui:VisualElement>
                     </ui:VisualElement>
 
@@ -74,7 +70,6 @@
                     <ui:VisualElement class="nav-item-block">
                         <ui:VisualElement class="nav-btn-row">
                             <ui:Button name="nav-settings" text="Ajustes" class="menu-nav-btn" />
-                            <ui:Label text="→" class="menu-nav-arrow" picking-mode="Ignore" />
                         </ui:VisualElement>
                     </ui:VisualElement>
 
@@ -82,7 +77,6 @@
                     <ui:VisualElement class="nav-item-block">
                         <ui:VisualElement class="nav-btn-row">
                             <ui:Button name="nav-credits" text="Créditos" class="menu-nav-btn" />
-                            <ui:Label text="→" class="menu-nav-arrow" picking-mode="Ignore" />
                         </ui:VisualElement>
                     </ui:VisualElement>
 
@@ -90,7 +84,6 @@
                     <ui:VisualElement class="nav-item-block">
                         <ui:VisualElement class="nav-btn-row">
                             <ui:Button name="nav-gallery" text="Galería" class="menu-nav-btn" />
-                            <ui:Label text="→" class="menu-nav-arrow" picking-mode="Ignore" />
                         </ui:VisualElement>
                     </ui:VisualElement>
 
@@ -98,7 +91,6 @@
                     <ui:VisualElement class="nav-item-block nav-item-block--exit">
                         <ui:VisualElement class="nav-btn-row">
                             <ui:Button name="nav-exit" text="Salir" class="menu-nav-btn menu-nav-btn--exit" />
-                            <ui:Label text="→" class="menu-nav-arrow menu-nav-arrow--exit" picking-mode="Ignore" />
                         </ui:VisualElement>
                     </ui:VisualElement>
 
@@ -106,8 +98,7 @@
 
                 <!-- FOOTER / VERSION INFO -->
                 <ui:VisualElement class="menu-sidebar-footer">
-                    <ui:Label text="SYS.VER 1.04_b" class="menu-footer-ver" />
-                    <ui:Label text="© 199X-202X SYSTEM CORRUPTION.&#10;ALL RIGHTS RESERVED." class="menu-footer-copy" />
+                    <ui:Label text="ECHOES OF YOU" class="menu-footer-ver" />
                 </ui:VisualElement>
 
             </ui:VisualElement>
@@ -121,11 +112,11 @@
                 <!-- Panel 1: Continuar / Expediente -->
                 <ui:VisualElement name="panel-neural-archives" class="menu-panel">
                     <ui:Label text="Expediente de Ausencia" class="menu-panel-title" />
-                    <ui:Label text="registro y telemetría residual del eco" class="menu-panel-subtitle" />
+                    <ui:Label text="Progreso de la partida" class="menu-panel-subtitle" />
                     <ui:VisualElement class="menu-panel-separator" />
 
                     <ui:VisualElement style="flex-direction: row; flex-grow: 1; min-height: 0;">
-                        <ui:VisualElement style="width: 55%; padding-right: 24px;">
+                        <ui:VisualElement style="width: 55%; min-width: 0; padding-right: 24px;">
                             <ui:Label text="Registro de Actividad" class="menu-section-label" />
                             <ui:VisualElement class="menu-terminal-box">
                                 <ui:Label text="[OK] Receptor analógico sintonizado." class="menu-terminal-line" />
@@ -155,7 +146,7 @@
                             </ui:VisualElement>
                         </ui:VisualElement>
 
-                        <ui:VisualElement style="width: 40%; margin-left: 5%; align-items: center;">
+                        <ui:VisualElement style="width: 40%; min-width: 0; margin-left: 5%; align-items: center; justify-content: center;">
                             <ui:VisualElement class="menu-polaroid">
                                 <ui:VisualElement class="menu-polaroid-photo" />
                                 <ui:Label text="Entrada Principal (Vacío)" class="menu-polaroid-caption" />
@@ -217,10 +208,10 @@
                                     <ui:VisualElement class="lvl-chapter-meta-row">
                                         <ui:Label text="REC: II" class="lvl-chapter-rec" />
                                         <ui:Label text="•" class="lvl-meta-bullet" />
-                                        <ui:Label text="Patio Interior" class="lvl-chapter-location" />
+                                        <ui:Label text="Escalera Central" class="lvl-chapter-location" />
                                         <ui:Label text="42% ECHOES" class="lvl-chapter-progress lvl-chapter-progress--dim" />
                                     </ui:VisualElement>
-                                    <ui:Button name="btn-level-02" text="Lluvia Estática" class="lvl-chapter-btn-title" />
+                                    <ui:Button name="btn-level-02" text="Vértigo y Eco" class="lvl-chapter-btn-title" />
                                 </ui:VisualElement>
                             </ui:VisualElement>
                         </ui:VisualElement>
@@ -235,10 +226,10 @@
                                     <ui:VisualElement class="lvl-chapter-meta-row">
                                         <ui:Label text="REC: III" class="lvl-chapter-rec lvl-chapter-rec--locked" />
                                         <ui:Label text="•" class="lvl-meta-bullet lvl-meta-bullet--locked" />
-                                        <ui:Label text="Ala Oeste" class="lvl-chapter-location lvl-chapter-location--locked" />
-                                        <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                        <ui:Label text="Aula de Lyra" class="lvl-chapter-location lvl-chapter-location--locked" />
+                                        <ui:Label text="Bloqueado" class="lvl-chapter-progress lvl-chapter-progress--locked" />
                                     </ui:VisualElement>
-                                    <ui:Button name="btn-level-03" text="El Reloj del Director" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
+                                    <ui:Button name="btn-level-03" text="Caos de Cristal" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
                                 </ui:VisualElement>
                             </ui:VisualElement>
                         </ui:VisualElement>
@@ -254,7 +245,7 @@
                                         <ui:Label text="REC: IV" class="lvl-chapter-rec lvl-chapter-rec--locked" />
                                         <ui:Label text="•" class="lvl-meta-bullet lvl-meta-bullet--locked" />
                                         <ui:Label text="Biblioteca Central" class="lvl-chapter-location lvl-chapter-location--locked" />
-                                        <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                        <ui:Label text="Bloqueado" class="lvl-chapter-progress lvl-chapter-progress--locked" />
                                     </ui:VisualElement>
                                     <ui:Button name="btn-level-04" text="Páginas del Silencio" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
                                 </ui:VisualElement>
@@ -271,10 +262,10 @@
                                     <ui:VisualElement class="lvl-chapter-meta-row">
                                         <ui:Label text="REC: V" class="lvl-chapter-rec lvl-chapter-rec--locked" />
                                         <ui:Label text="•" class="lvl-meta-bullet lvl-meta-bullet--locked" />
-                                        <ui:Label text="Aula de Lyra" class="lvl-chapter-location lvl-chapter-location--locked" />
-                                        <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                        <ui:Label text="Ala Oeste" class="lvl-chapter-location lvl-chapter-location--locked" />
+                                        <ui:Label text="Bloqueado" class="lvl-chapter-progress lvl-chapter-progress--locked" />
                                     </ui:VisualElement>
-                                    <ui:Button name="btn-level-05" text="Caos de Cristal" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
+                                    <ui:Button name="btn-level-05" text="El Reloj del Director" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
                                 </ui:VisualElement>
                             </ui:VisualElement>
                         </ui:VisualElement>
@@ -289,10 +280,10 @@
                                     <ui:VisualElement class="lvl-chapter-meta-row">
                                         <ui:Label text="REC: VI" class="lvl-chapter-rec lvl-chapter-rec--locked" />
                                         <ui:Label text="•" class="lvl-meta-bullet lvl-meta-bullet--locked" />
-                                        <ui:Label text="Escalera Central" class="lvl-chapter-location lvl-chapter-location--locked" />
-                                        <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                        <ui:Label text="Patio Interior" class="lvl-chapter-location lvl-chapter-location--locked" />
+                                        <ui:Label text="Bloqueado" class="lvl-chapter-progress lvl-chapter-progress--locked" />
                                     </ui:VisualElement>
-                                    <ui:Button name="btn-level-06" text="Vértigo y Eco" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
+                                    <ui:Button name="btn-level-06" text="Lluvia Estática" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
                                 </ui:VisualElement>
                             </ui:VisualElement>
                         </ui:VisualElement>
@@ -308,7 +299,7 @@
                                         <ui:Label text="REC: VII" class="lvl-chapter-rec lvl-chapter-rec--locked" />
                                         <ui:Label text="•" class="lvl-meta-bullet lvl-meta-bullet--locked" />
                                         <ui:Label text="Sala de Profesores" class="lvl-chapter-location lvl-chapter-location--locked" />
-                                        <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                        <ui:Label text="Bloqueado" class="lvl-chapter-progress lvl-chapter-progress--locked" />
                                     </ui:VisualElement>
                                     <ui:Button name="btn-level-07" text="El Vínculo Frío" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
                                 </ui:VisualElement>
@@ -326,7 +317,7 @@
                                         <ui:Label text="REC: VIII" class="lvl-chapter-rec lvl-chapter-rec--locked" />
                                         <ui:Label text="•" class="lvl-meta-bullet lvl-meta-bullet--locked" />
                                         <ui:Label text="Laboratorio de Física" class="lvl-chapter-location lvl-chapter-location--locked" />
-                                        <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                        <ui:Label text="Bloqueado" class="lvl-chapter-progress lvl-chapter-progress--locked" />
                                     </ui:VisualElement>
                                     <ui:Button name="btn-level-08" text="Fórmula del Vacío" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
                                 </ui:VisualElement>
@@ -344,7 +335,7 @@
                                         <ui:Label text="REC: IX" class="lvl-chapter-rec lvl-chapter-rec--locked" />
                                         <ui:Label text="•" class="lvl-meta-bullet lvl-meta-bullet--locked" />
                                         <ui:Label text="Gimnasio Techado" class="lvl-chapter-location lvl-chapter-location--locked" />
-                                        <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                        <ui:Label text="Bloqueado" class="lvl-chapter-progress lvl-chapter-progress--locked" />
                                     </ui:VisualElement>
                                     <ui:Button name="btn-level-09" text="Resonancia Hueca" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
                                 </ui:VisualElement>
@@ -362,7 +353,7 @@
                                         <ui:Label text="REC: X" class="lvl-chapter-rec lvl-chapter-rec--locked" />
                                         <ui:Label text="•" class="lvl-meta-bullet lvl-meta-bullet--locked" />
                                         <ui:Label text="Auditorio" class="lvl-chapter-location lvl-chapter-location--locked" />
-                                        <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                        <ui:Label text="Bloqueado" class="lvl-chapter-progress lvl-chapter-progress--locked" />
                                     </ui:VisualElement>
                                     <ui:Button name="btn-level-10" text="El Umbral Dual" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
                                 </ui:VisualElement>
@@ -380,7 +371,7 @@
                                         <ui:Label text="REC: XI" class="lvl-chapter-rec lvl-chapter-rec--locked" />
                                         <ui:Label text="•" class="lvl-meta-bullet lvl-meta-bullet--locked" />
                                         <ui:Label text="Subsuelo" class="lvl-chapter-location lvl-chapter-location--locked" />
-                                        <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                        <ui:Label text="Bloqueado" class="lvl-chapter-progress lvl-chapter-progress--locked" />
                                     </ui:VisualElement>
                                     <ui:Button name="btn-level-11" text="Puente de Sombras" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
                                 </ui:VisualElement>
@@ -398,7 +389,7 @@
                                         <ui:Label text="REC: XII" class="lvl-chapter-rec lvl-chapter-rec--locked" />
                                         <ui:Label text="•" class="lvl-meta-bullet lvl-meta-bullet--locked" />
                                         <ui:Label text="Azotea" class="lvl-chapter-location lvl-chapter-location--locked" />
-                                        <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                        <ui:Label text="Bloqueado" class="lvl-chapter-progress lvl-chapter-progress--locked" />
                                     </ui:VisualElement>
                                     <ui:Button name="btn-level-12" text="Escalera Quebrada" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
                                 </ui:VisualElement>
@@ -416,7 +407,7 @@
                                         <ui:Label text="REC: XIII" class="lvl-chapter-rec lvl-chapter-rec--locked" />
                                         <ui:Label text="•" class="lvl-meta-bullet lvl-meta-bullet--locked" />
                                         <ui:Label text="Jardín Interior" class="lvl-chapter-location lvl-chapter-location--locked" />
-                                        <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                        <ui:Label text="Bloqueado" class="lvl-chapter-progress lvl-chapter-progress--locked" />
                                     </ui:VisualElement>
                                     <ui:Button name="btn-level-13" text="Memoria Viva" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
                                 </ui:VisualElement>
@@ -434,7 +425,7 @@
                                         <ui:Label text="REC: XIV" class="lvl-chapter-rec lvl-chapter-rec--locked" />
                                         <ui:Label text="•" class="lvl-meta-bullet lvl-meta-bullet--locked" />
                                         <ui:Label text="Pasillo Principal" class="lvl-chapter-location lvl-chapter-location--locked" />
-                                        <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                        <ui:Label text="Bloqueado" class="lvl-chapter-progress lvl-chapter-progress--locked" />
                                     </ui:VisualElement>
                                     <ui:Button name="btn-level-14" text="El Último Umbral" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
                                 </ui:VisualElement>
@@ -452,7 +443,7 @@
                                         <ui:Label text="REC: XV" class="lvl-chapter-rec lvl-chapter-rec--locked" />
                                         <ui:Label text="•" class="lvl-meta-bullet lvl-meta-bullet--locked" />
                                         <ui:Label text="Aula 104" class="lvl-chapter-location lvl-chapter-location--locked" />
-                                        <ui:Label text="ACCESO DENEGADO" class="lvl-chapter-progress lvl-chapter-progress--locked" />
+                                        <ui:Label text="Bloqueado" class="lvl-chapter-progress lvl-chapter-progress--locked" />
                                     </ui:VisualElement>
                                     <ui:Button name="btn-level-15" text="Eco Final" class="lvl-chapter-btn-title lvl-chapter-btn-title--locked" />
                                 </ui:VisualElement>
@@ -473,12 +464,12 @@
 
                 <!-- Panel 3: Ajustes -->
                 <ui:VisualElement name="panel-calibration-preview" class="menu-panel">
-                    <ui:Label text="Ajustes de Sintonía" class="menu-panel-title" />
-                    <ui:Label text="calibrar la recepción de la memoria" class="menu-panel-subtitle" />
+                    <ui:Label text="Ajustes" class="menu-panel-title" />
+                    <ui:Label text="Audio, pantalla y controles" class="menu-panel-subtitle" />
                     <ui:VisualElement class="menu-panel-separator" />
 
-                    <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
-                        <ui:ScrollView style="width: 52%; max-height: 380px; padding-right: 24px;">
+                    <ui:VisualElement style="flex-direction: row; flex-grow: 1; min-height: 0;">
+                        <ui:ScrollView style="width: 52%; min-width: 0; flex-grow: 1; padding-right: 24px;">
                             <ui:Label text="Audio" class="menu-section-label" />
                             <ui:VisualElement class="menu-slider-row">
                                 <ui:Slider name="sld-master" label="Volumen General" low-value="0" high-value="1" style="flex-grow: 1;" />
@@ -500,8 +491,8 @@
                             <ui:DropdownField name="ScaleDropdown" label="Escala Interfaz" style="display: none;" />
                         </ui:ScrollView>
 
-                        <ui:VisualElement style="width: 43%; margin-left: 5%; justify-content: space-between; height: 380px;">
-                            <ui:ScrollView style="width: 100%; max-height: 280px;">
+                        <ui:VisualElement style="width: 43%; min-width: 0; margin-left: 5%; justify-content: space-between; flex-grow: 1; min-height: 0;">
+                            <ui:ScrollView style="width: 100%; flex-grow: 1; min-height: 0;">
                                 <ui:Label text="Controles" class="menu-section-label" />
                                 <ui:VisualElement class="menu-slider-row">
                                     <ui:Slider name="SensitivitySlider" label="Sensibilidad Ratón" low-value="0.1" high-value="4" style="flex-grow: 1;" />
@@ -544,33 +535,30 @@
 
                 <!-- Panel 4: Exit confirm -->
                 <!-- Panel: Galería (carrusel de imágenes del juego) -->
-                <ui:VisualElement name="panel-gallery" class="menu-panel">
-                    <ui:VisualElement class="menu-panel-header-row">
-                        <ui:VisualElement style="flex-grow: 1;">
-                            <ui:Label text="ARCHIVO_VISUAL // 002" class="menu-header-tag" />
-                            <ui:Label text="Galería" class="menu-panel-title" />
-                        </ui:VisualElement>
-                        <ui:Label name="lbl-gallery-counter" text="0 / 0" class="gallery-counter" />
+                <ui:VisualElement name="panel-gallery" class="menu-panel gallery-panel">
+                    <ui:VisualElement class="gallery-heading">
+                        <ui:Label text="Galería" class="menu-panel-title" />
+                        <ui:Label name="lbl-gallery-counter" class="gallery-counter" />
                     </ui:VisualElement>
-                    <ui:VisualElement class="menu-panel-separator" />
-
-                    <!-- Escenario del carrusel: flecha / imagen / flecha -->
-                    <ui:VisualElement class="gallery-stage">
-                        <ui:Button name="btn-gallery-prev" text="&#8249;" class="gallery-arrow" />
-                        <ui:VisualElement class="gallery-frame">
-                            <ui:Image name="gallery-image" class="gallery-image" picking-mode="Ignore" />
-                            <ui:Label name="lbl-gallery-empty" text="No hay imágenes en el archivo." class="gallery-empty hidden" picking-mode="Ignore" />
+                    <ui:VisualElement name="gallery-filters" class="gallery-filters" />
+                    <ui:VisualElement class="gallery-workspace">
+                        <ui:ScrollView name="gallery-index" class="gallery-index" vertical-scroller-visibility="Auto">
+                            <ui:VisualElement name="gallery-grid" class="gallery-grid" />
+                        </ui:ScrollView>
+                        <ui:VisualElement class="gallery-preview">
+                            <ui:VisualElement class="gallery-frame">
+                                <ui:Image name="gallery-image" class="gallery-image" scale-mode="ScaleToFit" picking-mode="Ignore" />
+                                <ui:Label name="lbl-gallery-empty" text="No hay imágenes en esta sección." class="gallery-empty hidden" picking-mode="Ignore" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="gallery-caption-row">
+                                <ui:VisualElement class="gallery-caption-body">
+                                    <ui:Label name="lbl-gallery-meta" class="gallery-meta" />
+                                    <ui:Label name="lbl-gallery-caption" class="gallery-caption" />
+                                </ui:VisualElement>
+                                <ui:Button name="btn-gallery-prev" text="‹" tooltip="Imagen anterior" class="gallery-arrow" />
+                                <ui:Button name="btn-gallery-next" text="›" tooltip="Imagen siguiente" class="gallery-arrow" />
+                            </ui:VisualElement>
                         </ui:VisualElement>
-                        <ui:Button name="btn-gallery-next" text="&#8250;" class="gallery-arrow" />
-                    </ui:VisualElement>
-
-                    <!-- Pie: título de la imagen y tira de miniaturas -->
-                    <ui:VisualElement class="gallery-footer">
-                        <ui:VisualElement class="gallery-caption-row">
-                            <ui:Label name="lbl-gallery-caption" text="" class="gallery-caption" />
-                            <ui:Label name="lbl-gallery-meta" text="" class="gallery-meta" />
-                        </ui:VisualElement>
-                        <ui:ScrollView name="gallery-thumbs" mode="Horizontal" class="gallery-thumbs" />
                     </ui:VisualElement>
                 </ui:VisualElement>
 
@@ -583,6 +571,10 @@
                     </ui:VisualElement>
                 </ui:VisualElement>
 
+                <ui:VisualElement name="school-preview-caption" class="school-preview-caption hidden" picking-mode="Ignore">
+                    <ui:Label name="school-preview-title" class="school-preview-title" picking-mode="Ignore" />
+                    <ui:Label name="school-preview-description" class="school-preview-description" picking-mode="Ignore" />
+                </ui:VisualElement>
             </ui:VisualElement>
 
         </ui:VisualElement>

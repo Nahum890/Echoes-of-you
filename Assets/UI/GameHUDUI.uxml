@@ -1,137 +1,51 @@
-﻿<UXML xmlns="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements">
-    <!-- GameHUDUI — Stitch aesthetic: scanlines, reticle, broken-O emblem, location tag.
-         Opacidad base 0.0; el GameHUD.cs controla el fade.
-         Todos los nombres "hud-*"/"chalkboard-*"/"footer-*"/"key-prompt-*" son referenciados por GameHUD.cs. -->
-
-    <Style src="project://database/Assets/UI/EchoesDesignTokens.uss" />
-    <Style src="project://database/Assets/UI/EchoesTheme.uss" />
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
     <Style src="project://database/Assets/UI/GameHUDUI.uss" />
 
-    <ui:VisualElement class="root-fullscreen" name="hud-root" picking-mode="Ignore">
-
-        <!-- ===== DECORATIVE OVERLAYS (Stitch atmosphere) ===== -->
-        <!-- Scanlines -->
-        <ui:VisualElement name="hud-scanlines" picking-mode="Ignore"
-            style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;
-                   background-image: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.18) 50%, rgba(0,0,0,0.18) 100%);
-                   -unity-background-image-tile-mode: 2; background-size: auto; background-repeat: repeat; opacity: 0.35;" />
-        <!-- Vignette (radial darkening) -->
-        <ui:VisualElement name="hud-vignette" picking-mode="Ignore"
-            style="position: absolute; left: 0; top: 0; right: 0; bottom: 0;
-                   background-image: radial-gradient(ellipse at center, rgba(19,20,16,0) 55%, rgba(19,20,16,0.78) 100%);" />
-
-        <!-- ===== TOP-LEFT: Location tag (Stitch "SYS.LOC.DATA") ===== -->
-        <ui:VisualElement name="hud-location-tag" style="position: absolute; left: 32px; top: 24px; picking-mode: Ignore;">
-            <ui:Label class="hud-loc-pre" text="SYS.LOC.DATA"
-                style="font-size: 10px; color: rgba(99,212,250,0.55); letter-spacing: 0.25em; -unity-font-style: bold; margin-bottom: 3px; padding-left: 2px;" />
-            <ui:VisualElement style="flex-direction: row; align-items: center; gap: 8px; background-color: rgba(31,32,28,0.45); border-left-width: 1px; border-left-color: rgba(149,144,135,0.5); padding: 4px 10px;">
-                <ui:Label text=">"
-                    style="font-size: 14px; color: rgba(74,70,63,1);" />
-                <ui:Label name="hud-location" text="ARCHIVO: CORREDOR ESTE"
-                    style="font-size: 20px; color: rgba(228,226,220,0.92); letter-spacing: 0.12em; -unity-font-style: bold; -unity-text-align: middle-left; text-shadow: 0 2px 4px rgba(0,0,0,0.8);" />
+    <ui:VisualElement name="hud-root" class="school-hud" picking-mode="Ignore">
+        <ui:VisualElement class="hud-location" picking-mode="Ignore">
+            <ui:Label name="hud-location" class="hud-room" picking-mode="Ignore" />
+            <ui:VisualElement name="hud-objective" class="hud-objective hidden" picking-mode="Ignore">
+                <ui:Label name="hud-objective-text" class="hud-copy" picking-mode="Ignore" />
             </ui:VisualElement>
-            <!-- Glitch decoration line -->
-            <ui:VisualElement style="width: 120px; height: 1px; margin-top: 6px; margin-left: 2px;
-                background-image: linear-gradient(to right, rgba(99,212,250,0.4), rgba(99,212,250,0));" />
         </ui:VisualElement>
 
-        <!-- ===== TOP-CENTER: Objective (code-driven) ===== -->
-        <ui:Label class="hud-objective-text hidden" name="hud-objective-text" text="" />
-
-        <!-- ===== TOP-RIGHT: Echo state + record panel ===== -->
-        <!-- Echo state label (above bars) -->
-        <ui:Label class="hud-echo-state-label hidden" name="hud-echo-state-label" text="" />
-
-        <!-- Record panel (grabando) -->
-        <ui:VisualElement class="hud-record-panel hidden" name="hud-record-panel">
-            <ui:VisualElement class="hud-record-dot" name="hud-record-dot" />
-            <ui:VisualElement class="hud-record-bar-bg" name="hud-record-bar-bg">
-                <ui:VisualElement class="hud-record-bar-fill" name="hud-record-bar-fill" />
-            </ui:VisualElement>
-            <ui:VisualElement class="hud-echo-slots" name="hud-echo-slots" />
+        <ui:VisualElement name="hud-record-frame" class="hud-record-frame hidden" picking-mode="Ignore">
+            <ui:VisualElement class="hud-corner hud-corner-tl" picking-mode="Ignore" />
+            <ui:VisualElement class="hud-corner hud-corner-tr" picking-mode="Ignore" />
+            <ui:VisualElement class="hud-corner hud-corner-bl" picking-mode="Ignore" />
+            <ui:VisualElement class="hud-corner hud-corner-br" picking-mode="Ignore" />
         </ui:VisualElement>
 
-        <!-- HUD bars (estabilidad/recuerdo) -->
-        <ui:VisualElement class="hud-container hidden" name="hud-container">
-            <ui:VisualElement class="hud-bar-container">
-                <ui:Label class="hud-bar-label" text="ESTABILIDAD" />
-                <ui:VisualElement class="hud-bar-bg">
-                    <ui:VisualElement class="hud-bar-fill hud-bar-fill--stability" name="hud-stability-fill" />
+        <ui:VisualElement name="hud-record-panel" class="hud-recorder hidden" picking-mode="Ignore">
+            <ui:VisualElement class="hud-recorder-header" picking-mode="Ignore">
+                <ui:Label name="hud-record-mode" class="hud-tape-label" text="CINTA DE ECO" picking-mode="Ignore" />
+                <ui:VisualElement name="hud-record-progress" class="hidden" picking-mode="Ignore">
+                    <ui:Label name="hud-record-time" class="hud-tape-time" picking-mode="Ignore" />
                 </ui:VisualElement>
+                <ui:Label name="hud-echo-count" class="hud-count" picking-mode="Ignore" />
             </ui:VisualElement>
-            <ui:VisualElement class="hud-bar-container">
-                <ui:Label class="hud-bar-label" text="RECUERDO" />
-                <ui:VisualElement class="hud-bar-bg">
-                    <ui:VisualElement class="hud-bar-fill hud-bar-fill--recall" name="hud-recall-fill" />
-                </ui:VisualElement>
-            </ui:VisualElement>
+            <ui:VisualElement name="hud-tape-artwork" class="hud-tape-artwork" picking-mode="Ignore" />
+            <ui:VisualElement name="hud-echo-slots" class="hud-echo-slots" picking-mode="Ignore" />
+            <ui:Label name="hud-echo-state-label" class="hud-hint hidden" picking-mode="Ignore" />
+            <ui:Label name="hud-record-help" class="hud-hint" text="Mantén R · Grabar" picking-mode="Ignore" />
+            <ui:Label name="hud-resonance-state" class="hud-hint hidden" picking-mode="Ignore" />
         </ui:VisualElement>
 
-        <!-- ===== CENTER: Reticle + Key prompt ===== -->
-        <ui:VisualElement name="hud-reticle" picking-mode="Ignore"
-            style="position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 96px; height: 96px;
-                   align-items: center; justify-content: center;">
-            <!-- Circle outline -->
-            <ui:VisualElement style="position: absolute; left: 0; top: 0; width: 96px; height: 96px;
-                border-width: 1px; border-color: rgba(228,226,220,0.28); border-radius: 48px;" />
-            <!-- Crosshair horizontal -->
-            <ui:VisualElement style="position: absolute; left: 0; top: 47px; width: 96px; height: 1px; background-color: rgba(228,226,220,0.18);" />
-            <!-- Crosshair vertical -->
-            <ui:VisualElement style="position: absolute; left: 47px; top: 0; width: 1px; height: 96px; background-color: rgba(228,226,220,0.18);" />
-            <!-- Center dot (cyan glow) -->
-            <ui:VisualElement style="width: 4px; height: 4px; border-radius: 2px; background-color: rgba(99,212,250,0.85);
-                box-shadow: 0 0 8px rgba(99,212,250,0.6);" />
-            <!-- Key prompt label (inside reticle, below center) -->
-            <ui:Label class="key-prompt-label hidden" name="key-prompt-label" text=""
-                style="position: absolute; top: 112px; left: 50%; translate: -50% 0;" />
+        <ui:VisualElement class="hud-center-dot" picking-mode="Ignore" />
+        <ui:VisualElement class="hud-context" picking-mode="Ignore">
+            <ui:VisualElement name="hud-interaction" class="hud-interaction hidden" picking-mode="Ignore">
+                <ui:Label name="hud-interaction-key" class="hud-key" picking-mode="Ignore" />
+                <ui:Label name="hud-interaction-action" class="hud-copy" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:Label name="key-prompt-label" class="hud-note hud-copy hidden" picking-mode="Ignore" />
         </ui:VisualElement>
 
-        <!-- ===== TOAST (bottom-center) ===== -->
-        <ui:Label class="hud-toast-text hidden" name="hud-toast-text" text="" />
-
-        <!-- ===== CHALKBOARD TUTORIAL (bottom-left) ===== -->
-        <ui:VisualElement class="chalkboard-box hidden" name="chalkboard-box">
-            <ui:Label class="chalkboard-title" name="chalkboard-title" text="" />
-            <ui:Label class="chalkboard-text" name="chalkboard-text" text="" />
-        </ui:VisualElement>
-
-        <!-- ===== BOTTOM-RIGHT: Broken-O Echo Emblem + Footer status ===== -->
-        <ui:VisualElement name="hud-echo-emblem" picking-mode="Ignore"
-            style="position: absolute; right: 32px; bottom: 32px; flex-direction: row; align-items: center; gap: 14px;">
-            <!-- Contextual data (Resonancia) -->
-            <ui:VisualElement style="flex-direction: column; align-items: flex-end; gap: 1px; opacity: 0.6;">
-                <ui:Label text="RESONANCIA" style="font-size: 12px; color: rgba(228,226,220,1); letter-spacing: 0.2em; -unity-font-style: bold;" />
-                <ui:Label name="hud-resonance-state" text="ACTIVA_" style="font-size: 11px; color: rgba(99,212,250,1); -unity-font-style: bold;" />
-            </ui:VisualElement>
-            <!-- Emblem rings -->
-            <ui:VisualElement style="position: relative; width: 56px; height: 56px; align-items: center; justify-content: center;">
-                <!-- Ghost silhouette (offset) -->
-                <ui:VisualElement style="position: absolute; left: 2px; top: 2px; width: 56px; height: 56px;
-                    border-width: 1px; border-color: rgba(99,212,250,0.25); border-radius: 28px; opacity: 0.4;" />
-                <!-- Outer broken ring -->
-                <ui:VisualElement style="position: absolute; left: 0; top: 0; width: 56px; height: 56px;
-                    border-width: 2px; border-color: rgba(228,226,220,0.9); border-radius: 28px;
-                    border-top-width: 2px; border-top-color: rgba(228,226,220,0); border-bottom-width: 2px; border-bottom-color: rgba(228,226,220,0);" />
-                <!-- Inner cyan ring -->
-                <ui:VisualElement style="position: absolute; left: 9px; top: 9px; width: 38px; height: 38px;
-                    border-width: 1px; border-color: rgba(99,212,250,0.7); border-radius: 19px;
-                    border-left-width: 1px; border-left-color: rgba(99,212,250,0);" />
-                <!-- Core dot (pulsing via code optional) -->
-                <ui:VisualElement name="hud-emblem-core" style="width: 3px; height: 3px; border-radius: 2px; background-color: rgba(99,212,250,1);
-                    box-shadow: 0 0 10px rgba(99,212,250,0.8);" />
-            </ui:VisualElement>
-            <!-- Footer REC/ECO status (code-driven) -->
-            <ui:VisualElement class="footer-status" name="footer-status" style="position: relative; right: auto; bottom: auto;">
-                <ui:VisualElement class="footer-item footer-item--inactive" name="hud-recording-status">
-                    <ui:Label class="footer-icon" text="&#9679;" />
-                    <ui:Label class="footer-label" text="REC" />
-                </ui:VisualElement>
-                <ui:VisualElement class="footer-item footer-item--inactive" name="hud-playback-status">
-                    <ui:Label class="footer-icon" text="&#9654;" />
-                    <ui:Label class="footer-label" text="ECO" />
-                </ui:VisualElement>
+        <ui:VisualElement class="hud-bottom" picking-mode="Ignore">
+            <ui:Label name="hud-toast-text" class="hud-note hud-copy hidden" picking-mode="Ignore" />
+            <ui:VisualElement name="chalkboard-box" class="hud-notice hud-chalkboard hidden" picking-mode="Ignore">
+                <ui:Label name="chalkboard-title" class="hud-kicker" picking-mode="Ignore" />
+                <ui:Label name="chalkboard-text" class="hud-copy" picking-mode="Ignore" />
             </ui:VisualElement>
         </ui:VisualElement>
-
     </ui:VisualElement>
-</UXML>
+</ui:UXML>

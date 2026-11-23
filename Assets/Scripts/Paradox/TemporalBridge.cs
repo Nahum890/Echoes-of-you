@@ -12,6 +12,7 @@ public class TemporalBridge : MonoBehaviour, IResettableLevelObject
     [SerializeField] Color inactiveColor = new Color(0f, 0.9f, 1f, 0.08f);
 
     [SerializeField] PressurePlate controlPlate;
+    [SerializeField] PuzzleSignal lockingSignal;
     [SerializeField] Renderer deckRenderer;
     private Material[] _materials = System.Array.Empty<Material>();
     private int _echoCount = 0;
@@ -64,8 +65,11 @@ public class TemporalBridge : MonoBehaviour, IResettableLevelObject
 
     void FixedUpdate()
     {
-        if (controlPlate != null && controlPlate.IsPressed != _isActive)
-            UpdateState(controlPlate.IsPressed);
+        if (lockingSignal != null || controlPlate != null)
+        {
+            bool active = lockingSignal != null ? lockingSignal.IsSatisfied : controlPlate.IsPressed;
+            if (active != _isActive) UpdateState(active);
+        }
     }
     void OnTriggerEnter(Collider other)
     {

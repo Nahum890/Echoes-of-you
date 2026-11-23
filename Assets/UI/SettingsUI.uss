@@ -169,6 +169,7 @@ Label, Button, DropdownField, Toggle {
 
 .settings-right {
     width: 67%;
+    min-width: 0;
     padding: 48px 48px 48px 48px;
     flex-direction: column;
     overflow: hidden;
@@ -178,8 +179,6 @@ Label, Button, DropdownField, Toggle {
 .settings-panel {
     flex-grow: 1;
     flex-direction: column;
-    gap: 16px;
-    overflow-y: auto;
 }
 
 .settings-panel.hidden {
@@ -228,6 +227,8 @@ Label, Button, DropdownField, Toggle {
 
 .settings-item-info {
     flex-direction: column;
+    flex-shrink: 1;
+    min-width: 0;
 }
 
 .settings-item-label {
@@ -302,7 +303,6 @@ Label, Button, DropdownField, Toggle {
     padding-top: 20px;
     border-top-width: 1px;
     border-top-color: rgba(149, 144, 135, 0.4);
-    gap: 16px;
 }
 
 .settings-action-btn {
@@ -335,3 +335,9 @@ Label, Button, DropdownField, Toggle {
     background-color: rgba(99, 212, 250, 0.2);
     color: #ffffff;
 }
+.settings-title-container .settings-logo-shadow { display: none; }
+.settings-main { background-color: #28332b; }
+.settings-panel-header-title, .settings-item-label, .settings-item-hint { white-space: normal; }
+.settings-panel, .settings-right { min-height: 0; }
+.settings-item-hint { color: #c6bfa9; }
+.settings-tabs .settings-tab:focus, .settings-close-btn:focus { border-left-color: #f2d69e; }

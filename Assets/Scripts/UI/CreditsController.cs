@@ -4,134 +4,124 @@ using UnityEngine.UIElements;
 
 namespace Echoes.UI
 {
-    /// <summary>
-    /// CreditsController — Escena de créditos con scroll automático.
-    /// Botón "Volver" cierra los créditos y vuelve a MainMenu.
-    /// Velocidad de scroll: 30px/s.
-    /// Si hay un final de bloque persistido (BlockEndingResolver), muestra el
-    /// epílogo del final antes de iniciar el scroll de créditos.
-    /// </summary>
     [RequireComponent(typeof(UIDocument))]
     public class CreditsController : MonoBehaviour
     {
+        static EndingID? _pendingEnding;
+
         public static CreditsController Instance { get; private set; }
+        public VisualElement Root { get; private set; }
 
-        UIDocument _doc;
-        ScrollView _scrollView;
-        Button _btnBack;
-        VisualElement _root;
-        VisualElement _epiloguePanel;
-        Button _epilogueContinue;
+        VisualElement _creditsPage;
+        VisualElement _epiloguePage;
+        Button _back;
+        Button _continue;
 
-        const float SCROLL_SPEED = 30f;
-        bool _autoScroll = true;
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetEntry() => _pendingEnding = null;
+
+        public static void Open(EndingID? ending = null)
+        {
+            _pendingEnding = ending;
+            LoadingScreenController.TransitionToScene("CreditsScene");
+        }
 
         void Awake()
         {
             Instance = this;
-            _doc = GetComponent<UIDocument>();
         }
 
         void Start()
         {
-            _doc = _doc ?? GetComponent<UIDocument>();
-            if (_doc == null || _doc.rootVisualElement == null) return;
+            UnityEngine.Cursor.lockState = CursorLockMode.None;
+            UnityEngine.Cursor.visible = true;
+            Root = GetComponent<UIDocument>().rootVisualElement;
+            EndingID? ending = _pendingEnding;
+            _pendingEnding = null;
+            if (Root == null) return;
 
-            _root = _doc.rootVisualElement;
-            _scrollView = _root.Q<ScrollView>("creditsScroll");
-            _btnBack = _root.Q<Button>("btnBack");
-            _epiloguePanel = _root.Q("epiloguePanel");
-            _epilogueContinue = _root.Q<Button>("epilogue-continue");
+            _creditsPage = Root.Q("creditsPage");
+            _epiloguePage = Root.Q("epiloguePanel");
+            _back = Root.Q<Button>("btnBack");
+            _continue = Root.Q<Button>("epilogue-continue");
 
-            if (_btnBack != null)
-                _btnBack.clicked += OnBack;
+            if (_back != null) _back.clicked += OnBack;
+            if (_continue != null) _continue.clicked += ShowCredits;
+            Root.RegisterCallback<NavigationCancelEvent>(OnCancel);
+            Root.RegisterCallback<KeyDownEvent>(OnKeyDown);
 
-            var ending = BlockEndingResolver.GetPersistedEnding();
-            if (ending.HasValue && _epiloguePanel != null)
-            {
+            if (ending.HasValue && _epiloguePage != null)
                 ShowEpilogue(ending.Value);
-            }
-            else if (_scrollView != null)
-            {
-                ScheduleLayoutRefresh();
-            }
+            else
+                ShowCredits();
+        }
+
+        void OnDestroy()
+        {
+            if (_back != null) _back.clicked -= OnBack;
+            if (_continue != null) _continue.clicked -= ShowCredits;
+            Root?.UnregisterCallback<NavigationCancelEvent>(OnCancel);
+            Root?.UnregisterCallback<KeyDownEvent>(OnKeyDown);
+            if (Instance == this) Instance = null;
         }
 
         void ShowEpilogue(EndingID ending)
         {
-            _autoScroll = false;
-            if (_btnBack != null) _btnBack.style.display = DisplayStyle.None;
-
             var entry = VN_TextTable.GetEpilogue(ending.ToString());
-            var voice = _root?.Q<Label>("epilogue-voice");
-            var narration = _root?.Q<Label>("epilogue-narration");
-            if (voice != null) voice.text = entry != null && !string.IsNullOrEmpty(entry.voice_final) ? entry.voice_final : "...";
-            if (narration != null) narration.text = entry != null ? entry.narration : "";
-
-            // Capa larga del epilogo: por que este final, la historia detras y
-            // el cierre. Cada label se oculta si viene vacio, para que un final
-            // sin texto extendido no deje huecos en el panel.
-            SetOrHide(_root?.Q<Label>("epilogue-why"), entry?.why);
-            SetOrHide(_root?.Q<Label>("epilogue-reflection"), entry?.reflection);
-            SetOrHide(_root?.Q<Label>("epilogue-closing"), entry?.closing);
+            SetOrHide("epilogue-voice", entry?.voice_final);
+            SetOrHide("epilogue-narration", entry?.narration);
+            SetOrHide("epilogue-why", entry?.why);
+            SetOrHide("epilogue-reflection", entry?.reflection);
+            SetOrHide("epilogue-closing", entry?.closing);
 
             VN_EndingFlags.Instance?.SetSalirDelColegio(ending == EndingID.Aceptacion);
-
-            _epiloguePanel.style.display = DisplayStyle.Flex;
-            if (_epilogueContinue != null) _epilogueContinue.clicked += OnEpilogueContinue;
+            SetPage(showEpilogue: true);
         }
 
-        static void SetOrHide(Label label, string text)
+        void SetOrHide(string name, string text)
         {
+            var label = Root.Q<Label>(name);
             if (label == null) return;
-            bool has = !string.IsNullOrEmpty(text);
-            label.text = has ? text : "";
-            label.style.display = has ? DisplayStyle.Flex : DisplayStyle.None;
+            label.text = text ?? string.Empty;
+            label.style.display = string.IsNullOrEmpty(text) ? DisplayStyle.None : DisplayStyle.Flex;
         }
 
-        void OnEpilogueContinue()
+        void ShowCredits() => SetPage(showEpilogue: false);
+
+        void SetPage(bool showEpilogue)
         {
-            if (_epiloguePanel != null) _epiloguePanel.style.display = DisplayStyle.None;
-            if (_btnBack != null) _btnBack.style.display = DisplayStyle.Flex;
-            _autoScroll = true;
-            if (_scrollView != null)
-                ScheduleLayoutRefresh();
+            if (_creditsPage != null)
+                _creditsPage.style.display = showEpilogue ? DisplayStyle.None : DisplayStyle.Flex;
+            if (_epiloguePage != null)
+                _epiloguePage.style.display = showEpilogue ? DisplayStyle.Flex : DisplayStyle.None;
+
+            var focus = showEpilogue ? _continue : _back;
+            focus?.schedule.Execute(() => focus.Focus());
         }
 
-        void ScheduleLayoutRefresh()
+        void OnKeyDown(KeyDownEvent evt)
         {
-            for (int i = 1; i <= 6; i++)
-                _scrollView.schedule.Execute(ForceContentRelayout).ExecuteLater(i * 250);
+            if (evt.keyCode == KeyCode.Escape)
+            {
+                Back();
+                evt.StopPropagation();
+            }
         }
 
-        void ForceContentRelayout()
+        void OnCancel(NavigationCancelEvent evt)
         {
-            if (_scrollView == null) return;
-
-            var container = _scrollView.contentContainer;
-            var previous = container.style.display;
-            container.style.display = DisplayStyle.None;
-            container.style.display = previous;
+            Back();
+            evt.StopPropagation();
         }
 
-        void Update()
+        void Back()
         {
-            if (_scrollView == null || !_autoScroll) return;
-
-            float currentScroll = _scrollView.scrollOffset.y;
-            _scrollView.scrollOffset = new Vector2(0, currentScroll + SCROLL_SPEED * Time.unscaledDeltaTime);
-        }
-
-        void OnBack()
-        {
-            if (NavigationManager.Instance != null)
-                NavigationManager.Instance.Pop();
-            else if (SceneTransitionManager.Instance != null)
-                SceneTransitionManager.Instance.LoadScene("MainMenu");
+            if (_epiloguePage != null && _epiloguePage.style.display.value == DisplayStyle.Flex)
+                ShowCredits();
             else
-                UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+                OnBack();
         }
 
-        public VisualElement Root => _root;
+        void OnBack() => LoadingScreenController.TransitionToScene("MainMenu");
     }
 }

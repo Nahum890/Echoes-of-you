@@ -10,23 +10,16 @@ public class LoadingScreenController : MonoBehaviour
     // UI Document & Elements
     private UIDocument _doc;
     private VisualElement _root;
-    private Label _recIdLabel;
-    private Label _statusTagLabel;
-    private Label _syncStatusLabel;
-    private Label _hexTagLabel;
-    private VisualElement _vectorCanvas;
-    private VisualElement _coreDot;
+    private readonly VisualElement[] _fixtures = new VisualElement[3];
+    private float _fixtureTime;
     private Label _chapterTitleLabel;
     private Label _quoteLabel;
     private Label _hintTextLabel;
     private Label _pctLabel;
     private VisualElement _barFill;
-    private VisualElement _bottomLiveDot;
 
     private bool _loading;
     private float _progress;
-    private float _currentRotation;
-    private Coroutine _typewriterCoroutine;
 
     private static readonly string[] LoreQuotes =
     {
@@ -51,7 +44,7 @@ public class LoadingScreenController : MonoBehaviour
     {
         "Pista: Mantén [ R ] para grabar un eco de tu posición actual.",
         "Pista: Los ecos pueden presionar placas de peso y mantener compuertas abiertas.",
-        "Pista: Pulsa [ F ] para limpiar todos los ecos activos de la sala.",
+        "Pista: Suelta R para crear un eco que repita tus movimientos.",
         "Pista: Observa el rastro temporal cian para coordinar tus movimientos con el eco.",
         "Pista: El tiempo en el eco reproduce exactamente cada salto y desplazamiento que hagas."
     };
@@ -184,115 +177,29 @@ public class LoadingScreenController : MonoBehaviour
         _root.style.width = new StyleLength(new Length(100, LengthUnit.Percent));
         _root.style.height = new StyleLength(new Length(100, LengthUnit.Percent));
 
-        _recIdLabel         = _root.Q<Label>("loading-rec-id");
-        _statusTagLabel     = _root.Q<Label>("loading-status-tag");
-        _syncStatusLabel    = _root.Q<Label>("loading-sync-status");
-        _hexTagLabel        = _root.Q<Label>("loading-hex-tag");
-        _vectorCanvas       = _root.Q("loading-vector-canvas");
-        _coreDot            = _root.Q("loading-core-dot");
+        for (int i = 0; i < _fixtures.Length; i++)
+            _fixtures[i] = _root.Q("loading-fixture-" + i);
+
         _chapterTitleLabel  = _root.Q<Label>("loading-chapter-title");
         _quoteLabel         = _root.Q<Label>("loading-quote");
         _hintTextLabel      = _root.Q<Label>("loading-hint-text");
         _pctLabel           = _root.Q<Label>("loading-pct");
         _barFill            = _root.Q("loading-bar-fill");
-        _bottomLiveDot      = _root.Q("loading-bottom-live-dot");
-
-        if (_vectorCanvas != null)
-        {
-            _vectorCanvas.generateVisualContent -= OnGenerateVectorCanvas;
-            _vectorCanvas.generateVisualContent += OnGenerateVectorCanvas;
-        }
     }
 
     private void Update()
     {
         if (!_loading) return;
 
-        // Smooth rotation of Broken O
-        _currentRotation = (_currentRotation + Time.unscaledDeltaTime * 45f) % 360f;
+        bool reduceMotion = EchoesSettings.ReduceMotion;
+        if (!reduceMotion)
+            _fixtureTime = Mathf.Repeat(_fixtureTime + Time.unscaledDeltaTime, 2.4f);
 
-        // Live dot pulsating
-        if (_coreDot != null)
+        for (int i = 0; i < _fixtures.Length; i++)
         {
-            float pulse = Mathf.Sin(Time.unscaledTime * 5f) * 0.35f + 0.65f;
-            _coreDot.style.opacity = pulse;
-        }
-
-        if (_bottomLiveDot != null)
-        {
-            float pulse = Mathf.Sin(Time.unscaledTime * 7f) * 0.4f + 0.6f;
-            _bottomLiveDot.style.opacity = pulse;
-        }
-
-        // Random micro glitch jitter on chapter title
-        if (_chapterTitleLabel != null && Random.value < 0.05f)
-        {
-            float ox = Random.Range(-2f, 2f);
-            float oy = Random.Range(-1.5f, 1.5f);
-            _chapterTitleLabel.style.translate = new StyleTranslate(new Translate(ox, oy));
-        }
-        else if (_chapterTitleLabel != null && Random.value < 0.2f)
-        {
-            _chapterTitleLabel.style.translate = new StyleTranslate(new Translate(0, 0));
-        }
-
-        _vectorCanvas?.MarkDirtyRepaint();
-    }
-
-    private void OnGenerateVectorCanvas(MeshGenerationContext ctx)
-    {
-        var p = ctx.painter2D;
-        Vector2 center = new Vector2(128f, 128f);
-        float radius = 100f;
-
-        // 1. Broken outer arcs (Ivory with gaps)
-        p.strokeColor = new Color(0.89f, 0.88f, 0.86f, 0.55f);
-        p.lineWidth = 2.2f;
-        p.lineCap = LineCap.Round;
-
-        float rot = _currentRotation;
-        p.BeginPath();
-        p.Arc(center, radius, rot, rot + 80f);
-        p.Stroke();
-
-        p.BeginPath();
-        p.Arc(center, radius, rot + 110f, rot + 220f);
-        p.Stroke();
-
-        p.BeginPath();
-        p.Arc(center, radius, rot + 250f, rot + 330f);
-        p.Stroke();
-
-        // 2. Inner dashed circle
-        p.strokeColor = new Color(0.58f, 0.56f, 0.52f, 0.35f);
-        p.lineWidth = 1.2f;
-        p.lineCap = LineCap.Round;
-        float innerRadius = 78f;
-        for (int i = 0; i < 8; i++)
-        {
-            float segStart = -rot * 0.7f + i * 45f;
-            p.BeginPath();
-            p.Arc(center, innerRadius, segStart, segStart + 22f);
-            p.Stroke();
-        }
-
-        // 3. Dynamic Cyan Progress Arc (fills from -90 deg as _progress advances)
-        float sweep = Mathf.Clamp(_progress * 360f, 0f, 360f);
-        if (sweep > 0.5f)
-        {
-            p.strokeColor = new Color(0.39f, 0.83f, 0.98f, 0.35f);
-            p.lineWidth = 6f;
-            p.lineCap = LineCap.Round;
-            p.BeginPath();
-            p.Arc(center, radius, -90f, -90f + sweep);
-            p.Stroke();
-
-            p.strokeColor = new Color(0.72f, 0.94f, 1f, 0.95f);
-            p.lineWidth = 3f;
-            p.lineCap = LineCap.Round;
-            p.BeginPath();
-            p.Arc(center, radius, -90f, -90f + sweep);
-            p.Stroke();
+            if (_fixtures[i] == null) continue;
+            float wave = 0.5f + 0.5f * Mathf.Cos((_fixtureTime / 2.4f - i / 3f) * Mathf.PI * 2f);
+            _fixtures[i].style.opacity = reduceMotion ? 1f : Mathf.Lerp(0.32f, 1f, wave * wave);
         }
     }
 
@@ -307,9 +214,10 @@ public class LoadingScreenController : MonoBehaviour
     {
         _loading = true;
         _progress = 0f;
+        _fixtureTime = 0f;
 
         int levelIdx = GameProgress.GetSceneIndex(sceneName);
-        int displayLevelNum = levelIdx >= 0 ? levelIdx + 1 : 1;
+        int displayLevelNum = levelIdx >= 0 ? GameProgress.GetChapterIndex(sceneName) + 1 : 1;
 
         // Configure Title
         string chapterTitle;
@@ -321,31 +229,33 @@ public class LoadingScreenController : MonoBehaviour
         }
         else
         {
-            chapterTitle = $"ARCHIVO: {sceneName.ToUpperInvariant()}";
+            chapterTitle = sceneName switch
+            {
+                "MainMenu" => "Menú principal",
+                "CreditsScene" => "Echoes of You",
+                _ => sceneName
+            };
         }
 
         if (_chapterTitleLabel != null)
             _chapterTitleLabel.text = chapterTitle;
 
-        // Configure Rec ID & Hex
-        if (_recIdLabel != null)
-            _recIdLabel.text = $"REC_ID: S_ARCH_{displayLevelNum:D2}";
-
-        if (_hexTagLabel != null)
-            _hexTagLabel.text = $"0x{Random.Range(0x100000, 0xFFFFFF):X6}";
-
         // Configure Hint
         if (_hintTextLabel != null)
         {
-            int hintIdx = (displayLevelNum - 1) % GameplayHints.Length;
+            _hintTextLabel.parent.style.display = levelIdx >= 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            int hintIdx = Mathf.Max(0, levelIdx) % GameplayHints.Length;
             if (hintIdx < 0) hintIdx = 0;
             _hintTextLabel.text = GameplayHints[hintIdx];
         }
 
-        // Configure Lore Quote with Typewriter Effect
-        string targetQuote = (levelIdx >= 0 && levelIdx < LoreQuotes.Length)
-            ? LoreQuotes[levelIdx]
-            : "El silencio es solo un eco que aún no ha aprendido a hablar.";
+        if (_quoteLabel != null)
+        {
+            _quoteLabel.text = levelIdx >= 0 && levelIdx < LoreQuotes.Length
+                ? LoreQuotes[levelIdx]
+                : string.Empty;
+            _quoteLabel.style.display = string.IsNullOrEmpty(_quoteLabel.text) ? DisplayStyle.None : DisplayStyle.Flex;
+        }
 
         // Show loading screen immediately
         if (_doc != null && _doc.rootVisualElement != null)
@@ -356,11 +266,12 @@ public class LoadingScreenController : MonoBehaviour
         if (_root != null)
         {
             _root.style.display = DisplayStyle.Flex;
-            _root.AddToClassList("loading-visible");
             _root.style.opacity = 1f;
         }
 
         UpdateProgressUI();
+        // Deja que se dibuje la cartela antes de empezar a cargar la escena.
+        yield return null;
 
         const float loadTimeoutSeconds = 20f;
         AsyncOperation op = null;
@@ -376,7 +287,6 @@ public class LoadingScreenController : MonoBehaviour
             Debug.LogError($"[LoadingScreen] Failed to start loading '{sceneName}': {ex.Message}");
         }
 
-        float watchdogStart = Time.unscaledTime;
         float lastProgressChange = Time.unscaledTime;
         float lastProgress = 0f;
 
@@ -384,7 +294,7 @@ public class LoadingScreenController : MonoBehaviour
         {
             while (op.progress < 0.9f)
             {
-                _progress = Mathf.Clamp01(op.progress / 0.9f);
+                _progress = Mathf.Clamp01(op.progress / 0.9f) * 0.95f;
                 UpdateProgressUI();
 
                 if (op.progress > lastProgress + 0.001f)
@@ -401,39 +311,22 @@ public class LoadingScreenController : MonoBehaviour
                 yield return null;
             }
 
-            _progress = 1f;
-            UpdateProgressUI();
-
             if (!op.isDone)
             {
                 op.allowSceneActivation = true;
-                while (!op.isDone && Time.unscaledTime - watchdogStart < loadTimeoutSeconds + 10f)
-                    yield return null;
+                yield return op;
             }
-        }
-        else
-        {
-            // Fallback simulated load
-            float t = 0f;
-            while (t < 0.6f)
-            {
-                t += Time.unscaledDeltaTime;
-                _progress = Mathf.Clamp01(t / 0.6f);
-                UpdateProgressUI();
-                yield return null;
-            }
+
             _progress = 1f;
             UpdateProgressUI();
+            yield return new WaitForSecondsRealtime(0.45f);
         }
-
-        // Brief hold at 100% for visual closure
-        yield return new WaitForSecondsRealtime(0.45f);
 
         RefreshElementReferences();
 
         // Smooth fade out
         float fadeOut = 0f;
-        while (fadeOut < 0.35f)
+        while (!EchoesSettings.ReduceMotion && fadeOut < 0.35f)
         {
             fadeOut += Time.unscaledDeltaTime;
             if (_root != null)
@@ -446,26 +339,12 @@ public class LoadingScreenController : MonoBehaviour
         if (_root != null)
         {
             _root.style.display = DisplayStyle.None;
-            _root.RemoveFromClassList("loading-visible");
             _root.style.opacity = 0f;
         }
 
+        if (_doc?.rootVisualElement != null)
+            _doc.rootVisualElement.style.display = DisplayStyle.None;
         _loading = false;
-    }
-
-    private IEnumerator TypewriterRoutine(string fullText)
-    {
-        if (_quoteLabel == null) yield break;
-
-        _quoteLabel.text = "\"\"";
-        yield return new WaitForSecondsRealtime(0.15f);
-
-        for (int i = 1; i <= fullText.Length; i++)
-        {
-            if (_quoteLabel == null) yield break;
-            _quoteLabel.text = $"\"{fullText.Substring(0, i)}\"";
-            yield return new WaitForSecondsRealtime(0.025f);
-        }
     }
 
     private void UpdateProgressUI()
@@ -478,19 +357,7 @@ public class LoadingScreenController : MonoBehaviour
             _barFill.style.width = Length.Percent(pct);
 
         if (_pctLabel != null)
-            _pctLabel.text = $"CARGANDO... {pct}%";
-
-        if (_syncStatusLabel != null)
-        {
-            if (_progress < 0.35f)
-                _syncStatusLabel.text = "TEMPORAL SYNC: IN PROGRESS";
-            else if (_progress < 0.75f)
-                _syncStatusLabel.text = "TEMPORAL SYNC: ALIGNING FRAGMENTS";
-            else
-                _syncStatusLabel.text = "TEMPORAL SYNC: SYNCHRONIZED";
-        }
-
-        _vectorCanvas?.MarkDirtyRepaint();
+            _pctLabel.text = pct == 100 ? "Listo" : $"Cargando · {pct}%";
     }
 
     private static string GetRomanNumeral(int number)

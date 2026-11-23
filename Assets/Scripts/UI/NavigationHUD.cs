@@ -240,7 +240,7 @@ namespace Echoes.UI
         {
             if (string.IsNullOrEmpty(sceneName)) return;
 
-            if (sceneName == "MainMenu" || sceneName == "CreditsScene" || sceneName == "VN_Dialogue_Test")
+            if (GameHUD.Instance != null || sceneName == "MainMenu" || sceneName == "CreditsScene" || sceneName == "VN_Dialogue_Test")
             {
                 SetVisible(false);
                 return;
@@ -250,7 +250,7 @@ namespace Echoes.UI
 
             if (sceneName.StartsWith("Level_"))
             {
-                _currentLevelIndex = GameProgress.GetSceneIndex(sceneName);
+                _currentLevelIndex = GameProgress.GetChapterIndex(sceneName);
                 if (_currentLevelIndex < 0) _currentLevelIndex = 0;
 
                 string displayName = GameProgress.GetLevelDisplayName(sceneName);

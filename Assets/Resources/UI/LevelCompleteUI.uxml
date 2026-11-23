@@ -3,7 +3,7 @@
     <Style src="project://database/Assets/UI/EchoesTheme.uss" />
     <Style src="project://database/Assets/UI/LevelCompleteUI.uss" />
 
-    <ui:VisualElement name="level-complete-root" class="level-complete-root complete-hidden" style="width: 1920px; height: 1080px; position: absolute; left: 0; top: 0;">
+    <ui:VisualElement name="level-complete-root" class="level-complete-root complete-hidden">
 
         <!-- Background -->
         <ui:VisualElement class="complete-vignette" />

@@ -420,3 +420,11 @@ Label, Button {
     flex-direction: column;
     overflow: hidden;
 }
+
+.pause-left-panel, .pause-subpanel-card { background-color: #28332b; }
+.pause-left-panel { min-width: 320px; }
+.pause-main-title, .pause-chapter-subtitle, .pause-location-text,
+.pause-option-btn, .control-desc, .expediente-stage-desc { white-space: normal; }
+.pause-option-btn { min-height: 52px; height: auto; }
+.control-desc { flex-shrink: 1; min-width: 0; }
+.pause-option-btn:focus, .pause-subpanel-back-btn:focus { border-color: #f2d69e; }

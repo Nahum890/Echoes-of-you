@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level_05_Blueprint
   m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
   levelName: Level_05
-  nextLevel: Level_06
+  nextLevel: Level_04
   actNumber: 1
   archetype: 0
   echoEnabled: 1
@@ -36,14 +36,12 @@ MonoBehaviour:
   directionalLightRotation: {x: 50, y: -30, z: 0}
   directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
   directionalLightIntensity: 0.85
-  narrativeIntroTitle: "Nivel 5 \u2014 La Cortina Inestable"
-  narrativeIntroDesc: "Sube a la cornisa izquierda de control y proyecta tu eco a
-    trav\xE9s de la barrera roja. Usa el impulso cin\xE9tico."
-  narrativeIntroDuration: 10
-  puzzleObjectiveText: "Cruza la fractura neutralizando la barrera y usando el impulso
-    cin\xE9tico."
-  puzzleActiveText: La barrera cede temporalmente.
-  puzzleCompleteText: Salto de fe completado.
+  narrativeIntroTitle: Capítulo 3 — El último ensayo
+  narrativeIntroDesc: La voz de Lyra todavía llega desde la cabina del salón de actos.
+  narrativeIntroDuration: 8
+  puzzleObjectiveText: Reconstruí las luces del último ensayo.
+  puzzleActiveText: El telón se abrió. Al fondo están los camerinos.
+  puzzleCompleteText: Terminó el ensayo.
   pathHints:
   - {x: 0, y: 1.1, z: -1}
   - {x: -8, y: 5.1, z: 6}
@@ -122,7 +120,7 @@ MonoBehaviour:
     position: {x: 0, y: 1.25, z: 28}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
-    customData: Level_06
+    customData: Level_04
     targetSignals: []
   - name: PlayerStart
     type: 7
@@ -136,10 +134,7 @@ MonoBehaviour:
     position: {x: 0, y: 1, z: -1}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 8, y: 3, z: 4}
-    customData: "Nivel 5 \u2014 La Cortina Inestable|Sube a la cornisa izquierda
-      de control y proyecta tu eco a trav\xE9s de la barrera roja. Luego, como jugador,
-      corre y salta a la plataforma flotante central. Cuando el eco pase la barrera,
-      esta se volver\xE1 azul y la plataforma te impulsar\xE1 al final."
+    customData: Ensayo general|El programa tiene anotaciones en dos tintas.
     targetSignals: []
   - name: Light_ControlLedge
     type: 10
@@ -174,8 +169,7 @@ MonoBehaviour:
     position: {x: 0, y: 1.25, z: 28}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
-    customData: "Cruza la fractura neutralizando la barrera y usando el impulso cin\xE9tico.|La
-      barrera cede temporalmente.|Salto de fe completado."
+    customData: Encontrá tu entrada en el último ensayo.|El telón está abierto.|Terminó el ensayo.
     targetSignals:
     - Signal_Shield
   - name: LevelRuntime
@@ -183,6 +177,5 @@ MonoBehaviour:
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
-    customData: Cruza la barrera usando el eco para neutralizarla y ganar impulso.|El
-      eco es tu escudo y tu motor.|Cruce exitoso.
+    customData: Encontrá tu entrada en el último ensayo.|El telón está abierto.|Terminó el ensayo.
     targetSignals: []

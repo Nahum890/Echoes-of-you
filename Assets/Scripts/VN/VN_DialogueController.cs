@@ -11,8 +11,7 @@ namespace Echoes.VN
     /// Manages:
     /// - Player movement freezing during dialogue
     /// - Left (Aiden) and Right (Lyra) character positioning & active dimming
-    /// - Typewriter text reveal with blinking cursor
-    /// - Log, Auto, and Skip buttons
+    /// - Scrollable text with typewriter reveal, auto advance, and skip
     /// - Mouse & Keyboard navigation ([E], Click, [Space])
     /// </summary>
     [RequireComponent(typeof(UIDocument))]
@@ -55,14 +54,13 @@ namespace Echoes.VN
         VisualElement _root;
         Label _nameLabel;
         Label _textLabel;
-        Label _cursorLabel;
+        ScrollView _textScroll;
         Label _counterLabel;
         VisualElement _spriteLeft;
         VisualElement _spriteCenter;
         VisualElement _spriteRight;
         VisualElement _dialoguePanel;
         VisualElement _container;
-        Button _btnBacklog;
         Button _btnAuto;
         Button _btnSkip;
         Label _advancePrompt;
@@ -85,6 +83,7 @@ namespace Echoes.VN
         [Serializable]
         public struct DialogueLine
         {
+            public bool noticeboard;
             public string characterName;
             public string text;
             public string spritePath;   // e.g. "VN/Sprites/lyra/Lyra_Neutral" (under Resources)
@@ -187,10 +186,10 @@ namespace Echoes.VN
 
         void Update()
         {
-            if (!_active) return;
+            if (!_active || Time.frameCount == _openedFrame) return;
 
             // Advance or complete typewriter
-            if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
+            if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
             {
                 if (_typing)
                 {
@@ -231,8 +230,11 @@ namespace Echoes.VN
         }
 
         /// <summary>Replace the current dialogue with one complete sequence.</summary>
-        public void PlaySequence(IEnumerable<DialogueLine> lines)
+        public Transform SceneryView { get; private set; }
+
+        public void PlaySequence(IEnumerable<DialogueLine> lines, Transform view = null)
         {
+            SceneryView = view;
             StopCurrentLine();
             _queue.Clear();
             _active = false;
@@ -260,11 +262,14 @@ namespace Echoes.VN
         /// <summary>Stop all dialogue, clear queue, hide UI, unlock player.</summary>
         public void StopDialogue()
         {
+            if (_active) ClosedFrame = Time.frameCount;
+            SceneryView = null;
             _queue.Clear();
             _current = default;
             _active = false;
             _playRequested = false;
             _autoAdvance = false;
+            if (_btnAuto != null) _btnAuto.text = "Automático";
             StopCurrentLine();
             if (_autoCoroutine != null)
             {
@@ -278,6 +283,8 @@ namespace Echoes.VN
 
         /// <summary>True if the dialogue UI is currently active.</summary>
         public bool IsActive => _active;
+        int _openedFrame = -1;
+        public int ClosedFrame { get; private set; } = -1;
         /// <summary>True once the UXML tree is attached to its runtime panel.</summary>
         public bool IsReady => _uiReady;
 
@@ -295,6 +302,7 @@ namespace Echoes.VN
 
             _playRequested = false;
             _active = true;
+            _openedFrame = Time.frameCount;
             LockPlayerMovement(true);
 
             Show();
@@ -326,6 +334,13 @@ namespace Echoes.VN
                 _root.style.height = new StyleLength(new Length(100, LengthUnit.Percent));
                 _root.style.flexGrow = 1;
                 _root.RemoveFromClassList("vn-hidden");
+                string scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+                bool showScenery = scene == "Level_06" || scene == "Level_05";
+                _root.EnableInClassList("vn-library-memory", showScenery);
+                _root.EnableInClassList("vn-stage-memory", scene == "Level_05");
+                _root.style.backgroundImage = showScenery
+                    ? new StyleBackground(StyleKeyword.None)
+                    : LoadBackground("UI/VN/vn_gradient_bg");
                 _root.style.display = DisplayStyle.Flex;
             }
         }
@@ -414,9 +429,8 @@ namespace Echoes.VN
             _nameLabel = _root.Q<Label>("character-name");
             _counterLabel = _root.Q<Label>("line-counter");
             _textLabel = _root.Q<Label>("dialogue-text");
-            _cursorLabel = _root.Q<Label>("typewriter-cursor");
 
-            _btnBacklog = _root.Q<Button>("btn-backlog");
+            _textScroll = _root.Q<ScrollView>("vn-text-scroll");
             _btnAuto = _root.Q<Button>("btn-auto");
             _btnSkip = _root.Q<Button>("btn-skip");
             _advancePrompt = _root.Q<Label>("advance-prompt");
@@ -430,25 +444,26 @@ namespace Echoes.VN
                 _btnAuto.clicked += () =>
                 {
                     _autoAdvance = !_autoAdvance;
-                    _btnAuto.text = _autoAdvance ? "AUTO [ON]" : "AUTO";
+                    _btnAuto.text = _autoAdvance ? "Automático activado" : "Automático";
                     if (_autoAdvance && !_typing)
                     {
                         StartAutoAdvanceTimer();
                     }
-                };
-            }
-            if (_btnBacklog != null)
-            {
-                _btnBacklog.clicked += () =>
-                {
-                    Debug.Log($"[VN_Dialogue] Backlog requested. Current: {_current.characterName}: {_current.text}");
+                    else if (!_autoAdvance && _autoCoroutine != null)
+                    {
+                        StopCoroutine(_autoCoroutine);
+                        _autoCoroutine = null;
+                    }
                 };
             }
 
-            if (_dialoguePanel != null)
+            if (_root != null)
             {
-                _dialoguePanel.RegisterCallback<ClickEvent>(_ =>
+                _root.RegisterCallback<ClickEvent>(evt =>
                 {
+                    var target = evt.target as VisualElement;
+                    if (!_active || evt.button != 0 || target is Button || target?.GetFirstAncestorOfType<Button>() != null) return;
+
                     if (_typing)
                         CompleteTypewriter();
                     else
@@ -482,6 +497,8 @@ namespace Echoes.VN
             }
 
             _current = _queue.Dequeue();
+            _root?.EnableInClassList("school-noticeboard", _current.noticeboard);
+            if (_textScroll != null) _textScroll.scrollOffset = Vector2.zero;
 
             // Character styling & name
             string name = _current.characterName ?? string.Empty;
@@ -508,7 +525,6 @@ namespace Echoes.VN
                 _textLabel.text = string.Empty;
 
             _typing = true;
-            if (_cursorLabel != null) _cursorLabel.style.visibility = Visibility.Visible;
 
             if (_typeCoroutine != null) StopCoroutine(_typeCoroutine);
             _typeCoroutine = StartCoroutine(TypeText(_current.text ?? string.Empty));
@@ -601,156 +617,24 @@ namespace Echoes.VN
 
             if (_spriteCenter != null) { _spriteCenter.style.display = DisplayStyle.None; _spriteCenter.style.backgroundImage = new StyleBackground(); }
 
-            // Aiden on Left
-            if (_spriteLeft != null)
-            {
-                _spriteLeft.style.borderTopLeftRadius = 8;
-                _spriteLeft.style.borderTopRightRadius = 8;
-                _spriteLeft.style.borderBottomLeftRadius = 8;
-                _spriteLeft.style.borderBottomRightRadius = 8;
+            SetPortrait(_spriteLeft, isAiden || line.position == DialogueLine.SpritePosition.Left || _sequenceHasAiden,
+                isAiden, line.spritePath, "VN/Sprites/aiden/Aiden_Neutral");
+            SetPortrait(_spriteRight, isLyra || line.position == DialogueLine.SpritePosition.Right || (_sequenceHasLyra && isAiden),
+                isLyra, line.spritePath, "VN/Sprites/lyra/Lyra_Neutral");
+        }
 
-                if (isAiden || line.position == DialogueLine.SpritePosition.Left || (_sequenceHasAiden && !isLyra))
-                {
-                    string aidenPath = isAiden && !string.IsNullOrEmpty(line.spritePath) ? line.spritePath : "VN/Sprites/aiden/Aiden_Neutral";
-                    var bg = LoadBackground(aidenPath);
-                    _spriteLeft.style.backgroundImage = bg;
-                    _spriteLeft.style.display = DisplayStyle.Flex;
-                    _spriteLeft.RemoveFromClassList("vn-sprite--active");
-                    _spriteLeft.RemoveFromClassList("vn-sprite--dimmed");
-                    if (!_spriteLeft.ClassListContains("vn-sprite--aiden"))
-                        _spriteLeft.AddToClassList("vn-sprite--aiden");
-
-                    if (isAiden)
-                    {
-                        _spriteLeft.AddToClassList("vn-sprite--active");
-                        // Bright active border for speaking Aiden
-                        var activeCol = new Color(0.91f, 0.89f, 0.84f, 0.85f);
-                        _spriteLeft.style.borderTopColor = activeCol;
-                        _spriteLeft.style.borderBottomColor = activeCol;
-                        _spriteLeft.style.borderLeftColor = activeCol;
-                        _spriteLeft.style.borderRightColor = activeCol;
-                        _spriteLeft.style.borderTopWidth = 2;
-                        _spriteLeft.style.borderBottomWidth = 2;
-                        _spriteLeft.style.borderLeftWidth = 2;
-                        _spriteLeft.style.borderRightWidth = 2;
-                    }
-                    else
-                    {
-                        _spriteLeft.AddToClassList("vn-sprite--dimmed");
-                        var dimCol = new Color(0.58f, 0.56f, 0.53f, 0.20f);
-                        _spriteLeft.style.borderTopColor = dimCol;
-                        _spriteLeft.style.borderBottomColor = dimCol;
-                        _spriteLeft.style.borderLeftColor = dimCol;
-                        _spriteLeft.style.borderRightColor = dimCol;
-                        _spriteLeft.style.borderTopWidth = 1;
-                        _spriteLeft.style.borderBottomWidth = 1;
-                        _spriteLeft.style.borderLeftWidth = 1;
-                        _spriteLeft.style.borderRightWidth = 1;
-                    }
-                }
-                else if (_sequenceHasAiden && isLyra)
-                {
-                    string aidenPath = "VN/Sprites/aiden/Aiden_Neutral";
-                    var bg = LoadBackground(aidenPath);
-                    _spriteLeft.style.backgroundImage = bg;
-                    _spriteLeft.style.display = DisplayStyle.Flex;
-                    _spriteLeft.RemoveFromClassList("vn-sprite--active");
-                    if (!_spriteLeft.ClassListContains("vn-sprite--aiden"))
-                        _spriteLeft.AddToClassList("vn-sprite--aiden");
-                    _spriteLeft.AddToClassList("vn-sprite--dimmed");
-
-                    var dimCol = new Color(0.58f, 0.56f, 0.53f, 0.20f);
-                    _spriteLeft.style.borderTopColor = dimCol;
-                    _spriteLeft.style.borderBottomColor = dimCol;
-                    _spriteLeft.style.borderLeftColor = dimCol;
-                    _spriteLeft.style.borderRightColor = dimCol;
-                    _spriteLeft.style.borderTopWidth = 1;
-                    _spriteLeft.style.borderBottomWidth = 1;
-                    _spriteLeft.style.borderLeftWidth = 1;
-                    _spriteLeft.style.borderRightWidth = 1;
-                }
-                else
-                {
-                    _spriteLeft.style.display = DisplayStyle.None;
-                    _spriteLeft.style.backgroundImage = new StyleBackground();
-                }
-            }
-
-            // Lyra on Right (ONLY shown if Lyra is present/speaking in this scene!)
-            if (_spriteRight != null)
-            {
-                _spriteRight.style.borderTopLeftRadius = 8;
-                _spriteRight.style.borderTopRightRadius = 8;
-                _spriteRight.style.borderBottomLeftRadius = 8;
-                _spriteRight.style.borderBottomRightRadius = 8;
-
-                if (isLyra || line.position == DialogueLine.SpritePosition.Right)
-                {
-                    string lyraPath = isLyra && !string.IsNullOrEmpty(line.spritePath) ? line.spritePath : "VN/Sprites/lyra/Lyra_Neutral";
-                    var bg = LoadBackground(lyraPath);
-                    _spriteRight.style.backgroundImage = bg;
-                    _spriteRight.style.display = DisplayStyle.Flex;
-                    _spriteRight.RemoveFromClassList("vn-sprite--active");
-                    _spriteRight.RemoveFromClassList("vn-sprite--dimmed");
-                    if (!_spriteRight.ClassListContains("vn-sprite--lyra"))
-                        _spriteRight.AddToClassList("vn-sprite--lyra");
-
-                    if (isLyra)
-                    {
-                        _spriteRight.AddToClassList("vn-sprite--active");
-                        // Bright glowing cyan border for speaking Lyra!
-                        var activeCol = new Color(0.39f, 0.83f, 0.98f, 0.90f);
-                        _spriteRight.style.borderTopColor = activeCol;
-                        _spriteRight.style.borderBottomColor = activeCol;
-                        _spriteRight.style.borderLeftColor = activeCol;
-                        _spriteRight.style.borderRightColor = activeCol;
-                        _spriteRight.style.borderTopWidth = 2;
-                        _spriteRight.style.borderBottomWidth = 2;
-                        _spriteRight.style.borderLeftWidth = 2;
-                        _spriteRight.style.borderRightWidth = 2;
-                    }
-                    else
-                    {
-                        _spriteRight.AddToClassList("vn-sprite--dimmed");
-                        var dimCol = new Color(0.58f, 0.56f, 0.53f, 0.20f);
-                        _spriteRight.style.borderTopColor = dimCol;
-                        _spriteRight.style.borderBottomColor = dimCol;
-                        _spriteRight.style.borderLeftColor = dimCol;
-                        _spriteRight.style.borderRightColor = dimCol;
-                        _spriteRight.style.borderTopWidth = 1;
-                        _spriteRight.style.borderBottomWidth = 1;
-                        _spriteRight.style.borderLeftWidth = 1;
-                        _spriteRight.style.borderRightWidth = 1;
-                    }
-                }
-                else if (_sequenceHasLyra && isAiden)
-                {
-                    string lyraPath = "VN/Sprites/lyra/Lyra_Neutral";
-                    var bg = LoadBackground(lyraPath);
-                    _spriteRight.style.backgroundImage = bg;
-                    _spriteRight.style.display = DisplayStyle.Flex;
-                    _spriteRight.RemoveFromClassList("vn-sprite--active");
-                    if (!_spriteRight.ClassListContains("vn-sprite--lyra"))
-                        _spriteRight.AddToClassList("vn-sprite--lyra");
-                    _spriteRight.AddToClassList("vn-sprite--dimmed");
-
-                    var dimCol = new Color(0.58f, 0.56f, 0.53f, 0.20f);
-                    _spriteRight.style.borderTopColor = dimCol;
-                    _spriteRight.style.borderBottomColor = dimCol;
-                    _spriteRight.style.borderLeftColor = dimCol;
-                    _spriteRight.style.borderRightColor = dimCol;
-                    _spriteRight.style.borderTopWidth = 1;
-                    _spriteRight.style.borderBottomWidth = 1;
-                    _spriteRight.style.borderLeftWidth = 1;
-                    _spriteRight.style.borderRightWidth = 1;
-                }
-                else
-                {
-                    // Lyra is NOT in this scene - completely hidden
-                    _spriteRight.style.display = DisplayStyle.None;
-                    _spriteRight.style.backgroundImage = new StyleBackground();
-                }
-            }
+        void SetPortrait(VisualElement portrait, bool visible, bool speaking, string expression, string neutral)
+        {
+            if (portrait == null) return;
+            portrait.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            string path = speaking && !string.IsNullOrEmpty(expression) ? expression : neutral;
+            Texture2D cutout = null;
+            if (visible && _root.ClassListContains("vn-library-memory"))
+                cutout = Resources.Load<Texture2D>("VN/LibraryPortraits/" + System.IO.Path.GetFileName(path));
+            portrait.style.backgroundImage = cutout != null ? new StyleBackground(cutout)
+                : visible ? LoadBackground(path) : new StyleBackground();
+            portrait.EnableInClassList("vn-sprite--active", speaking);
+            portrait.EnableInClassList("vn-sprite--dimmed", !speaking);
         }
 
         StyleBackground LoadBackground(string path)

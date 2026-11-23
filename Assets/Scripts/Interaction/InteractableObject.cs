@@ -21,11 +21,18 @@ namespace Echoes.Interaction
 
         [Header("Legacy Fields (used when NarrativeData is null)")]
         [SerializeField] string commentKey = "interaction.default";
+        [Tooltip("Texto de inspección propio de esta escena. Vacío usa la clave habitual del objeto.")]
+        [SerializeField] string inspectionTextKey;
+        [SerializeField] Echoes.VN.VN_Line[] inspectionConversation;
+        [SerializeField] Transform inspectionView;
+        public Transform InspectionView => inspectionView;
+        public Echoes.VN.VN_Line[] InspectionConversation => inspectionConversation;
         [SerializeField] bool isLyraArtifact = false;
         [SerializeField] bool requireEchoActive = false;
         [SerializeField] float cooldown = 3.0f;
         [SerializeField] float triggerRadius = 4.0f;
         [SerializeField] string displayName = "Objeto";
+        [SerializeField] string promptOverride;
 
         DialogueTrigger _triggerCache;
         bool _triggerCacheDone;
@@ -63,6 +70,7 @@ namespace Echoes.Interaction
         }
 
         public string CommentKey => _narrativeData != null ? _narrativeData.CommentKey : commentKey;
+        public string InspectionTextKey => string.IsNullOrEmpty(inspectionTextKey) ? CommentKey : inspectionTextKey;
         public bool IsLyraArtifact => _narrativeData != null ? _narrativeData.IsLyraArtifact : isLyraArtifact;
         public bool RequireEchoActive => _narrativeData != null ? _narrativeData.RequireEchoActive : requireEchoActive;
         public float Cooldown => _narrativeData != null ? _narrativeData.Cooldown : cooldown;
@@ -75,6 +83,7 @@ namespace Echoes.Interaction
         {
             get
             {
+                if (!string.IsNullOrEmpty(promptOverride)) return promptOverride;
                 if (_narrativeData != null && !string.IsNullOrEmpty(_narrativeData.PromptText))
                     return _narrativeData.PromptText;
                 return _category switch

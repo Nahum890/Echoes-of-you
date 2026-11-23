@@ -54,7 +54,13 @@ namespace Echoes.UI
         /// <param name="primary">If true, border is amber (primary action); otherwise ivory.</param>
         public void ShowPrompt(string key, string action, bool primary = false)
         {
-            if (_root == null) return;
+            if (GameHUD.Instance != null)
+            {
+                _root?.AddToClassList("prompt-hidden");
+                GameHUD.Instance.SetInteraction(key, action, primary);
+                _visible = true;
+                return;
+            }
 
             if (_keyIcon != null) _keyIcon.text = key;
             if (_actionLabel != null) _actionLabel.text = action;
@@ -66,7 +72,7 @@ namespace Echoes.UI
             }
 
             // Show our UI Toolkit prompt (if it exists)
-            _root.RemoveFromClassList("prompt-hidden");
+            _root?.RemoveFromClassList("prompt-hidden");
             _visible = true;
 
             // Forward to NavigationHUD – central HUD also displays the prompt
@@ -79,6 +85,7 @@ namespace Echoes.UI
         {
             _root?.AddToClassList("prompt-hidden");
             _visible = false;
+            GameHUD.Instance?.SetInteraction(null, null);
             // Also hide the prompt in NavigationHUD if it exists
             if (NavigationHUD.Instance != null)
                 NavigationHUD.Instance.HideInteractionPrompt();

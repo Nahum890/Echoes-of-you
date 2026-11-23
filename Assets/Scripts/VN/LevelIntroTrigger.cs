@@ -59,13 +59,28 @@ public class LevelIntroTrigger : MonoBehaviour
         if (level == 1)
             return BuildLevel01Intro();
 
+        if (SceneManager.GetActiveScene().name == "Level_05")
+            return new List<VN_DialogueController.DialogueLine>
+            {
+                new() { characterName = "Aiden", text = "Huele a madera recién barrida. Siempre llegábamos antes de que abrieran las puertas para oír cómo sonaba el salón vacío.", spritePath = "VN/Sprites/aiden/Aiden_Pensativa", position = VN_DialogueController.DialogueLine.SpritePosition.Left },
+                new() { characterName = "Lyra", text = "Probando, uno, dos… ¿Me oís desde la última fila? Si me oís, hacé como que aplaudís.", spritePath = "VN/Sprites/lyra/Lyra_Sonrisa", position = VN_DialogueController.DialogueLine.SpritePosition.Right },
+                new() { characterName = "Aiden", text = "Levanté las manos antes de darme cuenta. Todavía estoy esperando que se ría por el altavoz.", spritePath = SpriteCalm, position = VN_DialogueController.DialogueLine.SpritePosition.Left }
+            };
+
+        if (level == 6)
+            return new List<VN_DialogueController.DialogueLine>
+            {
+                new() { characterName = "Aiden", text = "Han dejado encendida la luz de préstamos. Desde la puerta casi parece que Lyra sigue de turno.", spritePath = SpriteThinking, position = VN_DialogueController.DialogueLine.SpritePosition.Left },
+                new() { characterName = "Lyra", text = "Guardame el atlas abajo del mostrador. Si lo devuelvo mañana, me gano un día más con nuestra isla.", spritePath = "VN/Sprites/lyra/Lyra_Sonrisa", position = VN_DialogueController.DialogueLine.SpritePosition.Right },
+                new() { characterName = "Aiden", text = "Eso fue un jueves. Me acuerdo porque los viernes me tocaba borrar las fechas del sello. A ver si todavía está en el cajón.", spritePath = SpriteCalm, position = VN_DialogueController.DialogueLine.SpritePosition.Left }
+            };
+
         string text = level switch
         {
             2  => "El pasillo vuelve a empezar. No voy a llamarlo un patrón.",
             3  => "Hay dos caminos y ambos se parecen demasiado a mí.",
             4  => "El silencio llena el aula antes de que yo diga una palabra.",
             5  => "No tengo que tocar cada recuerdo para saber que pesa.",
-            6  => "Esta memoria cambia cuando intento sostenerla demasiado fuerte.",
             7  => "El eco llega primero. Tal vez no está intentando reemplazarme.",
             8  => "No necesito elegir una sola versión de mí para avanzar.",
             9  => "Quiero ordenar este lugar, pero el lugar no me obedece.",

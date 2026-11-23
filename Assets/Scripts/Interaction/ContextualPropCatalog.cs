@@ -120,7 +120,7 @@ namespace Echoes.Interaction
             new Def { name = "Prop_Estanteria_Hueco", displayName = "Hueco en la estanteria", commentKey = "interaction.n06_estanteria_hueco", category = InteractableCategory.Ambient, triggerRadius = 3.5f, scale = new Vector3(0.3f, 0.5f, 0.9f), prefabPath = "", anchorName = "ZonaB_PasilloEstanterias", offset = new Vector3(-1.6f, 1.4f, 0f), rotation = Vector3.zero },
             new Def { name = "Prop_Ficha_Prestamo", displayName = "Ficha de prestamo", commentKey = "interaction.n06_ficha_prestamo", isLyraArtifact = true, category = InteractableCategory.Narrative, triggerRadius = 4f, scale = new Vector3(0.8f, 0.8f, 0.8f), prefabPath = "Props/Prop_RecordsBoard", anchorName = "ZonaB_PasilloEstanterias", offset = new Vector3(1.6f, 1.2f, 3f), rotation = new Vector3(0f, -90f, 0f) },
             // Ultimo prop del bloque: se mira el patio justo antes de salir.
-            new Def { name = "Prop_Ventanal_Llegada", displayName = "Ventanal", commentKey = "interaction.n06_ventanal_llegada", category = InteractableCategory.Narrative, triggerRadius = 4.5f, scale = new Vector3(2.2f, 1.8f, 0.15f), prefabPath = "", anchorName = "ZonaD_Llegada", offset = new Vector3(0f, 1.6f, 3.2f), rotation = Vector3.zero },
+            new Def { name = "Prop_Ventanal_Llegada", displayName = "Ventanal", commentKey = "interaction.n06_ventanal_llegada", category = InteractableCategory.Narrative, triggerRadius = 4.5f, scale = new Vector3(2.2f, 1.8f, 0.15f), prefabPath = "", anchorName = "ZonaD_Llegada", offset = new Vector3(5.6f, 1.6f, 3.2f), rotation = new Vector3(0f, 90f, 0f) },
         };
 
         public static Def[] GetDefs(int levelNum)

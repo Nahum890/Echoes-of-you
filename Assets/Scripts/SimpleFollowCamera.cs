@@ -5,6 +5,8 @@ public class SimpleFollowCamera : MonoBehaviour
     [Header("Target")]
     public Transform target;
     public Vector3 targetOffset = new Vector3(0f, 1.8f, 0f);
+    [Tooltip("Encuadres opcionales del escenario para las conversaciones de novela visual.")]
+    [SerializeField] Transform[] dialogueViews;
 
     [Header("Orbit")]
     public float distance = 5.5f;
@@ -75,6 +77,32 @@ public class SimpleFollowCamera : MonoBehaviour
         if (target == null) return;
         if (!Application.isPlaying) return;
         if (_frozen) return;
+
+        var dialogue = Echoes.VN.VN_DialogueController.Instance;
+        if (dialogue != null && dialogue.IsActive && dialogue.SceneryView != null)
+        {
+            var view = dialogue.SceneryView;
+            transform.SetPositionAndRotation(view.position, view.rotation);
+            return;
+        }
+        if (dialogueViews != null && dialogueViews.Length > 0 && dialogue?.IsActive == true)
+        {
+            Transform nearest = null;
+            float bestDistance = float.PositiveInfinity;
+            foreach (var view in dialogueViews)
+            {
+                if (view == null) continue;
+                float distanceSquared = (view.position - target.position).sqrMagnitude;
+                if (distanceSquared >= bestDistance) continue;
+                nearest = view;
+                bestDistance = distanceSquared;
+            }
+            if (nearest != null)
+            {
+                transform.SetPositionAndRotation(nearest.position, nearest.rotation);
+                return;
+            }
+        }
 
         if (Cursor.lockState == CursorLockMode.Locked && Time.timeScale > 0f)
         {

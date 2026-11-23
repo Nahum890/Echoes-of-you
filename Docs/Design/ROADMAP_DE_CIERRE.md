@@ -10,7 +10,7 @@
 | N02 | Las dos placas admitieron ecos y el objetivo se activó al sostenerlas simultáneamente. | Verificar el salto y el recorrido posterior hasta la salida elevada. |
 | N03 | El volumen de caída alcanzaba ambas metas. Al bajarlo, los contactos de prueba distinguieron la ruta izquierda y la derecha, incluida la recompensa exclusiva. | Recorrer físicamente los pasillos completos y comprobar la lectura de la bifurcación. |
 | N04 | El contacto en orden con A, B y C activó la meta. | Comprobar el acceso a cada placa desde el punto de aparición, la penalización por orden incorrecto y la visibilidad desde la cámara. |
-| N05 y N06 | En N05, colocar el eco delante de la cortina neutralizó la barrera y activó la meta. En N06, el volumen de caída quedó debajo del puente y el eco sostuvo la placa al retirarse el personaje. | Comprobar el impulso y aterrizaje en N05 y terminar el cruce de N06 hasta los créditos. |
+| N05 y N06 | En N05, colocar el eco delante de la cortina neutralizó la barrera y activó la meta. En N06, el volumen de caída quedó debajo del puente y el eco sostuvo la placa al retirarse el personaje. | Comprobar el impulso y aterrizaje en N05 y repetir N06 con teclado en el ejecutable. |
 | Narrativa | Una elección devolvió el movimiento. Inspeccionar dos veces un recuerdo concedió un único artefacto. Tras guardar, vaciar el estado y cargar, se recuperó el mismo puntaje. | Probar una partida larga con cierre del proceso y ambos expedientes desde el menú. |
 
 ## Hitos en orden de dependencia
@@ -35,3 +35,7 @@ Las pruebas instrumentadas en el editor sirven para localizar el mecanismo que f
 ## Comprobación de la exportación
 
 En Windows, abrir el proyecto con su ruta completa. Una exportación de prueba desde una copia bajo una ruta abreviada de Windows generó un ejecutable que arrancaba con scripts desconectados. En esa copia, Unity reconoció la clase del jugador y pasó las comprobaciones en Play al usar la ruta larga. Antes de entregar, comprobar que el menú recibe entrada, que «Nuevo expediente» carga N01 y que se puede crear un eco en el ejecutable.
+
+## Validación de N06 del 22 de noviembre
+
+En Play, el personaje llegó desde el inicio hasta la placa con colisiones activas. Un eco estacionario sostuvo la pasarela. Al retirarlo a mitad del puente, se registró una muerte y el jugador reapareció al inicio. En el reintento recorrió la sala, entró en la salida y la elección cargó CreditsScene. La prueba suministró la grabación y seleccionó la elección mediante el controlador del juego. Falta repetir la partida con teclado en Windows y comprobar con un jugador nuevo que las marcas se leen desde la entrada.

@@ -35,7 +35,8 @@ namespace Echoes.Interaction
 
         void Update()
         {
-            if (VN_OverlayController.Instance != null && VN_OverlayController.Instance.IsOpen)
+            if (Time.timeScale <= 0f || VN_DialogueController.Instance?.ClosedFrame == Time.frameCount || VN_OverlayController.Instance?.IsOpen == true ||
+                VN_DialogueController.Instance?.IsActive == true || VN_ChoiceGateController.Instance?.IsShowing == true)
             {
                 _currentTarget = null;
                 InteractionPromptController.Instance?.HidePrompt();
@@ -45,11 +46,15 @@ namespace Echoes.Interaction
             _currentTarget = PickNearest();
 
             bool hasTarget = _currentTarget != null && !_currentTarget.IsConsumed && IsRelevant(_currentTarget);
+            bool needsEcho = hasTarget && _currentTarget.RequireEchoActive && !IsEchoActive();
             if (hasTarget)
             {
                 string promptText = _currentTarget.PromptText;
                 bool primary = _currentTarget.IsLyraArtifact && _currentTarget.Category == InteractableCategory.Narrative;
-                InteractionPromptController.Instance?.ShowPrompt("[E]", promptText, primary);
+                InteractionPromptController.Instance?.ShowPrompt(
+                    needsEcho ? null : "E",
+                    needsEcho ? "Necesitas un eco activo" : promptText,
+                    primary && !needsEcho);
 
                 // Anti-spam: el sonido de prompt suena solo al cambiar de objetivo.
                 if (_lastShownTarget != _currentTarget)
@@ -70,8 +75,7 @@ namespace Echoes.Interaction
             if (inputMap != null)
                 interactPressed = inputMap.PlaybackPressed;
 
-            if (!interactPressed) return;
-            if (_currentTarget.RequireEchoActive && !IsEchoActive()) return;
+            if (!interactPressed || needsEcho) return;
 
             string cooldownKey = _currentTarget.InteractableId;
             if (string.IsNullOrEmpty(cooldownKey))
@@ -82,6 +86,12 @@ namespace Echoes.Interaction
 
             HandleInteraction(_currentTarget);
             _lastSeenAt[cooldownKey] = Time.time;
+        }
+
+        static float SelectionRadius(InteractableObject obj)
+        {
+            string scene = obj.gameObject.scene.name;
+            return (scene == "Level_06" || scene == "Level_05") ? obj.TriggerRadius : Mathf.Max(obj.TriggerRadius, 8f);
         }
 
         InteractableObject PickNearest()
@@ -102,9 +112,9 @@ namespace Echoes.Interaction
                     continue;
                 }
                 float sqr = (o.transform.position - p).sqrMagnitude;
-                float range = Mathf.Max(o.TriggerRadius, 8f);
+                float range = SelectionRadius(o);
                 range *= range;
-                if (sqr <= range && sqr < bestSqr)
+                if (sqr <= range && sqr < bestSqr && IsRelevant(o))
                 {
                     bestSqr = sqr;
                     best = o;
@@ -137,7 +147,8 @@ namespace Echoes.Interaction
             if (Physics.SphereCast(origin, raycastRadius, direction, out var hit, raycastDistance, interactableMask))
             {
                 var interactable = hit.collider.GetComponentInParent<InteractableObject>();
-                if (interactable != null && interactable.enabled && interactable.gameObject.activeInHierarchy && !interactable.IsConsumed)
+                if (interactable != null && interactable.enabled && interactable.gameObject.activeInHierarchy && !interactable.IsConsumed &&
+                    (interactable.transform.position - player.transform.position).sqrMagnitude <= Mathf.Pow(SelectionRadius(interactable), 2) && IsRelevant(interactable))
                     return interactable;
             }
 
@@ -150,9 +161,9 @@ namespace Echoes.Interaction
                 var o = allInteractables[i];
                 if (o == null || !o.gameObject.activeInHierarchy || o.IsConsumed) continue;
                 float sqr = (o.transform.position - p).sqrMagnitude;
-                float range = Mathf.Max(o.TriggerRadius, 8f);
+                float range = SelectionRadius(o);
                 range *= range;
-                if (sqr <= range && sqr < bestSqr)
+                if (sqr <= range && sqr < bestSqr && IsRelevant(o))
                 {
                     bestSqr = sqr;
                     autoBest = o;
@@ -191,6 +202,8 @@ namespace Echoes.Interaction
                     obj.OnInteracted?.Invoke();
                     if (obj.GetComponent<AmbientReaction>() == null && GameFeelController.Instance != null)
                         GameFeelController.Instance.PlayMechanicTick(obj.transform.position, 0.5f);
+                    if (obj.InspectionTextKey != obj.CommentKey)
+                        RequestInspection(obj);
                     break;
 
                 case InteractableCategory.Gameplay:
@@ -219,7 +232,7 @@ namespace Echoes.Interaction
             string text;
 
             var stage = AidenStageResolver.ResolveForCurrentLevel();
-            var entry = VN_TextTable.Get(obj.CommentKey, stage);
+            var entry = VN_TextTable.Get(obj.InspectionTextKey, stage);
             if (entry != null && !string.IsNullOrEmpty(entry.text))
                 text = entry.text;
             else
@@ -236,7 +249,12 @@ namespace Echoes.Interaction
             if (obj.IsLyraArtifact)
                 MemorySystem.Instance?.RegisterMemory(obj.InteractableId, obj.NarrativeData?.MemoryEffect, true);
 
-            VN_OverlayController.Instance?.Play(title, text, spritePath);
+            if (obj.InspectionConversation != null && obj.InspectionConversation.Length > 0)
+            {
+                VN_OverlayController.Instance?.PlaySequence(obj.InspectionConversation, obj.InspectionView);
+                return;
+            }
+            VN_OverlayController.Instance?.Play(title, text, spritePath, noticeboard: obj.gameObject.scene.name == "Level_01");
         }
 
         /// <summary>

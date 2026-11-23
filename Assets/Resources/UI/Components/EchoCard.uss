@@ -55,7 +55,7 @@
     pointer-events: none;
 }
 
-.echo-card--locked:not(.echo-card--locked):hover,
+.echo-card--locked:hover,
 .echo-card--locked:focus {
     scale: 1.0 1.0;
     translate: 0px 0px;

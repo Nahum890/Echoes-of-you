@@ -58,7 +58,7 @@ namespace Echoes.UI
 
             for (int i = 1; i <= GameProgress.TotalLevels; i++)
             {
-                string sceneName = $"Level_{i:D2}";
+                string sceneName = GameProgress.GetChapterScene(i);
                 var card = _cardTemplate.CloneTree();
                 card.name = $"card-{i:D2}";
 

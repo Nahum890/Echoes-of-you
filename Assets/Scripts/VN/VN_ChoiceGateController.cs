@@ -74,7 +74,6 @@ namespace Echoes.VN
             // Store completion callback
             _onComplete = onComplete;
             _selectedIndex = 0;
-            _openedAt = Time.unscaledTime;
 
             // Play a short pre‑decision dialogue before showing the choice UI
             StartCoroutine(PlayPreDialogueAndShow(levelIndex));
@@ -129,7 +128,8 @@ namespace Echoes.VN
             }
 
             FreezeCamera();
-            _choiceActive = true; // finally enable the choice UI
+            _openedAt = Time.unscaledTime;
+            _choiceActive = true;
         }
 
         void Update()
@@ -158,11 +158,13 @@ namespace Echoes.VN
             float ox = (Screen.width - RefW * scale) * 0.5f;
             float oy = (Screen.height - RefH * scale) * 0.5f;
             var oldMatrix = GUI.matrix;
+            GUI.matrix = Matrix4x4.identity;
+            DrawFullBackground(new Rect(0f, 0f, Screen.width, Screen.height));
+
             GUI.matrix = Matrix4x4.TRS(new Vector3(ox, oy, 0f), Quaternion.identity, new Vector3(scale, scale, 1f));
 
-            DrawFullBackground();
             DrawPortrait();
-            DrawChoiceBox(scale);
+            DrawChoiceBox();
 
             GUI.matrix = oldMatrix;
         }
@@ -174,55 +176,61 @@ namespace Echoes.VN
             GUI.color = Color.white;
         }
 
-        void DrawFullBackground()
+        void DrawFullBackground(Rect screen)
         {
-            if (_backgroundTex != null)
-            {
-                GUI.DrawTexture(new Rect(0f, 0f, RefW, RefH), _backgroundTex, ScaleMode.ScaleAndCrop);
-            }
-            DrawColored(new Rect(0f, 0f, RefW, RefH), new Color(0.075f, 0.078f, 0.063f, 0.85f));
+            var darkness = new Color(0.075f, 0.078f, 0.063f);
+            DrawColored(screen, darkness);
+            if (_backgroundTex == null) return;
+
+            GUI.DrawTexture(screen, _backgroundTex, ScaleMode.ScaleAndCrop);
+            darkness.a = 0.85f;
+            DrawColored(screen, darkness);
         }
 
         void DrawPortrait()
         {
             Rect pr = new Rect(100f, 160f, 500f, 720f);
-            DrawBox(pr, new Color(0.075f, 0.078f, 0.063f, 0.95f), new Color(0.58f, 0.56f, 0.53f, 0.4f), 1f);
+            DrawBox(pr, new Color(0.13f, 0.17f, 0.14f, 0.98f), new Color(0.58f, 0.56f, 0.53f, 0.4f), 1f);
             if (_portraitTex != null)
-                GUI.DrawTextureWithTexCoords(new Rect(110f, 170f, 480f, 700f), _portraitTex, _portraitUV, true);
+            {
+                float width = _portraitTex.width * _portraitUV.width;
+                float height = _portraitTex.height * _portraitUV.height;
+                float scale = Mathf.Min(480f / width, 700f / height);
+                var size = new Vector2(width, height) * scale;
+                var imageRect = new Rect(pr.center - size * 0.5f, size);
+                GUI.DrawTextureWithTexCoords(imageRect, _portraitTex, _portraitUV, true);
+            }
         }
 
-        void DrawChoiceBox(float scale)
+        void DrawChoiceBox()
         {
-            Rect boxRect = new Rect(640f, 260f, 1160f, 520f);
-            DrawBox(boxRect, new Color(0.075f, 0.078f, 0.063f, 0.95f), new Color(0.58f, 0.56f, 0.53f, 0.4f), 1f);
+            Rect boxRect = new Rect(640f, 200f, 1160f, 680f);
+            DrawBox(boxRect, new Color(0.13f, 0.17f, 0.14f, 0.98f), new Color(0.58f, 0.56f, 0.53f, 0.4f), 1f);
 
             // Left accent bar
             DrawColored(new Rect(boxRect.x, boxRect.y, 3f, boxRect.height), new Color(0.39f, 0.83f, 0.98f, 1f));
 
-            int tagSize = Mathf.RoundToInt(13 * scale);
-            GUI.Label(new Rect(boxRect.x + 48f, boxRect.y + 36f, boxRect.width - 96f, 24f), "DIRECTORIO_DECISIÓN // RECUERDO", ScaledStyle(tagSize, new Color(0.58f, 0.56f, 0.53f), TextAnchor.MiddleLeft, FontStyle.Bold));
-
-            int titleSize = Mathf.RoundToInt(34 * scale);
+            int titleSize = 34;
             GUI.Label(new Rect(boxRect.x + 48f, boxRect.y + 64f, boxRect.width - 96f, 48f), "Elige tu camino", ScaledStyle(titleSize, new Color(1f, 0.99f, 1f), TextAnchor.MiddleLeft, FontStyle.Bold));
 
             // Divider
             DrawColored(new Rect(boxRect.x + 48f, boxRect.y + 118f, boxRect.width - 96f, 1f), new Color(0.58f, 0.56f, 0.53f, 0.25f));
 
-            int promptSize = Mathf.RoundToInt(24 * scale);
-            GUI.Label(new Rect(boxRect.x + 48f, boxRect.y + 136f, boxRect.width - 96f, 100f), _promptText, ScaledStyle(promptSize, new Color(0.89f, 0.88f, 0.86f), TextAnchor.MiddleLeft));
+            int promptSize = 24;
+            GUI.Label(new Rect(boxRect.x + 48f, boxRect.y + 136f, boxRect.width - 96f, 160f), _promptText, ScaledStyle(promptSize, new Color(0.89f, 0.88f, 0.86f), TextAnchor.MiddleLeft));
 
             float bw = (boxRect.width - 120f) / 2f;
-            float bh = 90f;
-            float by = boxRect.y + 280f;
+            float bh = 156f;
+            float by = boxRect.y + 318f;
 
-            DrawOptionCard(new Rect(boxRect.x + 48f, by, bw, bh), 0, _cyanLabel, new Color(0.39f, 0.83f, 0.98f), "OPCIÓN A // SINTONÍA", scale);
-            DrawOptionCard(new Rect(boxRect.x + 72f + bw, by, bw, bh), 1, _amberLabel, new Color(0.91f, 0.88f, 0.83f), "OPCIÓN B // CONVICCIÓN", scale);
+            DrawOptionCard(new Rect(boxRect.x + 48f, by, bw, bh), 0, _cyanLabel, new Color(0.74f, 0.82f, 0.64f), "OPCIÓN A");
+            DrawOptionCard(new Rect(boxRect.x + 72f + bw, by, bw, bh), 1, _amberLabel, new Color(0.91f, 0.88f, 0.83f), "OPCIÓN B");
 
-            int hintSize = Mathf.RoundToInt(13 * scale);
+            int hintSize = 13;
             GUI.Label(new Rect(boxRect.x + 48f, boxRect.yMax - 48f, boxRect.width - 96f, 28f), "[← → / A D] Seleccionar    •    [Enter / E / Clic] Confirmar", ScaledStyle(hintSize, new Color(0.58f, 0.56f, 0.53f), TextAnchor.MiddleCenter, FontStyle.Bold));
         }
 
-        void DrawOptionCard(Rect rect, int index, string label, Color accent, string metaTag, float scale)
+        void DrawOptionCard(Rect rect, int index, string label, Color accent, string metaTag)
         {
             bool selected = _selectedIndex == index;
             Color fill = selected ? new Color(accent.r * 0.15f, accent.g * 0.15f, accent.b * 0.15f, 0.95f) : new Color(0.1f, 0.11f, 0.09f, 0.90f);
@@ -230,27 +238,18 @@ namespace Echoes.VN
             float bw = selected ? 2f : 1f;
             DrawBox(rect, fill, border, bw);
 
-            var mouseRect = new Rect(rect.x * CurrentScale + (Screen.width - RefW * CurrentScale) * 0.5f, rect.y * CurrentScale + (Screen.height - RefH * CurrentScale) * 0.5f, rect.width * CurrentScale, rect.height * CurrentScale);
-            if (mouseRect.Contains(Event.current.mousePosition))
-            {
-                if (_selectedIndex != index) _selectedIndex = index;
-                if (Event.current.type == EventType.MouseDown)
-                {
-                    OnChoiceMade(index == 0);
-                }
-            }
-
-            int metaSize = Mathf.RoundToInt(11 * scale);
+            int metaSize = 11;
             GUI.Label(new Rect(rect.x + 16f, rect.y + 12f, rect.width - 32f, 18f), metaTag, ScaledStyle(metaSize, selected ? accent : new Color(0.58f, 0.56f, 0.53f), TextAnchor.MiddleLeft, FontStyle.Bold));
 
-            int labelSize = Mathf.RoundToInt(22 * scale);
+            int labelSize = 22;
             Color textColor = selected ? new Color(1f, 1f, 1f) : new Color(0.85f, 0.85f, 0.85f);
-            GUI.Label(new Rect(rect.x + 16f, rect.y + 32f, rect.width - 32f, 46f), label, ScaledStyle(labelSize, textColor, TextAnchor.MiddleLeft, FontStyle.Bold));
+            GUI.Label(new Rect(rect.x + 16f, rect.y + 32f, rect.width - 32f, rect.height - 48f), label, ScaledStyle(labelSize, textColor, TextAnchor.MiddleLeft, FontStyle.Bold));
 
             if (selected)
-            {
                 DrawColored(new Rect(rect.x, rect.y, 3f, rect.height), accent);
-            }
+
+            if (Time.unscaledTime - _openedAt >= InputGrace && GUI.Button(rect, GUIContent.none, GUIStyle.none))
+                OnChoiceMade(index == 0);
         }
 
         void OnChoiceMade(bool cyan)
@@ -260,10 +259,10 @@ namespace Echoes.VN
             string flagKey = cyan ? _currentNode.CyanFlag : _currentNode.AmberFlag;
             VN_EndingFlags.Instance?.SetFlag(flagKey, true);
             VN_EndingFlags.Instance?.SaveToDisk();
-            StartCoroutine(FadeOutAndCallback());
+            StartCoroutine(FadeOutAndCallback(cyan));
         }
 
-        System.Collections.IEnumerator FadeOutAndCallback()
+        System.Collections.IEnumerator FadeOutAndCallback(bool cyan)
         {
             yield return new WaitForSecondsRealtime(fadeOutSeconds);
             UnfreezeCamera();
@@ -279,7 +278,7 @@ namespace Echoes.VN
             var cb = _onComplete;
             _onComplete = null;
             _currentNode = null;
-            cb?.Invoke(true);
+            cb?.Invoke(cyan);
         }
 
         void FreezeCamera()

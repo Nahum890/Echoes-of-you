@@ -1,235 +1,134 @@
-/* ============================================================
-   GameHUDUI — Gameplay HUD (Stich aesthetic)
-   Opacity base 0.0 (RULE-UI-004). Fade 0.0→0.85 in 0.10s ONLY recording.
-   Stich palette: amber #E8B262, cyan #b6eaff, ivory #e4e2dc.
-   All text opacity 1 when visible (USS overrides from EchoesTheme.uss).
-   ============================================================ */
-
-@import "EchoesDesignTokens.uss";
-
-/* ===== ROOT ===== */
-.root-fullscreen {
+.school-hud {
     position: absolute;
     left: 0; top: 0; right: 0; bottom: 0;
-    overflow: hidden;
-    opacity: 0;
-    transition-property: opacity;
-    transition-duration: 100ms;
-    transition-timing-function: linear;
+    color: #f6efdb;
 }
 
-/* HUD visible when recording/playing */
-.root-fullscreen.hud-visible {
-    opacity: 0.85;
-}
 
-/* ===== RECORD PANEL (top-left) — Stich glass ===== */
-.hud-record-panel {
+.hud-location {
     position: absolute;
-    left: 32px; top: 32px;
-    flex-direction: row;
-    align-items: center;
-    background-color: var(--color-void-overlay-92);
-    border-width: 1px;
-    border-color: var(--color-stich-outline-variant);
-    border-radius: 0;
-    padding: 8px 16px;
-    gap: 12px;
+    left: 40px;
+    top: 32px;
+    width: 42%;
+    max-width: 560px;
+    align-items: flex-start;
 }
-
-.hud-record-dot {
-    width: 10px; height: 10px;
-    border-radius: 5px;
-    background-color: var(--color-stich-error);
-}
-
-.hud-record-bar-bg {
-    width: 140px; height: 6px;
-    background-color: var(--color-stich-surface-container-high);
-    border-width: 1px;
-    border-color: var(--color-stich-outline-variant);
-}
-
-.hud-record-bar-fill {
-    height: 100%;
-    width: 0%;
-    background-color: var(--color-stich-on-surface);
-    transition-property: width;
-    transition-duration: 100ms;
-    transition-timing-function: linear;
-}
-
-.hud-echo-slots {
-    flex-direction: row;
-    gap: 4px;
-}
-
-.hud-echo-slot {
-    width: 6px; height: 6px;
-    border-width: 1px;
-    border-color: var(--color-stich-outline-variant);
-}
-
-.hud-echo-slot--filled {
-    background-color: var(--color-stich-amber);
-}
-
-/* ===== HUD BARS (top-right) ===== */
-.hud-container {
-    position: absolute;
-    right: 32px; top: 32px;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.hud-bar-container {
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 12px;
-}
-
-.hud-bar-label {
-    font-size: var(--size-label-caps);
-    color: var(--color-stich-on-surface-variant);
-    width: 60px;
-    -unity-text-align: middle-left;
-    opacity: 1;
-}
-
-.hud-bar-bg {
-    width: 120px; height: 6px;
-    background-color: var(--color-stich-surface-container-high);
-    border-width: 1px;
-    border-color: var(--color-stich-outline-variant);
-}
-
-.hud-bar-fill {
-    height: 100%;
-}
-
-.hud-bar-fill--stability {
-    background-color: var(--color-stich-on-surface);
-}
-
-.hud-bar-fill--recall {
-    background-color: var(--color-stich-amber);
-}
-
-/* ===== OBJECTIVE (top-center) ===== */
-.hud-objective-text {
-    position: absolute;
-    left: 10%; right: 10%; top: 96px;
-    font-size: var(--size-interface-md);
-    color: var(--color-stich-pure-white);
-    -unity-text-align: middle-center;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.95);
-    opacity: 1;
-}
-
-/* ===== TOAST (bottom-center) — Stich glass ===== */
-.hud-toast-text {
-    position: absolute;
-    left: 20%; right: 20%; bottom: 120px;
-    font-size: var(--size-interface-sm);
-    color: var(--color-stich-on-surface);
-    -unity-text-align: middle-center;
+.hud-room, .hud-copy, .hud-hint, .hud-kicker {
     white-space: normal;
-    background-color: var(--color-void-overlay-92);
-    border-width: 1px;
-    border-color: var(--color-stich-outline-variant);
-    border-radius: 0;
-    padding: 8px 16px;
-    opacity: 1;
+    margin: 0;
+    padding: 0;
 }
-
-/* ===== ECHO STATE (above toast) ===== */
-.hud-echo-state-label {
-    position: absolute;
-    left: 20%; right: 20%; bottom: 80px;
-    font-size: var(--size-interface-sm);
-    color: var(--color-stich-tertiary-container);
-    -unity-text-align: middle-center;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
-    opacity: 1;
-}
-
-/* ===== KEY PROMPT (center) — Stich glass ===== */
-.key-prompt-label {
-    position: absolute;
-    left: 50%; top: 50%;
-    translate: -50% -50%;
-    font-size: var(--size-interface-lg);
-    color: var(--color-stich-amber);
-    -unity-text-align: middle-center;
-    background-color: var(--color-void-overlay-92);
+.hud-room {
+    font-size: 23px;
+    -unity-font-style: bold;
+    background-color: #2c362d;
     border-width: 2px;
-    border-color: var(--color-stich-amber);
-    border-radius: 0;
-    padding: var(--space-md) var(--space-xl);
-    opacity: 1;
+    border-color: #d1bd92;
+    padding: 5px 14px;
+    color: #fff0cd;
 }
-
-/* ===== CHALKBOARD TUTORIAL (bottom-left) ===== */
-.chalkboard-box {
+.hud-objective { margin-top: 7px; background-color: rgba(12,17,16,0.82); padding: 5px 12px; }
+.hud-copy { font-size: 20px; color: #fbefda; }
+.hud-kicker { font-size: 16px; color: #ebcb90; -unity-font-style: bold; }
+.hud-hint { font-size: 16px; color: #ded3b3; margin-top: 2px; }
+.hud-recorder {
     position: absolute;
-    left: 40px; bottom: 40px;
-    width: 380px; height: 280px;
-    background-color: rgba(58, 74, 56, 0.95);
-    border-width: 3px;
-    border-color: var(--color-stich-on-surface-variant);
-    padding: var(--space-lg);
-    flex-direction: column;
-    border-radius: 0;
+    right: 36px;
+    bottom: 35px;
+    width: 395px;
+    max-width: 40%;
+    padding: 11px 16px;
+    background-color: #222720;
+    border-width: 2px;
+    border-color: #837355;
+    border-radius: 8px;
 }
-
-.chalkboard-title {
-    font-size: var(--size-interface-sm);
-    color: var(--color-stich-amber);
-    border-bottom-width: 1px;
-    border-bottom-color: var(--color-stich-outline-variant);
-    padding-bottom: 6px;
-    margin-bottom: var(--space-sm);
-    opacity: 1;
+.hud-recorder-header { flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+.hud-tape-label, .hud-tape-time, .hud-count { font-size: 19px; margin: 0; color: #f1dbab; }
+.hud-tape-label { -unity-font-style: bold; letter-spacing: 2px; }
+.hud-tape-time { -unity-font-style: bold; color: #a3e7d3; }
+.hud-tape-artwork { height: 68px; background-color: #171e19; margin-top: 5px; }
+.hud-echo-slots { flex-direction: row; margin-top: 4px; }
+.hud-splice, .hud-splice-filled {
+    width: 23px;
+    height: 5px;
+    margin-right: 4px;
+    background-color: #555b4b;
 }
+.hud-splice-filled { background-color: #9de4ce; }
+.hud-recorder--recording { border-color: #a3e7d3; }
+.hud-recorder--recording .hud-tape-label { color: #f5a683; }
+.hud-recorder--recording.hud-recorder--low .hud-tape-time { color: #f5a683; }
 
-.chalkboard-text {
-    font-size: var(--size-interface-sm);
-    color: var(--color-stich-on-surface);
-    white-space: normal;
-    opacity: 1;
-}
-
-/* ===== FOOTER STATUS (bottom-right) ===== */
-.footer-status {
+.hud-record-frame {
     position: absolute;
-    right: 32px; bottom: 32px;
-    flex-direction: row;
-    gap: 16px;
+    left: 24px;
+    right: 24px;
+    top: 12%;
+    bottom: 24px;
+}
+.hud-corner {
+    position: absolute;
+    width: 39px;
+    height: 39px;
+    border-color: rgba(156, 227, 211, 0.85);
+}
+.hud-record-frame--low .hud-corner { border-color: rgba(245, 166, 131, 0.9); }
+.hud-corner-tl { top: 0; left: 0; border-top-width: 3px; border-left-width: 3px; }
+.hud-corner-tr { top: 0; right: 0; border-top-width: 3px; border-right-width: 3px; }
+.hud-corner-bl { bottom: 0; left: 0; border-bottom-width: 3px; border-left-width: 3px; }
+.hud-corner-br { bottom: 0; right: 0; border-bottom-width: 3px; border-right-width: 3px; }
+
+.hud-interaction, .hud-note, .hud-chalkboard {
+    background-color: rgba(12,17,16,0.9);
+    padding: 7px 12px;
+}
+.hud-chalkboard { border-bottom-width: 2px; border-bottom-color: #b89f6a; }
+.hud-center-dot {
+    position: absolute;
+    top: 50%; left: 50%;
+    translate: -50% -50%;
+    width: 4px; height: 4px;
+    background-color: #ede2c6;
+    border-radius: 2px;
 }
 
-.footer-item {
+.hud-context {
+    position: absolute;
+    top: 55%; left: 22%; right: 22%;
+    align-items: center;
+}
+
+.hud-interaction {
     flex-direction: row;
     align-items: center;
-    gap: 6px;
-    opacity: 0.35;
+    max-width: 100%;
+}
+.hud-interaction .hud-copy { flex-shrink: 1; }
+.hud-interaction--primary { border-bottom-width: 2px; border-bottom-color: #edbc85; }
+.hud-key {
+    flex-shrink: 0;
+    background-color: #e3c594;
+    color: #262820;
+    font-size: 20px;
+    -unity-font-style: bold;
+    margin: 0 12px 0 0;
+    padding: 2px 8px;
 }
 
-.footer-item--active {
-    opacity: 1;
+.hud-note { max-width: 100%; margin-top: 8px; -unity-text-align: middle-center; }
+.hud-bottom {
+    position: absolute;
+    left: 32px; right: 32px; bottom: 28px;
+    align-items: center;
 }
-
-.footer-icon {
-    font-size: var(--size-interface-sm);
-    color: var(--color-stich-on-surface);
-    opacity: 1;
-}
-
-.footer-label {
-    font-size: var(--size-label-caps);
-    color: var(--color-stich-on-surface-variant);
-    opacity: 1;
-}
-
-/* ===== HIDDEN UTILITY ===== */
-.hidden { display: none; }
+.hud-bottom .hud-note { max-width: 62%; }
+.hud-chalkboard { width: 46%; max-width: 560px; align-self: flex-start; margin-top: 8px; }
+.hud-high-contrast .hud-objective,
+.hud-high-contrast .hud-interaction,
+.hud-high-contrast .hud-note,
+.high-contrast .hud-objective, .high-contrast .hud-interaction, .high-contrast .hud-note { background-color: #111713; border-color: #eddfb6; }
+.scale-large .hud-copy, .scale-large .hud-hint { font-size: 23px; }
+.scale-xl .hud-copy, .scale-xl .hud-hint { font-size: 26px; }
+.scale-xl .hud-room { font-size: 29px; }
+.school-hud .hidden { display: none; }

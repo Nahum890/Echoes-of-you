@@ -435,3 +435,6 @@
 .lvl-bottom-padding {
     height: 64px;
 }
+
+.lvl-chapter-list { min-height: 0; }
+.lvl-chapter-list .unity-label { white-space: normal; }

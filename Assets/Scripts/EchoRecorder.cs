@@ -48,6 +48,10 @@ public class EchoRecorder : MonoBehaviour
     // Estado Recording (ECHO_GRAMMAR Tabla 8.1): rim light echo-cyan #4FC3E8 solo en el jugador.
     static readonly Color RimCyan = new Color(0.31f, 0.765f, 0.91f, 1f);
     Light _recordingRimLight;
+    LineRenderer _recordingTrace;
+    Material _traceInk;
+    const int MaxTracePoints = 64;
+    readonly Vector3[] _tracePoints = new Vector3[MaxTracePoints];
     MaterialPropertyBlock _rimBlock;
     readonly List<Renderer> _rimRenderers = new List<Renderer>();
 
@@ -246,7 +250,17 @@ public class EchoRecorder : MonoBehaviour
         if (Time.time >= _nextRecordTime)
         {
             float elapsed = Time.time - _recordStartTime;
-            _frames.Add(new RecordFrame(elapsed, transform.position, transform.rotation));
+            Vector3 position = transform.position;
+            if (_frames.Count > 0)
+            {
+                var previous = _frames[_frames.Count - 1];
+                float duration = Mathf.Max(0.01f, elapsed - previous.time);
+                Vector3 velocity = (position - previous.position) / duration;
+                Vector3 local = transform.InverseTransformDirection(velocity);
+                hud?.AddTapeSample(new Vector2((Mathf.Abs(local.x) + Mathf.Abs(local.z)) * 0.12f, local.y * 0.19f));
+            }
+            _frames.Add(new RecordFrame(elapsed, position, transform.rotation));
+            RefreshRecordingTrace();
             _nextRecordTime += _recordInterval;
         }
     }
@@ -270,7 +284,6 @@ public class EchoRecorder : MonoBehaviour
         RecordingStarted?.Invoke();
         GameFeelController.Instance?.PlayRecordStart(transform.position, transform.up);
         GameStateController.Instance?.SetRecording(true, transform.position, transform.up);
-        hud?.SetPrompt("Grabando eco", 1.2f);
         RefreshHud();
     }
 
@@ -294,8 +307,7 @@ public class EchoRecorder : MonoBehaviour
         {
             _frames.Clear();
             RecordingStopped?.Invoke(false);
-            hud?.ShowToast("Grabacion muy corta", new Color(1f, 0.43f, 0.43f, 1f), 1.1f);
-            hud?.SetEchoState("Error");
+            hud?.ShowToast("Grabación demasiado corta", new Color(1f, 0.43f, 0.43f, 1f), 1.1f);
             GameFeelController.Instance?.PlaySoftError(transform.position);
             RefreshHud();
             return;
@@ -326,7 +338,7 @@ public class EchoRecorder : MonoBehaviour
             TriggerFutureEcho();
             RecordingStopped?.Invoke(true);
             GameProgress.RecordEchoCreated();
-            hud?.ShowToast("Eco futuro creado", new Color(0.48f, 0.94f, 0.78f, 1f), 1.25f);
+            hud?.ShowToast("Eco futuro creado", RimCyan, 1.25f);
             GameFeelController.Instance?.PlayEchoSpawn(spawnPos);
             RefreshHud();
             return;
@@ -352,7 +364,7 @@ public class EchoRecorder : MonoBehaviour
         RecordingStopped?.Invoke(true);
         EchoCreated?.Invoke(_echoes.Count);
         GameProgress.RecordEchoCreated();
-        hud?.ShowToast("Eco creado", new Color(0.48f, 0.94f, 0.78f, 1f), 1.25f);
+        hud?.ShowToast("Eco creado", RimCyan, 1.25f);
         GameFeelController.Instance?.PlayEchoSpawn(instance.transform.position);
 
         RefreshHud();
@@ -403,7 +415,7 @@ public class EchoRecorder : MonoBehaviour
         _echoes.Clear();
         EchoesCleared?.Invoke();
         if (showFeedback)
-            hud?.ShowToast("Ecos limpiados", new Color(0.48f, 0.94f, 0.78f, 1f), 1f);
+            hud?.ShowToast("Ecos limpiados", RimCyan, 1f);
         RefreshHud();
     }
 
@@ -412,14 +424,15 @@ public class EchoRecorder : MonoBehaviour
         float normalized = _recording ? RecordingElapsed / Mathf.Max(0.01f, maxRecordSeconds) : 0f;
         float remaining = Mathf.Clamp01(1f - normalized);
 
+        if (hud == null) hud = GameHUD.Instance;
         if (hud != null)
         {
+            hud.SetRecordDuration(maxRecordSeconds);
             hud.SetEchoCount(_echoes.Count, maxEchoes);
             hud.SetRecording(_recording, normalized);
-            hud.SetEchoState(_recording ? "Grabando" : (_echoes.Count > 0 ? "Reproduciendo" : "Listo"));
+            hud.SetEchoState(_echoes.Count > 0 ? "Reproduciendo ecos" : "Sin ecos activos");
         }
-
-        if (NavigationHUD.Instance != null)
+        else if (NavigationHUD.Instance != null)
         {
             NavigationHUD.Instance.UpdateEchoCount(_echoes.Count, maxEchoes);
             NavigationHUD.Instance.SetRecordingState(_recording, normalized, remaining);
@@ -542,6 +555,9 @@ public class EchoRecorder : MonoBehaviour
 
     void EnableRecordingRim()
     {
+        var lighting = FindAnyObjectByType<LevelLightingSettings>();
+        if (lighting != null && lighting.fixturesOnly)
+            return;
         if (_recordingRimLight == null)
         {
             GameObject rimObject = new GameObject("RecordingRimLight");
@@ -564,7 +580,7 @@ public class EchoRecorder : MonoBehaviour
         GetComponentsInChildren(true, _rimRenderers);
         foreach (var rendererRef in _rimRenderers)
         {
-            if (rendererRef == null || rendererRef.GetComponent<Light>() != null)
+            if (rendererRef == null || rendererRef == _recordingTrace || rendererRef.GetComponent<Light>() != null)
                 continue;
             rendererRef.GetPropertyBlock(_rimBlock);
             _rimBlock.SetColor("_EmissionColor", RimCyan * 0.35f);
@@ -576,6 +592,8 @@ public class EchoRecorder : MonoBehaviour
     {
         if (_recordingRimLight != null)
             _recordingRimLight.enabled = false;
+        if (_recordingTrace != null)
+            _recordingTrace.enabled = false;
 
         foreach (var rendererRef in _rimRenderers)
         {
@@ -583,6 +601,51 @@ public class EchoRecorder : MonoBehaviour
                 rendererRef.SetPropertyBlock(null);
         }
         _rimRenderers.Clear();
+    }
+
+    void RefreshRecordingTrace()
+    {
+        if (_frames.Count < 2 || EchoesSettings.ReduceMotion)
+        {
+            if (_recordingTrace != null) _recordingTrace.enabled = false;
+            return;
+        }
+
+        if (_recordingTrace == null)
+        {
+            Shader shader = Shader.Find("Sprites/Default");
+            if (shader == null) return;
+
+            _traceInk = new Material(shader);
+            var trail = new GameObject("Rastro de la cinta");
+            trail.transform.SetParent(transform, false);
+            _recordingTrace = trail.AddComponent<LineRenderer>();
+            _recordingTrace.sharedMaterial = _traceInk;
+            _recordingTrace.useWorldSpace = true;
+            _recordingTrace.startWidth = 0.032f;
+            _recordingTrace.endWidth = 0.075f;
+            _recordingTrace.startColor = new Color(0.09f, 0.42f, 1f, 0.24f);
+            _recordingTrace.endColor = new Color(0.35f, 0.70f, 1f, 0.85f);
+            _recordingTrace.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            _recordingTrace.receiveShadows = false;
+        }
+
+        int count = Mathf.Min(_frames.Count, _tracePoints.Length);
+        int last = _frames.Count - 1;
+        for (int i = 0; i < count; i++)
+        {
+            var frame = _frames[Mathf.RoundToInt(i * last / (float)(count - 1))];
+            _tracePoints[i] = frame.position + frame.rotation * Vector3.up * 0.12f;
+        }
+        _recordingTrace.positionCount = count;
+        _recordingTrace.SetPositions(_tracePoints);
+        _recordingTrace.enabled = true;
+    }
+
+    void OnDestroy()
+    {
+        if (_traceInk != null) Destroy(_traceInk);
+        if (Instance == this) Instance = null;
     }
 
     void SetAnimatorTriggerIfExists(string parameterName)

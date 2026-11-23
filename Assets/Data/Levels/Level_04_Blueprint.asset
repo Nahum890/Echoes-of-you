@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level_04_Blueprint
   m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
   levelName: Level_04
-  nextLevel: Level_05
+  nextLevel: Level_03
   actNumber: 1
   archetype: 0
   echoEnabled: 1
@@ -147,7 +147,7 @@ MonoBehaviour:
     position: {x: 0, y: 1.25, z: 32}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 0, y: 0, z: 0}
-    customData: Level_05
+    customData: Level_03
     targetSignals: []
   - name: PlayerStart
     type: 7

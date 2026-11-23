@@ -304,79 +304,133 @@ public class MainMenuController : MonoBehaviour
 
     void SetupHoverCallbacks()
     {
-        if (_btnContinue != null)
-        {
-            _btnContinue.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnContinue, MainMenuCinematicWorld.MenuAmbience.Void, "Aula 104"));
-            _btnContinue.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnContinue));
-        }
-        if (_btnNewGame != null)
-        {
-            _btnNewGame.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnNewGame, MainMenuCinematicWorld.MenuAmbience.Void, "Nuevo Expediente"));
-            _btnNewGame.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnNewGame));
-        }
-        if (_btnChapters != null)
-        {
-            _btnChapters.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnChapters, MainMenuCinematicWorld.MenuAmbience.Stability, "Archivos Escolares"));
-            _btnChapters.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnChapters));
-        }
-        if (_btnLevels != null)
-        {
-            _btnLevels.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnLevels, MainMenuCinematicWorld.MenuAmbience.Stability, "Archivos Escolares"));
-            _btnLevels.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnLevels));
-        }
-        if (_btnSettings != null)
-        {
-            _btnSettings.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnSettings, MainMenuCinematicWorld.MenuAmbience.System, "Ajustar Receptor"));
-            _btnSettings.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnSettings));
-        }
-        if (_btnCredits != null)
-        {
-            _btnCredits.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnCredits, MainMenuCinematicWorld.MenuAmbience.Void, "Créditos"));
-            _btnCredits.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnCredits));
-        }
-        if (_btnGallery != null)
-        {
-            _btnGallery.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnGallery, MainMenuCinematicWorld.MenuAmbience.Void, "Archivo Visual"));
-            _btnGallery.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnGallery));
-        }
-        if (_btnExit != null)
-        {
-            _btnExit.RegisterCallback<MouseEnterEvent>(_ => OnNavHover(_btnExit, MainMenuCinematicWorld.MenuAmbience.Disconnect, "Salir del Recuerdo"));
-            _btnExit.RegisterCallback<MouseLeaveEvent>(_ => OnNavHoverLeave(_btnExit));
-        }
-
+        BindMenuProp(_btnContinue, MainMenuCinematicWorld.MenuAmbience.Void, MainMenuCinematicWorld.SchoolProp.Door);
+        BindMenuProp(_btnNewGame, MainMenuCinematicWorld.MenuAmbience.Void, MainMenuCinematicWorld.SchoolProp.Notebook);
+        BindMenuProp(_btnChapters, MainMenuCinematicWorld.MenuAmbience.Stability, MainMenuCinematicWorld.SchoolProp.Lockers);
+        BindMenuProp(_btnLevels, MainMenuCinematicWorld.MenuAmbience.Stability, MainMenuCinematicWorld.SchoolProp.Lockers);
+        BindMenuProp(_btnSettings, MainMenuCinematicWorld.MenuAmbience.System, MainMenuCinematicWorld.SchoolProp.Clock);
+        BindMenuProp(_btnCredits, MainMenuCinematicWorld.MenuAmbience.Void, MainMenuCinematicWorld.SchoolProp.Notice);
+        BindMenuProp(_btnGallery, MainMenuCinematicWorld.MenuAmbience.Void, MainMenuCinematicWorld.SchoolProp.Projector);
+        BindMenuProp(_btnExit, MainMenuCinematicWorld.MenuAmbience.Disconnect, MainMenuCinematicWorld.SchoolProp.Exit);
     }
 
-    void OnNavHover(Button btn, MainMenuCinematicWorld.MenuAmbience ambience, string title)
+    (Button button, MainMenuCinematicWorld.MenuAmbience ambience, MainMenuCinematicWorld.SchoolProp prop)? _hoverPreview;
+    (Button button, MainMenuCinematicWorld.MenuAmbience ambience, MainMenuCinematicWorld.SchoolProp prop)? _focusPreview;
+
+    void BindMenuProp(Button button, MainMenuCinematicWorld.MenuAmbience ambience, MainMenuCinematicWorld.SchoolProp prop)
     {
-        if (MainMenuCinematicWorld.Instance != null)
-        {
-            MainMenuCinematicWorld.Instance.SetAmbience(ambience);
-        }
+        if (button == null) return;
+        var preview = (button, ambience, prop);
+        var emblem = new VisualElement { pickingMode = PickingMode.Ignore };
+        emblem.AddToClassList("nav-school-emblem");
+        emblem.generateVisualContent += context => DrawSchoolEmblem(context.painter2D, prop);
+        button.Add(emblem);
 
-        if (_heroTitle != null)
+        button.RegisterCallback<MouseEnterEvent>(_ => { _hoverPreview = preview; ApplySchoolPreview(); });
+        button.RegisterCallback<MouseLeaveEvent>(_ =>
         {
-            _heroTitle.text = title;
-        }
-
-        btn.AddToClassList("nav-item--active");
+            if (_hoverPreview?.button == button) _hoverPreview = null;
+            ApplySchoolPreview();
+        });
+        button.RegisterCallback<FocusInEvent>(_ => { _focusPreview = preview; ApplySchoolPreview(); });
+        button.RegisterCallback<FocusOutEvent>(_ =>
+        {
+            if (_focusPreview?.button == button) _focusPreview = null;
+            ApplySchoolPreview();
+        });
     }
 
-    void OnNavHoverLeave(Button btn)
+    Button _previewedButton;
+
+    void ApplySchoolPreview()
     {
-        if (MainMenuCinematicWorld.Instance != null)
+        var preview = _hoverPreview ?? _focusPreview;
+        var world = MainMenuCinematicWorld.Instance;
+        world?.SetAmbience(preview?.ambience ?? GetActiveNavAmbience());
+        world?.PreviewProp(preview?.prop);
+
+        _previewedButton?.RemoveFromClassList("nav-item--preview");
+        _previewedButton = preview?.button;
+        _previewedButton?.AddToClassList("nav-item--preview");
+
+        var caption = _root.Q("school-preview-caption");
+        if (caption == null) return;
+
+        caption.EnableInClassList("hidden", !preview.HasValue);
+        if (!preview.HasValue) return;
+
+        var (title, description) = GetSchoolPreviewText(preview.Value.prop);
+        caption.Q<Label>("school-preview-title").text = title;
+        caption.Q<Label>("school-preview-description").text = description;
+    }
+
+    static (string title, string description) GetSchoolPreviewText(MainMenuCinematicWorld.SchoolProp prop) => prop switch
+    {
+        MainMenuCinematicWorld.SchoolProp.Door =>
+            ("Ventanilla del aula", "La luz sigue encendida del otro lado. Retoma tu recorrido por la escuela."),
+        MainMenuCinematicWorld.SchoolProp.Notebook =>
+            ("Cuaderno en el pupitre", "La primera página está en blanco. Empieza una partida desde el primer eco."),
+        MainMenuCinematicWorld.SchoolProp.Lockers =>
+            ("Casilleros del pasillo", "El casillero entreabierto señala el camino. Elige un capítulo desbloqueado."),
+        MainMenuCinematicWorld.SchoolProp.Clock =>
+            ("Reloj de la escuela", "La aguja se mueve y el pasillo sigue en silencio. Ajusta el sonido, la pantalla y los controles."),
+        MainMenuCinematicWorld.SchoolProp.Notice =>
+            ("Tablón de avisos", "En la hoja clavada están los nombres de quienes hicieron Echoes of You."),
+        MainMenuCinematicWorld.SchoolProp.Projector =>
+            ("Proyector escolar", "La lente enfoca los retratos de Aiden y Lyra y el arte de la escuela."),
+        MainMenuCinematicWorld.SchoolProp.Exit =>
+            ("Señal de salida", "La señal al final del pasillo. Elige esta opción cuando quieras cerrar el juego."),
+        _ => (string.Empty, string.Empty),
+    };
+
+    static void DrawSchoolEmblem(Painter2D pen, MainMenuCinematicWorld.SchoolProp prop)
+    {
+        pen.strokeColor = new Color32(242, 214, 158, 255);
+        pen.lineWidth = 1.6f;
+        pen.lineJoin = LineJoin.Round;
+
+        void Stroke(params Vector2[] line)
         {
-            MainMenuCinematicWorld.Instance.SetAmbience(GetActiveNavAmbience());
+            pen.BeginPath();
+            pen.MoveTo(line[0]);
+            for (int i = 1; i < line.Length; i++) pen.LineTo(line[i]);
+            pen.Stroke();
         }
 
-        if (_heroTitle != null)
+        switch (prop)
         {
-            _heroTitle.text = GetActiveHeroTitle();
-        }
-
-        if (btn != _activeNavButton)
-        {
-            btn.RemoveFromClassList("nav-item--active");
+            case MainMenuCinematicWorld.SchoolProp.Door:
+                Stroke(new(5, 22), new(5, 3), new(18, 3), new(18, 22));
+                Stroke(new(5, 3), new(13, 6), new(13, 21), new(5, 22));
+                break;
+            case MainMenuCinematicWorld.SchoolProp.Notebook:
+                Stroke(new(12, 21), new(3, 18), new(3, 5), new(12, 8), new(21, 5), new(21, 18), new(12, 21), new(12, 8));
+                break;
+            case MainMenuCinematicWorld.SchoolProp.Lockers:
+                Stroke(new(3, 21), new(3, 3), new(21, 3), new(21, 21), new(3, 21));
+                Stroke(new(12, 3), new(12, 21));
+                Stroke(new(6, 8), new(9, 8));
+                Stroke(new(15, 8), new(18, 8));
+                break;
+            case MainMenuCinematicWorld.SchoolProp.Clock:
+                pen.BeginPath(); pen.Arc(new(12, 12), 9f, 0f, 360f); pen.Stroke();
+                Stroke(new(12, 6), new(12, 12), new(17, 14));
+                break;
+            case MainMenuCinematicWorld.SchoolProp.Notice:
+                Stroke(new(5, 22), new(5, 3), new(19, 3), new(19, 16), new(13, 22), new(5, 22));
+                Stroke(new(8, 8), new(16, 8));
+                Stroke(new(8, 12), new(16, 12));
+                break;
+            case MainMenuCinematicWorld.SchoolProp.Projector:
+                Stroke(new(3, 7), new(15, 7), new(15, 18), new(3, 18), new(3, 7));
+                Stroke(new(15, 11), new(22, 8), new(22, 17), new(15, 14));
+                break;
+            case MainMenuCinematicWorld.SchoolProp.Exit:
+                Stroke(new(5, 5), new(18, 5), new(18, 9));
+                Stroke(new(18, 16), new(18, 20), new(5, 20), new(5, 5));
+                Stroke(new(10, 12), new(22, 12), new(18, 8));
+                Stroke(new(22, 12), new(18, 16));
+                break;
         }
     }
 
@@ -565,9 +619,6 @@ public class MainMenuController : MonoBehaviour
         _activePreviewPanelName = ""; // reset para forzar refresco
         ShowPreviewPanel("panel-gallery");
 
-        // Attach es idempotente: la primera vez construye el catálogo y las
-        // miniaturas, las siguientes solo refresca la imagen actual.
-        _gallery.Attach(_panelGallery);
         _panelGallery?.Focus();
     }
 
@@ -645,10 +696,7 @@ public class MainMenuController : MonoBehaviour
 
     void ShowCredits()
     {
-        if (SceneTransitionManager.Instance != null)
-            SceneTransitionManager.Instance.LoadScene("CreditsScene");
-        else
-            UnityEngine.SceneManagement.SceneManager.LoadScene("CreditsScene");
+        Echoes.UI.CreditsController.Open();
     }
 
     // --- Settings & Calibration logic ---
@@ -1164,7 +1212,7 @@ public class MainMenuController : MonoBehaviour
         SetLabelText("lbl-protocol-desc", GameProgress.GetActiveProtocolMessage(completedLevels, totalLevels));
 
         string continueScene = GameProgress.GetContinueSceneName();
-        int continueIndex = GameProgress.GetSceneIndex(continueScene);
+        int continueIndex = GameProgress.GetChapterIndex(continueScene);
         string continueName = continueIndex >= 0 ? GameProgress.GetLevelDisplayName(continueScene) : "ÔÇö";
         string lastFragmentLine = continueIndex >= 0
             ? $"{continueName} ┬À Nivel {continueIndex + 1:D2}"
@@ -1218,7 +1266,7 @@ public class MainMenuController : MonoBehaviour
     {
         for (int i = 1; i <= GameProgress.TotalLevels; i++)
         {
-            string sceneName = $"Level_{i:D2}";
+            string sceneName = GameProgress.GetChapterScene(i);
             var lbl = _root.Q<Label>($"lbl-level-{i:D2}");
             if (lbl == null)
                 continue;
@@ -1279,7 +1327,7 @@ public class MainMenuController : MonoBehaviour
     {
         for (int i = 1; i <= GameProgress.TotalLevels; i++)
         {
-            string sceneName = $"Level_{i:D2}";
+            string sceneName = GameProgress.GetChapterScene(i);
             string btnName = $"btn-level-{i:D2}";
             var btn = _root.Q<Button>(btnName);
             if (btn == null)

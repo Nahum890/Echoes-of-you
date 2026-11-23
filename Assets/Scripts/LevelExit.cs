@@ -106,7 +106,7 @@ public class LevelExit : MonoBehaviour
         Debug.Log($"[LevelExit] LoadNext => target={nextSceneName}");
         PostProcessingSetup.PrepareForSceneReload();
 
-        string target = !string.IsNullOrEmpty(nextSceneName) ? nextSceneName : null;
+        string target = GameProgress.GetCampaignDestination(gameObject.scene.name) ?? nextSceneName;
 
         if (string.IsNullOrEmpty(target) && loadNextBuildIndex)
         {
