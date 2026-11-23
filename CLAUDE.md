@@ -32,15 +32,13 @@ documentos `.md` en `Docs/`** (332 archivos) que describen un sistema de
 
 - **`ExecutableSpecValidator.cs` valida exactamente una regla** (`MAT-001`),
   frente a decenas de `RULE-`/`CONS-`/`FAIL-`/`VAL-` repartidas por los specs.
-- **`.github/workflows/docs-validation.yml` es en gran parte ficción.** De los
-  10 jobs, **7 llaman a métodos que no existen**: `VisualRegressionTest.Run`,
-  `PerformanceStressHarness.Run`, `RoslynSymbolVerifier.VerifyAll`,
-  `AssetGuidValidator.ValidateAll`, `ConstantRegistryValidator...`,
-  `AuthorityHeaderValidator.ValidateAll` y `LevelValidator.RunAllChecks` (la
-  clase `LevelValidator` existe dentro de `SchoolGreyboxProductionBuilder.cs`,
-  pero no tiene ese método). Además fija `UNITY_VERSION: 2022.3.20f1` — versión
-  equivocada — e invoca `unity` sin instalarlo en el runner. **No usar ese
-  workflow como fuente de verdad sobre qué se valida.**
+- **`.github/workflows/docs-validation.yml` fue reescrito** para dejar de
+  simular validaciones: comprueba que `ProjectVersion.txt` siga en 6000.4.3f1,
+  exige el secreto `UNITY_LICENSE` y ejecuta los tests **EditMode reales** de
+  `Assets/Tests/` con `game-ci/unity-test-runner@v4`. Ya no invoca `unity` sin
+  instalar ni métodos inexistentes. No intenta builds, regresión visual ni
+  stress: no existen harnesses reales para eso. Tampoco hay tests de 32 rutas
+  de `VN_EndingResolver`; la fuente de verdad es el assembly `Echoes.Tests`.
 - Los specs de nivel están **duplicados**: `Docs/Specs/LEVEL_SPEC_XX.md` (15) y
   `Docs/Specs/Levels/LEVEL_SPEC_XX.md` (15). Nada indica cuál manda.
 
