@@ -11,6 +11,7 @@ using Echoes.UI;
 [RequireComponent(typeof(PlayerController))]
 public class EchoRecorder : MonoBehaviour
 {
+    [SerializeField] bool rewindMovement;
     [Header("Prefab y límites")]
     public GameObject echoPrefab;
     [SerializeField] Transform echoSpawnRoot;
@@ -356,7 +357,7 @@ public class EchoRecorder : MonoBehaviour
             playback = instance.AddComponent<EchoPlayback>();
 
         float duration = Mathf.Max(elapsed, 0.05f);
-        playback.BeginPlayback(_frames, duration, voiceClip, _playbackMode, _degradationPerReplay);
+        playback.BeginPlayback(_frames, duration, voiceClip, _playbackMode, _degradationPerReplay, rewindMovement);
         _echoes.Add(playback);
 
         _frames.Clear();

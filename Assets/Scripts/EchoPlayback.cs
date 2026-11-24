@@ -31,6 +31,9 @@ public class EchoPlayback : MonoBehaviour
     CharacterController _cc;
     readonly List<RecordFrame> _frames = new List<RecordFrame>();
     float _duration;
+    bool _rewind;
+    public int PlaybackPass => _playCount;
+    float SampleTime(float t) => _rewind ? _duration - Mathf.Clamp(t, 0f, _duration) : t;
     float _time;
     bool _playing;
     float _latencyRemaining;
@@ -165,10 +168,11 @@ public class EchoPlayback : MonoBehaviour
     /// Begins echo playback with a specific mode and degradation rate.
     /// </summary>
     public void BeginPlayback(IReadOnlyList<RecordFrame> frames, float duration, AudioClip voiceClip,
-        EchoPlaybackMode mode, float degradationRate)
+        EchoPlaybackMode mode, float degradationRate, bool rewindMovement = false)
     {
         playbackMode = mode;
         degradationPerReplay = degradationRate;
+        _rewind = rewindMovement;
         _playCount = 0;
 
         EnsureVisualAnimator();
@@ -189,7 +193,7 @@ public class EchoPlayback : MonoBehaviour
         if (!_playing)
             return;
 
-        RecordFrame.Evaluate(_frames, 0f, out Vector3 position, out Quaternion rotation);
+        RecordFrame.Evaluate(_frames, SampleTime(0f), out Vector3 position, out Quaternion rotation);
         _cc.enabled = false;
         transform.SetPositionAndRotation(position, rotation);
         _cc.enabled = true;
@@ -517,7 +521,7 @@ public class EchoPlayback : MonoBehaviour
 
         // Degradation: time offset drifts slightly with each replay loop
         float effectiveTime = Mathf.Clamp(_time + (_playCount * degradationPerReplay), 0f, _duration);
-        RecordFrame.Evaluate(_frames, effectiveTime, out Vector3 nextPosition, out Quaternion nextRotation);
+        RecordFrame.Evaluate(_frames, SampleTime(effectiveTime), out Vector3 nextPosition, out Quaternion nextRotation);
 
         Vector3 moveOffset = nextPosition - transform.position;
 
@@ -562,8 +566,8 @@ public class EchoPlayback : MonoBehaviour
             return;
         }
 
-        RecordFrame.Evaluate(_frames, _time, out Vector3 currentPosition, out _);
-        RecordFrame.Evaluate(_frames, _time + Time.deltaTime, out Vector3 nextPosition, out _);
+        RecordFrame.Evaluate(_frames, SampleTime(_time), out Vector3 currentPosition, out _);
+        RecordFrame.Evaluate(_frames, SampleTime(_time + Time.deltaTime), out Vector3 nextPosition, out _);
 
         Vector3 velocity = (nextPosition - currentPosition) / Mathf.Max(Time.deltaTime, 0.0001f);
         Vector3 localVelocity = transform.InverseTransformDirection(velocity);

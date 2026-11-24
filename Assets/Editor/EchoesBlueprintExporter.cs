@@ -7,7 +7,7 @@ public static class EchoesBlueprintExporter
 {
     private const string BlueprintRoot = "Assets/Data/Levels";
 
-    [MenuItem("Echoes of You/Migration/Export Levels 1-5 to Blueprints", false, 301)]
+    [MenuItem("Echoes of You/Migration/Export Legacy Blueprints (1-3, 5)", false, 301)]
     public static void ExportLevels()
     {
         EnsureFolderExists(BlueprintRoot);
@@ -15,12 +15,11 @@ public static class EchoesBlueprintExporter
         ExportLevel01();
         ExportLevel02();
         ExportLevel03();
-        ExportLevel04();
         ExportLevel05();
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
-        Debug.Log("[Echoes Migration] Exported Levels 1-5 to blueprints successfully.");
+        Debug.Log("[Echoes Migration] Exported legacy blueprints for levels 1-3 and 5.");
     }
 
     private static void ExportLevel01()
@@ -195,69 +194,6 @@ public static class EchoesBlueprintExporter
         };
 
         SaveBlueprint(bp, "Level_03_Blueprint");
-    }
-
-    private static void ExportLevel04()
-    {
-        LevelBlueprint bp = ScriptableObject.CreateInstance<LevelBlueprint>();
-        bp.levelName = "Level_04";
-        bp.nextLevel = "Level_05";
-        bp.actNumber = 1;
-        bp.archetype = LevelArchetype.Standard;
-        bp.maxEchoes = 2;
-        bp.maxRecordSeconds = 10f;
-
-        bp.fogColor = new Color(0.1f, 0.12f, 0.18f, 1f);
-        bp.fogDensity = 0.01f;
-        bp.skyColor = new Color(0.18f, 0.2f, 0.28f, 1f);
-
-        bp.narrativeIntroTitle = "Nivel 4 — La Jaula de Presión";
-        bp.narrativeIntroDesc = "Las placas deben ser pisadas en un orden específico (A -> B -> C). Coordina tus grabaciones secuenciales.";
-        bp.narrativeIntroDuration = 10f;
-        bp.puzzleObjectiveText = "Activa las placas en el orden exacto: Izquierda-Atrás, Derecha, Izquierda-Adelante.";
-        bp.puzzleActiveText = "Las tres memorias deben sonar en armonía.";
-        bp.puzzleCompleteText = "Sinfonía secuencial completada.";
-
-        bp.pathHints = new[] {
-            new Vector3(0f, 1.1f, 0f),
-            new Vector3(-6f, 1.1f, 10f),
-            new Vector3(6f, 1.1f, 15f),
-            new Vector3(-6f, 1.1f, 20f)
-        };
-
-        bp.modules = new List<ModulePlacement>
-        {
-            new ModulePlacement { name = "StartPlatform", type = ModuleType.StandardPlatform, position = new Vector3(0f, 0f, 0f), scale = new Vector3(12f, 0.5f, 10f) },
-            new ModulePlacement { name = "ExitPlatform", type = ModuleType.StandardPlatform, position = new Vector3(0f, 0f, 30f), scale = new Vector3(12f, 0.5f, 10f) },
-            new ModulePlacement { name = "PlatePlatA", type = ModuleType.BridgePlatform, position = new Vector3(-6f, 0f, 10f), scale = new Vector3(3f, 0.5f, 3f) },
-            new ModulePlacement { name = "PlatePlatB", type = ModuleType.BridgePlatform, position = new Vector3(6f, 0f, 15f), scale = new Vector3(3f, 0.5f, 3f) },
-            new ModulePlacement { name = "PlatePlatC", type = ModuleType.BridgePlatform, position = new Vector3(-6f, 0f, 20f), scale = new Vector3(3f, 0.5f, 3f) },
-            
-            new ModulePlacement { name = "PlateA", type = ModuleType.PressurePlate, position = new Vector3(-6f, 0.33f, 10f) },
-            new ModulePlacement { name = "PlateB", type = ModuleType.PressurePlate, position = new Vector3(6f, 0.33f, 15f) },
-            new ModulePlacement { name = "PlateC", type = ModuleType.PressurePlate, position = new Vector3(-6f, 0.33f, 20f) },
-            
-            new ModulePlacement { name = "Rotating_Cross", type = ModuleType.MotorPlatform, position = new Vector3(0f, 0.25f, 15f), scale = new Vector3(10f, 0.35f, 1.2f), customData = "0,0,0|0,0,0|0,45,0|1|0" },
-            new ModulePlacement { name = "ExitGate", type = ModuleType.Door, position = new Vector3(0f, 1.5f, 25f), scale = new Vector3(6f, 3f, 0.5f) },
-            
-            new ModulePlacement { name = "Signal_Sequence", type = ModuleType.PuzzleSignal, customData = "Secuencia Resuelta|false|false" },
-            new ModulePlacement { name = "Condition_Sequential", type = ModuleType.PuzzleCondition, targetSignals = new[] { "PlateA", "PlateB", "PlateC", "Signal_Sequence", "ExitGate" }, customData = "SequentialOrder|Enlace secuencia|Secuencia correcta! Acceso concedido.|Secuencia rota! Intenta de nuevo." },
-            
-            new ModulePlacement { name = "LevelExit_Area", type = ModuleType.LevelExit, position = new Vector3(0f, 1.25f, 32f), customData = "Level_05" },
-            new ModulePlacement { name = "PlayerStart", type = ModuleType.PlayerStart, position = new Vector3(0f, 1.1f, 0f) },
-            new ModulePlacement { name = "Tut_L04_Secuencia", type = ModuleType.TutorialTrigger, position = new Vector3(0f, 1f, 0f), scale = new Vector3(10f, 3f, 8f), customData = "Nivel 4 — La Jaula de Presión|Las placas deben ser pisadas en un orden específico (A -> B -> C). Graba un recorrido donde pises la placa A (izquierda posterior) y luego la B (derecha). Como jugador, corre y pisa la placa C (izquierda anterior) justo cuando tu eco pise la B." },
-            
-            new ModulePlacement { name = "Light_PlateA", type = ModuleType.PointLight, position = new Vector3(-6f, 3f, 10f), customData = "4CC0FF,2.5,6" },
-            new ModulePlacement { name = "Light_PlateB", type = ModuleType.PointLight, position = new Vector3(6f, 3f, 15f), customData = "4CC0FF,2.5,6" },
-            new ModulePlacement { name = "Light_PlateC", type = ModuleType.PointLight, position = new Vector3(-6f, 3f, 20f), customData = "4CC0FF,2.5,6" },
-            new ModulePlacement { name = "Light_Exit", type = ModuleType.PointLight, position = new Vector3(0f, 5f, 32f), customData = "2699FF,5,10" },
-            
-            new ModulePlacement { name = "DistantArch", type = ModuleType.DistantArchitecture, position = new Vector3(0f, 0f, 20f) },
-            new ModulePlacement { name = "LevelGoal", type = ModuleType.LevelGoal, position = new Vector3(0f, 1.25f, 32f), targetSignals = new[] { "Signal_Sequence" }, customData = "Activa las placas en el orden exacto: Izquierda-Atrás, Derecha, Izquierda-Adelante.|Las tres memorias deben sonar en armonía.|Sinfonía secuencial completada." },
-            new ModulePlacement { name = "LevelRuntime", type = ModuleType.LevelRuntime, customData = "Pisa las tres placas en la secuencia correcta (A -> B -> C).|La máquina requiere un orden exacto.|La secuencia ha sido grabada." }
-        };
-
-        SaveBlueprint(bp, "Level_04_Blueprint");
     }
 
     private static void ExportLevel05()

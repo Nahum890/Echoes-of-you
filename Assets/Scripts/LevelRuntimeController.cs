@@ -174,8 +174,9 @@ public class LevelRuntimeController : MonoBehaviour
         string hint = sceneName switch
         {
             "Level_01" => "Quédate sobre la placa, mantén R unos segundos y suelta R antes de caminar hacia la puerta.",
-            "Level_02" => "Deja un eco quieto sobre una placa mientras buscas la otra.",
-            "Level_04" => "Activa las placas en el orden que indica el objetivo.",
+            "Level_02" => "Mirá qué piloto azul se apaga. En el libro, el patio y la cabina tienen pistas separadas.",
+            "Level_03" => "Las cubetas se numeran desde la puerta. ¿En cuál terminan tus pasos cuando soltás R?",
+            "Level_04" => "Busca los turnos del ensayo en el gimnasio.",
             "Level_05" => "El programa conserva el final de la obra. En la cinta quedó grabado el comienzo.",
             "Level_06" => "En la ficha del último jueves hay dos marcas de tinta.",
             _ => ResolveObjective()

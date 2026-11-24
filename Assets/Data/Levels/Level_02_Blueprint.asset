@@ -36,14 +36,12 @@ MonoBehaviour:
   directionalLightRotation: {x: 50, y: -30, z: 0}
   directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
   directionalLightIntensity: 0.85
-  narrativeIntroTitle: "Nivel 2 \u2014 Repetici\xF3n"
-  narrativeIntroDesc: "Aulas flanquean un corredor estrecho. Dos presiones al mismo
-    tiempo son m\xE1s que dos presiones."
+  narrativeIntroTitle: "Capítulo 6 — La última emisión"
+  narrativeIntroDesc: "Radio escolar. Turno tarde."
   narrativeIntroDuration: 6
-  puzzleObjectiveText: "Sost\xE9n las dos placas a la vez: el eco carga una mientras
-    t\xFA cargas la otra."
-  puzzleActiveText: "La sincron\xEDa del pasado y el presente."
-  puzzleCompleteText: "Repetici\xF3n superada."
+  puzzleObjectiveText: "Recuperá las dos pistas del último programa."
+  puzzleActiveText: "El azul señala lo que conserva cada canal."
+  puzzleCompleteText: "La despedida quedó grabada."
   pathHints:
   - {x: 0, y: 0.1, z: 0}
   - {x: 0, y: 0.1, z: 12}

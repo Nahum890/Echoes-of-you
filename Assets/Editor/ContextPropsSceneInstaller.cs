@@ -68,6 +68,9 @@ public static class ContextPropsSceneInstaller
                 continue;
             }
 
+            // Los props del gimnasio forman parte de las pistas escritas en la escena.
+            if (level == 4) continue;
+
             var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
             int installed = InstallInScene(level, out int skipped);
             installedTotal += installed;

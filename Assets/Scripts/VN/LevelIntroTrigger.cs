@@ -59,6 +59,22 @@ public class LevelIntroTrigger : MonoBehaviour
         if (level == 1)
             return BuildLevel01Intro();
 
+        if (SceneManager.GetActiveScene().name == "Level_02")
+            return new List<VN_DialogueController.DialogueLine>
+            {
+                new() { characterName = "Aiden", text = "Quedó prendida la luz de aire. Desde el pasillo siempre parecía que había alguien acá.", spritePath = SpriteThinking, position = VN_DialogueController.DialogueLine.SpritePosition.Left },
+                new() { characterName = "Lyra", text = "Si vas a estornudar, avisá. La última vez nos escuchó hasta la bibliotecaria.", spritePath = "VN/Sprites/lyra/Lyra_Sonrisa", position = VN_DialogueController.DialogueLine.SpritePosition.Right },
+                new() { characterName = "Aiden", text = "Me tapo la nariz por costumbre. El libro de emisiones sigue abierto en nuestra mesa.", spritePath = SpriteCalm, position = VN_DialogueController.DialogueLine.SpritePosition.Left }
+            };
+
+        if (SceneManager.GetActiveScene().name == "Level_03")
+            return new List<VN_DialogueController.DialogueLine>
+            {
+                new() { characterName = "Aiden", text = "El laboratorio huele a vinagre. En la lista de socios seguimos siendo dos. La tercera firma es tuya con bigote.", spritePath = "VN/Sprites/aiden/Aiden_Pensativa", position = VN_DialogueController.DialogueLine.SpritePosition.Left },
+                new() { characterName = "Lyra", text = "Era el tesorero. Un club serio necesita tesorero, aunque deba tres mandarinas.", spritePath = "VN/Sprites/lyra/Lyra_Sonrisa", position = VN_DialogueController.DialogueLine.SpritePosition.Right },
+                new() { characterName = "Aiden", text = "Debajo del manual quedó el recibo. «Dos copias: una para cada una». Esta vez voy a terminar la mía.", spritePath = SpriteCalm, position = VN_DialogueController.DialogueLine.SpritePosition.Left }
+            };
+
         if (SceneManager.GetActiveScene().name == "Level_05")
             return new List<VN_DialogueController.DialogueLine>
             {
@@ -79,7 +95,7 @@ public class LevelIntroTrigger : MonoBehaviour
         {
             2  => "El pasillo vuelve a empezar. No voy a llamarlo un patrón.",
             3  => "Hay dos caminos y ambos se parecen demasiado a mí.",
-            4  => "El silencio llena el aula antes de que yo diga una palabra.",
+            4  => "El timbre ya sonó. El cronómetro de Lyra sigue donde lo dejamos.",
             5  => "No tengo que tocar cada recuerdo para saber que pesa.",
             7  => "El eco llega primero. Tal vez no está intentando reemplazarme.",
             8  => "No necesito elegir una sola versión de mí para avanzar.",

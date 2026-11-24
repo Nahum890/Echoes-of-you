@@ -34,9 +34,9 @@ public static class GameProgress
     static readonly string[] LevelDisplayNames =
     {
         "Primer eco",
-        "Espacio dinámico",
-        "Galería del eco",
-        "Cruce doble",
+        "La última emisión",
+        "Una copia para cada una",
+        "Después del timbre",
         "Caos controlado",
         "Dominio",
         "Sala de enlace",

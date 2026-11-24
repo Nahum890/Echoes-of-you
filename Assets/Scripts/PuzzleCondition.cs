@@ -43,6 +43,7 @@ public class PuzzleCondition : MonoBehaviour
     public DoorController[] doorsToOpen;
     [Tooltip("El PuzzleSignal que se marcará satisfecho cuando la condición se cumpla")]
     public PuzzleSignal targetSignal;
+    [SerializeField] PuzzleSignal secondBeatPrerequisite;
 
     [Header("State")]
     [SerializeField] bool _isMet = false;
@@ -137,6 +138,11 @@ public class PuzzleCondition : MonoBehaviour
     {
         if (!pressed) return;
         if (_isMet) return;
+        if (plateIndex == 1 && _sequenceIndex == 1 && secondBeatPrerequisite && !secondBeatPrerequisite.IsSatisfied)
+        {
+            ShowToast("Falta la respuesta de percusión. La parte de Aiden está en el atril azul.", Color.cyan);
+            return;
+        }
 
         if (plateIndex == _sequenceIndex)
         {

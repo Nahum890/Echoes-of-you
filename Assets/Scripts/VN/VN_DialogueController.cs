@@ -335,9 +335,9 @@ namespace Echoes.VN
                 _root.style.flexGrow = 1;
                 _root.RemoveFromClassList("vn-hidden");
                 string scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-                bool showScenery = scene == "Level_06" || scene == "Level_05";
+                bool showScenery = scene == "Level_06" || scene == "Level_05" || scene == "Level_03" || scene == "Level_02";
                 _root.EnableInClassList("vn-library-memory", showScenery);
-                _root.EnableInClassList("vn-stage-memory", scene == "Level_05");
+                _root.EnableInClassList("vn-stage-memory", scene == "Level_05" || scene == "Level_03" || scene == "Level_02");
                 _root.style.backgroundImage = showScenery
                     ? new StyleBackground(StyleKeyword.None)
                     : LoadBackground("UI/VN/vn_gradient_bg");

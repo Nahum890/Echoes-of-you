@@ -91,7 +91,7 @@ namespace Echoes.Interaction
         static float SelectionRadius(InteractableObject obj)
         {
             string scene = obj.gameObject.scene.name;
-            return (scene == "Level_06" || scene == "Level_05") ? obj.TriggerRadius : Mathf.Max(obj.TriggerRadius, 8f);
+            return (scene == "Level_06" || scene == "Level_05" || scene == "Level_03" || scene == "Level_02") ? obj.TriggerRadius : Mathf.Max(obj.TriggerRadius, 8f);
         }
 
         InteractableObject PickNearest()

@@ -80,18 +80,13 @@ namespace Echoes.Interaction
         // Las posiciones y tamanos salen de Assets/Data/Levels/Level_0X_Blueprint.asset.
         // ---------------------------------------------------------------
 
-        /// <summary>N04 "Cruce doble": pasillo recto z=0..32 con placas A/B/C
-        /// alternas. Tema del capitulo II: coordinacion y orden exacto.</summary>
+        /// <summary>Vestíbulo y marcas del ensayo del gimnasio.</summary>
         public static readonly Def[] Level04 =
         {
-            // StartPlatform es 12x10: un offset de -4.2 deja la mochila en el
-            // borde, visible desde el spawn pero fuera de la linea de carrera.
-            new Def { name = "Prop_Mochila_Olvidada", displayName = "Mochila olvidada", commentKey = "interaction.n04_mochila_olvidada", category = InteractableCategory.Narrative, triggerRadius = 4f, scale = new Vector3(0.8f, 0.8f, 0.8f), prefabPath = "Props/Prop_Backpack", anchorName = "StartPlatform", offset = new Vector3(-4.2f, 0.3f, 2.5f), rotation = new Vector3(0f, 35f, 0f) },
-            new Def { name = "Prop_Horario_Lyra", displayName = "Horario de clases", commentKey = "interaction.n04_horario", isLyraArtifact = true, category = InteractableCategory.Narrative, triggerRadius = 4f, scale = new Vector3(0.9f, 0.9f, 0.9f), prefabPath = "Props/Prop_RecordsBoard", anchorName = "PlatePlatA", offset = new Vector3(-2.4f, 1.5f, 0f), rotation = new Vector3(0f, 90f, 0f) },
-            new Def { name = "Prop_Cronometro_Ensayo", displayName = "Cronometro", commentKey = "interaction.n04_cronometro_ensayo", category = InteractableCategory.Narrative, triggerRadius = 4f, scale = new Vector3(0.7f, 0.7f, 0.7f), prefabPath = "Props/Prop_StoppedClock", anchorName = "PlatePlatB", offset = new Vector3(2.2f, 0.45f, 0f), rotation = new Vector3(0f, -90f, 0f) },
-            // Sin prefab: el instalador genera un mesh, y una caja aplastada
-            // lee como marcas de tiza en el suelo.
-            new Def { name = "Prop_Marcas_Suelo", displayName = "Marcas en el suelo", commentKey = "interaction.n04_marcas_suelo", category = InteractableCategory.Ambient, triggerRadius = 3.5f, scale = new Vector3(1.3f, 0.04f, 1.3f), prefabPath = "", anchorName = "PlatePlatC", offset = new Vector3(-2.2f, 0.12f, 0f), rotation = Vector3.zero },
+            new Def { name = "Prop_Mochila_Olvidada", displayName = "Mochila olvidada", commentKey = "interaction.n04_mochila_olvidada", category = InteractableCategory.Narrative, triggerRadius = 2.8f, scale = Vector3.one * 0.8f, prefabPath = "Props/Prop_Backpack", anchorName = "BancoVestibulo_N04", offset = new Vector3(0.35f, 0f, 0.65f), rotation = new Vector3(0f, 35f, 0f) },
+            new Def { name = "Prop_Horario_Lyra", displayName = "Horario de clases", commentKey = "interaction.n04_horario", isLyraArtifact = true, category = InteractableCategory.Narrative, triggerRadius = 2.8f, scale = new Vector3(1.30f, 0.69f, 0.06f), prefabPath = "Props/Prop_RecordsBoard", anchorName = "Horario_N04", offset = new Vector3(0f, 1.45f, 0f), rotation = Vector3.zero },
+            new Def { name = "Prop_Cronometro_Ensayo", displayName = "Cronómetro", commentKey = "interaction.n04_cronometro_ensayo", category = InteractableCategory.Narrative, triggerRadius = 2.8f, scale = Vector3.one * 0.35f, prefabPath = "Props/Prop_StoppedClock", anchorName = "BancoGimnasio_N04", offset = new Vector3(0f, 0.47f, 0.3f), rotation = Vector3.zero },
+            new Def { name = "Prop_Marcas_Suelo", displayName = "Marcas en el suelo", commentKey = "interaction.n04_marcas_suelo", category = InteractableCategory.Ambient, triggerRadius = 2.5f, scale = new Vector3(0.5f, 0.02f, 0.5f), prefabPath = "", anchorName = "Marcas_N04", offset = new Vector3(0f, -0.085f, 0f), rotation = Vector3.zero },
         };
 
         /// <summary>N05 "Caos controlado": cortina de energia en z=13 y repisa

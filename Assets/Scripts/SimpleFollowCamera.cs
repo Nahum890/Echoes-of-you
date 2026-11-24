@@ -32,6 +32,7 @@ public class SimpleFollowCamera : MonoBehaviour
 
     float _armLength;
     float _armVelocity;
+    int _actorLayers;
     bool _frozen;
     Vector3 _focusPoint;
     float _focusUntil;
@@ -55,6 +56,7 @@ public class SimpleFollowCamera : MonoBehaviour
 
     void Start()
     {
+        _actorLayers = LayerMask.GetMask("Player", "Echo");
         if (EchoesCameraAuthority.IsCinemachineActiveInScene())
         {
             enabled = false;
@@ -104,7 +106,9 @@ public class SimpleFollowCamera : MonoBehaviour
             }
         }
 
-        if (Cursor.lockState == CursorLockMode.Locked && Time.timeScale > 0f)
+        if (dialogue != null && dialogue.IsActive) return;
+
+        if (Cursor.lockState == CursorLockMode.Locked && Time.timeScale > 0f && dialogue?.ClosedFrame != Time.frameCount)
         {
             // Legacy mouse axes report displacement since the previous frame.
             // Preserve the authored sensitivity at its original 60 Hz baseline.
@@ -118,8 +122,9 @@ public class SimpleFollowCamera : MonoBehaviour
         Quaternion orbit = Quaternion.Euler(pitch, yaw, 0f);
         Vector3 arm = orbit * Vector3.back;
         float allowed = distance;
-        if (obstacleMask != 0 && Physics.SphereCast(pivot, sphereCastRadius, arm, out RaycastHit hit,
-                distance, obstacleMask, QueryTriggerInteraction.Ignore))
+        int sceneryMask = obstacleMask.value & ~_actorLayers;
+        if (sceneryMask != 0 && Physics.SphereCast(pivot, sphereCastRadius, arm, out RaycastHit hit,
+                distance, sceneryMask, QueryTriggerInteraction.Ignore))
             allowed = Mathf.Min(distance, Mathf.Max(0.05f, hit.distance - 0.02f));
 
         if (allowed <= _armLength)

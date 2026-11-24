@@ -17,11 +17,11 @@ MonoBehaviour:
   actNumber: 1
   archetype: 0
   echoEnabled: 1
-  maxEchoes: 2
-  maxRecordSeconds: 20
+  maxEchoes: 1
+  maxRecordSeconds: 12
   echoMode: 0
   recordFuture: 0
-  degradationPerReplay: 0.02
+  degradationPerReplay: 0
   imposedEchoData: {fileID: 0}
   ambientEchoData: {fileID: 0}
   lockEchoSlots: 0
@@ -29,193 +29,24 @@ MonoBehaviour:
   cameraProfile: {fileID: 11400000, guid: a1111111111111111111111111111104, type: 2}
   lightingProfile: {fileID: 11400000, guid: b1111111111111111111111111111101, type: 2}
   activeParadoxes: 
-  fogColor: {r: 0.18039216, g: 0.1882353, b: 0.14117648, a: 1}
-  fogDensity: 0.01
+  fogColor: {r: 0.16, g: 0.21, b: 0.26, a: 1}
+  fogDensity: 0.018
   skyColor: {r: 0.18, g: 0.2, b: 0.28, a: 1}
-  ambientColor: {r: 0.101960786, g: 0.10980392, b: 0.078431375, a: 1}
+  ambientColor: {r: 0.29, g: 0.31, b: 0.34, a: 1}
   directionalLightRotation: {x: 50, y: -30, z: 0}
-  directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
-  directionalLightIntensity: 0.85
-  narrativeIntroTitle: "Nivel 4 \u2014 La Jaula de Presi\xF3n"
-  narrativeIntroDesc: "Las placas deben ser pisadas en un orden espec\xEDfico (A
-    -> B -> C). Coordina tus grabaciones secuenciales."
-  narrativeIntroDuration: 10
-  puzzleObjectiveText: "Activa las placas en el orden exacto: Izquierda-Atr\xE1s,
-    Derecha, Izquierda-Adelante."
-  puzzleActiveText: "Las tres memorias deben sonar en armon\xEDa."
-  puzzleCompleteText: "Sinfon\xEDa secuencial completada."
+  directionalLightColor: {r: 0.79, g: 0.87, b: 1, a: 1}
+  directionalLightIntensity: 0.62
+  narrativeIntroTitle: "Después del timbre"
+  narrativeIntroDesc: "El horario sigue marcando la hora del ensayo."
+  narrativeIntroDuration: 6
+  puzzleObjectiveText: "Completa el ensayo entre Aiden y su eco."
+  puzzleActiveText: "Las marcas de la cancha indican los turnos."
+  puzzleCompleteText: "Esta vez, alguien respondió."
   pathHints:
-  - {x: 0, y: 1.1, z: 0}
-  - {x: -6, y: 1.1, z: 10}
-  - {x: 6, y: 1.1, z: 15}
-  - {x: -6, y: 1.1, z: 20}
+  - {x: 0, y: 0.08, z: -1}
+  - {x: -3.1, y: 0.08, z: 8}
+  - {x: 2.9, y: 0.08, z: 18}
+  - {x: -3.1, y: 0.08, z: 22}
   inversionCamera: 0
   timingFloor: 0.4
-  modules:
-  - name: StartPlatform
-    type: 0
-    position: {x: 0, y: 0, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 12, y: 0.5, z: 10}
-    customData: 
-    targetSignals: []
-  - name: ExitPlatform
-    type: 0
-    position: {x: 0, y: 0, z: 30}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 12, y: 0.5, z: 10}
-    customData: 
-    targetSignals: []
-  - name: PlatePlatA
-    type: 1
-    position: {x: -6, y: 0, z: 10}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 3, y: 0.5, z: 3}
-    customData: 
-    targetSignals: []
-  - name: PlatePlatB
-    type: 1
-    position: {x: 6, y: 0, z: 15}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 3, y: 0.5, z: 3}
-    customData: 
-    targetSignals: []
-  - name: PlatePlatC
-    type: 1
-    position: {x: -6, y: 0, z: 20}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 3, y: 0.5, z: 3}
-    customData: 
-    targetSignals: []
-  - name: PlateA
-    type: 4
-    position: {x: -6, y: 0.33, z: 10}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
-    targetSignals: []
-  - name: PlateB
-    type: 4
-    position: {x: 6, y: 0.33, z: 15}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
-    targetSignals: []
-  - name: PlateC
-    type: 4
-    position: {x: -6, y: 0.33, z: 20}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
-    targetSignals: []
-  - name: Rotating_Cross
-    type: 20
-    position: {x: 0, y: 0.25, z: 15}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 10, y: 0.35, z: 1.2}
-    customData: 0,0,0|0,0,0|0,45,0|1|0
-    targetSignals: []
-  - name: ExitGate
-    type: 5
-    position: {x: 0, y: 1.5, z: 25}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 6, y: 3, z: 0.5}
-    customData: 
-    targetSignals: []
-  - name: Signal_Sequence
-    type: 15
-    position: {x: 0, y: 0, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: Secuencia Resuelta|false|false
-    targetSignals: []
-  - name: Condition_Sequential
-    type: 16
-    position: {x: 0, y: 0, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: SequentialOrder|Enlace secuencia|Secuencia correcta! Acceso concedido.|Secuencia
-      rota! Intenta de nuevo.
-    targetSignals:
-    - PlateA
-    - PlateB
-    - PlateC
-    - Signal_Sequence
-    - ExitGate
-  - name: LevelExit_Area
-    type: 6
-    position: {x: 0, y: 1.25, z: 32}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: Level_03
-    targetSignals: []
-  - name: PlayerStart
-    type: 7
-    position: {x: 0, y: 1.1, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
-    targetSignals: []
-  - name: Tut_L04_Secuencia
-    type: 9
-    position: {x: 0, y: 1, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 10, y: 3, z: 8}
-    customData: "Nivel 4 \u2014 La Jaula de Presi\xF3n|Las placas deben ser pisadas
-      en un orden espec\xEDfico (A -> B -> C). Graba un recorrido donde pises la
-      placa A (izquierda posterior) y luego la B (derecha). Como jugador, corre y
-      pisa la placa C (izquierda anterior) justo cuando tu eco pise la B."
-    targetSignals: []
-  - name: Light_PlateA
-    type: 10
-    position: {x: -6, y: 3, z: 10}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 4CC0FF,2.5,6
-    targetSignals: []
-  - name: Light_PlateB
-    type: 10
-    position: {x: 6, y: 3, z: 15}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 4CC0FF,2.5,6
-    targetSignals: []
-  - name: Light_PlateC
-    type: 10
-    position: {x: -6, y: 3, z: 20}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 4CC0FF,2.5,6
-    targetSignals: []
-  - name: Light_Exit
-    type: 10
-    position: {x: 0, y: 5, z: 32}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 2699FF,5,10
-    targetSignals: []
-  - name: DistantArch
-    type: 12
-    position: {x: 0, y: 0, z: 20}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: 
-    targetSignals: []
-  - name: LevelGoal
-    type: 13
-    position: {x: 0, y: 1.25, z: 32}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: "Activa las placas en el orden exacto: Izquierda-Atr\xE1s, Derecha,
-      Izquierda-Adelante.|Las tres memorias deben sonar en armon\xEDa.|Sinfon\xEDa
-      secuencial completada."
-    targetSignals:
-    - Signal_Sequence
-  - name: LevelRuntime
-    type: 14
-    position: {x: 0, y: 0, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 0, y: 0, z: 0}
-    customData: "Pisa las tres placas en la secuencia correcta (A -> B -> C).|La
-      m\xE1quina requiere un orden exacto.|La secuencia ha sido grabada."
-    targetSignals: []
+  modules: []

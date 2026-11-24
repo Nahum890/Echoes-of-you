@@ -15,6 +15,7 @@ namespace Echoes.Interaction
         bool readProgram, foundTape, loaded;
         int completed;
         bool waitingForActor;
+        float waitHintAt;
         readonly Collider[] actors = new Collider[8];
         int echoLayers;
 
@@ -28,20 +29,36 @@ namespace Echoes.Interaction
         public void ReadProgram()
         {
             readProgram = true;
+            UpdateSearchHint();
             InteractionSystem.Instance.RequestInspection(program);
         }
 
         public void TakeTape()
         {
+            if (foundTape) return;
             foundTape = true;
+            UpdateSearchHint();
             InteractionSystem.Instance.RequestInspection(tape);
+            tape.gameObject.SetActive(false);
+            Hint("Cinta recogida · Ensayo del jueves");
         }
 
         public void PlayTape()
         {
             if (!foundTape) { Hint("La casetera está vacía. En la tapa dice «segunda fila»."); return; }
             loaded = true;
+            UpdateSearchHint();
             InteractionSystem.Instance.RequestInspection(intercom);
+        }
+
+        void UpdateSearchHint()
+        {
+            if (finale.IsSatisfied) return;
+            string clue = !readProgram ? "El atril de la entrada todavía tiene el programa."
+                : !foundTape ? "Lyra guardaba sus grabaciones entre las butacas."
+                : !loaded ? "El casete lleva una etiqueta de la cabina de arriba."
+                : "El programa guarda el final. La cinta recuerda el principio.";
+            LevelRuntimeController.Instance?.SetObjective(clue);
         }
 
         public void Rain() => Cue(0);
@@ -62,6 +79,7 @@ namespace Echoes.Interaction
                 return;
             }
             waitingForActor = true;
+            waitHintAt = Time.time + 12f;
             footlights[completed].enabled = true;
             Hint("Foco preparado. Una de las marcas azules acaba de iluminarse.");
         }
@@ -69,6 +87,11 @@ namespace Echoes.Interaction
         void FixedUpdate()
         {
             if (!waitingForActor) return;
+            if (Time.time >= waitHintAt)
+            {
+                waitHintAt = float.PositiveInfinity;
+                Hint("Mi sombra pisa la cruz y no pasa nada. ¿Qué pasaría si volviera a pasar por acá en la grabación?");
+            }
             Vector3 center = actingMarks[completed].position + Vector3.up;
             int count = Physics.OverlapBoxNonAlloc(center, new Vector3(.95f, 1.15f, .95f),
                 actors, Quaternion.identity, echoLayers, QueryTriggerInteraction.Collide);
@@ -112,6 +135,7 @@ namespace Echoes.Interaction
         public void ResetLevelState()
         {
             readProgram = foundTape = loaded = false;
+            tape.gameObject.SetActive(true);
             waitingForActor = false;
             completed = 0;
             foreach (var lamp in footlights) lamp.enabled = false;
@@ -119,6 +143,7 @@ namespace Echoes.Interaction
             finale.ResetLevelState();
             leftCurtain.localPosition = leftClosed;
             rightCurtain.localPosition = rightClosed;
+            UpdateSearchHint();
         }
 
         static void Hint(string text) => GameHUD.Instance?.ShowToast(text, Color.white, 3f);

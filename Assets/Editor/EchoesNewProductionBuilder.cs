@@ -58,6 +58,12 @@ public static class EchoesNewProductionBuilder
 
     public static void BuildLevelFromBlueprint(LevelBlueprint blueprint)
     {
+        if (blueprint.modules == null || blueprint.modules.Count == 0)
+        {
+            Debug.Log($"[Echoes] {blueprint.levelName} usa una escena editada directamente.");
+            return;
+        }
+
         Debug.Log($"[Echoes Blueprint Builder] Building scene for: {blueprint.levelName}");
         int.TryParse(blueprint.levelName.Replace("Level_", ""), out int levelNum);
         EchoesModuleFactory.CurrentBuildingLevel = levelNum;

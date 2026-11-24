@@ -36,14 +36,12 @@ MonoBehaviour:
   directionalLightRotation: {x: 50, y: -30, z: 0}
   directionalLightColor: {r: 0.9490196, g: 0.9490196, b: 1, a: 1}
   directionalLightIntensity: 0.85
-  narrativeIntroTitle: "Nivel 3 \u2014 Bifurcaci\xF3n de Lyra"
-  narrativeIntroDesc: "Un pasillo se parte en dos. Tu eco puede ahogarte si se queda
-    despu\xE9s de ayudar."
-  narrativeIntroDuration: 10
-  puzzleObjectiveText: Elige una ruta; el eco sostiene la otra, pero si se queda
-    demasiado te encierra.
-  puzzleActiveText: "El eco es tu llave y tu c\xE1rcel."
-  puzzleCompleteText: "Bifurcaci\xF3n resuelta."
+  narrativeIntroTitle: Capítulo 5 — Una copia para cada una
+  narrativeIntroDesc: El club de fotografía dejó una tira sin revelar.
+  narrativeIntroDuration: 8
+  puzzleObjectiveText: Revelá la tira del club y reconstruí el álbum.
+  puzzleActiveText: Las tres copias están colgadas en el tendedero.
+  puzzleCompleteText: Quedó una copia para cada una.
   pathHints:
   - {x: 0, y: 0.1, z: 0}
   - {x: -5, y: 0.1, z: 14}
